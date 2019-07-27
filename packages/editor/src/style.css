@@ -1,0 +1,80 @@
+.miuffy-styleButton {
+  min-width: 30px;
+  width: auto;
+  height: 30px;
+  font-size: 12px;
+  line-height: 28px;
+  border: none;
+  padding: 0 8px;
+  background: transparent;
+  border: 1px solid transparent;
+}
+
+.miuffy-styleButton:hover {
+  border-color: #d9d9d9;
+  background: transparent;
+  box-sizing: border-box;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.miuffy-ul {
+  margin-bottom: 0;
+}
+
+.miuffy-ol {
+  margin-bottom: 0;
+}
+
+.miuffy-editor-root {
+  padding-top: 46px;
+  padding-bottom: 30px;
+  position: relative;
+}
+
+.miuffy-editor-controls {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 40px;
+  padding-top: 5px;
+  padding-left: 40px;
+  background: #fff;
+  border-bottom: 1px solid #eee;
+  z-index: 100;
+}
+
+.miuffy-editor {
+  max-width: 874px;
+  margin-left: auto;
+  margin-right: auto;
+  min-height: calc(100vh - 88px);
+  margin-top: 10px;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-bottom: none;
+  z-index: -1;
+  box-shadow: 0 2px 8px hsla(0,0%,45.1%,.08);
+}
+
+.miuffy-draft-editor {
+  margin: 48px 60px 0 60px;
+}
+
+.article-title {
+  height: 80px;
+  width: 100%;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 32px;
+}
+
+.title-input {
+  height: 50px;
+  line-height: 50px;
+  font-size: 32px;
+  width: 100%;
+  border: none;
+  color: #262626;
+  font-weight: 700;
+}
