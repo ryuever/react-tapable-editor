@@ -1,0 +1,40 @@
+.miuffy-styleButton {
+  min-width: 30px;
+  width: auto;
+  height: 30px;
+  font-size: 12px;
+  line-height: 28px;
+  border: none;
+  padding: 0 8px;
+  background: transparent;
+  border: 1px solid transparent;
+}
+
+.miuffy-styleButton:hover {
+  border-color: #d9d9d9;
+  background: transparent;
+  box-sizing: border-box;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.miuffy-editor-controls {
+  display: flex;
+  flex-direction: row;
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  padding-top: 5px;
+  padding-left: 40px;
+  background: #fff;
+  border-bottom: 1px solid #eee;
+  z-index: 100;
+  padding-bottom: 5px;
+}
+
+.delimiter {
+  width: 1px;
+  background: #eee;
+  margin: 5px;
+}

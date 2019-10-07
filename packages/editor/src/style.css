@@ -1,48 +1,15 @@
-.miuffy-styleButton {
-  min-width: 30px;
-  width: auto;
-  height: 30px;
-  font-size: 12px;
-  line-height: 28px;
-  border: none;
-  padding: 0 8px;
-  background: transparent;
-  border: 1px solid transparent;
-}
-
-.miuffy-styleButton:hover {
-  border-color: #d9d9d9;
-  background: transparent;
-  box-sizing: border-box;
-  border-radius: 3px;
-  cursor: pointer;
-}
-
-.miuffy-ul {
+/* .miuffy-ul {
   margin-bottom: 0;
 }
 
 .miuffy-ol {
   margin-bottom: 0;
-}
+} */
 
 .miuffy-editor-root {
   padding-top: 46px;
   padding-bottom: 30px;
   position: relative;
-}
-
-.miuffy-editor-controls {
-  position: fixed;
-  top: 0;
-  right: 0;
-  left: 0;
-  height: 40px;
-  padding-top: 5px;
-  padding-left: 40px;
-  background: #fff;
-  border-bottom: 1px solid #eee;
-  z-index: 100;
 }
 
 .miuffy-editor {
@@ -77,4 +44,8 @@
   border: none;
   color: #262626;
   font-weight: 700;
+}
+/* 消除title输入时，边框border highlight */
+.title-input:focus {
+  outline: none !important;
 }
