@@ -4,7 +4,11 @@ import InlineStyleControls from './InlineStyleControl'
 import './style.css'
 
 export default props => {
-  const { editorState, toggleBlockType, toggleInlineStyle } = props
+  const {
+    editorState,
+    toggleBlockType,
+    toggleInlineStyle,
+  } = props
 
   return (
     <div className="miuffy-editor-controls">

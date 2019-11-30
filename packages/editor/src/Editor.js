@@ -9,10 +9,15 @@ import StyleControls from './style-controls'
 import extendedBlockRenderMap from './block-renderer/extendedBlockRenderMap'
 import './style.css'
 
+// https://draftjs.org/docs/advanced-topics-issues-and-pitfalls.html#missing-draftcss
+import 'draft-js/dist/Draft.css'
+
 class MiuffyEditor extends Component {
   constructor(props) {
     super(props);
-    this.state = {editorState: EditorState.createEmpty()};
+    this.state = {
+      editorState: EditorState.createEmpty(),
+    };
 
     this.focus = () => this.editor.focus();
     this.onChange = (editorState) => this.setState({editorState});
@@ -21,12 +26,6 @@ class MiuffyEditor extends Component {
     this.mapKeyToEditorCommand = this._mapKeyToEditorCommand.bind(this);
     this.toggleBlockType = this._toggleBlockType.bind(this);
     this.toggleInlineStyle = this._toggleInlineStyle.bind(this);
-  }
-
-  componentDidMount() {
-    this.setState({
-      isClient: true,
-    })
   }
 
   _handleKeyCommand(command, editorState) {
@@ -72,7 +71,11 @@ class MiuffyEditor extends Component {
   }
 
   render() {
-    const { editorState } = this.state;
+    const {
+      editorState,
+      activeBlockStyleType,
+      activeInlineStyleType,
+    } = this.state;
 
     let className = 'miuffy-editor';
     var contentState = editorState.getCurrentContent();
@@ -86,6 +89,8 @@ class MiuffyEditor extends Component {
       <div className="miuffy-editor-root">
         <StyleControls
           editorState={editorState}
+          activeBlockStyleType={activeBlockStyleType}
+          activeInlineStyleType={activeInlineStyleType}
           toggleBlockType={this.toggleBlockType}
           toggleInlineStyle={this.toggleInlineStyle}
         />
@@ -125,9 +130,8 @@ const styleMap = {
   },
 };
 
+// 控制渲染出来的block的class；
 function getBlockStyle(block) {
-  console.log('block type : ', block.getType())
-
   switch (block.getType()) {
     // 控制比如说，最后渲染出来的引用，它的class是
     case 'blockquote':

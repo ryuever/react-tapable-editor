@@ -22,6 +22,8 @@ export default props => {
     .getBlockForKey(selection.getStartKey())
     .getType();
 
+  console.log('block type', blockType)
+
   return (
     <div className="RichEditor-block-controls">
       {BLOCK_TYPES.map((type) =>
