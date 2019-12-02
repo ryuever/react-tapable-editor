@@ -18,9 +18,7 @@ export default ({ editorState, onToggle }) => {
   const contentState = editorState.getCurrentContent()
   let currentStyle = editorState.getCurrentInlineStyle();
 
-  console.log('curent : ', currentStyle)
-
-  // 主要是为了解决当输入中文的时候，会出现`active inline style`被清空的现象；
+  // // 主要是为了解决当输入中文的时候，会出现`active inline style`被清空的现象；
   if (!currentStyle.size && selection.isCollapsed()) {
     const block = contentState.getBlockForKey(selection.getAnchorKey())
     const startOffset = selection.getStartOffset();

@@ -3,6 +3,7 @@ import {
   Editor,
   RichUtils,
   EditorState,
+  Modifier,
   getDefaultKeyBinding,
 } from 'draft-js';
 import StyleControls from './style-controls'
@@ -17,6 +18,7 @@ class MiuffyEditor extends Component {
     super(props);
     this.state = {
       editorState: EditorState.createEmpty(),
+      selectionWithNonWidthCharacter: {},
     };
 
     this.focus = () => this.editor.focus();
@@ -28,13 +30,81 @@ class MiuffyEditor extends Component {
     this.toggleInlineStyle = this._toggleInlineStyle.bind(this);
   }
 
-  _handleKeyCommand(command, editorState) {
-    const newState = RichUtils.handleKeyCommand(editorState, command);
-    if (newState) {
-      this.onChange(newState);
-      return true;
+  componentDidUpdate() {
+    const { editorState, selectionWithNonWidthCharacter } = this.state
+    const selection = editorState.getSelection()
+    if (selection.isCollapsed()) {
+      const startKey = selection.getStartKey()
+      const contentState = editorState.getCurrentContent()
+      const block = contentState.getBlockForKey(startKey)
+      const size = block.getLength()
+      if (selectionWithNonWidthCharacter[startKey]) {
+        const markerOffset = selectionWithNonWidthCharacter[startKey].getFocusOffset()
+        if (markerOffset >= size - 1) return
+        const newContent = Modifier.removeRange(
+          editorState.getCurrentContent(),
+          selectionWithNonWidthCharacter[startKey].merge({
+            focusOffset: markerOffset + 1,
+          }),
+          'backward'
+        )
+        delete selectionWithNonWidthCharacter[startKey]
+
+        const es = EditorState.push(editorState, newContent, 'delete-character')
+
+        this.setState({
+          editorState: EditorState.forceSelection(es, selection.merge({
+            anchorKey: startKey,
+            anchorOffset: selection.getAnchorOffset() - 1,
+            focusKey: startKey,
+            focusOffset: selection.getAnchorOffset() - 1,
+            isBackward: false,
+            hasFocus: true
+          })),
+          selectionWithNonWidthCharacter: {...selectionWithNonWidthCharacter}
+        })
+        console.log('section : ', selectionWithNonWidthCharacter)
+      }
     }
-    return false;
+  }
+
+  _handleKeyCommand(command, editorState) {
+    if (command === 'split-block') {
+      const selection = editorState.getSelection()
+      const currentContent = editorState.getCurrentContent()
+      const endKey = selection.getEndKey()
+      const block = currentContent.getBlockForKey(endKey)
+      const size = block.getLength()
+      const focusOffset = selection.getFocusOffset()
+
+      console.log('focusOffset : ', focusOffset, size)
+      if (focusOffset === size) {
+        const inlineStyle = editorState.getCurrentInlineStyle()
+        console.log('inline : ', inlineStyle)
+
+        const endOffset = selection.getFocusOffset()
+        const entityKey = block.getEntityAt(endOffset)
+
+        const nextContent = Modifier.replaceText(
+          editorState.getCurrentContent(),
+          selection,
+          "\u200B",
+          inlineStyle,
+          entityKey,
+        )
+
+        const nextState = EditorState.push(editorState, Modifier.splitBlock(
+          nextContent,
+          selection,
+        ), 'split-block');
+
+        this.setState({
+          editorState: nextState,
+        })
+
+        return true
+      }
+    }
   }
 
   _mapKeyToEditorCommand(e) {
@@ -62,12 +132,72 @@ class MiuffyEditor extends Component {
   }
 
   _toggleInlineStyle(inlineStyle) {
-    this.onChange(
-      RichUtils.toggleInlineStyle(
-        this.state.editorState,
-        inlineStyle
-      )
-    );
+    const { editorState, selectionWithNonWidthCharacter } = this.state
+    const newEditorState = RichUtils.toggleInlineStyle(editorState, inlineStyle)
+    this.setState({
+      editorState: newEditorState,
+    }, () => {
+      const { editorState: nextEditorState } = this.state
+      const selection = nextEditorState.getSelection()
+
+      if (selection.isCollapsed()) {
+        const nextCurrentState = nextEditorState.getCurrentContent()
+        const nextSelection = nextEditorState.getSelection()
+        const nextInlineStyle = nextEditorState.getCurrentInlineStyle()
+
+        const startOffset = selection.getStartOffset()
+        const startKey = selection.getStartKey()
+        const block = nextCurrentState.getBlockForKey(startKey)
+        const entityKey = block.getEntityAt(startOffset)
+
+        // 查看一下最后的字符是否是`\u200B`;如果是的话，则直接将它替换掉，而不是再添加一个
+        const len = block.getLength()
+        const text = block.getText()
+        const lastCharacter = text[len - 1]
+        let newCurrentState
+        let action
+        let markerSelection
+
+        if (lastCharacter === '\u200B') {
+          markerSelection = nextSelection.merge({
+            anchorOffset: len - 1,
+            focusOffset: len,
+          })
+          newCurrentState = Modifier.applyInlineStyle(
+            nextCurrentState,
+            markerSelection,
+            inlineStyle,
+          )
+          action = 'change-inline-style'
+        } else {
+          markerSelection = nextSelection
+          newCurrentState = Modifier.replaceText(
+            nextCurrentState,
+            nextSelection,
+            "\u200B",
+            nextInlineStyle,
+            entityKey,
+          )
+          action = 'insert-characters'
+        }
+
+        const next = EditorState.push(nextEditorState, newCurrentState, action)
+        this.setState({
+          editorState: EditorState.forceSelection(next, next.getSelection()),
+          selectionWithNonWidthCharacter: {
+            ...selectionWithNonWidthCharacter,
+            [startKey]: markerSelection,
+          }
+        })
+      }
+    })
+  }
+
+  // 包含两个参数`dropSelection`可以得到放置的位置
+  handleDrop = (dropSelection, data, dragType) => {
+    console.log('dropSelection', dropSelection, data, dragType)
+
+    // return false
   }
 
   render() {
@@ -112,6 +242,8 @@ class MiuffyEditor extends Component {
               ref={editor => this.editor = editor}
               spellCheck={true}
               blockRenderMap={extendedBlockRenderMap}
+              handleDrop={this.handleDrop}
+              handleDroppedFiles={this.handleDrop}
             />
           </div>
         </div>
