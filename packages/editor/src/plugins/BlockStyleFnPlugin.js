@@ -1,7 +1,7 @@
-export default () => {
+function BlockStyleFnPlugin () {
   this.apply = getEditor => {
     const { hooks } = getEditor()
-    hooks.createCustomStyleMap.tap('BlockStyleFnPlugin', block => {
+    hooks.blockStyleFn.tap('BlockStyleFnPlugin', block => {
       switch (block.getType()) {
         // 控制比如说，最后渲染出来的引用，它的class是
         case 'blockquote':
@@ -15,3 +15,5 @@ export default () => {
     })
   }
 }
+
+export default BlockStyleFnPlugin

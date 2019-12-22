@@ -11,29 +11,35 @@ import {
 import Context from './Context'
 const { Provider } = Context
 
-import Editor from './NewEditor'
+import Editor from './Editor'
 
 class PluginEditor extends PureComponent {
   constructor(props) {
     super(props)
-    const { plugins = [] } = props
-
-    plugins.forEach(plugin => plugin.apply.call(this, this.getEditor))
-
+    const { plugins } = props
+    this.plugins = plugins || []
     this.hooks = {
       onChange: new SyncHook(['editorState']),
       toggleBlockType: new SyncHook(['blockType']),
       toggleInlineStyle: new SyncHook(['inlineStyle']),
       createBlockRenderMap: new SyncWaterfallHook(['blockRenderMap']),
       createCustomStyleMap: new SyncWaterfallHook(['customStyleMap']),
-      getBlockStyle: new SyncBailHook(['block']),
+      blockStyleFn: new SyncBailHook(['block']),
       handleKeyCommand: new SyncBailHook(['command', 'editorState']),
+
+      didUpdate: new SyncHook(),
     }
 
     this.editorRef = createRef()
     this.state = {
       editorState: EditorState.createEmpty()
     }
+
+    this.plugins.forEach(plugin =>{
+      plugin.apply(this.getEditor)
+    })
+
+    this.init()
   }
 
   componentDidMount() {
@@ -62,7 +68,7 @@ class PluginEditor extends PureComponent {
   }
 
   init = () => {
-    this.blockRenderMap = this.hooks.createBlockRenderMap.call()
+    // this.blockRenderMap = this.hooks.createBlockRenderMap.call()
     this.customStyleMap = this.hooks.createCustomStyleMap.call()
   }
 

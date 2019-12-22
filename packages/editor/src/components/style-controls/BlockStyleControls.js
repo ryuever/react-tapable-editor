@@ -17,7 +17,6 @@ const BLOCK_TYPES = [
 const BlockStyleControls = ({ getEditor }) => {
   const { editorState, hooks } = getEditor()
   const toggleBlockStyleControl = useCallback(blockType => {
-    console.log('trigger block type : ', blockType)
     hooks.toggleBlockType.call(blockType)
   }, [])
 

@@ -1,7 +1,9 @@
-export default () => {
+import { Modifier, EditorState } from 'draft-js';
+
+function PreserveNewLineInlineStylePlugin() {
   const selectionWithNonWidthCharacter = {}
   this.apply = getState => {
-    const { hooks } = getState
+    const { hooks } = getState()
 
     hooks.didUpdate.tap('RemoveLastNonWidthCharacterPlugin', editorState => {
       const selection = editorState.getSelection()
@@ -38,3 +40,5 @@ export default () => {
     })
   }
 }
+
+export default PreserveNewLineInlineStylePlugin

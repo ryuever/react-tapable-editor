@@ -14,7 +14,7 @@ var INLINE_STYLES = [
 //    （新的一行如果说是输入中文）
 
 const InlineStyleControls = ({ getEditor }) => {
-  const { editorState } = getEditor()
+  const { editorState, hooks } = getEditor()
   const selection = editorState.getSelection()
   const contentState = editorState.getCurrentContent()
   let currentStyle = editorState.getCurrentInlineStyle();

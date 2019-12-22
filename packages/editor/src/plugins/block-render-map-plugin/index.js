@@ -7,11 +7,11 @@ import CodeBlock from './CodeBlock'
 const UL_WRAP = <ul className={classNames('miuffy-ul')} />;
 const OL_WRAP = <ol className={classNames('miuffy-ol')} />;
 
-export default () => {
+function BlockRenderMapPlugin() {
   this.apply = getEditor => {
     const { hooks } = getEditor()
     hooks.createBlockRenderMap.tap('BlockRenderMapPlugin', blockRenderMap => {
-      const blockRenderMap = Immutable.Map({
+      const newBlockRenderMap = Immutable.Map({
         'header-two': {
           element: 'h2'
         },
@@ -32,7 +32,9 @@ export default () => {
         }
       });
 
-      return DefaultDraftBlockRenderMap.merge(blockRenderMap)
+      return DefaultDraftBlockRenderMap.merge(blockRenderMap, newBlockRenderMap)
     })
   }
 }
+
+export default BlockRenderMapPlugin

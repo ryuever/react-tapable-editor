@@ -1,4 +1,4 @@
-export default () => {
+function CustomStyleMapPlugin() {
   this.apply = getEditor => {
     const { hooks } = getEditor()
     hooks.createCustomStyleMap.tap(
@@ -17,3 +17,5 @@ export default () => {
     )
   }
 }
+
+export default CustomStyleMapPlugin

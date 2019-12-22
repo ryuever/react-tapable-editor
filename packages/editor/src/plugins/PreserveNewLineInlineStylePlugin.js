@@ -1,6 +1,8 @@
-export default () => {
+import { Modifier, EditorState } from 'draft-js';
+
+function PreserveNewLineInlineStylePlugin() {
   this.apply = getState => {
-    const { hooks } = getState
+    const { hooks } = getState()
 
     hooks.handleKeyCommand.tap('PreserveNewLineInlineStylePlugin', (command, editorState) => {
       if (command === 'split-block') {
@@ -11,11 +13,8 @@ export default () => {
         const size = block.getLength()
         const focusOffset = selection.getFocusOffset()
 
-        console.log('focusOffset : ', focusOffset, size)
         if (focusOffset === size) {
           const inlineStyle = editorState.getCurrentInlineStyle()
-          console.log('inline : ', inlineStyle)
-
           const endOffset = selection.getFocusOffset()
           const entityKey = block.getEntityAt(endOffset)
 
@@ -32,10 +31,6 @@ export default () => {
             selection,
           ), 'split-block');
 
-          // this.setState({
-          //   editorState: nextState,
-          // })
-
           hooks.onChange.call(nextState)
 
           return true
@@ -44,3 +39,5 @@ export default () => {
     })
   }
 }
+
+export default PreserveNewLineInlineStylePlugin
