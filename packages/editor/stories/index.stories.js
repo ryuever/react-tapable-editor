@@ -4,7 +4,7 @@ import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { linkTo } from '@storybook/addon-links';
 
-import Editor from '../src/Editor'
+import Editor from '../src/PluginEditor'
 
 import { Button, Welcome } from '@storybook/react/demo';
 
