@@ -1,6 +1,8 @@
 import React from 'react'
 import { withEditor } from '../..'
 
+import './styles/index.css'
+
 const Title = ({ getEditor }) => {
   return (
     <div className="article-title">

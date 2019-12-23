@@ -20,15 +20,22 @@ const NewEditor = props => {
   const {
     getEditor,
     forwardRef,
+    placeholder,
   } = props
   const { hooks, editorState } = getEditor()
   const didUpdate = useRef(false)
 
   useEffect(() => {
     if (didUpdate.current) {
-      hooks.didUpdate.call()
+      hooks.didUpdate.call(editorState)
+      hooks.updatePlaceholder.call(editorState, placeholder)
     }
   })
+
+  useEffect(() => {
+    hooks.updatePlaceholder.call(editorState, placeholder)
+    didUpdate.current = true
+  }, [])
 
   const onChange = useCallback(editorState => {
     hooks.onChange.call(editorState)
@@ -40,6 +47,10 @@ const NewEditor = props => {
 
   const getBlockStyle = useCallback(block => {
     return hooks.blockStyleFn.call(block)
+  })
+
+  const handleBlockRender = useCallback(contentBlock => {
+    return hooks.blockRendererFn.call(contentBlock, editorState)
   })
 
   let className = 'miuffy-editor';
@@ -54,15 +65,16 @@ const NewEditor = props => {
     <div className="miuffy-editor-root">
       <StyleControls editorState={editorState} />
 
-      <div className={className}>
-        {/* <Title /> */}
+      <div className="miuffy-editor">
+        <Title />
         <Editor
           editorState={editorState}
           blockStyleFn={getBlockStyle}
+          blockRendererFn={handleBlockRender}
           onChange={onChange}
           handleKeyCommand={handleKeyCommand}
           ref={forwardRef}
-          placeholder='Tell a story...'
+          placeholder='xxxx'
         />
       </div>
     </div>

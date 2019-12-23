@@ -15,9 +15,12 @@ const BLOCK_TYPES = [
 ];
 
 const BlockStyleControls = ({ getEditor }) => {
-  const { editorState, hooks } = getEditor()
+  const { editorState } = getEditor()
   const toggleBlockStyleControl = useCallback(blockType => {
-    hooks.toggleBlockType.call(blockType)
+    // 这个地方需要用最新的`editorState`;如果不进行这一步的话，editorState
+    // 会是比较老的。
+    const { editorState: latestEditorState, hooks } = getEditor()
+    hooks.toggleBlockType.call(null, latestEditorState, blockType)
   }, [])
 
   const selection = editorState.getSelection()

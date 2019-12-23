@@ -2,6 +2,7 @@ import React, { PureComponent, createRef } from 'react'
 import {
   RichUtils,
   EditorState,
+  CompositeDecorator,
 } from 'draft-js';
 import {
   SyncHook,
@@ -19,23 +20,35 @@ class PluginEditor extends PureComponent {
     const { plugins } = props
     this.plugins = plugins || []
     this.hooks = {
-      onChange: new SyncHook(['editorState']),
-      toggleBlockType: new SyncHook(['blockType']),
+      setState: new SyncHook(['editorState']),
+      onChange: new SyncWaterfallHook(['editorState']),
+      toggleBlockType: new SyncWaterfallHook(['newEditorState', 'editorState', 'blockType']),
       toggleInlineStyle: new SyncHook(['inlineStyle']),
       createBlockRenderMap: new SyncWaterfallHook(['blockRenderMap']),
       createCustomStyleMap: new SyncWaterfallHook(['customStyleMap']),
       blockStyleFn: new SyncBailHook(['block']),
       handleKeyCommand: new SyncBailHook(['command', 'editorState']),
 
-      didUpdate: new SyncHook(),
+      blockRendererFn: new SyncBailHook(['contentBlock', 'editorState']),
+      createPlaceholder: new SyncHook(['editorState', 'placeholder']),
+
+      didUpdate: new SyncHook(['editorState']),
+
+      // 用来更新placeholder
+      updatePlaceholder: new SyncHook(['editorState', 'placeholder']),
+
+      // decorators
+      compositeDecorator: new SyncWaterfallHook(['decorators'])
     }
+
+    console.log('hooks : ', this.hooks)
 
     this.editorRef = createRef()
     this.state = {
       editorState: EditorState.createEmpty()
     }
 
-    this.plugins.forEach(plugin =>{
+    this.plugins.forEach(plugin => {
       plugin.apply(this.getEditor)
     })
 
@@ -46,17 +59,34 @@ class PluginEditor extends PureComponent {
     this.hooks.onChange.tap('onChange', editorState => {
       this.setState({ editorState })
     })
-    this.hooks.toggleBlockType.tap('toggleBlockType', blockType => {
-      const { editorState } = this.state
-      const newEditorState = RichUtils.toggleBlockType(editorState, blockType)
-      this.setState({ editorState: newEditorState })
+
+    this.hooks.setState.tap('setState', editorState => {
+      this.setState({ editorState })
     })
+
+    this.hooks.toggleBlockType.tap('toggleBlockType', (newEditorState, editorState, blockType) => {
+      const nextEditorState = newEditorState || editorState
+      console.log('new : ', newEditorState)
+      this.setState({
+        editorState: RichUtils.toggleBlockType(nextEditorState, blockType)
+      })
+    })
+
     this.hooks.toggleInlineStyle.tap('toggleInlineStyle', inlineStyle => {
       const { editorState } = this.state
-
       const newEditorState = RichUtils.toggleInlineStyle(editorState, inlineStyle)
       this.setState({ editorState: newEditorState })
     })
+
+    // this.hooks.compositeDecorator.tap('compositeDecorator', decorators => {
+    //   const { editorState } = this.state
+    //   const newEditorState = EditorState.set(editorState, {
+    //     decorator: new CompositeDecorator(decorators),
+    //   })
+    //   this.setState({
+    //     decorators: newEditorState
+    //   })
+    // })
   }
 
   getEditor = () => {

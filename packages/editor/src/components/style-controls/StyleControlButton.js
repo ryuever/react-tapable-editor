@@ -18,7 +18,7 @@ const StyleControlButton = ({ label, active, onToggle, style }) => {
   }, [])
 
   const cx = classnames({
-    'miuffy-style-button': !active,
+    'miuffy-style-button': true,
     'miuffy-active-button': active,
   })
 

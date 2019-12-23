@@ -1,0 +1,19 @@
+.article-title {
+  height: 70px;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 32px;
+}
+
+.title-input {
+  height: 50px;
+  line-height: 50px;
+  font-size: 32px;
+  width: 100%;
+  border: none;
+  color: #262626;
+  font-weight: 700;
+}
+/* 消除title输入时，边框border highlight */
+.title-input:focus {
+  outline: none !important;
+}
