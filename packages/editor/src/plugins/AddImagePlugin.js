@@ -1,24 +1,24 @@
 
 function AddImagePlugin() {
-  this.apply = getEditor => {
-    const { hooks } = getEditor()
+  this.apply = (getEditor) => {
+    const { hooks } = getEditor();
 
     hooks.createPlaceholder.tap('AddImagePlugin', (editorState, placeholder) => {
-      const entityType = 'IMAGE'
+      const entityType = 'IMAGE';
       const contentState = editorState.getCurrentContent();
       const contentStateWithEntity = contentState.createEntity(
         entityType,
         'IMMUTABLE',
-        {text: placeholder }
+        { text: placeholder },
       );
       const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
       const newEditorState = AtomicBlockUtils.insertAtomicBlock(
         editorState,
         entityKey,
-        ' '
+        ' ',
       );
-      hooks.onChange.call(newEditorState)
-    })
+      hooks.onChange.call(newEditorState);
+    });
 
     hooks.blockRendererFn.tap('PlaceholderPlugin', (contentBlock, editorState) => {
       if (contentBlock.getType() === 'atomic') {
@@ -33,6 +33,6 @@ function AddImagePlugin() {
           };
         }
       }
-    })
-  }
+    });
+  };
 }

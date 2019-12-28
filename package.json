@@ -1,6 +1,12 @@
 {
   "name": "root",
   "private": true,
+  "scripts": {
+    "clean": "lerna clean -y",
+    "bootstrap": "lerna bootstrap --hoist",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
+  },
   "devDependencies": {
     "lerna": "^3.16.4"
   },

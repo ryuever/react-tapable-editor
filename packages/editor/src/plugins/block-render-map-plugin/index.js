@@ -1,19 +1,19 @@
-import React from 'react'
-import { DefaultDraftBlockRenderMap } from 'draft-js'
-import Immutable from 'immutable'
-import classNames from 'classnames'
-import CodeBlock from './CodeBlock'
+import React from 'react';
+import { DefaultDraftBlockRenderMap } from 'draft-js';
+import Immutable from 'immutable';
+import classNames from 'classnames';
+import CodeBlock from './CodeBlock';
 
 const UL_WRAP = <ul className={classNames('miuffy-ul')} />;
 const OL_WRAP = <ol className={classNames('miuffy-ol')} />;
 
 function BlockRenderMapPlugin() {
-  this.apply = getEditor => {
-    const { hooks } = getEditor()
-    hooks.createBlockRenderMap.tap('BlockRenderMapPlugin', blockRenderMap => {
+  this.apply = (getEditor) => {
+    const { hooks } = getEditor();
+    hooks.createBlockRenderMap.tap('BlockRenderMapPlugin', (blockRenderMap) => {
       const newBlockRenderMap = Immutable.Map({
         'header-two': {
-          element: 'h2'
+          element: 'h2',
         },
 
         'unordered-list-item': {
@@ -29,12 +29,12 @@ function BlockRenderMapPlugin() {
         'code-block': {
           element: 'pre',
           wrapper: <CodeBlock />,
-        }
+        },
       });
 
-      return DefaultDraftBlockRenderMap.merge(blockRenderMap, newBlockRenderMap)
-    })
-  }
+      return DefaultDraftBlockRenderMap.merge(blockRenderMap, newBlockRenderMap);
+    });
+  };
 }
 
-export default BlockRenderMapPlugin
+export default BlockRenderMapPlugin;

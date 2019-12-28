@@ -1,25 +1,24 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 
 // import CodeMirror from 'react-codemirror'
 
 class CodeWrapper extends Component {
   constructor(props) {
-    super(props)
+    super(props);
 
+    const { children } = props
     this.state = {
-      code: props.children
-    }
+      code: children,
+    };
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      code: nextProps.children
-    })
+      code: nextProps.children,
+    });
   }
 
   render() {
-    console.log('code : ', this.state.code)
-
     // return <CodeMirror
     //   ref="editor"
     //   value={this.state.code}
@@ -27,13 +26,14 @@ class CodeWrapper extends Component {
     //   // options={options}
     //   autoFocus={true}
     // />
+    const { children } = this.props
 
-    return <div className="code-mirror">
-      {this.props.children}
-    </div>
-
+    return (
+      <div className="code-mirror">
+        {children}
+      </div>
+    );
   }
-
 }
 
-export default CodeWrapper
+export default CodeWrapper;

@@ -1,65 +1,61 @@
 import React, {
-  forwardRef,
   useCallback,
   useRef,
   useEffect,
-} from 'react'
+} from 'react';
 import {
   Editor,
-  EditorState,
 } from 'draft-js';
-import StyleControls from './components/style-controls'
-import Title from './components/title'
+import StyleControls from './components/style-controls';
+import Title from './components/title';
 
-import './style.css'
+import './style.css';
 // https://draftjs.org/docs/advanced-topics-issues-and-pitfalls.html#missing-draftcss
-import 'draft-js/dist/Draft.css'
+import 'draft-js/dist/Draft.css';
 import { withEditor } from './index';
 
-const NewEditor = props => {
+const NewEditor = (props) => {
   const {
     getEditor,
     forwardRef,
     placeholder,
-  } = props
-  const { hooks, editorState } = getEditor()
-  const didUpdate = useRef(false)
+  } = props;
+  const { hooks, editorState } = getEditor();
+  const didUpdate = useRef(false);
 
   useEffect(() => {
     if (didUpdate.current) {
-      hooks.didUpdate.call(editorState)
-      hooks.updatePlaceholder.call(editorState, placeholder)
+      hooks.didUpdate.call(editorState);
+      hooks.updatePlaceholder.call(editorState, placeholder);
     }
-  })
+  });
 
   useEffect(() => {
-    hooks.updatePlaceholder.call(editorState, placeholder)
-    didUpdate.current = true
-  }, [])
+    hooks.updatePlaceholder.call(editorState, placeholder);
+    didUpdate.current = true;
+  }, []);
 
-  const onChange = useCallback(editorState => {
-    hooks.onChange.call(editorState)
-  }, [])
+  const onChange = useCallback((es) => {
+    hooks.onChange.call(es);
+  }, []);
 
-  const handleKeyCommand = useCallback((command, editorState) => {
-    return hooks.handleKeyCommand.call(command, editorState)
-  }, [])
+  const handleKeyCommand = useCallback((command, es) => (
+    hooks.handleKeyCommand.call(command, es), [])
+  );
 
-  const getBlockStyle = useCallback(block => {
-    return hooks.blockStyleFn.call(block)
-  })
+  const getBlockStyle = useCallback((block) => hooks.blockStyleFn.call(block));
 
-  const handleBlockRender = useCallback(contentBlock => {
-    return hooks.blockRendererFn.call(contentBlock, editorState)
-  })
+  const handleBlockRender = useCallback((contentBlock) => (
+    hooks.blockRendererFn.call(contentBlock, editorState)
+  ));
 
-  let className = 'miuffy-editor';
-  var contentState = editorState.getCurrentContent();
-  if (!contentState.hasText()) {
-    if (contentState.getBlockMap().first().getType() !== 'unstyled') {
-      className += ' RichEditor-hidePlaceholder';
-    }
-  }
+  // let className = 'miuffy-editor';
+  // const contentState = editorState.getCurrentContent();
+  // if (!contentState.hasText()) {
+  //   if (contentState.getBlockMap().first().getType() !== 'unstyled') {
+  //     className += ' RichEditor-hidePlaceholder';
+  //   }
+  // }
 
   return (
     <div className="miuffy-editor-root">
@@ -77,11 +73,11 @@ const NewEditor = props => {
         />
       </div>
     </div>
-  )
-}
+  );
+};
 
-const WrappedEditor = withEditor(NewEditor)
+const WrappedEditor = withEditor(NewEditor);
 
-export default forwardRef((props, ref) => (
+export default React.forwardRef((props, ref) => (
   <WrappedEditor {...props} forwardRef={ref} />
-))
+));
