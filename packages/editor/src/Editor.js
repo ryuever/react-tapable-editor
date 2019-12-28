@@ -42,7 +42,7 @@ const NewEditor = props => {
   }, [])
 
   const handleKeyCommand = useCallback((command, editorState) => {
-    hooks.handleKeyCommand.call(command, editorState)
+    return hooks.handleKeyCommand.call(command, editorState)
   }, [])
 
   const getBlockStyle = useCallback(block => {
@@ -74,7 +74,6 @@ const NewEditor = props => {
           onChange={onChange}
           handleKeyCommand={handleKeyCommand}
           ref={forwardRef}
-          placeholder='xxxx'
         />
       </div>
     </div>

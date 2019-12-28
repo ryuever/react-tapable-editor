@@ -31,7 +31,7 @@ function PreserveNewLineInlineStylePlugin() {
             selection,
           ), 'split-block');
 
-          hooks.onChange.call(nextState)
+          hooks.setState.call(nextState)
 
           return true
         }

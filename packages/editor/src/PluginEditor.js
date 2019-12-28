@@ -38,7 +38,9 @@ class PluginEditor extends PureComponent {
       updatePlaceholder: new SyncHook(['editorState', 'placeholder']),
 
       // decorators
-      compositeDecorator: new SyncWaterfallHook(['decorators'])
+      compositeDecorator: new SyncWaterfallHook(['decorators']),
+
+      keyBindingFn: new SyncBailHook(['e']),
     }
 
     console.log('hooks : ', this.hooks)
@@ -57,6 +59,7 @@ class PluginEditor extends PureComponent {
 
   componentDidMount() {
     this.hooks.onChange.tap('onChange', editorState => {
+      console.log('onchange : ', editorState)
       this.setState({ editorState })
     })
 
