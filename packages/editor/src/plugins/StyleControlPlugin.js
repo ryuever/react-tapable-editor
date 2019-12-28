@@ -51,6 +51,8 @@ function StyleControlPlugin() {
         }
 
         const next = EditorState.push(nextEditorState, newCurrentState, action)
+        // 如果不设置forceSelection的话，当触发`inlineStyle`改变的时候，光标并不会被
+        // 放置到新插入的`\u200B`的后面；如果不进行`forceSelection`的话，只能够是通过光标移动来解决了
         return EditorState.forceSelection(next, newCurrentState.getSelectionAfter())
       }
       return null

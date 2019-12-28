@@ -116,18 +116,16 @@ function PlaceholderPlugin() {
             // 2. 之所以+1；因为在实际使用中，如果输入中文的话，它第一次的指针显示位置是不对的
             const withoutFirstBlock = contentState.merge({
               blockMap: newBlockMap,
-              selectionAfter: selection.merge({
-                anchorOffset: 1,
-                focusOffset: 1,
-              }),
             });
             this.placeholderBlock = null;
             this.placeholderNode = null;
-            hooks.setState.call(EditorState.push(
+            const nextState = EditorState.push(
               editorState,
               withoutFirstBlock,
               'remove-range',
-            ));
+            );
+            // 主要是修复`isInCompositionMode`模式下，当输入结束时，需要将光标设置到光标最后所在的位置
+            hooks.setState.call(EditorState.forceSelection(nextState, withoutFirstBlock.getSelectionAfter()))
             return;
           }
           // 下面的情形是针对当用户什么都没有输入时，触发了`blockType`的改变
