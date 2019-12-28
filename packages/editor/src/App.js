@@ -4,7 +4,6 @@ import PluginEditor from './PluginEditor';
 import PlaceholderPlugin from './plugins/PlaceholderPlugin';
 import BlockStyleFnPlugin from './plugins/BlockStyleFnPlugin';
 import CustomStyleMapPlugin from './plugins/CustomStyleMapPlugin';
-import RemoveLastNonWidthCharacterPlugin from './plugins/RemoveLastNonWidthCharacterPlugin';
 import BlockRenderMapPlugin from './plugins/block-render-map-plugin';
 import StyleControlPlugin from './plugins/StyleControlPlugin'
 
@@ -14,7 +13,6 @@ const App = () => {
     new BlockStyleFnPlugin(),
     new CustomStyleMapPlugin(),
     new BlockRenderMapPlugin(),
-    new RemoveLastNonWidthCharacterPlugin(),
     new StyleControlPlugin(),
   ];
 

@@ -57,8 +57,6 @@ class PluginEditor extends PureComponent {
       keyBindingFn: new SyncBailHook(['e']),
     }
 
-    console.log('hooks : ', this.hooks)
-
     this.editorRef = createRef()
     this.state = {
       editorState: EditorState.createEmpty()
@@ -73,7 +71,6 @@ class PluginEditor extends PureComponent {
 
   componentDidMount() {
     this.hooks.onChange.tap('onChange', editorState => {
-      console.log('onchange : ', editorState)
       this.setState({ editorState })
     })
 

@@ -27,7 +27,6 @@ const InlineStyleControls = ({ getEditor }) => {
   if (!currentStyle.size && selection.isCollapsed()) {
     const block = contentState.getBlockForKey(selection.getAnchorKey())
     const startOffset = selection.getStartOffset();
-    console.log('section : ', startOffset, selection)
 
     const chars = block.getCharacterList()
     const length = chars.size

@@ -35,7 +35,6 @@ function PlaceholderPlugin() {
             // 'split-block',
             'backspace',
           ];
-          console.log('handled')
           if (commands.indexOf(command) !== -1) {
             return 'handled';
           }
@@ -99,6 +98,7 @@ function PlaceholderPlugin() {
         return;
       }
 
+      // 当有输入或者进入`isInCompositionMode`模式时，需要将`placeholder`删除
       if (blockSize === 2) {
         const secondBlock = contentState.getBlockAfter(firstBlockKey);
         // 证明
@@ -124,8 +124,17 @@ function PlaceholderPlugin() {
               withoutFirstBlock,
               'remove-range',
             );
+            console.log('console : ', nextState.getSelection(), withoutFirstBlock.getSelectionAfter(), selection)
+            // hooks.setState.call(nextState)
             // 主要是修复`isInCompositionMode`模式下，当输入结束时，需要将光标设置到光标最后所在的位置
-            hooks.setState.call(EditorState.forceSelection(nextState, withoutFirstBlock.getSelectionAfter()))
+            hooks.setState.call(EditorState.forceSelection(
+              nextState,
+              selection.merge({
+                anchorOffset: 1,
+                focusOffset: 1,
+              }),
+              // withoutFirstBlock.getSelectionAfter()
+            ))
             return;
           }
           // 下面的情形是针对当用户什么都没有输入时，触发了`blockType`的改变

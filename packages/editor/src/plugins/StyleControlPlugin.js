@@ -1,9 +1,11 @@
 // 主要是为了解决在`isInCompositionMode`模式下，进行`inlineStyle`切换的时候，会出现
 // 刚刚触发的`inlineStyle`变化并不会作用到接下来的输入的问题。目前的处理方式就是在
 // toggle inline style以及换行的时候，默认添加一个`\u200B`字符
-import { Modifier, EditorState } from 'draft-js';
+import { Modifier, EditorState, SelectionState } from 'draft-js';
 
 function StyleControlPlugin() {
+  const selectionWithNonWidthCharacter = {}
+
   this.apply = (getState) => {
     const { hooks } = getState();
 
@@ -17,6 +19,7 @@ function StyleControlPlugin() {
       const currentInlineStyle = nextEditorState.getCurrentInlineStyle()
       if (selection.isCollapsed()) {
         const startKey = selection.getStartKey()
+        const anchorOffset = selection.getAnchorOffset()
         const block = currentContent.getBlockForKey(startKey)
 
         // 查看一下最后的字符是否是`\u200B`;如果是的话，则直接将它替换掉，而不是再添加一个
@@ -48,6 +51,10 @@ function StyleControlPlugin() {
             null,
           )
           action = 'insert-characters'
+
+          if (!selectionWithNonWidthCharacter[startKey]) selectionWithNonWidthCharacter[startKey] = {}
+          const group = selectionWithNonWidthCharacter[startKey]
+          group[anchorOffset] = selection
         }
 
         const next = EditorState.push(nextEditorState, newCurrentState, action)
@@ -92,6 +99,64 @@ function StyleControlPlugin() {
       //     return true;
       //   }
       // }
+    });
+
+    hooks.didUpdate.tap('RemoveLastNonWidthCharacterPlugin', (editorState) => {
+      // return
+      const selection = editorState.getSelection();
+      const currentState = editorState.getCurrentContent();
+      const selectionBefore = currentState.getSelectionBefore()
+      const isInCompositionMode = editorState.isInCompositionMode();
+
+      if (selection.isCollapsed() && !isInCompositionMode) {
+        const currentSelectionPosition = selection.getAnchorOffset()
+        const currentStartKey = selection.getStartKey()
+        const group = selectionWithNonWidthCharacter[currentStartKey]
+        if (group) {
+          const keys = Object.keys(group)
+
+          const newState = keys.reduce((es, key) => {
+            const markerSelection = group[key]
+            const content = es.getCurrentContent()
+            const markerSelectionPosition = markerSelection.getAnchorOffset()
+            console.log('markerSelectionPosition : ',
+              selectionWithNonWidthCharacter,
+              markerSelectionPosition,
+              currentSelectionPosition
+            )
+            if (Math.abs(markerSelectionPosition - currentSelectionPosition) <= 1) return es
+            const newContent = Modifier.removeRange(
+              content,
+              markerSelection.merge({
+                focusOffset: markerSelectionPosition + 1,
+              }),
+              'backward',
+            );
+            delete group[key];
+
+            // 通过设置新的`selectionAfter`为了解决，当比如中文输入完以后，光标应该回到哪个位置；
+            // 如果没有这个的设置的话，光标会被放置到刚刚输入中文开始的位置。
+            // const newState = EditorState.push(editorState, newContent, 'delete-character')
+            const newState = EditorState.push(editorState, newContent.set(
+              'selectionAfter',
+              new SelectionState({
+                anchorKey: currentStartKey,
+                anchorOffset: selection.getAnchorOffset() - 1,
+                focusKey: currentStartKey,
+                focusOffset: selection.getAnchorOffset() - 1,
+                isBackward: false,
+                hasFocus: true,
+              })
+            ), 'delete-character')
+
+            return newState
+            // const newState = EditorState.push(editorState, newContent.set('selectionAfter', selection), 'delete-character')
+            // return EditorState.forceSelection(newState, es.getSelection())
+          }, editorState)
+
+          if (newState && newState !== editorState) hooks.setState.call(newState)
+        }
+      }
     });
   };
 }
