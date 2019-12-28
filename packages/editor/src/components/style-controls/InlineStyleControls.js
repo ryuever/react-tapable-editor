@@ -14,23 +14,28 @@ const INLINE_STYLES = [
 //    （新的一行如果说是输入中文）
 
 const InlineStyleControls = ({ getEditor }) => {
-  const { editorState, hooks } = getEditor();
-  const currentStyle = editorState.getCurrentInlineStyle();
+  const { editorState } = getEditor();
+  let currentStyle = editorState.getCurrentInlineStyle();
+  const contentState = editorState.getCurrentContent()
+  const selection = editorState.getSelection()
   const handleToggle = useCallback((inlineStyle) => {
+    const { hooks } = getEditor();
     hooks.toggleInlineStyle.call(inlineStyle);
   }, []);
 
-  // // 主要是为了解决当输入中文的时候，会出现`active inline style`被清空的现象；
-  // if (!currentStyle.size && selection.isCollapsed()) {
-  //   const block = contentState.getBlockForKey(selection.getAnchorKey())
-  //   const startOffset = selection.getStartOffset();
-  //   const chars = block.getCharacterList()
-  //   const length = chars.size
+  // 主要是为了解决当输入中文的时候，会出现`active inline style`被清空的现象；
+  if (!currentStyle.size && selection.isCollapsed()) {
+    const block = contentState.getBlockForKey(selection.getAnchorKey())
+    const startOffset = selection.getStartOffset();
+    console.log('section : ', startOffset, selection)
 
-  //   if (length < startOffset) {
-  //     currentStyle = block.getInlineStyleAt(length - 1)
-  //   }
-  // }
+    const chars = block.getCharacterList()
+    const length = chars.size
+
+    if (length < startOffset) {
+      currentStyle = block.getInlineStyleAt(length - 1)
+    }
+  }
 
   return (
     <div className="RichEditor-inline-controls">

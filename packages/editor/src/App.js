@@ -5,8 +5,8 @@ import PlaceholderPlugin from './plugins/PlaceholderPlugin';
 import BlockStyleFnPlugin from './plugins/BlockStyleFnPlugin';
 import CustomStyleMapPlugin from './plugins/CustomStyleMapPlugin';
 import RemoveLastNonWidthCharacterPlugin from './plugins/RemoveLastNonWidthCharacterPlugin';
-import PreserveNewLineInlineStylePlugin from './plugins/PreserveNewLineInlineStylePlugin';
 import BlockRenderMapPlugin from './plugins/block-render-map-plugin';
+import StyleControlPlugin from './plugins/StyleControlPlugin'
 
 const App = () => {
   const plugins = [
@@ -15,7 +15,7 @@ const App = () => {
     new CustomStyleMapPlugin(),
     new BlockRenderMapPlugin(),
     new RemoveLastNonWidthCharacterPlugin(),
-    new PreserveNewLineInlineStylePlugin(),
+    new StyleControlPlugin(),
   ];
 
   return (

@@ -40,22 +40,14 @@ const NewEditor = (props) => {
   }, []);
 
   const handleKeyCommand = useCallback((command, es) => (
-    hooks.handleKeyCommand.call(command, es), [])
-  );
+    hooks.handleKeyCommand.call(command, es)
+  ), []);
 
   const getBlockStyle = useCallback((block) => hooks.blockStyleFn.call(block));
 
   const handleBlockRender = useCallback((contentBlock) => (
     hooks.blockRendererFn.call(contentBlock, editorState)
   ));
-
-  // let className = 'miuffy-editor';
-  // const contentState = editorState.getCurrentContent();
-  // if (!contentState.hasText()) {
-  //   if (contentState.getBlockMap().first().getType() !== 'unstyled') {
-  //     className += ' RichEditor-hidePlaceholder';
-  //   }
-  // }
 
   return (
     <div className="miuffy-editor-root">

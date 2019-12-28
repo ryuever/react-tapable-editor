@@ -22,8 +22,22 @@ class PluginEditor extends PureComponent {
     this.hooks = {
       setState: new SyncHook(['editorState']),
       onChange: new SyncWaterfallHook(['editorState']),
-      toggleBlockType: new SyncWaterfallHook(['newEditorState', 'editorState', 'blockType']),
-      toggleInlineStyle: new SyncHook(['inlineStyle']),
+      toggleBlockType: new SyncWaterfallHook([
+        'newEditorState',
+        'editorState',
+        'blockType'
+      ]),
+
+      toggleInlineStyle: new SyncHook([
+        'inlineStyle'
+      ]),
+
+      afterInlineStyleApplied: new SyncWaterfallHook([
+        'newEditorState',
+        'editorState',
+        'inlineStyle'
+      ]),
+
       createBlockRenderMap: new SyncWaterfallHook(['blockRenderMap']),
       createCustomStyleMap: new SyncWaterfallHook(['customStyleMap']),
       blockStyleFn: new SyncBailHook(['block']),
@@ -67,18 +81,45 @@ class PluginEditor extends PureComponent {
       this.setState({ editorState })
     })
 
-    this.hooks.toggleBlockType.tap('toggleBlockType', (newEditorState, editorState, blockType) => {
+    this.hooks.toggleBlockType.tap('toggleBlockType', (
+      newEditorState,
+      editorState,
+      blockType
+    ) => {
       const nextEditorState = newEditorState || editorState
-      console.log('new : ', newEditorState)
       this.setState({
-        editorState: RichUtils.toggleBlockType(nextEditorState, blockType)
+        editorState: RichUtils.toggleBlockType(
+          nextEditorState,
+          blockType
+        )
       })
     })
 
     this.hooks.toggleInlineStyle.tap('toggleInlineStyle', inlineStyle => {
       const { editorState } = this.state
-      const newEditorState = RichUtils.toggleInlineStyle(editorState, inlineStyle)
-      this.setState({ editorState: newEditorState })
+      this.setState({
+        editorState: RichUtils.toggleInlineStyle(
+          editorState,
+          inlineStyle
+        )
+      }, () => {
+        const { editorState } = this.state
+        this.hooks.afterInlineStyleApplied.call(
+          null,
+          editorState,
+          inlineStyle,
+        )
+      })
+    })
+
+    this.hooks.afterInlineStyleApplied.tap('afterInlineStyleApplied', (
+      newEditorState,
+      editorState,
+    ) => {
+      const nextEditorState = newEditorState || editorState
+      this.setState({
+        editorState: nextEditorState
+      })
     })
 
     // this.hooks.compositeDecorator.tap('compositeDecorator', decorators => {

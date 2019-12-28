@@ -35,6 +35,7 @@ function PlaceholderPlugin() {
             // 'split-block',
             'backspace',
           ];
+          console.log('handled')
           if (commands.indexOf(command) !== -1) {
             return 'handled';
           }

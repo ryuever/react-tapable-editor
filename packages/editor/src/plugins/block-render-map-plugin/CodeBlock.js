@@ -19,13 +19,6 @@ class CodeWrapper extends Component {
   }
 
   render() {
-    // return <CodeMirror
-    //   ref="editor"
-    //   value={this.state.code}
-    //   // onChange={this.updateCode}
-    //   // options={options}
-    //   autoFocus={true}
-    // />
     const { children } = this.props
 
     return (
