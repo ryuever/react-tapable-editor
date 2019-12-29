@@ -20,7 +20,7 @@ class PluginEditor extends PureComponent {
     const { plugins } = props
     this.plugins = plugins || []
     this.hooks = {
-      setState: new SyncHook(['editorState']),
+      setState: new SyncHook(['editorState', 'callback']),
       onChange: new SyncWaterfallHook(['editorState']),
       toggleBlockType: new SyncWaterfallHook([
         'newEditorState',
@@ -74,8 +74,13 @@ class PluginEditor extends PureComponent {
       this.setState({ editorState })
     })
 
-    this.hooks.setState.tap('setState', editorState => {
-      this.setState({ editorState })
+    this.hooks.setState.tap('setState', (editorState, callback) => {
+      this.setState({ editorState }, () => {
+        const newState = this.state.editorState
+        if (typeof callback === 'function') {
+          callback(newState)
+        }
+      })
     })
 
     this.hooks.toggleBlockType.tap('toggleBlockType', (

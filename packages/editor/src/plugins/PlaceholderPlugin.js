@@ -5,12 +5,14 @@ import {
 } from 'draft-js';
 import DraftOffsetKey from 'draft-js/lib/DraftOffsetKey';
 import { hasText } from '../utils/contentBlock';
+import { moveSelectionForward } from '../utils/editorState'
 
 // 解决的场景问题：新打开的文档尚未输入问题，这个时候如果我们触发了style
 // 的变化（block和inline）也应该应用到`placeholder`
 
 function PlaceholderPlugin() {
   this.placeholder = null;
+  this.hasPlaceholderBlock = null;
   this.placeholderBlock = null;
   this.placeholderNode = null;
   this.selection = null;
@@ -24,7 +26,7 @@ function PlaceholderPlugin() {
       const blockMap = contentState.getBlockMap();
 
       const onlyHasTwoBlocks = blockMap.size === 2;
-      if (!this.placeholderBlock) return;
+      if (!this.hasPlaceholderBlock) return;
 
       if (onlyHasTwoBlocks) {
         const anchorOffset = selection.getAnchorOffset();
@@ -45,7 +47,7 @@ function PlaceholderPlugin() {
     hooks.toggleBlockType.tap('PlaceholderPlugin', (newEditorState, editorState, blockType) => {
       const currentEditorState = newEditorState || editorState;
       const currentContent = currentEditorState.getCurrentContent();
-      if (!this.placeholderBlock) return;
+      if (!this.hasPlaceholderBlock) return;
       const firstBlock = currentContent.getFirstBlock();
       const firstBlockKey = firstBlock.getKey();
       const selection = editorState.getSelection();
@@ -86,13 +88,13 @@ function PlaceholderPlugin() {
       const blockSize = blockMap.size;
       const isInCompositionMode = editorState.isInCompositionMode();
 
-      if (blockSize > 2 && this.placeholderBlock) {
+      if (blockSize > 2 && this.hasPlaceholderBlock) {
         const newBlockMap = contentState.getBlockMap().delete(firstBlockKey);
         const withoutFirstBlock = contentState.merge({
           blockMap: newBlockMap,
           selectionAfter: selection,
         });
-        this.placeholderBlock = null;
+        this.hasPlaceholderBlock = null;
         this.placeholderNode = null;
         hooks.setState.call(EditorState.push(editorState, withoutFirstBlock, 'remove-range'));
         return;
@@ -102,11 +104,12 @@ function PlaceholderPlugin() {
       if (blockSize === 2) {
         const secondBlock = contentState.getBlockAfter(firstBlockKey);
         // 证明
-        if (this.placeholderBlock && firstBlockKey === this.placeholderBlock.getKey()) {
+        if (this.hasPlaceholderBlock && firstBlockKey === this.placeholderBlock.getKey()) {
           // 两种情况，首先输入字符的时候，直接将block移除；还有就是当是IME input时同样需要将第一个block删除
           // `isInCompositionMode` 的设置可以参考`editOnCompositionStart.js`
           if (hasText(secondBlock) || isInCompositionMode) {
             // 参考`RichTextEditorUtil/onBackspace` function
+            console.log('delete--')
             const newBlockMap = contentState.getBlockMap().delete(firstBlockKey);
 
             // 1. 当在`isInCompositionMode`如果不设置`selectionAfter`的话，当确定
@@ -118,14 +121,12 @@ function PlaceholderPlugin() {
               blockMap: newBlockMap,
             });
             this.placeholderBlock = null;
-            this.placeholderNode = null;
+            this.hasPlaceholderBlock = false;
             const nextState = EditorState.push(
               editorState,
               withoutFirstBlock,
               'remove-range',
             );
-            console.log('console : ', nextState.getSelection(), withoutFirstBlock.getSelectionAfter(), selection)
-            // hooks.setState.call(nextState)
             // 主要是修复`isInCompositionMode`模式下，当输入结束时，需要将光标设置到光标最后所在的位置
             hooks.setState.call(EditorState.forceSelection(
               nextState,
@@ -158,7 +159,7 @@ function PlaceholderPlugin() {
       // 如果说没有内容的时候，会插入当前的内容
       if (!contentState.hasText()
         && placeholder
-        && !this.placeholderBlock
+        && !this.hasPlaceholderBlock
         && !isInCompositionMode
       ) {
         this.placeholder = placeholder;
@@ -167,17 +168,13 @@ function PlaceholderPlugin() {
           selection,
           placeholder,
         );
+        const newState = EditorState.push(editorState, newContent)
+        const newCurrentState = Modifier.splitBlock(newContent, newState.getSelection());
+        const nextState = EditorState.push(newState, newCurrentState, 'split-block');
 
-        this.placeholderBlock = firstBlock;
-        const newSelection = new SelectionState({
-          anchorKey: firstBlockKey,
-          anchorOffset: placeholder.length,
-          focusKey: firstBlockKey,
-          focusOffset: placeholder.length,
-          isBackward: false,
-        });
+        this.hasPlaceholderBlock = true
+        this.placeholderBlock = newCurrentState.getFirstBlock()
 
-        const next = Modifier.splitBlock(newContent, newSelection);
         const offsetKey = DraftOffsetKey.encode(firstBlockKey, 0, 0);
 
         // 不能够直接对DOM进行attribution的设置；当你输入中文的时候，会将你刚才所有的`attribution`
@@ -189,27 +186,14 @@ function PlaceholderPlugin() {
           this.placeholderNode.style.position = 'absolute';
         }
 
-        const newEditorState = EditorState.push(
-          editorState,
-          next,
-          'split-block',
-        );
-
-        const newCurrentContent = newEditorState.getCurrentContent();
-        const secondBlockKey = newCurrentContent.getKeyAfter(firstBlockKey);
-        const secondBlockHeadingSelection = new SelectionState({
-          anchorKey: secondBlockKey,
-          anchorOffset: 0,
-          focusKey: secondBlockKey,
-          focusOffset: 0,
-          isBackward: false,
-        });
-
-        // EditorState.forceSelection 返回的是一个光标放置在指定selection的`editorState`
-        hooks.setState.call(EditorState.forceSelection(
-          newEditorState,
-          secondBlockHeadingSelection,
-        ));
+        hooks.setState.call(nextState, editorState => {
+          // 为了用户在刚打开editor的时候，光标就能够处于激活状态
+          var currentSelection = editorState.getSelection();
+          const hasFocus = currentSelection.getHasFocus()
+          if (!hasFocus) {
+            editorRef.current.focus()
+          }
+        })
       }
     });
   };
