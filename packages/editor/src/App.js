@@ -6,6 +6,7 @@ import BlockStyleFnPlugin from './plugins/BlockStyleFnPlugin';
 import CustomStyleMapPlugin from './plugins/CustomStyleMapPlugin';
 import BlockRenderMapPlugin from './plugins/block-render-map-plugin';
 import StyleControlPlugin from './plugins/StyleControlPlugin'
+import DefaultHandleKeyCommandPlugin from './plugins/DefaultHandleKeyCommandPlugin'
 
 const App = () => {
   const plugins = [
@@ -14,6 +15,9 @@ const App = () => {
     new CustomStyleMapPlugin(),
     new BlockRenderMapPlugin(),
     new StyleControlPlugin(),
+
+    // 对于keyCommand的一个兜底行为
+    new DefaultHandleKeyCommandPlugin(),
   ];
 
   return (

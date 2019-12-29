@@ -81,30 +81,30 @@ function StyleControlPlugin() {
 
       if (!selection.isCollapsed()) return 'not-handled'
 
-      if (text) {
-        const charAtLast = block.getText()[blockSize - 1]
-        if (charAtLast === '\u200B') {
-          const newState = splitAtLastCharacterAndForwardSelection(editorState)
-
-          delete selectionWithNonWidthCharacter[endKey][blockSize - 1]
-          const afterBlock = newState.getCurrentContent().getBlockAfter(endKey)
-          const afterSelection = newState.getSelection()
-          const afterBlockKey = afterBlock.getKey()
-          if (!selectionWithNonWidthCharacter[afterBlockKey]) {
-            selectionWithNonWidthCharacter[afterBlockKey] = {}
-          }
-          const group = selectionWithNonWidthCharacter[afterBlockKey]
-          group[0] = afterSelection.merge({
-            anchorOffset: 0,
-            focusOffset: 0,
-          })
-
-          hooks.setState.call(newState)
-          return 'handled'
-        }
-      }
-
       if (command === 'split-block') {
+        if (text) {
+          const charAtLast = block.getText()[blockSize - 1]
+          if (charAtLast === '\u200B') {
+            const newState = splitAtLastCharacterAndForwardSelection(editorState)
+
+            delete selectionWithNonWidthCharacter[endKey][blockSize - 1]
+            const afterBlock = newState.getCurrentContent().getBlockAfter(endKey)
+            const afterSelection = newState.getSelection()
+            const afterBlockKey = afterBlock.getKey()
+            if (!selectionWithNonWidthCharacter[afterBlockKey]) {
+              selectionWithNonWidthCharacter[afterBlockKey] = {}
+            }
+            const group = selectionWithNonWidthCharacter[afterBlockKey]
+            group[0] = afterSelection.merge({
+              anchorOffset: 0,
+              focusOffset: 0,
+            })
+
+            hooks.setState.call(newState)
+            return 'handled'
+          }
+        }
+
         const currentStyle = block.getInlineStyleAt(blockSize - 1)
         if (currentStyle.size) {
           // Modifier.insertText其实是有`selection`的变化的
@@ -141,7 +141,6 @@ function StyleControlPlugin() {
       // return
       const selection = editorState.getSelection();
       const currentState = editorState.getCurrentContent();
-      const selectionBefore = currentState.getSelectionBefore()
       const isInCompositionMode = editorState.isInCompositionMode();
 
       if (selection.isCollapsed() && !isInCompositionMode) {
@@ -154,8 +153,20 @@ function StyleControlPlugin() {
           const newState = keys.reduce((es, key) => {
             const markerSelection = group[key]
             const content = es.getCurrentContent()
+            const block = content.getBlockForKey(markerSelection.getStartKey())
+            const blockText = block.getText()
             const markerSelectionPosition = markerSelection.getAnchorOffset()
             if (Math.abs(markerSelectionPosition - currentSelectionPosition) <= 1) return es
+
+            delete group[key];
+
+            // TODO：这里是一个比较粗糙的判断，如果说当前的位置还是一个空字符的话，那就处理，否则
+            // 就不处理；其实本身通过`selectionWithNonWidthCharacter`来进行记录其实都不是一个
+            // 合理的方案，会出现很多的不一致的情况，比如说在行首，触发了inlineStyle这个时候马上删除
+            // 你接下来输入的字符第一个会被删除掉。。。因为 selectionWithNonWidthCharacter还标记
+            // 着行首是一个空字符。。。
+            if (blockText[markerSelectionPosition] !== '\u200B') return
+
             const newContent = Modifier.removeRange(
               content,
               markerSelection.merge({
@@ -163,7 +174,6 @@ function StyleControlPlugin() {
               }),
               'backward',
             );
-            delete group[key];
 
             // 通过设置新的`selectionAfter`为了解决，当比如中文输入完以后，光标应该回到哪个位置；
             // 如果没有这个的设置的话，光标会被放置到刚刚输入中文开始的位置。
