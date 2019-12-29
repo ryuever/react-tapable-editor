@@ -109,7 +109,6 @@ function PlaceholderPlugin() {
           // `isInCompositionMode` 的设置可以参考`editOnCompositionStart.js`
           if (hasText(secondBlock) || isInCompositionMode) {
             // 参考`RichTextEditorUtil/onBackspace` function
-            console.log('delete--')
             const newBlockMap = contentState.getBlockMap().delete(firstBlockKey);
 
             // 1. 当在`isInCompositionMode`如果不设置`selectionAfter`的话，当确定

@@ -85,6 +85,20 @@ function StyleControlPlugin() {
         const charAtLast = block.getText()[blockSize - 1]
         if (charAtLast === '\u200B') {
           const newState = splitAtLastCharacterAndForwardSelection(editorState)
+
+          delete selectionWithNonWidthCharacter[endKey][blockSize - 1]
+          const afterBlock = newState.getCurrentContent().getBlockAfter(endKey)
+          const afterSelection = newState.getSelection()
+          const afterBlockKey = afterBlock.getKey()
+          if (!selectionWithNonWidthCharacter[afterBlockKey]) {
+            selectionWithNonWidthCharacter[afterBlockKey] = {}
+          }
+          const group = selectionWithNonWidthCharacter[afterBlockKey]
+          group[0] = afterSelection.merge({
+            anchorOffset: 0,
+            focusOffset: 0,
+          })
+
           hooks.setState.call(newState)
           return 'handled'
         }
@@ -92,7 +106,6 @@ function StyleControlPlugin() {
 
       if (command === 'split-block') {
         const currentStyle = block.getInlineStyleAt(blockSize - 1)
-        console.log('currentStyle : ',currentStyle)
         if (currentStyle.size) {
           // Modifier.insertText其实是有`selection`的变化的
           const nextContent = Modifier.insertText(
@@ -104,6 +117,20 @@ function StyleControlPlugin() {
           );
           const newEditorState = EditorState.push(editorState, nextContent)
           const newState = splitAtLastCharacterAndForwardSelection(newEditorState)
+
+          // 删除因为split造成的行头存在的`\u200B`字符
+          const afterBlock = newState.getCurrentContent().getBlockAfter(endKey)
+          const afterSelection = newState.getSelection()
+          const afterBlockKey = afterBlock.getKey()
+          if (!selectionWithNonWidthCharacter[afterBlockKey]) {
+            selectionWithNonWidthCharacter[afterBlockKey] = {}
+          }
+          const group = selectionWithNonWidthCharacter[afterBlockKey]
+          group[0] = afterSelection.merge({
+            anchorOffset: 0,
+            focusOffset: 0,
+          })
+
           hooks.setState.call(newState)
           return 'handled'
         }
@@ -128,11 +155,6 @@ function StyleControlPlugin() {
             const markerSelection = group[key]
             const content = es.getCurrentContent()
             const markerSelectionPosition = markerSelection.getAnchorOffset()
-            console.log('markerSelectionPosition : ',
-              selectionWithNonWidthCharacter,
-              markerSelectionPosition,
-              currentSelectionPosition
-            )
             if (Math.abs(markerSelectionPosition - currentSelectionPosition) <= 1) return es
             const newContent = Modifier.removeRange(
               content,
