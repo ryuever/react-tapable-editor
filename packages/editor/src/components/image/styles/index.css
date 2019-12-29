@@ -1,0 +1,10 @@
+.image-wrapper {
+  width: 100%;
+  display: flex;
+}
+
+.image {
+  width: 90%;
+  height: 90%;
+  margin: auto;
+}

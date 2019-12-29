@@ -43,6 +43,13 @@ class PluginEditor extends PureComponent {
       blockStyleFn: new SyncBailHook(['block']),
       handleKeyCommand: new SyncBailHook(['command', 'editorState']),
 
+      handleDroppedFiles: new SyncHook([
+        'editorState',
+        'dropSelection',
+        'files'
+      ]),
+      addImage: new SyncHook(['editorState', 'file']),
+
       blockRendererFn: new SyncBailHook(['contentBlock', 'editorState']),
       createPlaceholder: new SyncHook(['editorState', 'placeholder']),
 

@@ -7,6 +7,8 @@ import CustomStyleMapPlugin from './plugins/CustomStyleMapPlugin';
 import BlockRenderMapPlugin from './plugins/block-render-map-plugin';
 import StyleControlPlugin from './plugins/StyleControlPlugin'
 import DefaultHandleKeyCommandPlugin from './plugins/DefaultHandleKeyCommandPlugin'
+import HandleDroppedFilesPlugin from './plugins/HandleDroppedFilesPlugin'
+import AddImagePlugin from './plugins/AddImagePlugin'
 
 const App = () => {
   const plugins = [
@@ -15,6 +17,9 @@ const App = () => {
     new CustomStyleMapPlugin(),
     new BlockRenderMapPlugin(),
     new StyleControlPlugin(),
+
+    new AddImagePlugin(),
+    new HandleDroppedFilesPlugin(),
 
     // 对于keyCommand的一个兜底行为
     new DefaultHandleKeyCommandPlugin(),

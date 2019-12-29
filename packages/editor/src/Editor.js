@@ -49,6 +49,10 @@ const NewEditor = (props) => {
     hooks.blockRendererFn.call(contentBlock, editorState)
   ));
 
+  const handleDroppedFiles = useCallback((dropSelection, files) => {
+    hooks.handleDroppedFiles.call(editorState, dropSelection, files)
+  }, [editorState])
+
   return (
     <div className="miuffy-editor-root">
       <StyleControls editorState={editorState} />
@@ -61,6 +65,7 @@ const NewEditor = (props) => {
           blockRendererFn={handleBlockRender}
           onChange={onChange}
           handleKeyCommand={handleKeyCommand}
+          handleDroppedFiles={handleDroppedFiles}
           ref={forwardRef}
         />
       </div>
