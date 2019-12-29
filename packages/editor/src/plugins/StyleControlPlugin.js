@@ -2,6 +2,7 @@
 // 刚刚触发的`inlineStyle`变化并不会作用到接下来的输入的问题。目前的处理方式就是在
 // toggle inline style以及换行的时候，默认添加一个`\u200B`字符
 import { Modifier, EditorState, SelectionState } from 'draft-js';
+import { splitAtLastCharacterAndForwardSelection } from '../utils/editorState'
 
 function StyleControlPlugin() {
   const selectionWithNonWidthCharacter = {}
@@ -67,38 +68,46 @@ function StyleControlPlugin() {
 
     // 存在的问题，新开一个editor，然后只是敲入几行空格，最后再`backspace`删除直到第一行的时候
     // 切换成中文输入法然后输入东西会报错；
+    // 1. 当进行换行的时候，需要判断最后一个字符是否是`\u200B`；如果是的话，在该字符的前面进行中断；
+    // 2. 如果不是，就要看最后一个字符是否有inlineStyle，如果有就插入一个新的`\u200B`；没有就不做
+    // 处理
     hooks.handleKeyCommand.tap('StyleControlPlugin', (command, editorState) => {
-      // if (command === 'split-block') {
-      //   const selection = editorState.getSelection();
-      //   const currentContent = editorState.getCurrentContent();
-      //   const endKey = selection.getEndKey();
-      //   const block = currentContent.getBlockForKey(endKey);
-      //   const size = block.getLength();
-      //   const focusOffset = selection.getFocusOffset();
+      const selection = editorState.getSelection()
+      const currentContent = editorState.getCurrentContent();
+      const endKey = selection.getEndKey();
+      const block = currentContent.getBlockForKey(endKey);
+      const blockSize = block.getLength();
+      const text = block.getText()
 
-      //   if (focusOffset === size) {
-      //     const inlineStyle = editorState.getCurrentInlineStyle();
-      //     const endOffset = selection.getFocusOffset();
-      //     const entityKey = block.getEntityAt(endOffset);
+      if (!selection.isCollapsed()) return 'not-handled'
 
-      //     const nextContent = Modifier.replaceText(
-      //       editorState.getCurrentContent(),
-      //       selection,
-      //       '\u200B',
-      //       inlineStyle,
-      //       entityKey,
-      //     );
+      if (text) {
+        const charAtLast = block.getText()[blockSize - 1]
+        if (charAtLast === '\u200B') {
+          const newState = splitAtLastCharacterAndForwardSelection(editorState)
+          hooks.setState.call(newState)
+          return 'handled'
+        }
+      }
 
-      //     const nextState = EditorState.push(editorState, Modifier.splitBlock(
-      //       nextContent,
-      //       selection,
-      //     ), 'split-block');
-
-      //     hooks.setState.call(nextState);
-
-      //     return true;
-      //   }
-      // }
+      if (command === 'split-block') {
+        const currentStyle = block.getInlineStyleAt(blockSize - 1)
+        console.log('currentStyle : ',currentStyle)
+        if (currentStyle.size) {
+          // Modifier.insertText其实是有`selection`的变化的
+          const nextContent = Modifier.insertText(
+            currentContent,
+            selection,
+            '\u200B',
+            currentStyle,
+            null,
+          );
+          const newEditorState = EditorState.push(editorState, nextContent)
+          const newState = splitAtLastCharacterAndForwardSelection(newEditorState)
+          hooks.setState.call(newState)
+          return 'handled'
+        }
+      }
     });
 
     hooks.didUpdate.tap('RemoveLastNonWidthCharacterPlugin', (editorState) => {
