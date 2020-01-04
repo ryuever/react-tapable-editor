@@ -1,5 +1,9 @@
 import { AtomicBlockUtils } from 'draft-js'
+import Focus from '../decorators/Focus'
 import Image from '../components/image'
+import isBlockFocused from '../utils/isBlockFocused'
+
+const DecoratedImage = Focus(Image)
 
 function AddImagePlugin() {
   this.apply = (getEditor) => {
@@ -32,9 +36,14 @@ function AddImagePlugin() {
         if (!entity) return null;
         const type = contentState.getEntity(entity).getType();
         if (type === 'IMAGE') {
+          console.log('selection : ', editorState.getSelection())
           return {
-            component: Image,
+            component: DecoratedImage,
             editable: false,
+            props: {
+              getEditor,
+              isFocused: isBlockFocused(editorState, contentBlock),
+            }
           };
         }
       }

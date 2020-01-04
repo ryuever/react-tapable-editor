@@ -22,6 +22,10 @@ const NewEditor = (props) => {
   } = props;
   const { hooks, editorState } = getEditor();
   const didUpdate = useRef(false);
+  const selection = editorState.getSelection()
+
+  const hasFocus = selection.getHasFocus()
+  const prevHasFocus = useRef(hasFocus)
 
   useEffect(() => {
     if (didUpdate.current) {
@@ -34,6 +38,17 @@ const NewEditor = (props) => {
     hooks.updatePlaceholder.call(editorState, placeholder);
     didUpdate.current = true;
   }, []);
+
+  useEffect(() => {
+    const { editorState } = getEditor();
+
+    if (prevHasFocus.current && !hasFocus) {
+      console.log('trigger blur')
+      hooks.onSelectionBlur.call(editorState)
+    }
+
+    prevHasFocus.current = hasFocus
+  }, [hasFocus])
 
   const onChange = useCallback((es) => {
     hooks.onChange.call(es);

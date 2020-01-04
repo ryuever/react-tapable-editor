@@ -13,6 +13,7 @@ import Context from './Context'
 const { Provider } = Context
 
 import Editor from './Editor'
+import decorateComposer from './decoratorComposer'
 
 class PluginEditor extends PureComponent {
   constructor(props) {
@@ -62,6 +63,8 @@ class PluginEditor extends PureComponent {
       compositeDecorator: new SyncWaterfallHook(['decorators']),
 
       keyBindingFn: new SyncBailHook(['e']),
+
+      onSelectionBlur: new SyncHook(['editorState']),
     }
 
     this.editorRef = createRef()
@@ -72,6 +75,8 @@ class PluginEditor extends PureComponent {
     this.plugins.forEach(plugin => {
       plugin.apply(this.getEditor)
     })
+
+    decorateComposer.getEditor = this.getEditor
 
     this.init()
   }
