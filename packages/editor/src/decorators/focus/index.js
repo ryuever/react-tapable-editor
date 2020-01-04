@@ -1,5 +1,6 @@
 import React, { useCallback, useRef, useState, useEffect } from 'react'
-import setSelectionToBlock from '../utils/setSelectionToBlock'
+import setSelectionToBlock from '../../utils/setSelectionToBlock'
+import './styles.css'
 
 const Focus = WrappedComponent => props => {
   const { blockProps, block } = props
@@ -75,8 +76,13 @@ const Focus = WrappedComponent => props => {
     hooks.setState.call(newEditorState)
   }, [block, editorState])
 
+  const className = focused ? 'focused_atomic_active' : 'focused_atomic'
+
   return (
-    <div onClick={handleClick} style={focused ? focusStyle.current : {}}>
+    <div
+      onClick={handleClick}
+      className={className}
+    >
       <WrappedComponent {...props} />
     </div>
   )
