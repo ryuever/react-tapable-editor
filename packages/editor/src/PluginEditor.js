@@ -64,7 +64,7 @@ class PluginEditor extends PureComponent {
 
       keyBindingFn: new SyncBailHook(['e']),
 
-      onSelectionBlur: new SyncHook(['editorState']),
+      onBlockSelectionChange: new SyncHook(['editorState', 'blockKey', 'newBlockKey']),
     }
 
     this.editorRef = createRef()

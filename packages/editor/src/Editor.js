@@ -6,6 +6,8 @@ import React, {
 import {
   Editor,
 } from 'draft-js';
+import getContentEditableContainer from 'draft-js/lib/getContentEditableContainer'
+import getDraftEditorSelection from 'draft-js/lib/getDraftEditorSelection'
 import StyleControls from './components/style-controls';
 import Title from './components/title';
 
@@ -23,9 +25,15 @@ const NewEditor = (props) => {
   const { hooks, editorState } = getEditor();
   const didUpdate = useRef(false);
   const selection = editorState.getSelection()
-
+  const isCollapsed = selection.isCollapsed()
+  const startKey = selection.getStartKey()
   const hasFocus = selection.getHasFocus()
-  const prevHasFocus = useRef(hasFocus)
+  const isCollapsedRef= useRef(isCollapsed)
+  const startKeyRef = useRef(startKey)
+  const hasFocusRef = useRef(hasFocus)
+
+  // const prevStartKey = useRef(startKey)
+
 
   useEffect(() => {
     if (didUpdate.current) {
@@ -40,17 +48,74 @@ const NewEditor = (props) => {
   }, []);
 
   useEffect(() => {
-    const { editorState } = getEditor();
-
-    if (prevHasFocus.current && !hasFocus) {
-      console.log('trigger blur')
-      hooks.onSelectionBlur.call(editorState)
+    const payload = {
+      type: '',
+      newValue: {
+        isCollapsed,
+        startKey,
+        hasFocus,
+      },
+      oldValue: {
+        isCollapsed: isCollapsedRef.current,
+        startKey: startKeyRef.current,
+        hasFocus: hasFocusRef.current,
+      },
     }
 
-    prevHasFocus.current = hasFocus
-  }, [hasFocus])
+    if (isCollapsed !== isCollapsedRef.current) {
+      payload.type = 'isCollapsed-change'
+    } else if (isCollapsed) {
+      if (startKeyRef.current !== startKey || hasFocusRef.current !== hasFocus) {
+        payload.type = 'start-key-change'
+      }
+    }
+
+    if (payload !== '') {
+      hooks.onBlockSelectionChange.call(editorState, payload)
+    }
+
+    isCollapsedRef.current = isCollapsed
+    startKeyRef.current = startKey
+    hasFocusRef.current = hasFocus
+  }, [isCollapsed, startKey, hasFocus])
 
   const onChange = useCallback((es) => {
+    // console.log('getLastChangeType() : ', es.getLastChangeType())
+
+    // const selection = es.getSelection()
+    // if (willCheckSelection.current) {
+    //   if (forwardRef.current._blockSelectEvents || forwardRef.current._latestEditorState !== editorState) {
+    //     console.log('xxxx')
+    //   } else {
+    //     console.log('next --')
+    //     var documentSelection = getDraftEditorSelection(editorState, getContentEditableContainer(forwardRef.current));
+    //     console.log('forwardRef.current : ', forwardRef.current)
+    //     var updatedSelectionState = documentSelection.selectionState;
+    //     console.log('update selection : ', updatedSelectionState)
+    //   }
+
+
+    //   // willCheckSelection.current = false
+    // }
+
+    // console.log('willCheckSelection.current ', willCheckSelection.current)
+
+    // if (willCheckSelection.current) {
+    //   const currentStartKey = selection.getStartKey()
+    //   const blurKey = startKeyAfterBlur.current
+    //   startKeyAfterBlur.current = undefined
+    //   willCheckSelection.current = undefined
+
+    //   console.log('current : ', selection.isCollapsed(), blurKey, currentStartKey)
+
+    //   if (selection.isCollapsed()) {
+    //     if (blurKey && currentStartKey && blurKey !== currentStartKey) {
+    //       return
+    //     }
+    //   }
+    // }
+
+    // console.log('on change : ', es, es.getSelection())
     hooks.onChange.call(es);
   }, []);
 
@@ -60,13 +125,27 @@ const NewEditor = (props) => {
 
   const getBlockStyle = useCallback((block) => hooks.blockStyleFn.call(block));
 
-  const handleBlockRender = useCallback((contentBlock) => (
-    hooks.blockRendererFn.call(contentBlock, editorState)
-  ));
+  const handleBlockRender = useCallback((contentBlock) => {
+    const { editorState } = getEditor()
+    return hooks.blockRendererFn.call(contentBlock, editorState)
+  });
 
   const handleDroppedFiles = useCallback((dropSelection, files) => {
     hooks.handleDroppedFiles.call(editorState, dropSelection, files)
   }, [editorState])
+
+  // const handleBlur = useCallback(() => {
+  //   const { editorState } = getEditor();
+  //   const selection = editorState.getSelection()
+  //   const startKey = selection.getStartKey()
+  //   if (!selection.isCollapsed()) return
+  //   console.log('set : ', startKey)
+  //   startKeyAfterBlur.current = startKey
+  // }, [])
+
+  // const handleFocus = useCallback(() => {
+  //   willCheckSelection.current = true
+  // }, [])
 
   return (
     <div className="miuffy-editor-root">
@@ -82,6 +161,8 @@ const NewEditor = (props) => {
           handleKeyCommand={handleKeyCommand}
           handleDroppedFiles={handleDroppedFiles}
           ref={forwardRef}
+          // onBlur={handleBlur}
+          // onFocus={handleFocus}
         />
       </div>
     </div>
