@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 import './styles.css'
 import ImageAlignCenter from '../button/ImageAlignCenter'
 import ImageAlignLeftFillContent from '../button/ImageAlignLeftFillContent'
@@ -18,47 +18,72 @@ const ActionButton = props => {
   )
 }
 
-const ImageAlignCenterButton = props => {
+const ImageAlignCenterButton = ({ activeKey, setActiveKey, active }) => {
+  const handleClick = useCallback(() => setActiveKey(activeKey))
   return (
-    <ActionButton>
-      <ImageAlignCenter />
+    <ActionButton onClick={handleClick}>
+      <ImageAlignCenter active={active}/>
     </ActionButton>
   )
 }
 
-const ImageAlignLeftButton = props => {
+const ImageAlignLeftButton = ({ activeKey, setActiveKey, active }) => {
+  const handleClick = useCallback(() => setActiveKey(activeKey))
+
   return (
-    <ActionButton>
-      <ImageAlignLeft />
+    <ActionButton onClick={handleClick}>
+      <ImageAlignLeft active={active} />
     </ActionButton>
   )
 }
 
-const ImageAlignLeftFillContentButton = props => {
+const ImageAlignLeftFillContentButton = ({ activeKey, setActiveKey, active }) => {
+  const handleClick = useCallback(() => setActiveKey(activeKey))
+
   return (
-    <ActionButton>
-      <ImageAlignLeftFillContent />
+    <ActionButton onClick={handleClick}>
+      <ImageAlignLeftFillContent active={active} />
     </ActionButton>
   )
 }
 
-const ImageAlignRightFillContentButton = props => {
+const ImageAlignRightFillContentButton = ({ activeKey, setActiveKey, active }) => {
+  const handleClick = useCallback(() => setActiveKey(activeKey))
+
   return (
-    <ActionButton>
-      <ImageAlignRightFillContent />
+    <ActionButton onClick={handleClick}>
+      <ImageAlignRightFillContent active={active} />
     </ActionButton>
   )
 }
 
 const Toolbar = props => {
+  const [activeKey, setActiveKey] = useState()
+
   return (
     <div className="toolbar">
       <div className="toolbar-inner">
         <div className="action-group">
-          <ImageAlignLeftButton />
-          <ImageAlignLeftFillContentButton />
-          <ImageAlignCenterButton />
-          <ImageAlignRightFillContentButton />
+          <ImageAlignLeftButton
+            activeKey="left"
+            active={'left' === activeKey}
+            setActiveKey={setActiveKey}
+          />
+          <ImageAlignLeftFillContentButton
+            activeKey="leftFill"
+            active={'leftFill' === activeKey}
+            setActiveKey={setActiveKey}
+          />
+          <ImageAlignCenterButton
+            activeKey="center"
+            active={'center' === activeKey}
+            setActiveKey={setActiveKey}
+          />
+          <ImageAlignRightFillContentButton
+            activeKey="rightFill"
+            active={'rightFill' === activeKey}
+            setActiveKey={setActiveKey}
+          />
         </div>
       </div>
     </div>
