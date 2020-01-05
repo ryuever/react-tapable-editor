@@ -9,6 +9,7 @@ import StyleControlPlugin from './plugins/StyleControlPlugin'
 import DefaultHandleKeyCommandPlugin from './plugins/DefaultHandleKeyCommandPlugin'
 import HandleDroppedFilesPlugin from './plugins/HandleDroppedFilesPlugin'
 import AddImagePlugin from './plugins/AddImagePlugin'
+import AlignmentPlugin from './plugins/AlignmentPlugin'
 
 const App = () => {
   const plugins = [
@@ -23,6 +24,8 @@ const App = () => {
 
     // 对于keyCommand的一个兜底行为
     new DefaultHandleKeyCommandPlugin(),
+
+    new AlignmentPlugin(),
   ];
 
   return (

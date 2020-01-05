@@ -1,9 +1,7 @@
 import { AtomicBlockUtils } from 'draft-js'
 import focus from '../decorators/focus'
 import Image from '../components/image'
-import isBlockFocused from '../utils/isBlockFocused'
 
-// const DecoratedImage = Image
 const DecoratedImage = focus(Image)
 
 function AddImagePlugin() {

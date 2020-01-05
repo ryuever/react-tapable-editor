@@ -1,0 +1,57 @@
+.toolbar {
+  position: absolute;
+  top: 200px;
+  left: 200px;
+}
+
+.toolbar-inner {
+  position: relative;
+  background-image: linear-gradient(to bottom,rgba(49,49,47,.99),#262625);
+  background-repeat: repeat-x;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  padding: 0 10px;
+  visibility: visible;
+}
+
+.action-group {
+  height: 44px;
+  display: flex;
+  flex-direction: row;
+}
+
+.action-icon {
+  width: 25px;
+  height: 25px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-12.5px) translateY(-12.5px)
+}
+
+.icon-wrapper {
+  display: flex;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+}
+
+.icon-wrapper:hover {
+  cursor: pointer;
+  background-color: rgba(238, 238, 238, 0.1);
+}
+
+.svg-icon {
+  fill: #fff;
+  width: 25px;
+  height: 25px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-12.5px) translateY(-12.5px)
+}
+
+.svg-icon:hover {
+  fill: #34e79a;
+}

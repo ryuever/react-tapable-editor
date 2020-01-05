@@ -10,6 +10,7 @@ import getContentEditableContainer from 'draft-js/lib/getContentEditableContaine
 import getDraftEditorSelection from 'draft-js/lib/getDraftEditorSelection'
 import StyleControls from './components/style-controls';
 import Title from './components/title';
+import Toolbar from './components/toolbar'
 
 import './style.css';
 // https://draftjs.org/docs/advanced-topics-issues-and-pitfalls.html#missing-draftcss
@@ -31,9 +32,6 @@ const NewEditor = (props) => {
   const isCollapsedRef= useRef(isCollapsed)
   const startKeyRef = useRef(startKey)
   const hasFocusRef = useRef(hasFocus)
-
-  // const prevStartKey = useRef(startKey)
-
 
   useEffect(() => {
     if (didUpdate.current) {
@@ -165,6 +163,8 @@ const NewEditor = (props) => {
           // onFocus={handleFocus}
         />
       </div>
+
+      <Toolbar />
     </div>
   );
 };

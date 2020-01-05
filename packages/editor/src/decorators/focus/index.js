@@ -12,10 +12,6 @@ const Focus = WrappedComponent => props => {
   const currentBlockKey = block.getKey()
   const payloadRef = useRef()
 
-  const focusStyle = useRef({
-    boxShadow: '0 0 0 3px #03a87c',
-  })
-
   useEffect(() => {
     isMounted.current = true
     return () => isMounted.current = false
@@ -79,10 +75,7 @@ const Focus = WrappedComponent => props => {
   const className = focused ? 'focused_atomic_active' : 'focused_atomic'
 
   return (
-    <div
-      onClick={handleClick}
-      className={className}
-    >
+    <div onClick={handleClick} className={className}>
       <WrappedComponent {...props} />
     </div>
   )
