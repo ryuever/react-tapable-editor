@@ -29,9 +29,9 @@ const Toolbar = props => {
   const [activeKey, setActiveKey] = useState()
 
   return (
-    <div className="toolbar">
-      <div className="toolbar-inner">
-        <div className="action-group">
+    <div className="image-toolbar">
+      <div className="image-toolbar-inner">
+        <div className="image-toolbar-action-group">
           <ImageAlignLeftButton
             activeKey="left"
             active={'left' === activeKey}

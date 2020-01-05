@@ -10,7 +10,8 @@ import getContentEditableContainer from 'draft-js/lib/getContentEditableContaine
 import getDraftEditorSelection from 'draft-js/lib/getDraftEditorSelection'
 import StyleControls from './components/style-controls';
 import Title from './components/title';
-import Toolbar from './components/toolbar'
+import ImageToolbar from './components/image-toolbar'
+import InlineToolbar from './components/inline-toolbar'
 
 import './style.css';
 // https://draftjs.org/docs/advanced-topics-issues-and-pitfalls.html#missing-draftcss
@@ -164,7 +165,8 @@ const NewEditor = (props) => {
         />
       </div>
 
-      <Toolbar />
+      <ImageToolbar />
+      <InlineToolbar />
     </div>
   );
 };
