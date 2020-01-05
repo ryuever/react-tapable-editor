@@ -1,5 +1,6 @@
 import React from 'react'
 import withFillColor from './utils/withFillColor'
+import withAction from './utils/withAction'
 
 const ImageFillWidth = ({ fill }) => {
   return (
@@ -9,4 +10,4 @@ const ImageFillWidth = ({ fill }) => {
   )
 }
 
-export default withFillColor(ImageFillWidth)
+export default withFillColor(withAction(ImageFillWidth))

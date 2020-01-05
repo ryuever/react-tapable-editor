@@ -5,56 +5,24 @@ import ImageAlignLeftFillContent from '../button/ImageAlignLeftFillContent'
 import ImageAlignRightFillContent from '../button/ImageAlignRightFillContent'
 import ImageAlignLeft from '../button/ImageAlignLeft'
 
-const ActionButton = props => {
-  const { onClick, children } = props
-  const handleClick = useCallback(() => {
-    if (typeof onClick === 'function') onClick()
-  })
-
-  return (
-    <span className="icon-wrapper" onClick={handleClick}>
-      {children}
-    </span>
-  )
-}
-
 const ImageAlignCenterButton = ({ activeKey, setActiveKey, active }) => {
   const handleClick = useCallback(() => setActiveKey(activeKey))
-  return (
-    <ActionButton onClick={handleClick}>
-      <ImageAlignCenter active={active}/>
-    </ActionButton>
-  )
+  return <ImageAlignCenter active={active} onClick={handleClick}/>
 }
 
 const ImageAlignLeftButton = ({ activeKey, setActiveKey, active }) => {
   const handleClick = useCallback(() => setActiveKey(activeKey))
-
-  return (
-    <ActionButton onClick={handleClick}>
-      <ImageAlignLeft active={active} />
-    </ActionButton>
-  )
+  return <ImageAlignLeft active={active} onClick={handleClick} />
 }
 
 const ImageAlignLeftFillContentButton = ({ activeKey, setActiveKey, active }) => {
   const handleClick = useCallback(() => setActiveKey(activeKey))
-
-  return (
-    <ActionButton onClick={handleClick}>
-      <ImageAlignLeftFillContent active={active} />
-    </ActionButton>
-  )
+  return <ImageAlignLeftFillContent active={active} onClick={handleClick} />
 }
 
 const ImageAlignRightFillContentButton = ({ activeKey, setActiveKey, active }) => {
   const handleClick = useCallback(() => setActiveKey(activeKey))
-
-  return (
-    <ActionButton onClick={handleClick}>
-      <ImageAlignRightFillContent active={active} />
-    </ActionButton>
-  )
+  return <ImageAlignRightFillContent active={active} onClick={handleClick} />
 }
 
 const Toolbar = props => {

@@ -1,5 +1,6 @@
 import React from 'react'
 import withFillColor from './utils/withFillColor'
+import withAction from './utils/withAction'
 
 const Link = ({ fill }) => {
   return (
@@ -9,4 +10,4 @@ const Link = ({ fill }) => {
   )
 }
 
-export default withFillColor(Link)
+export default withFillColor(withAction(Link))

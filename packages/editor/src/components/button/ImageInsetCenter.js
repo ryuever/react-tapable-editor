@@ -1,5 +1,6 @@
 import React from 'react'
 import withFillColor from './utils/withFillColor'
+import withAction from './utils/withAction'
 
 const ImageInsetCenter = ({ fill }) => {
   return (
@@ -9,4 +10,4 @@ const ImageInsetCenter = ({ fill }) => {
   )
 }
 
-export default withFillColor(ImageInsetCenter)
+export default withFillColor(withAction(ImageInsetCenter))

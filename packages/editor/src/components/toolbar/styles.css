@@ -2,6 +2,7 @@
   position: absolute;
   top: 200px;
   left: 200px;
+  z-index: 1;
 }
 
 .toolbar-inner {
@@ -18,40 +19,4 @@
   height: 44px;
   display: flex;
   flex-direction: row;
-}
-
-.action-icon {
-  width: 25px;
-  height: 25px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translateX(-12.5px) translateY(-12.5px)
-}
-
-.icon-wrapper {
-  display: flex;
-  height: 44px;
-  align-items: center;
-  justify-content: center;
-  width: 35px;
-}
-
-.icon-wrapper:hover {
-  cursor: pointer;
-  background-color: rgba(238, 238, 238, 0.1);
-}
-
-.svg-icon {
-  fill: #fff;
-  width: 25px;
-  height: 25px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translateX(-12.5px) translateY(-12.5px)
-}
-
-.svg-icon:hover {
-  fill: #34e79a;
 }

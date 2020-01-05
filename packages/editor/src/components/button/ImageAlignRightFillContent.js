@@ -1,5 +1,6 @@
 import React from 'react'
 import withFillColor from './utils/withFillColor'
+import withAction from './utils/withAction'
 
 const ImageAlignRightFillContent = ({ fill }) => {
   return (
@@ -10,4 +11,4 @@ const ImageAlignRightFillContent = ({ fill }) => {
   )
 }
 
-export default withFillColor(ImageAlignRightFillContent)
+export default withFillColor(withAction(ImageAlignRightFillContent))

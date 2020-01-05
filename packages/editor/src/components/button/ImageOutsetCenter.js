@@ -1,5 +1,6 @@
 import React from 'react'
 import withFillColor from './utils/withFillColor'
+import withAction from './utils/withAction'
 
 const ImageOutsetCenter = ({ fill }) => {
   return (
@@ -9,4 +10,4 @@ const ImageOutsetCenter = ({ fill }) => {
   )
 }
 
-export default withFillColor(mageOutsetCenter)
+export default withFillColor(withAction(mageOutsetCenter))

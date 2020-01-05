@@ -1,5 +1,6 @@
 import React from 'react'
 import withFillColor from './utils/withFillColor'
+import withAction from './utils/withAction'
 
 const Blockquote = ({ fill }) => {
   return (
@@ -10,4 +11,4 @@ const Blockquote = ({ fill }) => {
   )
 }
 
-export default withFillColor(Blockquote)
+export default withFillColor(withAction(Blockquote))

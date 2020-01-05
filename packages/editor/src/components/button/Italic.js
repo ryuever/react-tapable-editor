@@ -1,5 +1,6 @@
 import React from 'react'
 import withFillColor from './utils/withFillColor'
+import withAction from './utils/withAction'
 
 const Italic = ({ fill }) => {
   return (
@@ -9,4 +10,4 @@ const Italic = ({ fill }) => {
   )
 }
 
-export default withFillColor(Italic)
+export default withFillColor(withAction(Italic))
