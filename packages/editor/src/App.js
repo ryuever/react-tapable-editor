@@ -10,6 +10,7 @@ import DefaultHandleKeyCommandPlugin from './plugins/DefaultHandleKeyCommandPlug
 import HandleDroppedFilesPlugin from './plugins/HandleDroppedFilesPlugin'
 import AddImagePlugin from './plugins/AddImagePlugin'
 import AlignmentPlugin from './plugins/AlignmentPlugin'
+import InlineToolbarPlugin from './plugins/InlineToolbarPlugin'
 
 const App = () => {
   const plugins = [
@@ -26,6 +27,8 @@ const App = () => {
     new DefaultHandleKeyCommandPlugin(),
 
     new AlignmentPlugin(),
+
+    new InlineToolbarPlugin(),
   ];
 
   return (

@@ -1,5 +1,7 @@
 .image-toolbar {
   position: absolute;
+  display: none;
+  visibility: hidden;
   z-index: 1;
 }
 
@@ -17,4 +19,17 @@
   height: 44px;
   display: flex;
   flex-direction: row;
+}
+
+.arrow-down {
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid #262625;
+
+  position: absolute;
+  left: 50%;
+  bottom: -10px;
+  transform: translateX(-10px);
 }

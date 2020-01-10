@@ -26,10 +26,11 @@ const ImageAlignRightFillContentButton = ({ activeKey, setActiveKey, active }) =
 }
 
 const Toolbar = props => {
+  const { forwardRef } = props
   const [activeKey, setActiveKey] = useState()
 
   return (
-    <div className="image-toolbar">
+    <div className="image-toolbar" ref={forwardRef}>
       <div className="image-toolbar-inner">
         <div className="image-toolbar-action-group">
           <ImageAlignLeftButton
@@ -54,6 +55,7 @@ const Toolbar = props => {
           />
         </div>
       </div>
+      <div className="arrow-down" />
     </div>
   )
 }

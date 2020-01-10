@@ -68,6 +68,8 @@ class PluginEditor extends PureComponent {
     }
 
     this.editorRef = createRef()
+    this.inlineToolbarRef = createRef()
+    this.imageToolbarRef = createRef()
     this.state = {
       editorState: EditorState.createEmpty()
     }
@@ -152,6 +154,8 @@ class PluginEditor extends PureComponent {
       hooks: this.hooks,
       editorState: this.state.editorState,
       editorRef: this.editorRef,
+      inlineToolbarRef: this.inlineToolbarRef,
+      imageToolbarRef: this.imageToolbarRef,
     }
   }
 
@@ -168,6 +172,8 @@ class PluginEditor extends PureComponent {
           {...rest}
           blockRenderMap={this.blockRenderMap}
           ref={this.editorRef}
+          imageRef={this.imageToolbarRef}
+          inlineRef={this.inlineToolbarRef}
         />
       </Provider>
     )

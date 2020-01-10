@@ -74,12 +74,13 @@ const BulletedListButton = ({ activeKey, setActiveKey, active }) => {
 }
 
 const Toolbar = props => {
+  const { forwardRef } = props
   const [activeKey, setActiveKey] = useState()
 
   return (
-    <div className="image-toolbar">
-      <div className="image-toolbar-inner">
-        <div className="image-toolbar-action-group">
+    <div className="inline-toolbar" ref={forwardRef}>
+      <div className="inline-toolbar-inner">
+        <div className="inline-toolbar-action-group">
           <H1Button
             activeKey="h1"
             active={'h1' === activeKey}
@@ -153,6 +154,8 @@ const Toolbar = props => {
           />
         </div>
       </div>
+
+      <div className="arrow-down" />
     </div>
   )
 }

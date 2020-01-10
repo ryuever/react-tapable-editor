@@ -23,6 +23,8 @@ const NewEditor = (props) => {
     getEditor,
     forwardRef,
     placeholder,
+    imageRef,
+    inlineRef,
   } = props;
   const { hooks, editorState } = getEditor();
   const didUpdate = useRef(false);
@@ -165,8 +167,8 @@ const NewEditor = (props) => {
         />
       </div>
 
-      <ImageToolbar />
-      <InlineToolbar />
+      <ImageToolbar forwardRef={imageRef} />
+      <InlineToolbar forwardRef={inlineRef} />
     </div>
   );
 };

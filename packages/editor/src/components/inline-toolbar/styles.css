@@ -1,11 +1,11 @@
-.image-toolbar {
+.inline-toolbar {
   position: absolute;
+  display: none;
+  visibility: hidden;
   z-index: 1;
-  top: 200px;
-  left: 200px;
 }
 
-.image-toolbar-inner {
+.inline-toolbar-inner {
   position: relative;
   background-image: linear-gradient(to bottom,rgba(49,49,47,.99),#262625);
   background-repeat: repeat-x;
@@ -15,7 +15,7 @@
   visibility: visible;
 }
 
-.image-toolbar-action-group {
+.inline-toolbar-action-group {
   height: 44px;
   display: flex;
   flex-direction: row;
@@ -26,4 +26,17 @@
   height: 30px;
   margin: 7px 2px;
   background-color: #666;
+}
+
+.arrow-down {
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid #262625;
+
+  position: absolute;
+  left: 50%;
+  bottom: -10px;
+  transform: translateX(-10px);
 }
