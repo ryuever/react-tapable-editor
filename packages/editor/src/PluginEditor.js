@@ -64,7 +64,14 @@ class PluginEditor extends PureComponent {
 
       keyBindingFn: new SyncBailHook(['e']),
 
-      onBlockSelectionChange: new SyncHook(['editorState', 'blockKey', 'newBlockKey']),
+      syncSelectionChange: new SyncHook(['editorState']),
+      // 第一次打开editor时，因为prev值都是undefined这个时候可以认为是初始化时的变化
+      selectionInitChange: new SyncHook(['editorState', 'payload']),
+      selectionCollapsedChange: new SyncHook(['editorState', 'payload']),
+      selectionFocusChange: new SyncHook(['editorState', 'payload']),
+      selectionMoveInnerBlock: new SyncHook(['editorState', 'payload']),
+      selectionMoveOuterBlock: new SyncHook(['editorState', 'payload']),
+      selectionRangeChange: new SyncHook(['editorState', 'payload']),
     }
 
     this.editorRef = createRef()

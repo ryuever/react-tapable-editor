@@ -3,6 +3,7 @@ import PluginEditor from './PluginEditor';
 
 import PlaceholderPlugin from './plugins/PlaceholderPlugin';
 import BlockStyleFnPlugin from './plugins/BlockStyleFnPlugin';
+import SelectionChangePlugin from './plugins/SelectionChangePlugin'
 import CustomStyleMapPlugin from './plugins/CustomStyleMapPlugin';
 import BlockRenderMapPlugin from './plugins/block-render-map-plugin';
 import StyleControlPlugin from './plugins/StyleControlPlugin'
@@ -16,6 +17,7 @@ const App = () => {
   const plugins = [
     new PlaceholderPlugin(),
     new BlockStyleFnPlugin(),
+    new SelectionChangePlugin(),
     new CustomStyleMapPlugin(),
     new BlockRenderMapPlugin(),
     new StyleControlPlugin(),
