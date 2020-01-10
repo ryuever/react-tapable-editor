@@ -5,6 +5,7 @@ import React, {
 } from 'react';
 import {
   Editor,
+  EditorState,
 } from 'draft-js';
 import StyleControls from './components/style-controls';
 import Title from './components/title';
@@ -23,6 +24,8 @@ const NewEditor = (props) => {
     placeholder,
     imageRef,
     inlineRef,
+    blockRenderMap,
+    customStyleMap,
   } = props;
   const { hooks, editorState } = getEditor();
   const didUpdate = useRef(false);
@@ -59,6 +62,19 @@ const NewEditor = (props) => {
     hooks.handleDroppedFiles.call(editorState, dropSelection, files)
   }, [editorState])
 
+  const onBlurHandler = useCallback(e => {
+    requestAnimationFrame(() => {
+      const { editorState } = getEditor()
+      const next = EditorState.acceptSelection(
+        editorState,
+        editorState.getSelection().merge({ hasFocus: true })
+      )
+
+      console.log('bur ')
+      hooks.onChange.call(next)
+    })
+  }, [editorState])
+
   return (
     <div className="miuffy-editor-root">
       <StyleControls editorState={editorState} />
@@ -68,11 +84,16 @@ const NewEditor = (props) => {
         <Editor
           editorState={editorState}
           blockStyleFn={getBlockStyle}
+          customStyleMap={customStyleMap}
+          blockRenderMap={blockRenderMap}
           blockRendererFn={handleBlockRender}
           onChange={onChange}
           handleKeyCommand={handleKeyCommand}
           handleDroppedFiles={handleDroppedFiles}
           ref={forwardRef}
+          preserveSelectionOnBlur
+          onBlur={onBlurHandler}
+          onMouseDown={e => e.preventDefault()}
         />
       </div>
 

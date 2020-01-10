@@ -63,10 +63,10 @@ function InlineToolbar() {
       visibleHandler(editorRef, inlineToolbarRef)
     });
 
-    hooks.selectionFocusChange.tap('InlineToolbar', (editorState, selectionChanged) => {
-      const { newValue: { hasFocus } } = selectionChanged
-      if (!hasFocus) hiddenHandler(inlineToolbarRef)
-    })
+    // hooks.selectionFocusChange.tap('InlineToolbar', (editorState, selectionChanged) => {
+    //   const { newValue: { hasFocus } } = selectionChanged
+    //   if (!hasFocus) hiddenHandler(inlineToolbarRef)
+    // })
   };
 }
 

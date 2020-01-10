@@ -23,10 +23,19 @@ class PluginEditor extends PureComponent {
     this.hooks = {
       setState: new SyncHook(['editorState', 'callback']),
       onChange: new SyncWaterfallHook(['editorState']),
-      toggleBlockType: new SyncWaterfallHook([
+      toggleWaterfallBlockType: new SyncWaterfallHook([
         'newEditorState',
         'editorState',
         'blockType'
+      ]),
+
+      toggleBlockType: new SyncHook([
+        'editorState',
+        'blockType',
+      ]),
+
+      toggleInlineStyleV2: new SyncHook([
+        'inlineStyle',
       ]),
 
       toggleInlineStyle: new SyncHook([
@@ -39,8 +48,8 @@ class PluginEditor extends PureComponent {
         'inlineStyle'
       ]),
 
-      createBlockRenderMap: new SyncWaterfallHook(['blockRenderMap']),
-      createCustomStyleMap: new SyncWaterfallHook(['customStyleMap']),
+      createBlockRenderMap: new SyncBailHook(),
+      createCustomStyleMap: new SyncBailHook(),
       blockStyleFn: new SyncBailHook(['block']),
       handleKeyCommand: new SyncBailHook(['command', 'editorState']),
 
@@ -104,16 +113,37 @@ class PluginEditor extends PureComponent {
       })
     })
 
-    this.hooks.toggleBlockType.tap('toggleBlockType', (
+    this.hooks.toggleWaterfallBlockType.tap('toggleWaterfallBlockType', (
       newEditorState,
       editorState,
       blockType
     ) => {
       const nextEditorState = newEditorState || editorState
+      console.log('block : ', blockType)
       this.setState({
         editorState: RichUtils.toggleBlockType(
           nextEditorState,
           blockType
+        )
+      })
+    })
+
+    this.hooks.toggleBlockType.tap('toggleBlockType', (editorState, blockType) => {
+      console.log('block 2 ', blockType, editorState)
+      this.setState({
+        editorState: RichUtils.toggleBlockType(
+          editorState,
+          blockType
+        )
+      })
+    })
+
+    this.hooks.toggleInlineStyleV2.tap('toggleInlineStyle', inlineStyle => {
+      const { editorState } = this.state
+      this.setState({
+        editorState: RichUtils.toggleInlineStyle(
+          editorState,
+          inlineStyle
         )
       })
     })
@@ -128,7 +158,7 @@ class PluginEditor extends PureComponent {
       }, () => {
         const { editorState } = this.state
         this.hooks.afterInlineStyleApplied.call(
-          null,
+          editorState,
           editorState,
           inlineStyle,
         )
@@ -144,16 +174,6 @@ class PluginEditor extends PureComponent {
         editorState: nextEditorState
       })
     })
-
-    // this.hooks.compositeDecorator.tap('compositeDecorator', decorators => {
-    //   const { editorState } = this.state
-    //   const newEditorState = EditorState.set(editorState, {
-    //     decorator: new CompositeDecorator(decorators),
-    //   })
-    //   this.setState({
-    //     decorators: newEditorState
-    //   })
-    // })
   }
 
   getEditor = () => {
@@ -167,7 +187,7 @@ class PluginEditor extends PureComponent {
   }
 
   init = () => {
-    // this.blockRenderMap = this.hooks.createBlockRenderMap.call()
+    this.blockRenderMap = this.hooks.createBlockRenderMap.call()
     this.customStyleMap = this.hooks.createCustomStyleMap.call()
   }
 
@@ -177,6 +197,7 @@ class PluginEditor extends PureComponent {
       <Provider value={this.getEditor}>
         <Editor
           {...rest}
+          customStyleMap={this.customStyleMap}
           blockRenderMap={this.blockRenderMap}
           ref={this.editorRef}
           imageRef={this.imageToolbarRef}

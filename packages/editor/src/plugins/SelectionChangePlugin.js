@@ -61,6 +61,8 @@ function SelectionChangePlugin() {
       prevHasFocus = hasFocus
       prevSelection = selection
 
+      console.log('payload ', payload)
+
       switch(changeType) {
         case 'init-change':
           hooks.selectionInitChange.call(editorState, payload)

@@ -1,4 +1,6 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useState, useRef } from 'react'
+import { withEditor } from '../../index';
+
 import './styles.css'
 
 import H1 from '../button/H1'
@@ -19,62 +21,138 @@ import BulletedList from '../button/BulletedList'
 
 const Divider = () => <div className="divider" />
 
-const H1Button = ({ activeKey, setActiveKey, active }) => {
-  const handleClick = useCallback(() => setActiveKey(activeKey))
-  return <H1 active={active} onClick={handleClick}/>
-}
-const H2Button = ({ activeKey, setActiveKey, active }) => {
-  const handleClick = useCallback(() => setActiveKey(activeKey))
-  return <H2 active={active} onClick={handleClick}/>
-}
-const H3Button = ({ activeKey, setActiveKey, active }) => {
-  const handleClick = useCallback(() => setActiveKey(activeKey))
-  return <H3 active={active} onClick={handleClick}/>
-}
-const H4Button = ({ activeKey, setActiveKey, active }) => {
-  const handleClick = useCallback(() => setActiveKey(activeKey))
-  return <H4 active={active} onClick={handleClick}/>
-}
-const BlockquoteButton = ({ activeKey, setActiveKey, active }) => {
-  const handleClick = useCallback(() => setActiveKey(activeKey))
-  return <Blockquote active={active} onClick={handleClick}/>
-}
-const BoldButton = ({ activeKey, setActiveKey, active }) => {
-  const handleClick = useCallback(() => setActiveKey(activeKey))
-  return <Bold active={active} onClick={handleClick}/>
-}
-const ItalicButton = ({ activeKey, setActiveKey, active }) => {
-  const handleClick = useCallback(() => setActiveKey(activeKey))
-  return <Italic active={active} onClick={handleClick}/>
-}
-const StrikeThroughButton = ({ activeKey, setActiveKey, active }) => {
-  const handleClick = useCallback(() => setActiveKey(activeKey))
-  return <StrikeThrough active={active} onClick={handleClick}/>
-}
-const UnderlineButton = ({ activeKey, setActiveKey, active }) => {
-  const handleClick = useCallback(() => setActiveKey(activeKey))
-  return <Underline active={active} onClick={handleClick}/>
-}
-const InlineCodeButton = ({ activeKey, setActiveKey, active }) => {
-  const handleClick = useCallback(() => setActiveKey(activeKey))
-  return <InlineCode active={active} onClick={handleClick}/>
-}
-const LinkButton = ({ activeKey, setActiveKey, active }) => {
-  const handleClick = useCallback(() => setActiveKey(activeKey))
-  return <Link active={active} onClick={handleClick}/>
-}
-const NumberedListButton = ({ activeKey, setActiveKey, active }) => {
-  const handleClick = useCallback(() => setActiveKey(activeKey))
-  return <NumberedList active={active} onClick={handleClick}/>
+const buildBlockTypeHandler = (getEditor, index, setActiveKey, type) => () => {
+  const { hooks, editorState } = getEditor()
+  setActiveKey(index)
+  hooks.toggleBlockType.call(editorState, type);
 }
 
-const BulletedListButton = ({ activeKey, setActiveKey, active }) => {
-  const handleClick = useCallback(() => setActiveKey(activeKey))
-  return <BulletedList active={active} onClick={handleClick} />
+const buildInlineTypeHandler = (getEditor, index, setActiveKey, inlineStyle) => () => {
+  const { hooks } = getEditor()
+  setActiveKey(index)
+  hooks.toggleInlineStyleV2.call(inlineStyle);
+}
+
+const H1Button = ({ activeKey, setActiveKey, active, getEditor }) => {
+  const handleClick = useRef(buildBlockTypeHandler(
+    getEditor,
+    activeKey,
+    setActiveKey,
+    'header-one'
+  ))
+  return <H1 active={active} onClick={handleClick.current}/>
+}
+const H2Button = ({ activeKey, setActiveKey, active, getEditor }) => {
+  const handleClick = useRef(buildBlockTypeHandler(
+    getEditor,
+    activeKey,
+    setActiveKey,
+    'header-two'
+  ))
+  return <H2 active={active} onClick={handleClick.current}/>
+}
+const H3Button = ({ activeKey, setActiveKey, active, getEditor }) => {
+  const handleClick = useRef(buildBlockTypeHandler(
+    getEditor,
+    activeKey,
+    setActiveKey,
+    'header-three'
+  ))
+  return <H3 active={active} onClick={handleClick.current}/>
+}
+const H4Button = ({ activeKey, setActiveKey, active, getEditor }) => {
+  const handleClick = useRef(buildBlockTypeHandler(
+    getEditor,
+    activeKey,
+    setActiveKey,
+    'header-four'
+  ))
+  return <H4 active={active} onClick={handleClick.current}/>
+}
+const BlockquoteButton = ({ activeKey, setActiveKey, active, getEditor }) => {
+  const handleClick = useRef(buildBlockTypeHandler(
+    getEditor,
+    activeKey,
+    setActiveKey,
+    'blockquote'
+  ))
+  return <Blockquote active={active} onClick={handleClick.current}/>
+}
+const BoldButton = ({ activeKey, setActiveKey, active, getEditor }) => {
+  const handleClick = useRef(buildInlineTypeHandler(
+    getEditor,
+    activeKey,
+    setActiveKey,
+    'BOLD'
+  ))
+  return <Bold active={active} onClick={handleClick.current}/>
+}
+const ItalicButton = ({ activeKey, setActiveKey, active, getEditor }) => {
+  const handleClick = useRef(buildInlineTypeHandler(
+    getEditor,
+    activeKey,
+    setActiveKey,
+    'ITALIC'
+  ))
+  return <Italic active={active} onClick={handleClick.current}/>
+}
+const StrikeThroughButton = ({ activeKey, setActiveKey, active, getEditor }) => {
+  const handleClick = useRef(buildInlineTypeHandler(
+    getEditor,
+    activeKey,
+    setActiveKey,
+    'STRIKE-THROUGH'
+  ))
+  return <StrikeThrough active={active} onClick={handleClick.current}/>
+}
+const UnderlineButton = ({ activeKey, setActiveKey, active, getEditor }) => {
+  const handleClick = useRef(buildInlineTypeHandler(
+    getEditor,
+    activeKey,
+    setActiveKey,
+    'UNDERLINE'
+  ))
+  return <Underline active={active} onClick={handleClick.current}/>
+}
+const InlineCodeButton = ({ activeKey, setActiveKey, active, getEditor }) => {
+  const handleClick = useRef(buildInlineTypeHandler(
+    getEditor,
+    activeKey,
+    setActiveKey,
+    'CODE'
+  ))
+  return <InlineCode active={active} onClick={handleClick.current}/>
+}
+const LinkButton = ({ activeKey, setActiveKey, active, getEditor }) => {
+  const handleClick = useRef(buildBlockTypeHandler(
+    getEditor,
+    activeKey,
+    setActiveKey,
+    'UNDERLINE'
+  ))
+  return <Link active={active} onClick={handleClick.current}/>
+}
+const NumberedListButton = ({ activeKey, setActiveKey, active, getEditor }) => {
+  const handleClick = useRef(buildBlockTypeHandler(
+    getEditor,
+    activeKey,
+    setActiveKey,
+    'ordered-list-item'
+  ))
+  return <NumberedList active={active} onClick={handleClick.current}/>
+}
+const BulletedListButton = ({ activeKey, setActiveKey, active, getEditor }) => {
+  const handleClick = useRef(buildBlockTypeHandler(
+    getEditor,
+    activeKey,
+    setActiveKey,
+    'unordered-list-item'
+  ))
+  return <BulletedList active={active} onClick={handleClick.current} />
 }
 
 const Toolbar = props => {
-  const { forwardRef } = props
+  const { forwardRef, getEditor } = props
   const [activeKey, setActiveKey] = useState()
 
   return (
@@ -82,26 +160,31 @@ const Toolbar = props => {
       <div className="inline-toolbar-inner">
         <div className="inline-toolbar-action-group">
           <H1Button
+            getEditor={getEditor}
             activeKey="h1"
             active={'h1' === activeKey}
             setActiveKey={setActiveKey}
           />
           <H2Button
+            getEditor={getEditor}
             activeKey="h2"
             active={'h2' === activeKey}
             setActiveKey={setActiveKey}
           />
           <H3Button
+            getEditor={getEditor}
             activeKey="h3"
             active={'h3' === activeKey}
             setActiveKey={setActiveKey}
           />
           <H4Button
+            getEditor={getEditor}
             activeKey="h4"
             active={'h4' === activeKey}
             setActiveKey={setActiveKey}
           />
           <BlockquoteButton
+            getEditor={getEditor}
             activeKey="blockquote"
             active={'blockquote' === activeKey}
             setActiveKey={setActiveKey}
@@ -110,31 +193,37 @@ const Toolbar = props => {
           <Divider />
 
           <BoldButton
+            getEditor={getEditor}
             activeKey="bold"
             active={'bold' === activeKey}
             setActiveKey={setActiveKey}
           />
           <ItalicButton
+            getEditor={getEditor}
             activeKey="italic"
             active={'italic' === activeKey}
             setActiveKey={setActiveKey}
           />
           <StrikeThroughButton
+            getEditor={getEditor}
             activeKey="strike-through"
             active={'strike-through' === activeKey}
             setActiveKey={setActiveKey}
           />
           <UnderlineButton
+            getEditor={getEditor}
             activeKey="underline"
             active={'underline' === activeKey}
             setActiveKey={setActiveKey}
           />
           <InlineCodeButton
+            getEditor={getEditor}
             activeKey="inline-code"
             active={'inline-code' === activeKey}
             setActiveKey={setActiveKey}
           />
           <LinkButton
+            getEditor={getEditor}
             activeKey="link"
             active={'link' === activeKey}
             setActiveKey={setActiveKey}
@@ -143,11 +232,13 @@ const Toolbar = props => {
           <Divider />
 
           <NumberedListButton
+            getEditor={getEditor}
             activeKey="numbered-list"
             active={'numbered-list' === activeKey}
             setActiveKey={setActiveKey}
           />
           <BulletedListButton
+            getEditor={getEditor}
             activeKey="bulleted-list"
             active={'bulleted-list' === activeKey}
             setActiveKey={setActiveKey}
@@ -160,4 +251,4 @@ const Toolbar = props => {
   )
 }
 
-export default Toolbar
+export default withEditor(Toolbar)

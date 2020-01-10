@@ -10,7 +10,7 @@ const OL_WRAP = <ol className={classNames('miuffy-ol')} />;
 function BlockRenderMapPlugin() {
   this.apply = (getEditor) => {
     const { hooks } = getEditor();
-    hooks.createBlockRenderMap.tap('BlockRenderMapPlugin', (blockRenderMap) => {
+    hooks.createBlockRenderMap.tap('BlockRenderMapPlugin', () => {
       const newBlockRenderMap = Immutable.Map({
         'header-two': {
           element: 'h2',
@@ -32,7 +32,7 @@ function BlockRenderMapPlugin() {
         },
       });
 
-      return DefaultDraftBlockRenderMap.merge(blockRenderMap, newBlockRenderMap);
+      return DefaultDraftBlockRenderMap.merge(newBlockRenderMap);
     });
   };
 }

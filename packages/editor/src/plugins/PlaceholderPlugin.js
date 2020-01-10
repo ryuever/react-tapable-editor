@@ -44,7 +44,7 @@ function PlaceholderPlugin() {
       }
     });
 
-    hooks.toggleBlockType.tap('PlaceholderPlugin', (newEditorState, editorState, blockType) => {
+    hooks.toggleWaterfallBlockType.tap('PlaceholderPlugin', (newEditorState, editorState, blockType) => {
       const currentEditorState = newEditorState || editorState;
       const currentContent = currentEditorState.getCurrentContent();
       if (!this.hasPlaceholderBlock) return;
