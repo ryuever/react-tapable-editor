@@ -1,20 +1,35 @@
 {
-  "name": "root",
-  "private": true,
+  "name": "editor",
+  "version": "1.8.1",
+  "description": "react state management",
+  "main": "index.js",
   "scripts": {
-    "clean": "lerna clean -y",
-    "bootstrap": "lerna bootstrap --hoist",
-    "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "examples:basic": "DIR=basic EXT=js webpack-dev-server"
   },
-  "devDependencies": {
-    "lerna": "^3.16.4"
-  },
+  "author": "liuyouchao111@gmail.com",
+  "license": "ISC",
   "dependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/plugin-proposal-class-properties": "^7.7.4",
+    "@babel/preset-env": "^7.5.5",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.6",
     "classnames": "^2.2.6",
     "draft-js": "^0.11.0",
+    "html-webpack-plugin": "^3.2.0",
     "immutable": "^4.0.0-rc.12",
     "invariant": "^2.2.4",
-    "react-codemirror": "^1.0.0"
+    "jest": "^24.9.0",
+    "react": "^16.10.2",
+    "react-codemirror": "^1.0.0",
+    "react-dom": "^16.10.2",
+    "ts-loader": "^6.0.4",
+    "webpack": "^4.39.3",
+    "webpack-cli": "^3.3.7",
+    "webpack-dev-server": "^3.8.0"
+  },
+  "devDependencies": {
+    "css-loader": "^3.4.1",
+    "style-loader": "^1.1.2"
   }
 }

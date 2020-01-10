@@ -10,16 +10,46 @@ import {
   SyncWaterfallHook,
 } from 'tapable'
 import Context from './Context'
+import PlaceholderPlugin from './plugins/PlaceholderPlugin';
+import BlockStyleFnPlugin from './plugins/BlockStyleFnPlugin';
+import SelectionChangePlugin from './plugins/SelectionChangePlugin'
+import CustomStyleMapPlugin from './plugins/CustomStyleMapPlugin';
+import BlockRenderMapPlugin from './plugins/block-render-map-plugin';
+import StyleControlPlugin from './plugins/StyleControlPlugin'
+import DefaultHandleKeyCommandPlugin from './plugins/DefaultHandleKeyCommandPlugin'
+import HandleDroppedFilesPlugin from './plugins/HandleDroppedFilesPlugin'
+import AddImagePlugin from './plugins/AddImagePlugin'
+import AlignmentPlugin from './plugins/AlignmentPlugin'
+import InlineToolbarPlugin from './plugins/InlineToolbarPlugin'
 const { Provider } = Context
 
 import Editor from './Editor'
 import decorateComposer from './decoratorComposer'
 
+const defaultPlugins = [
+  new PlaceholderPlugin(),
+  new BlockStyleFnPlugin(),
+  new SelectionChangePlugin(),
+  new CustomStyleMapPlugin(),
+  new BlockRenderMapPlugin(),
+  new StyleControlPlugin(),
+
+  new AddImagePlugin(),
+  new HandleDroppedFilesPlugin(),
+
+  // 对于keyCommand的一个兜底行为
+  new DefaultHandleKeyCommandPlugin(),
+
+  new AlignmentPlugin(),
+
+  new InlineToolbarPlugin(),
+]
+
 class PluginEditor extends PureComponent {
   constructor(props) {
     super(props)
-    const { plugins } = props
-    this.plugins = plugins || []
+    const { plugins = [] } = props
+    this.plugins = plugins.concat(defaultPlugins)
     this.hooks = {
       setState: new SyncHook(['editorState', 'callback']),
       onChange: new SyncWaterfallHook(['editorState']),

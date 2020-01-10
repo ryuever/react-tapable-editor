@@ -65,7 +65,7 @@ const NewEditor = (props) => {
   const onBlurHandler = useCallback(e => {
     requestAnimationFrame(() => {
       const { editorState } = getEditor()
-      const next = EditorState.acceptSelection(
+      const next = EditorState.forceSelection(
         editorState,
         editorState.getSelection().merge({ hasFocus: true })
       )
