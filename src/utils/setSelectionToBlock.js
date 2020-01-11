@@ -16,7 +16,6 @@ export default (editorState, contentBlock) => {
   selection.removeAllRanges();
   selection.addRange(range);
 
-  console.log('set block key : ', blockKey)
   return EditorState.forceSelection(
     editorState,
     new SelectionState({

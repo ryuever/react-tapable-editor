@@ -52,3 +52,4 @@ const InlineStyleControls = ({ getEditor }) => {
 };
 
 export default InlineStyleControls;
+

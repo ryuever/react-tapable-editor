@@ -111,6 +111,8 @@ class PluginEditor extends PureComponent {
       selectionMoveInnerBlock: new SyncHook(['editorState', 'payload']),
       selectionMoveOuterBlock: new SyncHook(['editorState', 'payload']),
       selectionRangeChange: new SyncHook(['editorState', 'payload']),
+      selectionRangeSizeChange: new SyncHook(['editorState', 'payload']),
+      selectionRangeContentChange: new SyncHook(['editorState', 'payload']),
     }
 
     this.editorRef = createRef()
@@ -149,7 +151,6 @@ class PluginEditor extends PureComponent {
       blockType
     ) => {
       const nextEditorState = newEditorState || editorState
-      console.log('block : ', blockType)
       this.setState({
         editorState: RichUtils.toggleBlockType(
           nextEditorState,
@@ -159,7 +160,6 @@ class PluginEditor extends PureComponent {
     })
 
     this.hooks.toggleBlockType.tap('toggleBlockType', (editorState, blockType) => {
-      console.log('block 2 ', blockType, editorState)
       this.setState({
         editorState: RichUtils.toggleBlockType(
           editorState,

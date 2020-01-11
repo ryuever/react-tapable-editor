@@ -4,7 +4,6 @@ import { getVisibleSelectionRect } from 'draft-js'
 const getSelectionRectRelativeToOffsetParent = editorRef => {
   const rootNode = getRootNode(editorRef)
   const visibleSelectionRect = getVisibleSelectionRect(window)
-  console.log('visible ', visibleSelectionRect)
   if (!rootNode || !visibleSelectionRect) return
   const rootRect = rootNode.getBoundingClientRect()
   const rootOffsetTop = rootNode.offsetTop

@@ -6,12 +6,14 @@ function InlineToolbar() {
   let isToolbarVisible = false
 
   const hiddenHandler = (inlineToolbarRef) => {
+    if (!isToolbarVisible) return
     inlineToolbarRef.current.style.display = 'none'
     inlineToolbarRef.current.style.visibility = 'invisible'
     isToolbarVisible = false
   }
 
   const visibleHandler = (editorRef, inlineToolbarRef) => {
+    // if (isToolbarVisible) return 如果加了这个判断就不能够及时的进行位置更新了
     if (!inlineToolbarRef.current) return
     const rect = getSelectionRectRelativeToOffsetParent(editorRef)
     if (!rect) return
@@ -63,10 +65,11 @@ function InlineToolbar() {
       visibleHandler(editorRef, inlineToolbarRef)
     });
 
-    // hooks.selectionFocusChange.tap('InlineToolbar', (editorState, selectionChanged) => {
-    //   const { newValue: { hasFocus } } = selectionChanged
-    //   if (!hasFocus) hiddenHandler(inlineToolbarRef)
-    // })
+    hooks.selectionFocusChange.tap('InlineToolbar', (editorState, selectionChanged) => {
+      const { newValue: { hasFocus } } = selectionChanged
+      if (!hasFocus) hiddenHandler(inlineToolbarRef)
+      if (hasFocus) visibleHandler(editorRef, inlineToolbarRef)
+    })
   };
 }
 

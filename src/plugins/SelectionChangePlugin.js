@@ -25,7 +25,22 @@ const resolveChangeType = ({
     if (prevStartKey === startKey) return 'selection-move-inner-block'
     return 'selection-move-outer-block'
   } else {
-    return 'selection-range-change'
+    const prevEndKey = prevSelection.getEndKey()
+    const prevStartOffset = prevSelection.getStartOffset()
+    const prevEndOffset = prevSelection.getEndOffset()
+    const endKey = selection.getEndKey()
+    const startOffset = selection.getStartOffset()
+    const endOffset = selection.getEndOffset()
+
+    if (
+      prevEndKey === endKey &&
+      prevStartOffset === startOffset &&
+      prevEndOffset === endOffset
+    ) {
+      return 'selection-range-content-change'
+    }
+
+    return 'selection-range-size-change'
   }
 }
 
@@ -61,8 +76,6 @@ function SelectionChangePlugin() {
       prevHasFocus = hasFocus
       prevSelection = selection
 
-      console.log('payload ', payload)
-
       switch(changeType) {
         case 'init-change':
           hooks.selectionInitChange.call(editorState, payload)
@@ -79,7 +92,12 @@ function SelectionChangePlugin() {
         case 'selection-move-outer-block':
           hooks.selectionMoveOuterBlock.call(editorState, payload)
           break;
-        case 'selection-range-change':
+        case 'selection-range-content-change':
+          hooks.selectionRangeContentChange.call(editorState, payload)
+          hooks.selectionRangeChange.call(editorState, payload)
+          break;
+        case 'selection-range-size-change':
+          hooks.selectionRangeSizeChange.call(editorState, payload)
           hooks.selectionRangeChange.call(editorState, payload)
           break;
         default:

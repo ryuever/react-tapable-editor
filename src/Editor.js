@@ -70,8 +70,7 @@ const NewEditor = (props) => {
         editorState.getSelection().merge({ hasFocus: true })
       )
 
-      console.log('bur ')
-      hooks.onChange.call(next)
+      // hooks.onChange.call(next)
     })
   }, [editorState])
 
@@ -91,9 +90,9 @@ const NewEditor = (props) => {
           handleKeyCommand={handleKeyCommand}
           handleDroppedFiles={handleDroppedFiles}
           ref={forwardRef}
+
           preserveSelectionOnBlur
           onBlur={onBlurHandler}
-          onMouseDown={e => e.preventDefault()}
         />
       </div>
 

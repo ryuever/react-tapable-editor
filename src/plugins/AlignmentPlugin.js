@@ -8,7 +8,6 @@ function AlignmentPlugin() {
       const { type, payload } = selectionChanged
       if (type !== 'isCollapsed-change') return
 
-      console.log("relative : ", getSelectionRectRelativeToOffsetParent(editorRef))
     });
   };
 }

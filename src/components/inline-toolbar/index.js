@@ -1,6 +1,6 @@
-import React, { useCallback, useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { withEditor } from '../../index';
-
+import Immutable from 'immutable'
 import './styles.css'
 
 import H1 from '../button/H1'
@@ -18,6 +18,8 @@ import Link from '../button/Link'
 
 import NumberedList from '../button/NumberedList'
 import BulletedList from '../button/BulletedList'
+
+import getSelectionInlineStyle from '../../utils/getSelectionInlineStyle'
 
 const Divider = () => <div className="divider" />
 
@@ -154,6 +156,15 @@ const BulletedListButton = ({ activeKey, setActiveKey, active, getEditor }) => {
 const Toolbar = props => {
   const { forwardRef, getEditor } = props
   const [activeKey, setActiveKey] = useState()
+  const [styles, setStyles] = useState(new Immutable.OrderedSet())
+
+  useEffect(() => {
+    const { hooks } = getEditor()
+    hooks.selectionRangeChange.tap('InlineToolbar', (editorState, payload) => {
+      const styles = getSelectionInlineStyle(editorState)
+      setStyles(styles)
+    })
+  }, [])
 
   return (
     <div className="inline-toolbar" ref={forwardRef}>
@@ -162,7 +173,7 @@ const Toolbar = props => {
           <H1Button
             getEditor={getEditor}
             activeKey="h1"
-            active={'h1' === activeKey}
+            active={styles.has('header-one')}
             setActiveKey={setActiveKey}
           />
           <H2Button
@@ -194,32 +205,27 @@ const Toolbar = props => {
 
           <BoldButton
             getEditor={getEditor}
-            activeKey="bold"
-            active={'bold' === activeKey}
+            active={styles.has('BOLD')}
             setActiveKey={setActiveKey}
           />
           <ItalicButton
             getEditor={getEditor}
-            activeKey="italic"
-            active={'italic' === activeKey}
+            active={styles.has('ITALIC')}
             setActiveKey={setActiveKey}
           />
           <StrikeThroughButton
             getEditor={getEditor}
-            activeKey="strike-through"
-            active={'strike-through' === activeKey}
+            active={styles.has('STRIKE-THROUGH')}
             setActiveKey={setActiveKey}
           />
           <UnderlineButton
             getEditor={getEditor}
-            activeKey="underline"
-            active={'underline' === activeKey}
+            active={styles.has('UNDERLINE')}
             setActiveKey={setActiveKey}
           />
           <InlineCodeButton
             getEditor={getEditor}
-            activeKey="inline-code"
-            active={'inline-code' === activeKey}
+            active={styles.has('CODE')}
             setActiveKey={setActiveKey}
           />
           <LinkButton
@@ -251,4 +257,8 @@ const Toolbar = props => {
   )
 }
 
-export default withEditor(Toolbar)
+const MemoToolbar = React.memo(props => {
+  return <Toolbar {...props} />
+}, () => true)
+
+export default withEditor(MemoToolbar)

@@ -13,7 +13,6 @@ const readFile = file => {
 
   return new Promise((resolve, reject) => {
     reader.onload = e => {
-      console.log('resolve : ', e)
       const { target: { result: src }} = e
       resolve({
         src,
