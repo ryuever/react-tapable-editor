@@ -1,4 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
+import {
+  EditorState,
+} from 'draft-js';
 import { withEditor } from '../../index';
 import Immutable from 'immutable'
 import './styles.css'
@@ -21,133 +24,109 @@ import BulletedList from '../button/BulletedList'
 
 import getSelectionInlineStyle from '../../utils/getSelectionInlineStyle'
 import getSelectionBlockTypes from '../../utils/getSelectionBlockTypes'
+import { createLinkSpanAtSelection } from '../../utils/createEntity'
+
 const Divider = () => <div className="divider" />
 
-const buildBlockTypeHandler = (getEditor, index, setActiveKey, type) => () => {
+const buildBlockTypeHandler = (getEditor, type) => () => {
   const { hooks, editorState } = getEditor()
-  setActiveKey(index)
   hooks.toggleBlockType.call(editorState, type);
 }
 
-const buildInlineTypeHandler = (getEditor, index, setActiveKey, inlineStyle) => () => {
+const buildInlineTypeHandler = (getEditor, inlineStyle) => () => {
   const { hooks } = getEditor()
-  setActiveKey(index)
   hooks.toggleInlineStyleV2.call(inlineStyle);
 }
 
-const H1Button = ({ activeKey, setActiveKey, active, getEditor }) => {
+const H1Button = ({ active, getEditor }) => {
   const handleClick = useRef(buildBlockTypeHandler(
     getEditor,
-    activeKey,
-    setActiveKey,
     'header-one'
   ))
   return <H1 active={active} onClick={handleClick.current}/>
 }
-const H2Button = ({ activeKey, setActiveKey, active, getEditor }) => {
+const H2Button = ({ active, getEditor }) => {
   const handleClick = useRef(buildBlockTypeHandler(
     getEditor,
-    activeKey,
-    setActiveKey,
     'header-two'
   ))
   return <H2 active={active} onClick={handleClick.current}/>
 }
-const H3Button = ({ activeKey, setActiveKey, active, getEditor }) => {
+const H3Button = ({ active, getEditor }) => {
   const handleClick = useRef(buildBlockTypeHandler(
     getEditor,
-    activeKey,
-    setActiveKey,
     'header-three'
   ))
   return <H3 active={active} onClick={handleClick.current}/>
 }
-const H4Button = ({ activeKey, setActiveKey, active, getEditor }) => {
+const H4Button = ({ active, getEditor }) => {
   const handleClick = useRef(buildBlockTypeHandler(
     getEditor,
-    activeKey,
-    setActiveKey,
     'header-four'
   ))
   return <H4 active={active} onClick={handleClick.current}/>
 }
-const BlockquoteButton = ({ activeKey, setActiveKey, active, getEditor }) => {
+const BlockquoteButton = ({ active, getEditor }) => {
   const handleClick = useRef(buildBlockTypeHandler(
     getEditor,
-    activeKey,
-    setActiveKey,
     'blockquote'
   ))
   return <Blockquote active={active} onClick={handleClick.current}/>
 }
-const BoldButton = ({ activeKey, setActiveKey, active, getEditor }) => {
+const BoldButton = ({ active, getEditor }) => {
   const handleClick = useRef(buildInlineTypeHandler(
     getEditor,
-    activeKey,
-    setActiveKey,
     'BOLD'
   ))
   return <Bold active={active} onClick={handleClick.current}/>
 }
-const ItalicButton = ({ activeKey, setActiveKey, active, getEditor }) => {
+const ItalicButton = ({ active, getEditor }) => {
   const handleClick = useRef(buildInlineTypeHandler(
     getEditor,
-    activeKey,
-    setActiveKey,
     'ITALIC'
   ))
   return <Italic active={active} onClick={handleClick.current}/>
 }
-const StrikeThroughButton = ({ activeKey, setActiveKey, active, getEditor }) => {
+const StrikeThroughButton = ({ active, getEditor }) => {
   const handleClick = useRef(buildInlineTypeHandler(
     getEditor,
-    activeKey,
-    setActiveKey,
     'STRIKE-THROUGH'
   ))
   return <StrikeThrough active={active} onClick={handleClick.current}/>
 }
-const UnderlineButton = ({ activeKey, setActiveKey, active, getEditor }) => {
+const UnderlineButton = ({ active, getEditor }) => {
   const handleClick = useRef(buildInlineTypeHandler(
     getEditor,
-    activeKey,
-    setActiveKey,
     'UNDERLINE'
   ))
   return <Underline active={active} onClick={handleClick.current}/>
 }
-const InlineCodeButton = ({ activeKey, setActiveKey, active, getEditor }) => {
+const InlineCodeButton = ({ active, getEditor }) => {
   const handleClick = useRef(buildInlineTypeHandler(
     getEditor,
-    activeKey,
-    setActiveKey,
     'CODE'
   ))
   return <InlineCode active={active} onClick={handleClick.current}/>
 }
-const LinkButton = ({ activeKey, setActiveKey, active, getEditor }) => {
-  const handleClick = useRef(buildBlockTypeHandler(
-    getEditor,
-    activeKey,
-    setActiveKey,
-    'UNDERLINE'
-  ))
-  return <Link active={active} onClick={handleClick.current}/>
+const LinkButton = ({ handleClick, getEditor }) => {
+  const onClickHandler = () => {
+    const { editorState, hooks } = getEditor()
+    const nextState = createLinkSpanAtSelection(editorState)
+    hooks.setState.call(nextState)
+    handleClick()
+  }
+  return <Link onClick={onClickHandler}/>
 }
-const NumberedListButton = ({ activeKey, setActiveKey, active, getEditor }) => {
+const NumberedListButton = ({ active, getEditor }) => {
   const handleClick = useRef(buildBlockTypeHandler(
     getEditor,
-    activeKey,
-    setActiveKey,
     'ordered-list-item'
   ))
   return <NumberedList active={active} onClick={handleClick.current}/>
 }
-const BulletedListButton = ({ activeKey, setActiveKey, active, getEditor }) => {
+const BulletedListButton = ({ active, getEditor }) => {
   const handleClick = useRef(buildBlockTypeHandler(
     getEditor,
-    activeKey,
-    setActiveKey,
     'unordered-list-item'
   ))
   return <BulletedList active={active} onClick={handleClick.current} />
@@ -158,106 +137,152 @@ const onlyContains = (arr = [], item) => {
   return arr[0] === item
 }
 
+const DisplayContent = ({ blockTypes, styles, getEditor, toggleDisplayMode }) => {
+  return (
+    <div className="inline-toolbar-inner">
+      <div className="inline-toolbar-action-group">
+        <H1Button
+          getEditor={getEditor}
+          active={onlyContains(blockTypes, 'header-one')}
+        />
+        <H2Button
+          getEditor={getEditor}
+          active={onlyContains(blockTypes, 'header-two')}
+        />
+        <H3Button
+          getEditor={getEditor}
+          active={onlyContains(blockTypes, 'header-three')}
+        />
+        <H4Button
+          getEditor={getEditor}
+          active={onlyContains(blockTypes, 'header-four')}
+        />
+        <BlockquoteButton
+          getEditor={getEditor}
+          active={onlyContains(blockTypes, 'blockquote')}
+        />
+
+        <Divider />
+
+        <BoldButton
+          getEditor={getEditor}
+          active={styles.has('BOLD')}
+        />
+        <ItalicButton
+          getEditor={getEditor}
+          active={styles.has('ITALIC')}
+        />
+        <StrikeThroughButton
+          getEditor={getEditor}
+          active={styles.has('STRIKE-THROUGH')}
+        />
+        <UnderlineButton
+          getEditor={getEditor}
+          active={styles.has('UNDERLINE')}
+        />
+        <InlineCodeButton
+          getEditor={getEditor}
+          active={styles.has('CODE')}
+        />
+
+        <LinkButton handleClick={toggleDisplayMode} getEditor={getEditor}/>
+
+        <Divider />
+
+        <NumberedListButton
+          getEditor={getEditor}
+          active={onlyContains(blockTypes, 'ordered-list-item')}
+        />
+        <BulletedListButton
+          getEditor={getEditor}
+          active={onlyContains(blockTypes, 'unordered-list-item')}
+        />
+      </div>
+    </div>
+  )
+}
+
+const InputBar = () => {
+  const inputRef = useRef()
+  const onMouseDownHandler = useCallback(e => {
+    e.preventDefault()
+    console.log('e ', e.key)
+    // if (e.key === 'Enter') {
+    //   e.preventDefault();
+    // } else if (e.key === 'Escape') {
+    //   e.preventDefault();
+    // }
+  }, [])
+
+  useEffect(() => {
+    inputRef.current.focus()
+  }, [])
+
+  // const onfocus = e => {
+  //   console.log('focus : ', e.key)
+  // }
+
+  return (
+    <input
+      ref={inputRef}
+      // onMouseDown={onMouseDownHandler}
+      // onFocus={onfocus}
+      // onClick={onMouseDownHandler}
+    />
+  )
+}
+
 const Toolbar = props => {
   const { forwardRef, getEditor } = props
-  const [activeKey, setActiveKey] = useState()
   const [value, setValue] = useState({
     styles: new Immutable.OrderedSet(),
     blockTypes: [],
+    inDisplayMode: true,
   })
+  const inDisplayModeRef = useRef(true)
 
   useEffect(() => {
     const { hooks } = getEditor()
-    hooks.selectionRangeChange.tap('InlineToolbar', (editorState, payload) => {
-      const styles = getSelectionInlineStyle(editorState)
-      const blockTypes = getSelectionBlockTypes(editorState)
-      setValue({
-        styles,
-        blockTypes,
-      })
+    hooks.inlineBarChange.tap('InlineToolbar', (editorState, visibility) => {
+      const nextValue = {
+        inDisplayMode: visibility === 'hidden' ? true : inDisplayModeRef.current
+      }
+
+      if (editorState) {
+        nextValue.styles = getSelectionInlineStyle(editorState)
+        nextValue.blockTypes = getSelectionBlockTypes(editorState)
+      } else {
+        nextValue.styles = new Immutable.OrderedSet()
+        nextValue.blockTypes = []
+      }
+
+      inDisplayModeRef.current = nextValue.inDisplayMode
+
+      setValue(nextValue)
     })
   }, [])
 
+  const toggleDisplayMode = useCallback(() => {
+    setValue({
+      ...value,
+      inDisplayMode: !inDisplayMode,
+    })
+    inDisplayModeRef.current = !inDisplayMode
+  }, [inDisplayMode])
+
+  const { styles, blockTypes, inDisplayMode } = value
+
   return (
     <div className="inline-toolbar" ref={forwardRef}>
-      <div className="inline-toolbar-inner">
-        <div className="inline-toolbar-action-group">
-          <H1Button
-            getEditor={getEditor}
-            active={onlyContains(value.blockTypes, 'header-one')}
-            setActiveKey={setActiveKey}
-          />
-          <H2Button
-            getEditor={getEditor}
-            active={onlyContains(value.blockTypes, 'header-two')}
-            setActiveKey={setActiveKey}
-          />
-          <H3Button
-            getEditor={getEditor}
-            active={onlyContains(value.blockTypes, 'header-three')}
-            setActiveKey={setActiveKey}
-          />
-          <H4Button
-            getEditor={getEditor}
-            active={onlyContains(value.blockTypes, 'header-four')}
-            setActiveKey={setActiveKey}
-          />
-          <BlockquoteButton
-            getEditor={getEditor}
-            active={onlyContains(value.blockTypes, 'blockquote')}
-            setActiveKey={setActiveKey}
-          />
-
-          <Divider />
-
-          <BoldButton
-            getEditor={getEditor}
-            active={value.styles.has('BOLD')}
-            setActiveKey={setActiveKey}
-          />
-          <ItalicButton
-            getEditor={getEditor}
-            active={value.styles.has('ITALIC')}
-            setActiveKey={setActiveKey}
-          />
-          <StrikeThroughButton
-            getEditor={getEditor}
-            active={value.styles.has('STRIKE-THROUGH')}
-            setActiveKey={setActiveKey}
-          />
-          <UnderlineButton
-            getEditor={getEditor}
-            active={value.styles.has('UNDERLINE')}
-            setActiveKey={setActiveKey}
-          />
-          <InlineCodeButton
-            getEditor={getEditor}
-            active={value.styles.has('CODE')}
-            setActiveKey={setActiveKey}
-          />
-          <LinkButton
-            getEditor={getEditor}
-            activeKey="link"
-            active={'link' === activeKey}
-            setActiveKey={setActiveKey}
-          />
-
-          <Divider />
-
-          <NumberedListButton
-            getEditor={getEditor}
-            active={onlyContains(value.blockTypes, 'ordered-list-item')}
-
-            setActiveKey={setActiveKey}
-          />
-          <BulletedListButton
-            getEditor={getEditor}
-            active={onlyContains(value.blockTypes, 'unordered-list-item')}
-            setActiveKey={setActiveKey}
-          />
-        </div>
-      </div>
-
+      {inDisplayMode && (
+        <DisplayContent
+          styles={styles}
+          blockTypes={blockTypes}
+          getEditor={getEditor}
+          toggleDisplayMode={toggleDisplayMode}
+        />
+      )}
+      {!inDisplayMode && <InputBar />}
       <div className="arrow-down" />
     </div>
   )

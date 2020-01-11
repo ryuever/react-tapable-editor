@@ -62,21 +62,21 @@ const NewEditor = (props) => {
     hooks.handleDroppedFiles.call(editorState, dropSelection, files)
   }, [editorState])
 
-  const onBlurHandler = useCallback(e => {
-    requestAnimationFrame(() => {
-      const { editorState } = getEditor()
-      const next = EditorState.forceSelection(
-        editorState,
-        editorState.getSelection().merge({ hasFocus: true })
-      )
+  // const onBlurHandler = useCallback(e => {
+  //   requestAnimationFrame(() => {
+  //     const { editorState } = getEditor()
+  //     const next = EditorState.forceSelection(
+  //       editorState,
+  //       editorState.getSelection().merge({ hasFocus: true })
+  //     )
 
-      // hooks.onChange.call(next)
-    })
-  }, [editorState])
+  //     // hooks.onChange.call(next)
+  //   })
+  // }, [editorState])
 
   return (
     <div className="miuffy-editor-root">
-      <StyleControls editorState={editorState} />
+      {/* <StyleControls editorState={editorState} /> */}
 
       <div className="miuffy-editor">
         <Title />
@@ -90,9 +90,10 @@ const NewEditor = (props) => {
           handleKeyCommand={handleKeyCommand}
           handleDroppedFiles={handleDroppedFiles}
           ref={forwardRef}
+          decorator
 
           preserveSelectionOnBlur
-          onBlur={onBlurHandler}
+          // onBlur={onBlurHandler}
         />
       </div>
 

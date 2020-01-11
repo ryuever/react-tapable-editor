@@ -21,6 +21,9 @@ import HandleDroppedFilesPlugin from './plugins/HandleDroppedFilesPlugin'
 import AddImagePlugin from './plugins/AddImagePlugin'
 import AlignmentPlugin from './plugins/AlignmentPlugin'
 import InlineToolbarPlugin from './plugins/InlineToolbarPlugin'
+
+import LinkSpanDecoratorPlugin from './plugins/LinkSpanDecoratorPlugin'
+
 const { Provider } = Context
 
 import Editor from './Editor'
@@ -43,6 +46,8 @@ const defaultPlugins = [
   new AlignmentPlugin(),
 
   new InlineToolbarPlugin(),
+
+  new LinkSpanDecoratorPlugin(),
 ]
 
 class PluginEditor extends PureComponent {
@@ -113,6 +118,10 @@ class PluginEditor extends PureComponent {
       selectionRangeChange: new SyncHook(['editorState', 'payload']),
       selectionRangeSizeChange: new SyncHook(['editorState', 'payload']),
       selectionRangeContentChange: new SyncHook(['editorState', 'payload']),
+
+      inlineBarChange: new SyncHook(['editorState', 'visibility']),
+
+      updateDecorator: new SyncWaterfallHook(['pairs', 'editorState', 'context'])
     }
 
     this.editorRef = createRef()
@@ -143,6 +152,15 @@ class PluginEditor extends PureComponent {
           callback(newState)
         }
       })
+    })
+
+    this.hooks.updateDecorator.tap('updateDecorate', (pairs, editorState, context) => {
+      if (pairs.length > 0) {
+        const newDecorator = new CompositeDecorator(pairs)
+        this.setState({
+          editorState: EditorState.set(editorState, { decorator: newDecorator }),
+        })
+      }
     })
 
     this.hooks.toggleWaterfallBlockType.tap('toggleWaterfallBlockType', (
@@ -204,6 +222,11 @@ class PluginEditor extends PureComponent {
         editorState: nextEditorState
       })
     })
+
+    setTimeout(() => {
+      const { editorState } = this.state
+      this.hooks.updateDecorator.call([], editorState)
+    }, 0)
   }
 
   getEditor = () => {

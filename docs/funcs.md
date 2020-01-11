@@ -2,3 +2,5 @@
 # findRangeImmutable
 
 # modifyInlineStyle
+
+# getTextAfterNearestEntity

@@ -6,7 +6,10 @@ import { Modifier, EditorState } from 'draft-js';
 export const moveSelectionForward = (editorState, maxDistance) => {
   var selection = editorState.getSelection(); // Should eventually make this an invariant
 
-  process.env.NODE_ENV !== "production" ? invariant(selection.isCollapsed(), 'moveSelectionForward should only be called with a collapsed SelectionState') : void 0;
+  process.env.NODE_ENV !== "production" ? invariant(
+    selection.isCollapsed(),
+    'moveSelectionForward should only be called with a collapsed SelectionState'
+  ) : void 0;
   var key = selection.getStartKey();
   var offset = selection.getStartOffset();
   var content = editorState.getCurrentContent();
