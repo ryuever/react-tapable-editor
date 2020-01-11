@@ -20,7 +20,7 @@ import NumberedList from '../button/NumberedList'
 import BulletedList from '../button/BulletedList'
 
 import getSelectionInlineStyle from '../../utils/getSelectionInlineStyle'
-
+import getSelectionBlockTypes from '../../utils/getSelectionBlockTypes'
 const Divider = () => <div className="divider" />
 
 const buildBlockTypeHandler = (getEditor, index, setActiveKey, type) => () => {
@@ -153,16 +153,28 @@ const BulletedListButton = ({ activeKey, setActiveKey, active, getEditor }) => {
   return <BulletedList active={active} onClick={handleClick.current} />
 }
 
+const onlyContains = (arr = [], item) => {
+  if (arr.length > 1) return false
+  return arr[0] === item
+}
+
 const Toolbar = props => {
   const { forwardRef, getEditor } = props
   const [activeKey, setActiveKey] = useState()
-  const [styles, setStyles] = useState(new Immutable.OrderedSet())
+  const [value, setValue] = useState({
+    styles: new Immutable.OrderedSet(),
+    blockTypes: [],
+  })
 
   useEffect(() => {
     const { hooks } = getEditor()
     hooks.selectionRangeChange.tap('InlineToolbar', (editorState, payload) => {
       const styles = getSelectionInlineStyle(editorState)
-      setStyles(styles)
+      const blockTypes = getSelectionBlockTypes(editorState)
+      setValue({
+        styles,
+        blockTypes,
+      })
     })
   }, [])
 
@@ -172,32 +184,27 @@ const Toolbar = props => {
         <div className="inline-toolbar-action-group">
           <H1Button
             getEditor={getEditor}
-            activeKey="h1"
-            active={styles.has('header-one')}
+            active={onlyContains(value.blockTypes, 'header-one')}
             setActiveKey={setActiveKey}
           />
           <H2Button
             getEditor={getEditor}
-            activeKey="h2"
-            active={'h2' === activeKey}
+            active={onlyContains(value.blockTypes, 'header-two')}
             setActiveKey={setActiveKey}
           />
           <H3Button
             getEditor={getEditor}
-            activeKey="h3"
-            active={'h3' === activeKey}
+            active={onlyContains(value.blockTypes, 'header-three')}
             setActiveKey={setActiveKey}
           />
           <H4Button
             getEditor={getEditor}
-            activeKey="h4"
-            active={'h4' === activeKey}
+            active={onlyContains(value.blockTypes, 'header-four')}
             setActiveKey={setActiveKey}
           />
           <BlockquoteButton
             getEditor={getEditor}
-            activeKey="blockquote"
-            active={'blockquote' === activeKey}
+            active={onlyContains(value.blockTypes, 'blockquote')}
             setActiveKey={setActiveKey}
           />
 
@@ -205,27 +212,27 @@ const Toolbar = props => {
 
           <BoldButton
             getEditor={getEditor}
-            active={styles.has('BOLD')}
+            active={value.styles.has('BOLD')}
             setActiveKey={setActiveKey}
           />
           <ItalicButton
             getEditor={getEditor}
-            active={styles.has('ITALIC')}
+            active={value.styles.has('ITALIC')}
             setActiveKey={setActiveKey}
           />
           <StrikeThroughButton
             getEditor={getEditor}
-            active={styles.has('STRIKE-THROUGH')}
+            active={value.styles.has('STRIKE-THROUGH')}
             setActiveKey={setActiveKey}
           />
           <UnderlineButton
             getEditor={getEditor}
-            active={styles.has('UNDERLINE')}
+            active={value.styles.has('UNDERLINE')}
             setActiveKey={setActiveKey}
           />
           <InlineCodeButton
             getEditor={getEditor}
-            active={styles.has('CODE')}
+            active={value.styles.has('CODE')}
             setActiveKey={setActiveKey}
           />
           <LinkButton
@@ -239,14 +246,13 @@ const Toolbar = props => {
 
           <NumberedListButton
             getEditor={getEditor}
-            activeKey="numbered-list"
-            active={'numbered-list' === activeKey}
+            active={onlyContains(value.blockTypes, 'ordered-list-item')}
+
             setActiveKey={setActiveKey}
           />
           <BulletedListButton
             getEditor={getEditor}
-            activeKey="bulleted-list"
-            active={'bulleted-list' === activeKey}
+            active={onlyContains(value.blockTypes, 'unordered-list-item')}
             setActiveKey={setActiveKey}
           />
         </div>
