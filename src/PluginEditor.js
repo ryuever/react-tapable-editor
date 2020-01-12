@@ -223,6 +223,7 @@ class PluginEditor extends PureComponent {
       })
     })
 
+    // 需要在下一个Event loop中触发setState才能够将`decorator`生效
     setTimeout(() => {
       const { editorState } = this.state
       this.hooks.updateDecorator.call([], editorState)

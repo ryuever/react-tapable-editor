@@ -3,6 +3,7 @@
   display: none;
   visibility: hidden;
   z-index: 1;
+  width: 485px;
 }
 
 .inline-toolbar-inner {
@@ -39,4 +40,33 @@
   left: 50%;
   bottom: -10px;
   transform: translateX(-10px);
+}
+
+.inline-toolbar-link-inner {
+  position: relative;
+  background-image: linear-gradient(to bottom,rgba(49,49,47,.99),#262625);
+  background-repeat: repeat-x;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  padding: 0 10px;
+  visibility: visible;
+  display: flex;
+  flex-direction: row;
+}
+
+.inline-link-input {
+  outline: 0;
+  height: 44px;
+  border: none;
+  flex: auto;
+  background-image: linear-gradient(to bottom,rgba(49,49,47,.99),#262625);
+  color: #fff;
+  font-size: 16px;
+}
+
+.link-action-group {
+  width: 70px;
+  height: 44px;
+  display: flex;
+  flex-direction: row;
 }

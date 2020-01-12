@@ -99,6 +99,7 @@ function InlineToolbar() {
 
     hooks.selectionCollapsedChange.tap('InlineToolbar', (editorState, selectionChanged) => {
       const { newValue: { isCollapsed } } = selectionChanged
+      // console.log('clear ---', timeoutHandler)
       clearTimeout(timeoutHandler)
       if (isCollapsed && isToolbarVisible) {
         hooks.inlineBarChange.call(editorState, 'hidden')
@@ -120,7 +121,9 @@ function InlineToolbar() {
       const { newValue: { hasFocus, isCollapsed } } = selectionChanged
 
       // !hasFocus && isCollapsed当用户选中一个区域以后，这个时候有inlineToolbar, 当点击页面中其它
-      // 区域（只是focus变化，selectionRange没变），这个时候应该要消掉toolbar
+      // 区域（只是focus变化，selectionRange没变），这个时候应该要消掉toolbar；但是如果说，用户点击
+      // 的是`inline-toolbar`区域中的一部分的话，它不应该消失掉；这里面通过`lastMouseTargetAtInlineBar`
+      // 进行实现
       if (!hasFocus && !lastMouseTargetAtInlineBar) {
         hooks.inlineBarChange.call(editorState, 'hidden')
         hiddenHandler(inlineToolbarRef)

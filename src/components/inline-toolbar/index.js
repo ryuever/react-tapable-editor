@@ -1,7 +1,4 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react'
-import {
-  EditorState,
-} from 'draft-js';
 import { withEditor } from '../../index';
 import Immutable from 'immutable'
 import './styles.css'
@@ -18,6 +15,7 @@ import StrikeThrough from '../button/StrikeThrough'
 import Underline from '../button/Underline'
 import InlineCode from '../button/InlineCode'
 import Link from '../button/Link'
+import Unlink from '../button/Unlink'
 
 import NumberedList from '../button/NumberedList'
 import BulletedList from '../button/BulletedList'
@@ -202,33 +200,30 @@ const DisplayContent = ({ blockTypes, styles, getEditor, toggleDisplayMode }) =>
   )
 }
 
-const InputBar = () => {
+const InputBar = ({ getEditor }) => {
   const inputRef = useRef()
-  const onMouseDownHandler = useCallback(e => {
-    e.preventDefault()
-    console.log('e ', e.key)
-    // if (e.key === 'Enter') {
-    //   e.preventDefault();
-    // } else if (e.key === 'Escape') {
-    //   e.preventDefault();
-    // }
-  }, [])
 
   useEffect(() => {
     inputRef.current.focus()
   }, [])
 
-  // const onfocus = e => {
-  //   console.log('focus : ', e.key)
-  // }
-
   return (
-    <input
-      ref={inputRef}
-      // onMouseDown={onMouseDownHandler}
-      // onFocus={onfocus}
-      // onClick={onMouseDownHandler}
-    />
+    <div className="inline-toolbar-link-inner">
+      <input
+        ref={inputRef}
+        className="inline-link-input"
+      />
+      <Divider />
+      <div className='link-action-group'>
+        <LinkButton
+          getEditor={getEditor}
+          active={false}
+        />
+        <Unlink
+          active={false}
+        />
+      </div>
+    </div>
   )
 }
 
@@ -282,7 +277,7 @@ const Toolbar = props => {
           toggleDisplayMode={toggleDisplayMode}
         />
       )}
-      {!inDisplayMode && <InputBar />}
+      {!inDisplayMode && <InputBar getEditor={getEditor}/>}
       <div className="arrow-down" />
     </div>
   )
