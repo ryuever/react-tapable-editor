@@ -15,13 +15,16 @@ function getSelectionInlineStyle(editorState) {
   let styles = new Immutable.OrderedSet()
   let hasChanceToInit = true
   let intersectionIsEmpty = false
+  let hasLink = false
 
   blockMap.skipUntil(function (_, k) {
     return k === startKey;
   }).takeUntil(function (_, k) {
     return k === endKey;
   }).concat(Map([[endKey, blockMap.get(endKey)]])).map(function (block, blockKey) {
-    if (intersectionIsEmpty) return
+    if (hasLink && intersectionIsEmpty) {
+      return
+    }
 
     let sliceStart;
     let sliceEnd;
@@ -38,21 +41,35 @@ function getSelectionInlineStyle(editorState) {
     let current;
 
     while (sliceStart < sliceEnd) {
-      current = chars.get(sliceStart).getStyle();
+      if (hasLink && intersectionIsEmpty) {
+        break;
+      }
 
-      // 只有当前的char包含`inline` style时才进行处理
-      if (current.size > 0) {
-        if (!styles.size) {
-          // 如果已经初始化过了，这个时候`styles`还为空的话，证明`intersect`
-          // 以后为空；所以也就没有处理的必要了
-          if (!hasChanceToInit) {
-            intersectionIsEmpty = true
-            break;
+      const char = chars.get(sliceStart)
+      current = char.getStyle();
+
+      const entityKey = char.getEntity();
+      if (entityKey) {
+        const entityType = contentState.getEntity(entityKey).getType()
+        hasLink = entityType === 'LINK'
+      }
+
+      // 计算inline `styles`；一旦已经知道`intersect`为空，那么就不再进行处理了
+      if (!intersectionIsEmpty) {
+        // 只有当前的char包含`inline` style时才进行处理
+        if (current.size > 0) {
+          if (!styles.size) {
+            // 如果已经初始化过了，这个时候`styles`还为空的话，证明`intersect`
+            // 以后为空；所以也就没有处理的必要了
+            if (!hasChanceToInit) {
+              intersectionIsEmpty = true
+            } else {
+              current.map(style => styles = styles.add(style))
+              hasChanceToInit = false
+            }
+          } else {
+            styles = styles.intersect(current)
           }
-          current.map(style => styles = styles.add(style))
-          hasChanceToInit = false
-        } else {
-          styles = styles.intersect(current)
         }
       }
 
@@ -60,7 +77,10 @@ function getSelectionInlineStyle(editorState) {
     }
   })
 
-  return styles
+  return {
+    styles,
+    hasLink,
+  }
 }
 
 export default getSelectionInlineStyle

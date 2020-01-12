@@ -5,8 +5,8 @@ import './styles.css'
 import StyleControls from './StyleControls'
 import InputBar from './InputBar'
 
-import getSelectionInlineStyle from '../../utils/getSelectionInlineStyle'
 import getSelectionBlockTypes from '../../utils/getSelectionBlockTypes'
+import getInlineToolbarInlineInfo from '../../utils/getInlineToolbarInlineInfo'
 
 const Toolbar = props => {
   const { forwardRef, getEditor } = props
@@ -14,6 +14,7 @@ const Toolbar = props => {
     styles: new Immutable.OrderedSet(),
     blockTypes: [],
     inDisplayMode: true,
+    hasLink: false,
   })
   const inDisplayModeRef = useRef(true)
 
@@ -25,11 +26,14 @@ const Toolbar = props => {
       }
 
       if (editorState) {
-        nextValue.styles = getSelectionInlineStyle(editorState)
+        const { styles, hasLink } = getInlineToolbarInlineInfo(editorState)
+        nextValue.styles = styles
+        nextValue.hasLink = hasLink
         nextValue.blockTypes = getSelectionBlockTypes(editorState)
       } else {
         nextValue.styles = new Immutable.OrderedSet()
         nextValue.blockTypes = []
+        nextValue.hasLink = false
       }
 
       inDisplayModeRef.current = nextValue.inDisplayMode
@@ -46,13 +50,14 @@ const Toolbar = props => {
     inDisplayModeRef.current = !inDisplayMode
   }, [inDisplayMode])
 
-  const { styles, blockTypes, inDisplayMode } = value
+  const { styles, blockTypes, inDisplayMode, hasLink } = value
 
   return (
     <div className="inline-toolbar" ref={forwardRef}>
       {inDisplayMode && (
         <StyleControls
           styles={styles}
+          hasLink={hasLink}
           blockTypes={blockTypes}
           getEditor={getEditor}
           toggleDisplayMode={toggleDisplayMode}

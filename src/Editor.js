@@ -7,7 +7,6 @@ import {
   Editor,
   EditorState,
 } from 'draft-js';
-import StyleControls from './components/style-controls';
 import Title from './components/title';
 import ImageToolbar from './components/image-toolbar'
 import InlineToolbar from './components/inline-toolbar'
@@ -76,8 +75,6 @@ const NewEditor = (props) => {
 
   return (
     <div className="miuffy-editor-root">
-      {/* <StyleControls editorState={editorState} /> */}
-
       <div className="miuffy-editor">
         <Title />
         <Editor

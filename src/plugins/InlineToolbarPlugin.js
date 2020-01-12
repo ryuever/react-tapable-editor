@@ -30,7 +30,7 @@ function InlineToolbar() {
       inlineToolbarRef.current.style.display = 'none'
       inlineToolbarRef.current.style.visibility = 'invisible'
       isToolbarVisible = false
-      hooks.inlineBarChange.call(null, 'hidden')
+      hooks.inlineBarChange.call(editorState, 'hidden')
     }
 
     const visibleHandler = (editorState, editorRef, inlineToolbarRef) => {
@@ -68,7 +68,7 @@ function InlineToolbar() {
           inlineToolbarRef.current.style.overflow = 'visible'
         }
         isToolbarVisible = true
-        hooks.inlineBarChange.call(null, 'visible')
+        hooks.inlineBarChange.call(editorState, 'visible')
       }, 100)
     }
 

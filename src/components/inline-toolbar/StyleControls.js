@@ -99,14 +99,14 @@ const InlineCodeButton = ({ active, getEditor }) => {
   ))
   return <InlineCode active={active} onClick={handleClick.current}/>
 }
-const LinkButton = ({ handleClick, getEditor }) => {
+const LinkButton = ({ handleClick, getEditor, active }) => {
   const onClickHandler = () => {
     const { editorState, hooks } = getEditor()
     const nextState = createLinkSpanAtSelection(editorState)
     hooks.setState.call(nextState)
     handleClick()
   }
-  return <Link onClick={onClickHandler}/>
+  return <Link onClick={onClickHandler} active={active} />
 }
 const NumberedListButton = ({ active, getEditor }) => {
   const handleClick = useRef(buildBlockTypeHandler(
@@ -132,7 +132,8 @@ const StyleControls = ({
   blockTypes,
   styles,
   getEditor,
-  toggleDisplayMode
+  toggleDisplayMode,
+  hasLink,
 }) => {
   return (
     <div className="inline-toolbar-inner">
@@ -181,7 +182,11 @@ const StyleControls = ({
           active={styles.has('CODE')}
         />
 
-        <LinkButton handleClick={toggleDisplayMode} getEditor={getEditor}/>
+        <LinkButton
+          handleClick={toggleDisplayMode}
+          getEditor={getEditor}
+          active={hasLink}
+        />
 
         <Divider />
 

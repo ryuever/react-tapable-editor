@@ -1,7 +1,7 @@
 {
-  "name": "editor",
-  "version": "1.8.1",
-  "description": "react state management",
+  "name": "react-tapable-editor",
+  "version": "1.0.0",
+  "description": "medium like react tapable editor",
   "main": "index.js",
   "scripts": {
     "examples:basic": "DIR=basic EXT=js webpack-dev-server"
