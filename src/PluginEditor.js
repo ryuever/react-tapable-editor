@@ -23,6 +23,7 @@ import AlignmentPlugin from './plugins/AlignmentPlugin'
 import InlineToolbarPlugin from './plugins/InlineToolbarPlugin'
 
 import LinkSpanDecoratorPlugin from './plugins/LinkSpanDecoratorPlugin'
+import LinkDecoratorPlugin from './plugins/LinkDecorator'
 
 const { Provider } = Context
 
@@ -48,6 +49,7 @@ const defaultPlugins = [
   new InlineToolbarPlugin(),
 
   new LinkSpanDecoratorPlugin(),
+  new LinkDecoratorPlugin(),
 ]
 
 class PluginEditor extends PureComponent {
@@ -120,7 +122,7 @@ class PluginEditor extends PureComponent {
       selectionRangeContentChange: new SyncHook(['editorState', 'payload']),
 
       inlineBarChange: new SyncHook(['editorState', 'visibility']),
-
+      hideInlineToolbar: new SyncHook(),
       updateDecorator: new SyncWaterfallHook(['pairs', 'editorState', 'context'])
     }
 
