@@ -123,6 +123,9 @@ class PluginEditor extends PureComponent {
 
       inlineBarChange: new SyncHook(['editorState', 'visibility']),
       hideInlineToolbar: new SyncHook(),
+      afterClickLinkButton: new SyncHook(['editorState']),
+      cleanUpLinkClickState: new SyncHook(),
+
       updateDecorator: new SyncWaterfallHook(['pairs', 'editorState', 'context'])
     }
 

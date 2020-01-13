@@ -102,6 +102,7 @@ const InlineCodeButton = ({ active, getEditor }) => {
 const LinkButton = ({ handleClick, getEditor, active }) => {
   const onClickHandler = () => {
     const { editorState, hooks } = getEditor()
+    hooks.afterClickLinkButton.call(editorState)
     const nextState = createLinkSpanAtSelection(editorState)
     hooks.setState.call(nextState)
     handleClick()

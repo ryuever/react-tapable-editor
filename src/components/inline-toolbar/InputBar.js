@@ -23,12 +23,14 @@ const InputBar = ({ getEditor }) => {
   const onKeyDownHandler = useCallback(e => {
     const { key } = e
     if (key === 'Enter') {
+      hooks.cleanUpLinkClickState.call()
       e.preventDefault()
       const inputValue = e.target.value
       submit(inputValue)
       hooks.hideInlineToolbar.call()
     } else if (key === 'Escape') {
       e.preventDefault()
+      hooks.hideInlineToolbar.call()
     }
   }, [])
 

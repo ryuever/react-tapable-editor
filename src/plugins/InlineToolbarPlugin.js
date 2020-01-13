@@ -7,6 +7,9 @@ function InlineToolbar() {
   let lastMouseTargetAtInlineBar = false
   let inlineToolbarNode
 
+  let editorStateAfterClickLinkButton
+  let isEditorStateValid = false
+
   // 比如用户选择一个区域，弹出了inline-bar这个时候点击其它非editor中的其它区域；
   // 选中区域会变成灰色；这个时候再点击其中的一个文字，使editor focus，你会发现
   // `inline-bar`会闪现一下；这个是因为，当用户再次点击editor时，它首先触发的刚刚
@@ -16,7 +19,19 @@ function InlineToolbar() {
   this.apply = (getEditor) => {
     const { hooks, editorRef, inlineToolbarRef } = getEditor();
 
+    const setupEditorState = editorState => {
+      editorStateAfterClickLinkButton = editorState
+    }
+
+    const clearUpEditorState = editorState => {
+      editorStateAfterClickLinkButton = undefined
+    }
+
     const nodeHiddenHandler = node => {
+      if (editorStateAfterClickLinkButton) {
+        hooks.setState.call(editorStateAfterClickLinkButton)
+      }
+
       const n = node || inlineToolbarNode || document.querySelector('.inline-toolbar')
       n.style.display = 'none'
       n.style.visibility = 'invisible'
@@ -131,6 +146,14 @@ function InlineToolbar() {
       if (hasFocus && !isCollapsed) {
         visibleHandler(editorState, editorRef, inlineToolbarRef)
       }
+    })
+
+    hooks.afterClickLinkButton.tap('InlineToolbarPlugin', editorState => {
+      setupEditorState(editorState)
+    })
+
+    hooks.cleanUpLinkClickState.tap('InlineToolbarPlugin', () => {
+      clearUpEditorState()
     })
   };
 }
