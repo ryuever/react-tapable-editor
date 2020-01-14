@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useCallback } from 'react'
+import { EditorState } from 'draft-js'
 import Divider from './Divider'
 
 import Link from '../button/Link'
@@ -17,7 +18,32 @@ const InputBar = ({ getEditor }) => {
   const submit = value => {
     const { editorState, hooks } = getEditor()
     const newState = createLinkAtSelection(editorState, value)
-    hooks.setState.call(newState)
+    const currentContent = newState.getCurrentContent()
+    const selection = newState.getSelection()
+    const focusOffset = selection.getFocusOffset()
+    const focusKey = selection.getFocusKey()
+
+    // 通过下面的方式，并不能够将cursor放置在刚刚的selection末尾
+    // const nextState = EditorState.set(newState, {
+    //   currentContent: currentContent.merge({
+    //     selectionAfter: currentContent.getSelectionAfter().merge({
+    //       hasFocus: true,
+    //       anchorOffset: focusOffset,
+    //       anchorKey: focusKey,
+    //     })
+    //   })
+    // })
+    // hooks.setState.call(nextState)
+
+    // 当用户输入完以后，指针是放置在selection的后面
+    const nextState = EditorState.forceSelection(newState,
+      currentContent.getSelectionAfter().merge({
+        anchorOffset: focusOffset,
+        anchorKey: focusKey,
+      })
+    )
+
+    hooks.setState.call(nextState)
   }
 
   const onKeyDownHandler = useCallback(e => {

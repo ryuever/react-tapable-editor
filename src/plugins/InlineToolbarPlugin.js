@@ -1,3 +1,4 @@
+import { EditorState } from 'draft-js'
 import getSelectionRectRelativeToOffsetParent from '../utils/rect/getSelectionRectRelativeToOffsetParent';
 import clamp from '../helpers/clamp'
 import getRootNode from '../utils/rect/getRootNode'
@@ -8,7 +9,6 @@ function InlineToolbar() {
   let inlineToolbarNode
 
   let editorStateAfterClickLinkButton
-  let isEditorStateValid = false
 
   // 比如用户选择一个区域，弹出了inline-bar这个时候点击其它非editor中的其它区域；
   // 选中区域会变成灰色；这个时候再点击其中的一个文字，使editor focus，你会发现
@@ -28,8 +28,16 @@ function InlineToolbar() {
     }
 
     const nodeHiddenHandler = node => {
+      // 如果没有这个逻辑处理，当用户点击了`link` button以后，直接点击`Esc`的话，`inlineToolbar`
+      // 消失，但是此时刚刚的selection是灰色的；
       if (editorStateAfterClickLinkButton) {
-        hooks.setState.call(editorStateAfterClickLinkButton)
+        const selection = editorStateAfterClickLinkButton.getSelection()
+        const nextState = EditorState.set(editorStateAfterClickLinkButton, {
+          selection: selection.merge({
+            hasFocus: false,
+          })
+        })
+        hooks.setState.call(nextState)
       }
 
       const n = node || inlineToolbarNode || document.querySelector('.inline-toolbar')
@@ -87,10 +95,6 @@ function InlineToolbar() {
       }, 100)
     }
 
-    hooks.hideInlineToolbar.tap('inlineToolbarPlugin', () => {
-      if (isToolbarVisible) nodeHiddenHandler()
-    })
-
     document.addEventListener('mousedown', e => {
       inlineToolbarNode = inlineToolbarNode || document.querySelector('.inline-toolbar')
       const appRoot = document.querySelector('#app')
@@ -115,6 +119,10 @@ function InlineToolbar() {
       if (node === document.body && isToolbarVisible) {
         nodeHiddenHandler(inlineToolbarNode)
       }
+    })
+
+    hooks.hideInlineToolbar.tap('inlineToolbarPlugin', (collapseSelection) => {
+      if (isToolbarVisible) nodeHiddenHandler(inlineToolbarNode, collapseSelection)
     })
 
     hooks.selectionCollapsedChange.tap('InlineToolbar', (editorState, selectionChanged) => {
