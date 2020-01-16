@@ -10,7 +10,6 @@ const Focus = WrappedComponent => props => {
   const [focused, setFocus] = useState(false)
   const focusedRef = useRef(false)
   const currentBlockKey = block.getKey()
-  const payloadRef = useRef()
   timeoutHandler = useRef()
 
   useEffect(() => {

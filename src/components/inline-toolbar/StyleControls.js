@@ -5,6 +5,7 @@ import H2 from '../button/H2'
 import H3 from '../button/H3'
 import H4 from '../button/H4'
 import Blockquote from '../button/Blockquote'
+import CodeBlock from '../button/CodeBlock'
 
 import Bold from '../button/Bold'
 import Italic from '../button/Italic'
@@ -63,6 +64,13 @@ const BlockquoteButton = ({ active, getEditor }) => {
     'blockquote'
   ))
   return <Blockquote active={active} onClick={handleClick.current}/>
+}
+const CodeBlockButton = ({ active, getEditor }) => {
+  const handleClick = useRef(buildBlockTypeHandler(
+    getEditor,
+    'code-block'
+  ))
+  return <CodeBlock active={active} onClick={handleClick.current}/>
 }
 const BoldButton = ({ active, getEditor }) => {
   const handleClick = useRef(buildInlineTypeHandler(
@@ -158,6 +166,10 @@ const StyleControls = ({
         <BlockquoteButton
           getEditor={getEditor}
           active={onlyContains(blockTypes, 'blockquote')}
+        />
+        <CodeBlockButton
+          getEditor={getEditor}
+          active={onlyContains(blockTypes, 'code-block')}
         />
 
         <Divider />

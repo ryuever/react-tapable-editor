@@ -2,6 +2,7 @@
 
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path')
 
 const { DIR, EXT = 'ts' } = process.env;
 

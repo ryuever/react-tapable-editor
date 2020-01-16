@@ -26,10 +26,10 @@ function BlockRenderMapPlugin() {
           wrapper: OL_WRAP,
         },
 
-        'code-block': {
-          element: 'pre',
-          wrapper: <CodeBlock />,
-        },
+        // 'code-block': {
+        //   element: 'pre',
+        //   wrapper: <CodeBlock />,
+        // },
       });
 
       return DefaultDraftBlockRenderMap.merge(newBlockRenderMap);

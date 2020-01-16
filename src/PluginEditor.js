@@ -25,6 +25,11 @@ import InlineToolbarPlugin from './plugins/InlineToolbarPlugin'
 import LinkSpanDecoratorPlugin from './plugins/LinkSpanDecoratorPlugin'
 import LinkDecoratorPlugin from './plugins/LinkDecorator'
 
+import PrismDecorator from './decorators/prism'
+import './decorators/prism/theme/prism-solarizedlight.css'
+import './decorators/prism/theme/editor.css'
+import MultiDecorator from './decorators/prism/multiple'
+
 const { Provider } = Context
 
 import Editor from './Editor'
@@ -163,7 +168,13 @@ class PluginEditor extends PureComponent {
       if (pairs.length > 0) {
         const newDecorator = new CompositeDecorator(pairs)
         this.setState({
-          editorState: EditorState.set(editorState, { decorator: newDecorator }),
+          editorState: EditorState.set(editorState, { decorator:
+            new MultiDecorator([
+              new PrismDecorator(),
+              newDecorator,
+
+            ])
+          }),
         })
       }
     })
