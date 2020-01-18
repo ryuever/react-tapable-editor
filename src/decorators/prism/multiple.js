@@ -18,7 +18,6 @@ MultiDecorator.prototype.getDecorations = function(block, contentState) {
 
     this.decorators.forEach(function(decorator, i) {
         var _decorations = decorator.getDecorations(block, contentState);
-        console.log('this decorator : ', decorator)
 
         _decorations.forEach(function(key, offset) {
             if (!key) {
@@ -30,9 +29,6 @@ MultiDecorator.prototype.getDecorations = function(block, contentState) {
             decorations[offset] = key;
         });
     });
-
-
-    console.log('decorations : ', decorations)
 
     return Immutable.List(decorations);
 };

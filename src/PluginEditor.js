@@ -21,6 +21,7 @@ import HandleDroppedFilesPlugin from './plugins/HandleDroppedFilesPlugin'
 import AddImagePlugin from './plugins/AddImagePlugin'
 import AlignmentPlugin from './plugins/AlignmentPlugin'
 import InlineToolbarPlugin from './plugins/InlineToolbarPlugin'
+import StateFilterPlugin from './plugins/StateFilterPlugin';
 
 import LinkSpanDecoratorPlugin from './plugins/LinkSpanDecoratorPlugin'
 import LinkDecoratorPlugin from './plugins/LinkDecorator'
@@ -55,6 +56,8 @@ const defaultPlugins = [
 
   new LinkSpanDecoratorPlugin(),
   new LinkDecoratorPlugin(),
+
+  new StateFilterPlugin(),
 ]
 
 class PluginEditor extends PureComponent {
@@ -65,6 +68,9 @@ class PluginEditor extends PureComponent {
     this.hooks = {
       setState: new SyncHook(['editorState', 'callback']),
       onChange: new SyncWaterfallHook(['editorState']),
+
+      stateFilter: new SyncBailHook(['oldEditorState', 'editorState', 'pasteText']),
+
       toggleWaterfallBlockType: new SyncWaterfallHook([
         'newEditorState',
         'editorState',

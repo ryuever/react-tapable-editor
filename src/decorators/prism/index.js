@@ -26,10 +26,7 @@ PrismDecorator.prototype.getDecorations = function(block) {
 
     highlighted[blockKey] = {};
 
-    console.log('block type : ', blockType, blockData, blockText)
-
     if (blockType !== 'code-block') {
-      console.log('return -------')
       return Immutable.List(decorations);
     }
 
@@ -43,9 +40,6 @@ PrismDecorator.prototype.getDecorations = function(block) {
     // Parse text using Prism
     var grammar = Prism.languages[syntax];
     tokens = Prism.tokenize(blockText, grammar);
-
-    console.log('block type : ', blockType, blockData, blockText)
-    console.log('token : ', tokens)
 
     function processToken(decorations, token, offset) {
 
