@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-// import CodeMirror from 'react-codemirror'
+import './styles.css'
 
 class CodeWrapper extends Component {
   constructor(props) {
@@ -10,12 +10,6 @@ class CodeWrapper extends Component {
     this.state = {
       code: children,
     };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      code: nextProps.children,
-    });
   }
 
   render() {

@@ -10,7 +10,8 @@
   padding-top: 46px;
   padding-bottom: 30px;
   position: relative;
-  font-family: 'Tahoma For Number', 'Chinese Quote', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: Helvetica Neue,-apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,Roboto,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,Myriad Pro,Hiragino Sans,Yu Gothic,Lucida Grande,sans-serif;
+  /* font-family: 'Tahoma For Number', 'Chinese Quote', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif; */
 }
 
 .miuffy-editor {

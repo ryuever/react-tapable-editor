@@ -36,12 +36,12 @@
   padding: 10px 20px;
 } */
 
-.DraftEditor-root .public-DraftStyleDefault-pre {
+/* .DraftEditor-root .public-DraftStyleDefault-pre {
   background-color: rgba(0, 0, 0, 0.05);
   font-family: 'Inconsolata', 'Menlo', 'Consolas', monospace;
   font-size: 16px;
   padding: 20px;
-}
+} */
 
 /* .DraftEditor-controls {
   font-family: 'Helvetica', sans-serif;
