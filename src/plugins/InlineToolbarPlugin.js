@@ -95,6 +95,7 @@ function InlineToolbar() {
       }, 100)
     }
 
+    // TODO clean up `removeEventListener`
     document.addEventListener('mousedown', e => {
       inlineToolbarNode = inlineToolbarNode || document.querySelector('.inline-toolbar')
       const appRoot = document.querySelector('#app')

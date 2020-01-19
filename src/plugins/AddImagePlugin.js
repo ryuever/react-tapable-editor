@@ -1,8 +1,9 @@
 import { AtomicBlockUtils } from 'draft-js'
 import focus from '../decorators/focus'
+import alignment from '../decorators/alignment'
 import Image from '../components/image'
 
-const DecoratedImage = focus(Image)
+const DecoratedImage = alignment(focus(Image))
 
 function AddImagePlugin() {
   this.apply = (getEditor) => {
