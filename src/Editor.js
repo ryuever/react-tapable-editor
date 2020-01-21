@@ -47,7 +47,9 @@ const NewEditor = (props) => {
   const onChange = useCallback((newEditorState) => {
     const { editorState } = getEditor();
 
+
     const nextState = hooks.stateFilter.call(editorState, newEditorState, pasteText.current)
+    console.log('change ', nextState, nextState.getLastChangeType())
     hooks.onChange.call(nextState);
   }, []);
 

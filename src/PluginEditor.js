@@ -38,12 +38,12 @@ import Editor from './Editor'
 import decorateComposer from './decoratorComposer'
 
 const defaultPlugins = [
-  new PlaceholderPlugin(),
+  // new PlaceholderPlugin(),
   new BlockStyleFnPlugin(),
   new SelectionChangePlugin(),
   new CustomStyleMapPlugin(),
   new BlockRenderMapPlugin(),
-  new StyleControlPlugin(),
+  // new StyleControlPlugin(),
 
   new AddImagePlugin(),
   new HandleDroppedFilesPlugin(),
@@ -53,7 +53,7 @@ const defaultPlugins = [
 
   new AlignmentPlugin(),
 
-  new InlineToolbarPlugin(),
+  // new InlineToolbarPlugin(),
 
   new LinkSpanDecoratorPlugin(),
   new LinkDecoratorPlugin(),
@@ -137,6 +137,8 @@ class PluginEditor extends PureComponent {
       hideInlineToolbar: new SyncHook(),
       afterClickLinkButton: new SyncHook(['editorState']),
       cleanUpLinkClickState: new SyncHook(),
+
+      toggleImageToolbarVisible: new SyncHook(['visibility', 'contentBlock']),
 
       updateDecorator: new SyncWaterfallHook(['pairs', 'editorState', 'context'])
     }
@@ -254,6 +256,8 @@ class PluginEditor extends PureComponent {
   }
 
   getEditor = () => {
+    console.log('+++++++++++++ state ---------', this.state.editorState)
+
     return {
       hooks: this.hooks,
       editorState: this.state.editorState,

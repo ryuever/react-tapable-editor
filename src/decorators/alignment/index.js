@@ -5,8 +5,8 @@ import clamp from '../../helpers/clamp'
 import './styles.css'
 
 const Alignment = WrappedComponent => props => {
-  const { blockProps: { getEditor }} = props
-  const { editorRef } = getEditor()
+  const { blockProps: { getEditor }, block} = props
+  const { editorRef, hooks } = getEditor()
   const isToolbarVisible = useRef(false)
   const timeoutHandler = useRef()
 
@@ -29,6 +29,7 @@ const Alignment = WrappedComponent => props => {
     alignmentToolbar.style.display = 'block'
     alignmentToolbar.style.visibility = 'visible'
     isToolbarVisible.current = true
+    hooks.toggleImageToolbarVisible.call(true, block)
 
     const alignmentToolbarHeight = alignmentToolbar.offsetHeight
     const alignmentToolbarWidth = alignmentToolbar.offsetWidth
@@ -53,12 +54,12 @@ const Alignment = WrappedComponent => props => {
       alignmentToolbar.style.display = 'none'
       alignmentToolbar.style.visibility = 'invisible'
       isToolbarVisible.current = false
+      hooks.toggleImageToolbarVisible.call(false, block)
 
       timeoutHandler.current = null
       document.removeEventListener('mouseover', eventHandler)
       alignmentToolbar.removeEventListener('mouseleave', onMouseLeaveHandler)
     }, 100)
-
   })
 
   const onMouseEnterHandler = useCallback(e => {
@@ -94,7 +95,7 @@ const Alignment = WrappedComponent => props => {
   }, [])
 
   return (
-    <div onMouseEnter={onMouseEnterHandler} onMouseLeave={onMouseLeaveHandler}>
+    <div onMouseEnter={onMouseEnterHandler} onMouseLeave={onMouseLeaveHandler} className="alignment">
       <WrappedComponent {...props} />
     </div>
   )

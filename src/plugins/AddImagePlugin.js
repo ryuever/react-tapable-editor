@@ -17,7 +17,10 @@ function AddImagePlugin() {
       const contentStateWithEntity = contentState.createEntity(
         entityType,
         'IMMUTABLE',
-        { src },
+        {
+          src,
+          alignment: 'center',
+        },
       );
       const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
       const newEditorState = AtomicBlockUtils.insertAtomicBlock(
