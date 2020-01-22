@@ -1,0 +1,32 @@
+.resizable-component {
+  position: relative;
+}
+
+.bar-left {
+  position: absolute;
+  padding-left: 10px;
+  top: 50%;
+  left: 0;
+  transform: translateY(-10px);
+  box-sizing: content-box;
+}
+
+.bar {
+  width: 5px;
+  height: 100px;
+  background-color: gray;
+  border-radius: 10px;
+}
+
+.bar-right:hover,
+.bar-left:hover {
+  cursor: pointer;
+}
+
+.bar-right {
+  position: absolute;
+  padding-right: 10px;
+  top: 50%;
+  right: 0;
+  transform: translateY(-10px);
+}

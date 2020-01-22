@@ -17,7 +17,7 @@ const Alignment = WrappedComponent => props => {
     const alignmentToolbar = document.querySelector('.image-toolbar')
 
     document.addEventListener('mouseover', eventHandler)
-    alignmentToolbar.addEventListener('mouseleave', onMouseLeaveHandler)
+    alignmentToolbar.addEventListener('mouseout', onMouseOutHandler)
 
     const rootOffsetTop = rootNode.offsetTop
     const rootOffsetLeft = rootNode.offsetLeft
@@ -58,7 +58,7 @@ const Alignment = WrappedComponent => props => {
 
       timeoutHandler.current = null
       document.removeEventListener('mouseover', eventHandler)
-      alignmentToolbar.removeEventListener('mouseleave', onMouseLeaveHandler)
+      alignmentToolbar.removeEventListener('mouseout', onMouseOutHandler)
     }, 100)
   })
 
@@ -76,7 +76,7 @@ const Alignment = WrappedComponent => props => {
     showToolbar(node)
   }, [])
 
-  const onMouseLeaveHandler = useCallback(e => {
+  const onMouseOutHandler = useCallback(e => {
     e.stopPropagation()
     if (!isToolbarVisible.current) return
     hideToolbar()
@@ -95,7 +95,7 @@ const Alignment = WrappedComponent => props => {
   }, [])
 
   return (
-    <div onMouseEnter={onMouseEnterHandler} onMouseLeave={onMouseLeaveHandler} className="alignment">
+    <div onMouseEnter={onMouseEnterHandler} onMouseOut={onMouseOutHandler} className="alignment">
       <WrappedComponent {...props} />
     </div>
   )
