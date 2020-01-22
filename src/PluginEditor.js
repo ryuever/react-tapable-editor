@@ -165,12 +165,27 @@ class PluginEditor extends PureComponent {
     })
 
     this.hooks.setState.tap('setState', (editorState, callback) => {
+      // console.log('trigger setState ------', editorState)
+
+      const newContentState = editorState.getCurrentContent()
+      const blockMap = newContentState.getBlockMap()
+      const lastBlock = newContentState.getLastBlock()
+      const lastBlockText = lastBlock.getText()
+
+      console.log('on tap setState : ', lastBlockText)
+
       this.setState({ editorState }, () => {
         const newState = this.state.editorState
         if (typeof callback === 'function') {
           callback(newState)
         }
       })
+    })
+
+    this.hooks.setState.intercept({
+      call: (source, target, routeList) => {
+        // console.log('---------source : ', source, target)
+      }
     })
 
     this.hooks.updateDecorator.tap('updateDecorate', (pairs, editorState, context) => {
@@ -256,7 +271,7 @@ class PluginEditor extends PureComponent {
   }
 
   getEditor = () => {
-    console.log('+++++++++++++ state ---------', this.state.editorState)
+    // console.log('+++++++++++++ state ---------', this.state.editorState)
 
     return {
       hooks: this.hooks,

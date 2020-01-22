@@ -59,9 +59,11 @@ const Focus = WrappedComponent => props => {
   // block
   const handleClick = useCallback(() => {
     // 如果已经被选中，再次点击不再触发handler
+    // pay attention, editorState should use the latest value
+    const { editorState } = getEditor()
     const newEditorState = setSelectionToBlock(editorState, block)
     hooks.setState.call(newEditorState)
-  }, [block, editorState])
+  }, [block])
 
   const className = focused ? 'focused_atomic_active' : 'focused_atomic'
 

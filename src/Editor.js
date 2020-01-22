@@ -49,7 +49,14 @@ const NewEditor = (props) => {
 
 
     const nextState = hooks.stateFilter.call(editorState, newEditorState, pasteText.current)
-    console.log('change ', nextState, nextState.getLastChangeType())
+
+
+    const newContentState = nextState.getCurrentContent()
+    const blockMap = newContentState.getBlockMap()
+    const lastBlock = newContentState.getLastBlock()
+    const lastBlockText = lastBlock.getText()
+
+    console.log('on change hooks', lastBlockText, nextState.getLastChangeType())
     hooks.onChange.call(nextState);
   }, []);
 

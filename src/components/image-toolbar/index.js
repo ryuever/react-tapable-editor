@@ -52,7 +52,13 @@ const Toolbar = props => {
       // console.log('editorState.getSelection() : ', editorState.getSelection(), blockRef.current.getKey())
 
       const newState = EditorState.forceSelection(nextState, nextState.getSelection())
-      console.log('new state :', newState)
+
+      const newContentState = newState.getCurrentContent()
+      const blockMap = newContentState.getBlockMap()
+      const lastBlock = newContentState.getLastBlock()
+      const lastBlockText = lastBlock.getText()
+
+      console.log('new state :', lastBlockText)
       hooks.setState.call(newState, editorState => {
         const contentState = editorState.getCurrentContent();
         const entity = blockRef.current.getEntityAt(0);

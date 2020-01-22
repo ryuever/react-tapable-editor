@@ -4,7 +4,7 @@ function BlockStyleFnPlugin() {
   this.apply = (getEditor) => {
     const { hooks } = getEditor();
     hooks.blockStyleFn.tap('BlockStyleFnPlugin', (...props) => {
-      console.log('block style : ')
+      // console.log('block style : ')
       const block = props[0]
       switch (block.getType()) {
         // 控制比如说，最后渲染出来的引用，它的class是
