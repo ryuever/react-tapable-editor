@@ -6,29 +6,45 @@
   margin-bottom: 0;
 } */
 
+body {
+  margin: 0;
+  overflow: hidden;
+}
+
 .miuffy-editor-root {
-  padding-top: 46px;
-  padding-bottom: 30px;
+  width: 100%;
+  height: 100%;
   position: relative;
   font-family: Helvetica Neue,-apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,Roboto,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,Myriad Pro,Hiragino Sans,Yu Gothic,Lucida Grande,sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: auto;
   /* font-family: 'Tahoma For Number', 'Chinese Quote', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif; */
 }
 
 .miuffy-editor {
-  max-width: 874px;
-  margin-left: auto;
-  margin-right: auto;
-  min-height: calc(100vh - 88px);
-  margin-top: 10px;
+  max-width: 100%;
   background: #fff;
-  border: 1px solid #e8e8e8;
-  border-bottom: none;
-  z-index: -1;
-  box-shadow: 0 2px 8px hsla(0,0%,45.1%,.08);
-  border-radius: 8px;
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-top: 20px;
+  border: none;
+  padding: 0 96px 30vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.miuffy-editor .article-title,
+.miuffy-editor div[data-contents="true"] > div
+/* .miuffy-editor div[data-contents="true"] > figure */
+{
+  width: 900px;
+  max-width: 100%;
+}
+
+div[data-contents="true"] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .miuffy-paragraph {
@@ -50,4 +66,9 @@
 
 .miuffy-draft-editor {
   margin: 48px 60px 0 60px;
+}
+
+* {
+  /* box-sizing: border-box; */
+  box-sizing: content-box;
 }

@@ -21,6 +21,9 @@ function AddImagePlugin() {
         {
           src,
           alignment: 'center',
+          resizeLayout: {
+            width: '900px',
+          }
         },
       );
       const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
@@ -43,13 +46,14 @@ function AddImagePlugin() {
         const type = entityState.getType();
         const data = entityState.getData()
         if (type === 'IMAGE') {
-          const { alignment } = data
+          const { alignment, resizeLayout } = data
           return {
             component: DecoratedImage,
             editable: false,
             props: {
               getEditor,
               alignment,
+              resizeLayout,
             }
           };
         }

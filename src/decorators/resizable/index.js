@@ -3,6 +3,7 @@
 
 import React, { useCallback, useState, useRef, useMemo, useEffect } from 'react'
 import DraftOffsetKey from 'draft-js/lib/DraftOffsetKey'
+import { EditorState } from 'draft-js'
 import './styles.css'
 
 const LeftBar = React.memo(props => {
@@ -13,7 +14,6 @@ const LeftBar = React.memo(props => {
     onMouseLeaveHandler,
   } = props
 
-  console.log('left : ', resizeMode, visible)
   const shouldRender = visible || resizeMode
   return (
     <div
@@ -34,7 +34,6 @@ const RightBar = React.memo(props => {
     onMouseLeaveHandler,
   } = props
   const shouldRender = visible || resizeMode
-  console.log('right ', resizeMode, visible)
   return (
     <div
       className="bar-right"
@@ -53,9 +52,11 @@ const Resizable = WrappedComponent => props => {
   const resizeModeStartCoordinate = useRef()
   const resizeModeStartNodeLayout = useRef()
   const { block, blockProps } = props
-  const { alignment } = blockProps
+  const { alignment, resizeLayout, getEditor } = blockProps
   const blockKey = block.getKey()
   const dataOffsetKey = DraftOffsetKey.encode(blockKey, 0, 0)
+  const nextWidth = useRef()
+  const resizeRef = useRef()
 
   const onMouseDownHandler = useCallback(e => {
     setResizeMode(true)
@@ -86,10 +87,20 @@ const Resizable = WrappedComponent => props => {
   }, [resizeMode])
 
   const onMouseUpHandler = useCallback(e => {
-    console.log('up ====')
     setResizeMode(false)
     resizeModeStartCoordinate.current = null
     resizeModeStartNodeLayout.current = null
+
+    const { editorState, hooks } = getEditor()
+    const contentState = editorState.getCurrentContent()
+    const entityKey = block.getEntityAt(0)
+    const newContent = contentState.mergeEntityData(entityKey, {
+      resizeLayout: {
+        width: nextWidth.current,
+      }
+    });
+    const nextState = EditorState.push(editorState, newContent)
+    hooks.setState.call(nextState)
   }, [])
 
   const onMouseMoveHandler = useCallback(e => {
@@ -105,7 +116,6 @@ const Resizable = WrappedComponent => props => {
     // if negative, means narrow
 
     let deltaX
-    let nextWidth
 
     if (leftBarVisible) {
       deltaX = oldClientX - clientX
@@ -115,16 +125,17 @@ const Resizable = WrappedComponent => props => {
 
     // 只有当时居中的时候，width的变化需要是滑动距离的两倍
     if (alignment === 'center') {
-      nextWidth = `${resizeModeStartNodeLayout.current.width + deltaX * 2}px`
+      nextWidth.current = `${resizeModeStartNodeLayout.current.width + deltaX * 2}px`
     } else {
-      nextWidth = `${resizeModeStartNodeLayout.current.width + deltaX}px`
+      nextWidth.current = `${resizeModeStartNodeLayout.current.width + deltaX}px`
     }
 
-    const node = document.querySelector(
-      `[data-offset-key="${dataOffsetKey}"]`
-    )
+    // const node = document.querySelector(
+    //   `[data-offset-key="${dataOffsetKey}"]`
+    // )
 
-    node.style.width = nextWidth
+    resizeRef.current.style.width = nextWidth.current
+    // node.style.width = nextWidth.current
   }, [resizeMode, alignment, leftBarVisible, rightBarVisible])
 
   const onMouseEnterLeftHandler = useCallback(e => {
@@ -148,7 +159,14 @@ const Resizable = WrappedComponent => props => {
   }, [rightBarVisible])
 
   return (
-    <div onMouseDown={onMouseDownHandler} className="resizable-component">
+    <div
+      style={{
+        width: resizeLayout.width,
+      }}
+      onMouseDown={onMouseDownHandler}
+      className="resizable-component"
+      ref={resizeRef}
+    >
       <LeftBar
         visible={leftBarVisible}
         resizeMode={resizeMode}

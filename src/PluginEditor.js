@@ -169,8 +169,6 @@ class PluginEditor extends PureComponent {
       const lastBlock = newContentState.getLastBlock()
       const lastBlockText = lastBlock.getText()
 
-      console.log('on tap setState : ', lastBlockText)
-
       this.setState({ editorState }, () => {
         const newState = this.state.editorState
         if (typeof callback === 'function') {

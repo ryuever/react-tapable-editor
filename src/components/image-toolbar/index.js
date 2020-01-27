@@ -39,20 +39,9 @@ const Toolbar = props => {
     if (entityKey) {
       const { editorState } = getEditor()
       const contentState = editorState.getCurrentContent();
-      console.log('old editorState : ', editorState)
       const newContent = contentState.mergeEntityData(entityKey, { alignment });
       const nextState = EditorState.push(editorState, newContent)
-      // const newState = EditorState.forceSelection(nextState, new SelectionState({
-      //   anchorKey: blockRef.current.getKey(),
-      //   anchorOffset: 0,
-      //   focusKey: blockRef.current.getKey(),
-      //   focusOffset: 0,
-      //   isBackward: false,
-      // }))
-      // console.log('editorState.getSelection() : ', editorState.getSelection(), blockRef.current.getKey())
-
       const newState = EditorState.forceSelection(nextState, nextState.getSelection())
-
       const newContentState = newState.getCurrentContent()
       const blockMap = newContentState.getBlockMap()
       const lastBlock = newContentState.getLastBlock()

@@ -5,7 +5,7 @@ import './styles.css'
 const Focus = WrappedComponent => props => {
   const { blockProps, block } = props
   const { getEditor } = blockProps
-  const { editorState, hooks } = getEditor()
+  const { hooks } = getEditor()
   const isMounted = useRef(false)
   const [focused, setFocus] = useState(false)
   const focusedRef = useRef(false)

@@ -24,8 +24,6 @@ function BlockStyleFnPlugin() {
           const data = entityState.getData()
           if (type === 'IMAGE') {
             const { alignment } = data
-            console.log('alignment : ', alignment)
-
             switch(alignment) {
               case 'center':
                 return 'figure-image-center'
