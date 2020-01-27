@@ -5,25 +5,32 @@
 
 .bar-left {
   position: absolute;
-  padding-left: 10px;
-  top: 50%;
+  top: 0;
+  bottom: 0;
   left: 0;
-  transform: translateY(-10px);
-  box-sizing: content-box;
+  width: 20px;
+  cursor: col-resize;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .bar {
   width: 5px;
   height: 20%;
+  max-height: 100px;
   background-color: gray;
   border-radius: 10px;
-  cursor: col-resize;
 }
 
 .bar-right {
   position: absolute;
-  padding-right: 10px;
-  top: 50%;
+  top: 0;
   right: 0;
-  transform: translateY(-10px);
+  bottom: 0;
+  width: 20px;
+  cursor: col-resize;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

@@ -5,17 +5,25 @@ import React, { useCallback, useState, useRef, useMemo } from 'react'
 import DraftOffsetKey from 'draft-js/lib/DraftOffsetKey'
 import './styles.css'
 
-const LeftBar = React.memo(() => (
-  <div className="bar-left">
-    <div className="bar" />
-  </div>
-))
+const LeftBar = React.memo(props => {
+  const { visible, resizeMode } = props
+  if (!visible && !resizeMode) return null
+  return (
+    <div className="bar-left">
+      <div className="bar" />
+    </div>
+  )
+}, (prev, next) => prev.visible === next.visible && prev.resizeMode === next.resizeMode)
 
-const RightBar = React.memo(() => (
-  <div className="bar-right">
-    <div className="bar" />
-  </div>
-))
+const RightBar = React.memo(props => {
+  const { visible, resizeMode } = props
+  if (!visible && !resizeMode) return null
+  return (
+    <div className="bar-right">
+      <div className="bar" />
+    </div>
+  )
+}, (prev, next) => prev.visible === next.visible && prev.resizeMode === next.resizeMode)
 
 const Resizable = WrappedComponent => props => {
   const [leftBarVisible, setLeftBarVisible] = useState(false)
@@ -30,13 +38,11 @@ const Resizable = WrappedComponent => props => {
   const node = document.querySelector(
     `[data-offset-key="${dataOffsetKey}"]`
   )
-  console.log('node -----', node)
 
   const onMouseDownHandler = useCallback(e => {
     document.addEventListener('mousemove', onMouseMoveHandler)
     document.addEventListener('mouseup', onMouseUpHandler)
 
-    console.log('mouse down----')
     resizeMode.current = true
     const { clientX, clientY, currentTarget } = e
     const offsetWidth = currentTarget.offsetWidth
@@ -65,29 +71,18 @@ const Resizable = WrappedComponent => props => {
 
   const onMouseMoveHandler = useCallback(e => {
     const { clientX, clientY, currentTarget }  = e
-    // console.log('resize ', resizeMode.current)
     if (!resizeMode.current) return
-    // if (!resizeModeLastMovePoint.current) {
-    //   resizeModeLastMovePoint.current = {
-    //     clientX,
-    //     clientY
-    //   }
-    //   return
-    // }
+
     const {
       clientX: oldClientX,
       clientY: oldClientY,
     } = resizeModeStartCoordinate.current
-
 
     // if positive, means amplify
     // if negative, means narrow
     const deltaX = clientX - oldClientX
     const deltaY = clientY - oldClientY
 
-    const percentX = deltaX / resizeModeStartNodeLayout.current.width
-    // const width = getComputedStyle(node).width
-    // const nextWidth = `${parseFloat(resizeModeStartNodeLayout.current.width) * (1 + percentX)}px`
     const nextWidth = `${resizeModeStartNodeLayout.current.width + deltaX * 2}px`
     const node = document.querySelector(
       `[data-offset-key="${dataOffsetKey}"]`
@@ -95,11 +90,6 @@ const Resizable = WrappedComponent => props => {
     console.log('client x : ', clientX, oldClientX, deltaX, nextWidth, node)
 
     node.style.width = nextWidth
-
-    // resizeModeLastMovePoint.current = {
-    //   clientX,
-    //   clientY
-    // }
   }, [])
 
   const onMouseEnterHandler = useCallback(e => {
@@ -114,6 +104,8 @@ const Resizable = WrappedComponent => props => {
     if (rightBarVisible) { setRightBarVisible(false)}
   }, [leftBarVisible, rightBarVisible])
 
+
+
   return (
     <div
       // onMouseMove={onMouseMoveHandler}
@@ -123,9 +115,9 @@ const Resizable = WrappedComponent => props => {
       onMouseEnter={onMouseEnterHandler}
       className="resizable-component"
     >
-      {leftBarVisible && <LeftBar />}
+      <LeftBar visible={leftBarVisible} resizeMode={resizeMode.current} />
       <WrappedComponent {...props} />
-      {rightBarVisible && <RightBar />}
+      <RightBar visible={rightBarVisible} resizeMode={resizeMode.current} />
     </div>
   )
 }
