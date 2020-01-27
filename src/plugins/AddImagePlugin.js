@@ -33,18 +33,23 @@ function AddImagePlugin() {
       hooks.setState.call(newEditorState)
     });
 
+    // 函数触发的时机，是否可以将alignment属性设置到props
     hooks.blockRendererFn.tap('AddImagePlugin', (contentBlock, editorState) => {
       if (contentBlock.getType() === 'atomic') {
         const contentState = editorState.getCurrentContent();
         const entity = contentBlock.getEntityAt(0);
         if (!entity) return null;
-        const type = contentState.getEntity(entity).getType();
+        const entityState = contentState.getEntity(entity)
+        const type = entityState.getType();
+        const data = entityState.getData()
         if (type === 'IMAGE') {
+          const { alignment } = data
           return {
             component: DecoratedImage,
             editable: false,
             props: {
               getEditor,
+              alignment,
             }
           };
         }

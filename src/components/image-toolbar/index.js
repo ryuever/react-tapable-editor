@@ -58,7 +58,6 @@ const Toolbar = props => {
       const lastBlock = newContentState.getLastBlock()
       const lastBlockText = lastBlock.getText()
 
-      console.log('new state :', lastBlockText)
       hooks.setState.call(newState, editorState => {
         const contentState = editorState.getCurrentContent();
         const entity = blockRef.current.getEntityAt(0);

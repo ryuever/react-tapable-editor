@@ -19,7 +19,6 @@ import StyleControlPlugin from './plugins/StyleControlPlugin'
 import DefaultHandleKeyCommandPlugin from './plugins/DefaultHandleKeyCommandPlugin'
 import HandleDroppedFilesPlugin from './plugins/HandleDroppedFilesPlugin'
 import AddImagePlugin from './plugins/AddImagePlugin'
-import AlignmentPlugin from './plugins/AlignmentPlugin'
 import InlineToolbarPlugin from './plugins/InlineToolbarPlugin'
 import StateFilterPlugin from './plugins/StateFilterPlugin';
 
@@ -43,7 +42,7 @@ const defaultPlugins = [
   new SelectionChangePlugin(),
   new CustomStyleMapPlugin(),
   new BlockRenderMapPlugin(),
-  // new StyleControlPlugin(),
+  new StyleControlPlugin(),
 
   new AddImagePlugin(),
   new HandleDroppedFilesPlugin(),
@@ -51,9 +50,7 @@ const defaultPlugins = [
   // 对于keyCommand的一个兜底行为
   new DefaultHandleKeyCommandPlugin(),
 
-  new AlignmentPlugin(),
-
-  // new InlineToolbarPlugin(),
+  new InlineToolbarPlugin(),
 
   new LinkSpanDecoratorPlugin(),
   new LinkDecoratorPlugin(),

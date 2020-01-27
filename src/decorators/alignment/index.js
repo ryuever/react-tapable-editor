@@ -95,7 +95,11 @@ const Alignment = WrappedComponent => props => {
   }, [])
 
   return (
-    <div onMouseEnter={onMouseEnterHandler} onMouseOut={onMouseOutHandler} className="alignment">
+    <div
+      onMouseEnter={onMouseEnterHandler}
+      onMouseOut={onMouseOutHandler}
+      className="alignment"
+    >
       <WrappedComponent {...props} />
     </div>
   )
