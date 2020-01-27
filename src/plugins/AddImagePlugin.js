@@ -1,4 +1,5 @@
 import { AtomicBlockUtils } from 'draft-js'
+
 import focus from '../decorators/focus'
 import alignment from '../decorators/alignment'
 import Image from '../components/image'
@@ -47,6 +48,7 @@ function AddImagePlugin() {
         const data = entityState.getData()
         if (type === 'IMAGE') {
           const { alignment, resizeLayout } = data
+
           return {
             component: DecoratedImage,
             editable: false,

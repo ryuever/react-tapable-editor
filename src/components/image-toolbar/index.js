@@ -39,7 +39,32 @@ const Toolbar = props => {
     if (entityKey) {
       const { editorState } = getEditor()
       const contentState = editorState.getCurrentContent();
-      const newContent = contentState.mergeEntityData(entityKey, { alignment });
+
+      const resizeLayout = {}
+      switch(alignment) {
+        case 'center':
+          resizeLayout.width = '900px';
+          break;
+        case 'right':
+          resizeLayout.width = '450px';
+          break;
+        case 'left':
+          resizeLayout.width = '450px';
+          break;
+        case 'leftFill':
+          resizeLayout.width = '450px';
+          break;
+        case 'rightFill':
+          resizeLayout.width = '450px';
+          break;
+      }
+
+      // 设置alignment的同时，要设置resizeLayout;否则比如插入一个图片，然后resize图片，这个
+      // 再点击alignment中的值的话，输入问题，它的width会变成刚刚resize时的值；
+      const newContent = contentState.mergeEntityData(entityKey, {
+        alignment,
+        resizeLayout,
+      });
       const nextState = EditorState.push(editorState, newContent)
       const newState = EditorState.forceSelection(nextState, nextState.getSelection())
       const newContentState = newState.getCurrentContent()

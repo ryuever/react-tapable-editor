@@ -1,14 +1,27 @@
 import React, { useCallback, useEffect, useRef } from 'react'
+import DraftOffsetKey from 'draft-js/lib/DraftOffsetKey'
 import getRootNode from '../../utils/rect/getRootNode'
 import clamp from '../../helpers/clamp'
 
 import './styles.css'
 
 const Alignment = WrappedComponent => props => {
-  const { blockProps: { getEditor }, block} = props
+  const { blockProps: { getEditor, alignment, resizeLayout }, block} = props
   const { editorRef, hooks } = getEditor()
   const isToolbarVisible = useRef(false)
   const timeoutHandler = useRef()
+  const blockKey = block.getKey()
+  const dataOffsetKey = DraftOffsetKey.encode(blockKey, 0, 0)
+
+  useEffect(() => {
+    const node = document.querySelector(
+      `[data-offset-key="${dataOffsetKey}"]`
+    )
+
+    // 当点击`image-toolbar`时，它并不会触发一次`resizeMode`中的width
+    // 设置，需要在这里手动设置一次width
+    node.style.width = resizeLayout.width
+  }, [alignment])
 
   const showToolbar = useCallback(node => {
     const rootNode = getRootNode(editorRef)

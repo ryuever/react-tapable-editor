@@ -39,12 +39,14 @@ body {
 {
   width: 900px;
   max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 div[data-contents="true"] {
-  display: flex;
+  /* display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: center; */
 }
 
 .miuffy-paragraph {

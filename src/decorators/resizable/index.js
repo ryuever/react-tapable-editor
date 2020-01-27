@@ -52,7 +52,7 @@ const Resizable = WrappedComponent => props => {
   const resizeModeStartCoordinate = useRef()
   const resizeModeStartNodeLayout = useRef()
   const { block, blockProps } = props
-  const { alignment, resizeLayout, getEditor } = blockProps
+  const { alignment, resizeLayout, getEditor, node } = blockProps
   const blockKey = block.getKey()
   const dataOffsetKey = DraftOffsetKey.encode(blockKey, 0, 0)
   const nextWidth = useRef()
@@ -86,21 +86,30 @@ const Resizable = WrappedComponent => props => {
     }
   }, [resizeMode])
 
+  useEffect(() => {
+    const node = document.querySelector(
+      `[data-offset-key="${dataOffsetKey}"]`
+    )
+    node.style.width = resizeLayout.width
+  }, [])
+
   const onMouseUpHandler = useCallback(e => {
     setResizeMode(false)
     resizeModeStartCoordinate.current = null
     resizeModeStartNodeLayout.current = null
 
     const { editorState, hooks } = getEditor()
-    const contentState = editorState.getCurrentContent()
-    const entityKey = block.getEntityAt(0)
-    const newContent = contentState.mergeEntityData(entityKey, {
-      resizeLayout: {
-        width: nextWidth.current,
-      }
-    });
-    const nextState = EditorState.push(editorState, newContent)
-    hooks.setState.call(nextState)
+    if (nextWidth.current) {
+      const contentState = editorState.getCurrentContent()
+      const entityKey = block.getEntityAt(0)
+      const newContent = contentState.mergeEntityData(entityKey, {
+        resizeLayout: {
+          width: nextWidth.current,
+        }
+      });
+      const nextState = EditorState.push(editorState, newContent)
+      hooks.setState.call(nextState)
+    }
   }, [])
 
   const onMouseMoveHandler = useCallback(e => {
@@ -130,12 +139,11 @@ const Resizable = WrappedComponent => props => {
       nextWidth.current = `${resizeModeStartNodeLayout.current.width + deltaX}px`
     }
 
-    // const node = document.querySelector(
-    //   `[data-offset-key="${dataOffsetKey}"]`
-    // )
-
-    resizeRef.current.style.width = nextWidth.current
-    // node.style.width = nextWidth.current
+    const node = document.querySelector(
+      `[data-offset-key="${dataOffsetKey}"]`
+    )
+    // resizeRef.current.style.width = nextWidth.current
+    node.style.width = nextWidth.current
   }, [resizeMode, alignment, leftBarVisible, rightBarVisible])
 
   const onMouseEnterLeftHandler = useCallback(e => {
@@ -160,9 +168,6 @@ const Resizable = WrappedComponent => props => {
 
   return (
     <div
-      style={{
-        width: resizeLayout.width,
-      }}
       onMouseDown={onMouseDownHandler}
       className="resizable-component"
       ref={resizeRef}
