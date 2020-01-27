@@ -1,5 +1,6 @@
 .resizable-component {
   position: relative;
+  user-select: none;
 }
 
 .bar-left {
@@ -13,14 +14,10 @@
 
 .bar {
   width: 5px;
-  height: 100px;
+  height: 20%;
   background-color: gray;
   border-radius: 10px;
-}
-
-.bar-right:hover,
-.bar-left:hover {
-  cursor: pointer;
+  cursor: col-resize;
 }
 
 .bar-right {

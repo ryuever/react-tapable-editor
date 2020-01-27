@@ -1,7 +1,8 @@
 // https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers/onmousemove
 // https://media.prod.mdn.mozit.cloud/attachments/2013/03/05/5031/5692db994e59bae0b1c9e66f7df259b9/draggable_elements.html
 
-import React, { useCallback, useState, useRef } from 'react'
+import React, { useCallback, useState, useRef, useMemo } from 'react'
+import DraftOffsetKey from 'draft-js/lib/DraftOffsetKey'
 import './styles.css'
 
 const LeftBar = React.memo(() => (
@@ -23,8 +24,19 @@ const Resizable = WrappedComponent => props => {
   const resizeModeStartCoordinate = useRef()
   const resizeModeStartNodeLayout = useRef()
   const resizeModeLastMovePoint = useRef()
+  const { block } = props
+  const blockKey = block.getKey()
+  const dataOffsetKey = DraftOffsetKey.encode(blockKey, 0, 0)
+  const node = document.querySelector(
+    `[data-offset-key="${dataOffsetKey}"]`
+  )
+  console.log('node -----', node)
 
   const onMouseDownHandler = useCallback(e => {
+    document.addEventListener('mousemove', onMouseMoveHandler)
+    document.addEventListener('mouseup', onMouseUpHandler)
+
+    console.log('mouse down----')
     resizeMode.current = true
     const { clientX, clientY, currentTarget } = e
     const offsetWidth = currentTarget.offsetWidth
@@ -41,37 +53,53 @@ const Resizable = WrappedComponent => props => {
   }, [])
 
   const onMouseUpHandler = useCallback(e => {
+    document.removeEventListener('mousemove', onMouseMoveHandler)
+    document.removeEventListener('mouseup', onMouseUpHandler)
+
+    console.log('up ====')
+
     resizeMode.current = false
     resizeModeStartCoordinate.current = null
     resizeModeStartNodeLayout.current = null
   }, [])
 
-  const onMouseMoverHandler = useCallback(e => {
+  const onMouseMoveHandler = useCallback(e => {
     const { clientX, clientY, currentTarget }  = e
+    // console.log('resize ', resizeMode.current)
     if (!resizeMode.current) return
-    if (!resizeModeLastMovePoint.current) {
-      resizeModeLastMovePoint.current = {
-        clientX,
-        clientY
-      }
-      return
-    }
+    // if (!resizeModeLastMovePoint.current) {
+    //   resizeModeLastMovePoint.current = {
+    //     clientX,
+    //     clientY
+    //   }
+    //   return
+    // }
     const {
       clientX: oldClientX,
       clientY: oldClientY,
-    } = resizeModeLastMovePoint.current
+    } = resizeModeStartCoordinate.current
+
 
     // if positive, means amplify
     // if negative, means narrow
     const deltaX = clientX - oldClientX
     const deltaY = clientY - oldClientY
 
-    resizeModeLastMovePoint.current = {
-      clientX,
-      clientY
-    }
+    const percentX = deltaX / resizeModeStartNodeLayout.current.width
+    // const width = getComputedStyle(node).width
+    // const nextWidth = `${parseFloat(resizeModeStartNodeLayout.current.width) * (1 + percentX)}px`
+    const nextWidth = `${resizeModeStartNodeLayout.current.width + deltaX * 2}px`
+    const node = document.querySelector(
+      `[data-offset-key="${dataOffsetKey}"]`
+    )
+    console.log('client x : ', clientX, oldClientX, deltaX, nextWidth, node)
 
-    console.log('client x : ', clientX, clientY,  deltaX, deltaY)
+    node.style.width = nextWidth
+
+    // resizeModeLastMovePoint.current = {
+    //   clientX,
+    //   clientY
+    // }
   }, [])
 
   const onMouseEnterHandler = useCallback(e => {
@@ -88,9 +116,9 @@ const Resizable = WrappedComponent => props => {
 
   return (
     <div
-      onMouseMove={onMouseMoverHandler}
+      // onMouseMove={onMouseMoveHandler}
       onMouseDown={onMouseDownHandler}
-      onMouseUp={onMouseUpHandler}
+      // onMouseUp={onMouseUpHandler}
       onMouseLeave={onMouseLeaveHandler}
       onMouseEnter={onMouseEnterHandler}
       className="resizable-component"
