@@ -19,7 +19,6 @@ var updateBlockMapLinks = function updateBlockMapLinks(blockMap, newParentBlock,
     var newChildrenArray = parentChildrenList.toArray();
 
     newChildrenArray.splice(insertionIndex, 1)
-
     newChildrenArray.splice(insertionIndex, 0, parentBlockKey);
 
     const nextOriginalParentBlock = originalParentBlock.merge({
@@ -36,7 +35,6 @@ var updateBlockMapLinks = function updateBlockMapLinks(blockMap, newParentBlock,
       children: List([originalBlockKey, belowBlockKey]),
     })
 
-    console.log('next new : ', nextNewParentBlock)
     const nextOriginalBlock = originalBlock.merge({
       parent: parentBlockKey,
       prevSibling: null,
@@ -55,7 +53,6 @@ var updateBlockMapLinks = function updateBlockMapLinks(blockMap, newParentBlock,
   });
 };
 
-
 function CreateNestBlockPlugin() {
   this.apply = (getState) => {
     const { hooks } = getState();
@@ -72,7 +69,8 @@ function CreateNestBlockPlugin() {
       if (!blockParentKey) return 'not-handled'
       const parentBlock = currentContent.getBlockForKey(blockParentKey)
       if (!parentBlock) return 'not-handled'
-      const isFlexRow = parentBlock.getData('flexRow')
+      const isFlexRow = parentBlock.getData().get('flexRow')
+
       if (!isFlexRow) return 'not-handled'
       const selectionState = editorState.getSelection()
       const contentState = editorState.getCurrentContent()
@@ -102,14 +100,19 @@ function CreateNestBlockPlugin() {
         return v === blockToSplit;
       }).rest();
 
-      // `blocksBefore.toArray()` to check its value
+      // `blocksBefore.toArray()` to check value
       const newBlocks = blocksBefore.concat([
         [newParentKey, newParentBlock],
         [key, blockToSplit],
         [keyBelow, blockBelow]
       ], blocksAfter).toOrderedMap();
 
-      const newNewBlocks = updateBlockMapLinks(newBlocks, newParentBlock, blockToSplit, blockBelow);
+      const newNewBlocks = updateBlockMapLinks(
+        newBlocks,
+        newParentBlock,
+        blockToSplit,
+        blockBelow
+      );
 
       const newContentState = contentState.merge({
         blockMap: newNewBlocks,

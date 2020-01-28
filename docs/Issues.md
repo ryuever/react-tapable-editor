@@ -32,7 +32,7 @@ DraftEditorContent-core.react.js
 generateRandomKey
 
 在AtomicBlockUtils有使用到。。。
-参考：splitBlockInContentState；正常触发`split-block`时，它会调用`splitBlockInContentState`这个方法；
+参考：splitBlockInContentState；正常触发`split-block`时，它会调用`splitBlockInContentState`这个方法；现在通过拦截的方式对split-block进行细化。
 insertTextInContentState
 
 ### DraftOffsetKey
