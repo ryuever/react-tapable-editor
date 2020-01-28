@@ -54,3 +54,7 @@
   box-sizing: border-box;
 }
 
+.display-flex >div {
+  display: flex;
+  flex-direction: row;
+}

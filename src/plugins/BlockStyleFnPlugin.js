@@ -1,19 +1,30 @@
+import classes from 'classnames'
 import './blockStyleFnPlugin.css'
 
 function BlockStyleFnPlugin() {
   this.apply = (getEditor) => {
     const { hooks } = getEditor();
     hooks.blockStyleFn.tap('BlockStyleFnPlugin', (...props) => {
-      // console.log('block style : ')
       const block = props[0]
+      const cls = []
+      const blockData = block.getData()
+      const isFlexRow = blockData.get('flexRow')
+
+      if (block.children.size && isFlexRow) {
+        cls.push('display-flex')
+      }
+
       switch (block.getType()) {
         // 控制比如说，最后渲染出来的引用，它的class是
         case 'blockquote':
-          return 'miuffy-blockquote';
+          cls.push('miuffy-blockquote')
+          break;
         case 'unstyled':
-          return 'miuffy-paragraph';
+          cls.push('miuffy-paragraph')
+          break;
         case 'unordered-list-item':
-          return 'miuffy-unordered-list-item';
+          cls.push('miuffy-unordered-list-item')
+          break;
         case 'atomic':
           const { editorState } = getEditor()
           const contentState = editorState.getCurrentContent();
@@ -27,20 +38,29 @@ function BlockStyleFnPlugin() {
 
             switch(alignment) {
               case 'center':
-                return 'figure-image-center'
+                cls.push('figure-image-center')
+                break;
               case 'right':
-                return 'figure-image-right'
+                cls.push('figure-image-right')
+                break;
               case 'left':
-                return 'figure-image-left'
+                cls.push('figure-image-left')
+                break;
               case 'leftFill':
-                return 'figure-image-left-fill'
+                cls.push('figure-image-left-fill')
+                break;
               case 'rightFill':
-                return 'figure-image-right-fill'
+                cls.push('figure-image-right-fill')
+                break;
+              default:
+                cls.push('figure-image')
             }
-            return 'figure-image'
           }
-        default: return null;
+          break;
+        default:
+          // ...
       }
+      return classes(cls)
     });
   };
 }

@@ -21,3 +21,20 @@
 [Why Wagtail’s new editor is built with Draft.js](https://wagtail.io/blog/why-wagtail-new-editor-is-built-with-draft-js/)
 
 [draftail](https://github.com/springload/draftail)
+
+## create block
+
+DraftEditorContent-core.react.js
+
+
+### createNestBlockPlugin
+用来创建blockKey
+generateRandomKey
+
+在AtomicBlockUtils有使用到。。。
+参考：splitBlockInContentState；正常触发`split-block`时，它会调用`splitBlockInContentState`这个方法；
+insertTextInContentState
+
+### DraftOffsetKey
+
+其中会引入`blockKey`

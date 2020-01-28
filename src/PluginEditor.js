@@ -3,12 +3,14 @@ import {
   RichUtils,
   EditorState,
   CompositeDecorator,
+  convertFromRaw,
 } from 'draft-js';
 import {
   SyncHook,
   SyncBailHook,
   SyncWaterfallHook,
 } from 'tapable'
+import Immutable from 'immutable'
 import Context from './Context'
 import PlaceholderPlugin from './plugins/PlaceholderPlugin';
 import BlockStyleFnPlugin from './plugins/BlockStyleFnPlugin';
@@ -21,6 +23,7 @@ import HandleDroppedFilesPlugin from './plugins/HandleDroppedFilesPlugin'
 import AddImagePlugin from './plugins/AddImagePlugin'
 import InlineToolbarPlugin from './plugins/InlineToolbarPlugin'
 import StateFilterPlugin from './plugins/StateFilterPlugin';
+import CreateNestBlockPlugin from './plugins/CreateNestBlockPlugin'
 
 import LinkSpanDecoratorPlugin from './plugins/LinkSpanDecoratorPlugin'
 import LinkDecoratorPlugin from './plugins/LinkDecorator'
@@ -31,10 +34,15 @@ import './decorators/prism/theme/prism.css'
 import './decorators/prism/theme/editor.css'
 import MultiDecorator from './decorators/prism/multiple'
 
-const { Provider } = Context
 
 import Editor from './Editor'
 import decorateComposer from './decoratorComposer'
+const { Provider } = Context
+const { Map } = Immutable
+
+window.__DRAFT_GKX = {
+  'draft_tree_data_support': true,
+}
 
 const defaultPlugins = [
   // new PlaceholderPlugin(),
@@ -56,6 +64,8 @@ const defaultPlugins = [
   new LinkDecoratorPlugin(),
 
   new StateFilterPlugin(),
+
+  new CreateNestBlockPlugin(),
 ]
 
 class PluginEditor extends PureComponent {
@@ -143,8 +153,41 @@ class PluginEditor extends PureComponent {
     this.editorRef = createRef()
     this.inlineToolbarRef = createRef()
     this.imageToolbarRef = createRef()
+
+    const rawState = {
+      blocks: [
+        {
+          key: 'A',
+          text: '',
+          children: [
+            {
+              key: 'B',
+              text: '',
+              data: new Map({ flexRow: true }),
+              children: [
+                {key: 'C', text: 'left block', children: []},
+                {key: 'D', text: 'right block', children: []},
+              ],
+            },
+            {
+              key: 'E',
+              type: 'header-one',
+              text: 'This is a tree based document!',
+              children: [],
+            },
+          ],
+        },
+      ],
+      entityMap: {},
+    };
+
+    const newContentState = convertFromRaw(rawState)
+
+    console.log('new content : ', newContentState.getBlockMap().toJS())
+
     this.state = {
-      editorState: EditorState.createEmpty()
+      // editorState: EditorState.createEmpty()
+      editorState: EditorState.createWithContent(newContentState)
     }
 
     this.plugins.forEach(plugin => {

@@ -6,10 +6,16 @@ import React, {
 import {
   Editor,
   EditorState,
+  convertToRaw,
+  convertFromRaw,
 } from 'draft-js';
 import Title from './components/title';
 import ImageToolbar from './components/image-toolbar'
 import InlineToolbar from './components/inline-toolbar'
+
+window.__DRAFT_GKX = {
+  'draft_tree_data_support': true,
+}
 
 import './style.css';
 // https://draftjs.org/docs/advanced-topics-issues-and-pitfalls.html#missing-draftcss
@@ -47,16 +53,36 @@ const NewEditor = (props) => {
   const onChange = useCallback((newEditorState) => {
     const { editorState } = getEditor();
 
-
     const nextState = hooks.stateFilter.call(editorState, newEditorState, pasteText.current)
-
 
     const newContentState = nextState.getCurrentContent()
     const blockMap = newContentState.getBlockMap()
     const lastBlock = newContentState.getLastBlock()
     const lastBlockText = lastBlock.getText()
 
-    console.log('on change hooks', lastBlockText, nextState.getLastChangeType())
+    // console.log('on change hooks', convertToRaw(newContentState))
+    const rawState = convertToRaw(newContentState)
+
+    // console.log('rawState.blocks[0] ', rawState.blocks[0])
+    // if (!rawState.blocks[0].children.length) {
+    //   rawState.blocks[0].children = [{
+    //     key: "c1nlb",
+    //     text: "helloworld",
+    //     type: "unstyled",
+    //     depth: 1,
+    //     inlineStyleRanges: [],
+    //     entityRanges: [],
+    //     data: {},
+    //     children: [],
+    //   }]
+    // }
+
+    const state = EditorState.createWithContent(convertFromRaw(rawState))
+
+    // console.log('state : ', nextState, state, rawState)
+    console.log('nextState : ', nextState, newContentState)
+
+    // hooks.onChange.call(state)
     hooks.onChange.call(nextState);
   }, []);
 
