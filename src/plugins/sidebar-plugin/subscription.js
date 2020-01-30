@@ -87,8 +87,6 @@ class Subscription {
       selectableNode.removeEventListener('mouseleave', leaveHandler)
     }
 
-    console.log('sele', selectableNode)
-
     // https://stackoverflow.com/questions/24148403/trigger-css-transition-on-appended-element
     requestAnimationFrame(() => {
       child.classList.add('sidebar-addon-visible')
@@ -103,7 +101,6 @@ class Subscription {
   }
 
   mouseLeaveHandler = (e, listenerKey) => {
-    // this.removeNode(listenerKey)
     this.removeNodeV2(listenerKey)
   }
 
@@ -118,20 +115,9 @@ class Subscription {
       } catch (err) {
         console.log('err ', err)
       }
-      // console.log('remove child', child)
       delete this.nodes[listenerKey]
     }
   }
-
-  // removeNode = listenerKey => {
-  //   const offsetKey = getOffsetKeyFromListenerKey(listenerKey)
-  //   const target = getNodeByOffsetKey(offsetKey)
-  //   const children = getOffsetKeyNodeChildren(offsetKey)
-  //   children.forEach(child => {
-  //     console.log('remove child', child)
-  //     target.removeChild(child)
-  //   })
-  // }
 
   mouseEnterSelectableHandler = (e, listenerKey) => {
     e.preventDefault()
