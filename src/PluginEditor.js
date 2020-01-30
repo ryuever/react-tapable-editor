@@ -24,6 +24,8 @@ import AddImagePlugin from './plugins/AddImagePlugin'
 import InlineToolbarPlugin from './plugins/InlineToolbarPlugin'
 import StateFilterPlugin from './plugins/StateFilterPlugin';
 import CreateNestBlockPlugin from './plugins/CreateNestBlockPlugin'
+// import DragPlugin from './plugins/drag-plugin'
+import SidebarPlugin from './plugins/sidebar-plugin'
 
 import LinkSpanDecoratorPlugin from './plugins/LinkSpanDecoratorPlugin'
 import LinkDecoratorPlugin from './plugins/LinkDecorator'
@@ -66,6 +68,9 @@ const defaultPlugins = [
   new StateFilterPlugin(),
 
   new CreateNestBlockPlugin(),
+
+  // new DragPlugin(),
+  new SidebarPlugin(),
 ]
 
 class PluginEditor extends PureComponent {
@@ -147,7 +152,10 @@ class PluginEditor extends PureComponent {
 
       toggleImageToolbarVisible: new SyncHook(['visibility', 'contentBlock']),
 
-      updateDecorator: new SyncWaterfallHook(['pairs', 'editorState', 'context'])
+      updateDecorator: new SyncWaterfallHook(['pairs', 'editorState', 'context']),
+
+      updateDragSubscription: new SyncHook(['diff']),
+      syncBlockKeys: new SyncHook(['blockKeys', 'blockChanges'])
     }
 
     this.editorRef = createRef()
@@ -186,8 +194,8 @@ class PluginEditor extends PureComponent {
     console.log('new content : ', newContentState.getBlockMap().toJS())
 
     this.state = {
-      // editorState: EditorState.createEmpty()
-      editorState: EditorState.createWithContent(newContentState)
+      editorState: EditorState.createEmpty()
+      // editorState: EditorState.createWithContent(newContentState)
     }
 
     this.plugins.forEach(plugin => {

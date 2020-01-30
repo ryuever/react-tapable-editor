@@ -12,6 +12,7 @@ import {
 import Title from './components/title';
 import ImageToolbar from './components/image-toolbar'
 import InlineToolbar from './components/inline-toolbar'
+import compareArray from './utils/compareArray'
 
 window.__DRAFT_GKX = {
   'draft_tree_data_support': true,
@@ -36,6 +37,21 @@ const NewEditor = (props) => {
   const { hooks, editorState } = getEditor();
   const didUpdate = useRef(false);
   const pasteText = useRef();
+  const lastBlockMapKeys = useRef([])
+  const isInCompositionModeRef = useRef(false)
+
+  useEffect(() => {
+    const currentContent = editorState.getCurrentContent()
+    const currentBlockMap = currentContent.getBlockMap()
+    const currentBlockMapKeys = currentBlockMap.keySeq().toArray()
+    const diff = compareArray(lastBlockMapKeys.current, currentBlockMapKeys)
+    const isInCompositionMode = editorState.isInCompositionMode()
+
+    const force = diff.length || (isInCompositionModeRef.current && !isInCompositionMode)
+
+    hooks.syncBlockKeys.call(currentBlockMapKeys, force )
+    isInCompositionModeRef.current = editorState.isInCompositionMode()
+  })
 
   useEffect(() => {
     if (didUpdate.current) {
@@ -49,6 +65,19 @@ const NewEditor = (props) => {
     hooks.updatePlaceholder.call(editorState, placeholder);
     didUpdate.current = true;
   }, []);
+
+  useEffect(() => {
+    const currentContent = editorState.getCurrentContent()
+    const currentBlockMap = currentContent.getBlockMap()
+    const currentBlockMapKeys = currentBlockMap.keySeq().toArray()
+    const diff = compareArray(lastBlockMapKeys.current, currentBlockMapKeys)
+
+    if (diff.length) {
+      hooks.updateDragSubscription.call(diff)
+    }
+
+    lastBlockMapKeys.current = currentBlockMapKeys
+  })
 
   const onChange = useCallback((newEditorState) => {
     const { editorState } = getEditor();
@@ -80,7 +109,7 @@ const NewEditor = (props) => {
     const state = EditorState.createWithContent(convertFromRaw(rawState))
 
     // console.log('state : ', nextState, state, rawState)
-    console.log('nextState : ', nextState, newContentState)
+    // console.log('nextState : ', nextState, newContentState)
 
     // hooks.onChange.call(state)
     hooks.onChange.call(nextState);
