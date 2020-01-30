@@ -3,7 +3,7 @@ const svgNS = 'http://www.w3.org/2000/svg'
 const createAddOn = listenerKey => {
   const wrapper = document.createElement('div')
   wrapper.classList.add('sidebar-addon')
-  wrapper.setAttribute('id', listenerKey)
+  wrapper.setAttribute('data-id', listenerKey)
 
   // add plus icon
   const plusWrapper = document.createElement('div')
