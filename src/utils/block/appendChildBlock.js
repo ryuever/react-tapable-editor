@@ -1,4 +1,5 @@
 import removeBlock from './removeBlock'
+import { List } from 'immutable'
 
 /**
  * 1. remove childBlock first
@@ -29,10 +30,10 @@ export default (blockMap, parentBlock, childBlock) => {
     [childBlockKey, childBlock],
   ], blocksAfter).toOrderedMap();
 
-  childKeysArray.append(childBlockKey)
+  childKeysArray.push(childBlockKey)
   const newParentBlock = parentBlock.merge({
     children: List(childKeysArray),
   })
 
-  return newBlockMap.set(parentKey, newParentBlock)
+  return newBlockMap.set(parentBlockKey, newParentBlock)
 }

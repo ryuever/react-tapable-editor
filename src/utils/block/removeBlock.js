@@ -38,6 +38,8 @@ export default (blockMap, blockToRemove) => {
     newBlockMap = newBlockMap.set(parentKey, newParentBlock)
   }
 
+  console.log('block to remove : ', blockToRemove)
+
   const prevSiblingKey = blockToRemove.getPrevSiblingKey()
   const nextSiblingKey = blockToRemove.getNextSiblingKey()
 

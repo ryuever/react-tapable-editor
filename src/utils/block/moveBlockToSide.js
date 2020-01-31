@@ -1,6 +1,7 @@
 import removeBlock from './removeBlock'
 import appendChildBlock from './appendChildBlock'
 import moveBlockBefore from './moveBlockBefore'
+import createEmptyBlockNode from './createEmptyBlockNode'
 
 export default (
   blockMap,
@@ -12,11 +13,11 @@ export default (
   const parentBlock = blockMap.get(parentKey)
 
   // 首先查看parentNode是否包含`isFlexRow` data
-  const isFlexRow = parentBlock.getData.get('flexRow')
-  let newBlockMap = blockMapAfterRemove
+  // const isFlexRow = parentBlock.getData().get('flexRow')
+  let newBlockMap = blockMap
 
-  if (!isFlexRow) {
-    const emptyBlock = createEmptyBlock()
+  if (!parentBlock) {
+    const emptyBlock = createEmptyBlockNode()
     const flexBlock = emptyBlock.merge({
       data: emptyBlock.getData().merge({
         flexRow: true,
