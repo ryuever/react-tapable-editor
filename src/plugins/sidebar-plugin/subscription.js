@@ -149,7 +149,7 @@ class Subscription {
     const offsetKey = getOffsetKeyFromListenerKey(listenerKey)
     const node = getNodeByOffsetKey(offsetKey)
     node.removeAttribute('draggable')
-
+    const { hooks } = this.getEditor()
     hooks.teardownDragDrop.call()
   }
 
