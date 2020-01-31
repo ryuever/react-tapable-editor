@@ -1,6 +1,6 @@
 import { EditorState } from 'draft-js'
 import DragDropManager from './DragDropManager'
-import transferBlock from '../../utils/transferBlock'
+import transferBlock from '../../utils/block/transferBlock'
 
 function DragPlugin() {
   this.apply = (getEditor) => {
