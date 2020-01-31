@@ -1,14 +1,17 @@
-import { keyExtractor, BlockExtractor } from './keyExtractor';
+import { keyExtractor, blockKeyExtractor } from './keyExtractor';
 import { getNodeByOffsetKey, getOffsetKey } from './utils'
 import DropTarget from './DropTarget'
 
 class DragDropManager {
-  constructor(getEditor) {
+  constructor({ getEditor, onUpdate }) {
     this.dragSourceId = null
+    this.dropTargetIds = new Set()
+    this.committedDropTargetIds = new Set()
     this.getEditor = getEditor
     this.dropTargetListeners = []
     this.globalPrepareListeners = []
     this.sourcePrepareListeners = []
+    this.onUpdate = onUpdate
   }
 
   prepare(sourceBlockKey) {
@@ -56,6 +59,20 @@ class DragDropManager {
 
   globalDropHandler = e => {
     this.teardown()
+    const targetIds = [...this.committedDropTargetIds]
+    const targetId = targetIds.pop()
+
+    const targetBlockKey = blockKeyExtractor(targetId)
+    const sourceBlockKey = blockKeyExtractor(this.dragSourceId)
+
+    this.onUpdate({
+      targetBlockKey,
+      sourceBlockKey,
+    })
+
+    this.committedDropTargetIds = new Set()
+    this.dropTargetIds = new Set()
+    this.dragSourceId = null
   }
 
   dragStartHandler = (e, sourceId) => {
@@ -63,18 +80,31 @@ class DragDropManager {
     this.setup()
   }
 
+  addDropTarget = dropTargetId => {
+    this.dropTargetIds.add(dropTargetId)
+    this.committedDropTargetIds.add(dropTargetId)
+  }
+
+  removeDropTarget = dropTargetId => {
+    this.dropTargetIds.delete(dropTargetId)
+  }
+
   setup() {
     const { editorState } = this.getEditor()
     const currentContent = editorState.getCurrentContent()
     const blockMap = currentContent.getBlockMap()
 
-    const sourceBlockKey = BlockExtractor(this.dragSourceId)
+    const sourceBlockKey = blockKeyExtractor(this.dragSourceId)
 
     blockMap.keySeq().toArray().forEach(blockKey => {
       // `dragSource` could not be `dropTarget`
       if (sourceBlockKey === blockKey) return
 
-      const targetListener = new DropTarget(blockKey)
+      const targetListener = new DropTarget({
+        blockKey,
+        addDropTarget: this.addDropTarget,
+        removeDropTarget: this.removeDropTarget,
+      })
       this.dropTargetListeners.push(targetListener)
     })
   }

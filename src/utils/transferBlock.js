@@ -47,9 +47,7 @@ const removeBlock = (currentContent, blockKey) => {
     const newPrevSiblingBlock = prevSiblingBlock.merge({
       nextSibling: nextSiblingKey
     })
-    newBlockMap = newBlockMap.set({
-      prevSiblingKey: newPrevSiblingBlock
-    })
+    newBlockMap = newBlockMap.set(prevSiblingKey, newPrevSiblingBlock)
   }
   if (nextSiblingKey) {
     const nextSiblingBlock = newBlockMap.get(nextSiblingKey)
@@ -57,14 +55,15 @@ const removeBlock = (currentContent, blockKey) => {
       prevSibling: prevSiblingKey
     })
 
-    newBlockMap = newBlockMap.set({
-      nextSiblingKey: newNextSiblingBlock
-    })
+    newBlockMap = newBlockMap.set(nextSiblingKey, newNextSiblingBlock)
   }
 
-  return currentContent.merge({
-    blockMap: newBlockMap,
-  })
+  return {
+    newContent: currentContent.merge({
+      blockMap: newBlockMap,
+    }),
+    blockToRemove,
+  }
 }
 
 const transferBlockToPosition = (currentContent, blockToRemove, targetBlockKey, position) => {
@@ -101,17 +100,14 @@ const transferBlockToPosition = (currentContent, blockToRemove, targetBlockKey, 
     newBlockMap = newBlockMap.set(parentKey, newParentBlock)
   }
 
-  const prevSiblingKey = blockToRemove.getPrevSiblingKey()
-  const nextSiblingKey = blockToRemove.getNextSiblingKey()
+  const prevSiblingKey = blockToOperate.getPrevSiblingKey()
 
   if (prevSiblingKey) {
     const prevSiblingBlock = newBlockMap.get(prevSiblingKey)
     const newPrevSiblingBlock = prevSiblingBlock.merge({
       nextSibling: newBlockKey
     })
-    newBlockMap = newBlockMap.set({
-      prevSiblingKey: newPrevSiblingBlock
-    })
+    newBlockMap = newBlockMap.set(prevSiblingKey, newPrevSiblingBlock)
   }
 
   {
@@ -119,18 +115,14 @@ const transferBlockToPosition = (currentContent, blockToRemove, targetBlockKey, 
       prevSibling: prevSiblingKey,
       nextSibling: targetBlockKey
     })
-    newBlockMap = newBlockMap.set({
-      newBlockKey: newBlockToRemove,
-    })
+    newBlockMap = newBlockMap.set(newBlockKey, newBlockToRemove)
   }
 
   {
     const newBlockToOperate = blockToOperate.merge({
       prevSibling: newBlockKey,
     })
-    newBlockMap = newBlockMap.set({
-      targetBlockKey: newBlockToOperate,
-    })
+    newBlockMap = newBlockMap.set(targetBlockKey, newBlockToOperate)
   }
 
   return {
@@ -153,7 +145,10 @@ const transferBlock = (editorState, sourceBlockKey, targetBlockKey, position = '
   currentContent = contentAfterRemove.newContent
   const blockToRemove = contentAfterRemove.blockToRemove
 
+  console.log('contentAfterRemove ', contentAfterRemove)
+
   const contentAfterAdd = transferBlockToPosition(currentContent, blockToRemove, targetBlockKey, position)
+  console.log('content after add : ', contentAfterAdd)
 
   return contentAfterAdd.newContent
 }

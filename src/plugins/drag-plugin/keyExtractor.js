@@ -8,7 +8,7 @@ export const keyExtractor = (blockKey, type) => {
   return `${type}_${blockKey}_${count}`
 }
 
-export const BlockExtractor = listenerKey => {
+export const blockKeyExtractor = listenerKey => {
   const parts = listenerKey.split('_')
   return parts[1]
 }

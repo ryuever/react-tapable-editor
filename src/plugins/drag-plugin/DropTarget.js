@@ -5,17 +5,29 @@ import {
 } from './utils'
 
 class DropTarget {
-  constructor(blockKey) {
+  constructor({
+    blockKey,
+    addDropTarget,
+    removeDropTarget,
+  }) {
     this.blockKey = blockKey
     this.offsetKey = getOffsetKey(this.blockKey)
     this.listenerKey = keyExtractor(blockKey, 'target')
+    this.addDropTarget = addDropTarget
+    this.removeDropTarget = removeDropTarget
 
     this.setup()
   }
 
   dragEnterHandler = e => {
     e.preventDefault()
+    this.addDropTarget(this.listenerKey)
     console.log('enter ', this.listenerKey)
+  }
+
+  dragLeaveHandler = e => {
+    e.preventDefault()
+    this.removeDropTarget(this.listenerKey)
   }
 
   dragOverHandler = e => {
@@ -31,6 +43,7 @@ class DropTarget {
   setup() {
     const node = getNodeByOffsetKey(this.offsetKey)
     node.addEventListener('dragenter', this.dragEnterHandler)
+    node.addEventListener('dragleave', this.dragLeaveHandler)
     node.addEventListener('dragover', this.dragOverHandler)
     node.addEventListener('drop', this.dropHandler)
 
@@ -42,8 +55,10 @@ class DropTarget {
   teardown() {
     const node = getNodeByOffsetKey(this.offsetKey)
     node.removeEventListener('dragenter', this.dragEnterHandler)
+    node.removeEventListener('dragleave', this.dragLeaveHandler)
     node.removeEventListener('dragover', this.dragOverHandler)
     node.removeEventListener('drop', this.dropHandler)
+
   }
 }
 
