@@ -8,6 +8,15 @@ import {
 
 let count = 0
 
+const generateListenerKey = blockKey => {
+  return `${blockKey}_${count}`
+}
+
+const getBlockKeyFromListenerKey = listenerKey => {
+  const parts = listenerKey.split('_')
+  return parts[0]
+}
+
 const getOffsetKeyFromListenerKey = listenerKey => {
   const parts = listenerKey.split('_')
   const blockKey = parts[0]
@@ -15,7 +24,8 @@ const getOffsetKeyFromListenerKey = listenerKey => {
 }
 
 class Subscription {
-  constructor() {
+  constructor(getEditor) {
+    this.getEditor = getEditor
     this.cleanup = {}
     this.nodes = {}
     this.selectableCleanUp = {}
@@ -26,7 +36,7 @@ class Subscription {
     count++
 
     blockKeys.forEach(blockKey => {
-      const listenerKey = `${blockKey}_${count}`
+      const listenerKey = generateListenerKey(blockKey)
       this.add(listenerKey, blockKey)
     })
   }
@@ -61,7 +71,7 @@ class Subscription {
     }
 
     // this.removeNode(listenerKey)
-    this.removeNodeV2(listenerKey)
+    this.removeNode(listenerKey)
   }
 
   mouseEnterHandler = (e, listenerKey) => {
@@ -101,13 +111,14 @@ class Subscription {
   }
 
   mouseLeaveHandler = (e, listenerKey) => {
-    this.removeNodeV2(listenerKey)
+    this.removeNode(listenerKey)
   }
 
-  removeNodeV2 = listenerKey => {
+  removeNode = listenerKey => {
     if (this.nodes[listenerKey]) {
       const { node, child } = this.nodes[listenerKey]
       try {
+        // check has child first.
         if (node.contains(child)) {
           node.removeChild(child)
           this.selectableCleanUp[listenerKey].call(this)
@@ -124,6 +135,13 @@ class Subscription {
     const offsetKey = getOffsetKeyFromListenerKey(listenerKey)
     const node = getNodeByOffsetKey(offsetKey)
     node.setAttribute('draggable', true)
+
+    const { hooks } = this.getEditor()
+    const sourceBlockKey = getBlockKeyFromListenerKey(listenerKey)
+
+    console.log('trigger enter -------')
+
+    hooks.prepareDragStart.call(sourceBlockKey)
   }
 
   mouseLeaveSelectableHandler = (e, listenerKey) => {
@@ -131,6 +149,8 @@ class Subscription {
     const offsetKey = getOffsetKeyFromListenerKey(listenerKey)
     const node = getNodeByOffsetKey(offsetKey)
     node.removeAttribute('draggable')
+
+    hooks.teardownDragDrop.call()
   }
 
   removeAll() {
@@ -140,4 +160,4 @@ class Subscription {
   }
 }
 
-export default new Subscription()
+export default Subscription

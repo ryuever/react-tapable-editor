@@ -1,30 +1,16 @@
-import DraftOffsetKey from 'draft-js/lib/DraftOffsetKey';
-import subscription from './subscription'
-import decorateDraggableSource from './decorateDraggableSource'
+import DragDropManager from './DragDropManager'
 
 function DragPlugin() {
   this.apply = (getEditor) => {
     const { hooks } = getEditor()
+    const manager = new DragDropManager(getEditor)
 
-    hooks.updateDragSubscription.tap('DragPlugin', diff => {
-      diff.forEach(value => {
-        const { op, blockKey } = value
-        const offsetKey = DraftOffsetKey.encode(blockKey, 0, 0)
-        const node = document.querySelector(`[data-offset-key="${offsetKey}"]`)
-        if (!node) return
-        console.log('node : ', node)
+    hooks.prepareDragStart.tap('DragPlugin', sourceBlockKey => {
+      manager.prepare(sourceBlockKey)
+    })
 
-        // 增加了一个block
-        if (op === 'add') {
-          subscription.addTarget(blockKey, node)
-          subscription.addSource(blockKey, node)
-        }
-
-        // 减少了一个block
-        if (op === 'remove') {
-
-        }
-      })
+    hooks.teardownDragDrop.tap('DragPlugin', () => {
+      manager.teardown()
     })
   }
 }

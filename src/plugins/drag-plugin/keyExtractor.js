@@ -1,9 +1,14 @@
 const targetCounter = {}
 const sourceCounter = {}
 
-export default (blockKey, type) => {
+export const keyExtractor = (blockKey, type) => {
   const counter = type === 'target' ? targetCounter : sourceCounter
   const count = counter[blockKey] || 0
   counter[blockKey] = count + 1
-  return `target_${blockKey}_${count}`
+  return `${type}_${blockKey}_${count}`
+}
+
+export const BlockExtractor = listenerKey => {
+  const parts = listenerKey.split('_')
+  return parts[1]
 }

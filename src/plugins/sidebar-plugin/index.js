@@ -1,4 +1,4 @@
-import subscription from './subscription'
+import Subscription from './Subscription'
 import './styles.css'
 
 // TODO 存在的问题
@@ -9,6 +9,9 @@ import './styles.css'
 
 let resetListener = true
 let timeoutHandler
+
+// https://stackoverflow.com/questions/15066849/how-to-detect-when-mousemove-has-stopped
+// simulate `moveend` event...
 const globalMouseMoveHandlerCapture = e => {
   if (timeoutHandler) clearTimeout(timeoutHandler)
   timeoutHandler = setTimeout(() => {
@@ -21,6 +24,7 @@ window.addEventListener('mousemove', globalMouseMoveHandlerCapture, true)
 function DragPlugin() {
   this.apply = (getEditor) => {
     const { hooks } = getEditor()
+    const subscription = new Subscription(getEditor)
 
     hooks.syncBlockKeys.tap('DragPlugin', (blockKeys, blockChanges) => {
       if (!resetListener && !blockChanges) return

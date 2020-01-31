@@ -24,7 +24,7 @@ import AddImagePlugin from './plugins/AddImagePlugin'
 import InlineToolbarPlugin from './plugins/InlineToolbarPlugin'
 import StateFilterPlugin from './plugins/StateFilterPlugin';
 import CreateNestBlockPlugin from './plugins/CreateNestBlockPlugin'
-// import DragPlugin from './plugins/drag-plugin'
+import DragPlugin from './plugins/drag-plugin'
 import SidebarPlugin from './plugins/sidebar-plugin'
 
 import LinkSpanDecoratorPlugin from './plugins/LinkSpanDecoratorPlugin'
@@ -69,7 +69,7 @@ const defaultPlugins = [
 
   new CreateNestBlockPlugin(),
 
-  // new DragPlugin(),
+  new DragPlugin(),
   new SidebarPlugin(),
 ]
 
@@ -155,7 +155,11 @@ class PluginEditor extends PureComponent {
       updateDecorator: new SyncWaterfallHook(['pairs', 'editorState', 'context']),
 
       updateDragSubscription: new SyncHook(['diff']),
-      syncBlockKeys: new SyncHook(['blockKeys', 'blockChanges'])
+      syncBlockKeys: new SyncHook(['blockKeys', 'blockChanges']),
+
+      // for drag
+      prepareDragStart: new SyncHook(['sourceBlockKey']),
+      teardownDragDrop: new SyncHook(),
     }
 
     this.editorRef = createRef()
