@@ -12,11 +12,11 @@ export default (blockMap, blockToRemove) => {
   const blockKey =blockToRemove.getKey()
   if (!blockToRemove) return
 
-  const blocksBefore = blockMap.toSeq().takeUntil(function (v) {
-    return v === blockToRemove;
+  const blocksBefore = blockMap.toSeq().takeUntil(function (block) {
+    return block.getKey() === blockKey;
   });
-  const blocksAfter = blockMap.toSeq().skipUntil(function (v) {
-    return v === blockToRemove;
+  const blocksAfter = blockMap.toSeq().skipUntil(function (block) {
+    return block.getKey() === blockKey;
   }).rest();
 
   let newBlockMap = blocksBefore.concat(blocksAfter).toOrderedMap();
@@ -38,7 +38,7 @@ export default (blockMap, blockToRemove) => {
     newBlockMap = newBlockMap.set(parentKey, newParentBlock)
   }
 
-  console.log('block to remove : ', blockToRemove)
+  console.log('block to remove : ', blocksBefore.toArray(), blocksAfter.toArray(), blockToRemove)
 
   const prevSiblingKey = blockToRemove.getPrevSiblingKey()
   const nextSiblingKey = blockToRemove.getNextSiblingKey()

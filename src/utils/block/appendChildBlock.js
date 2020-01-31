@@ -6,13 +6,20 @@ import { List } from 'immutable'
  * 2. update block data
  */
 
-export default (blockMap, parentBlock, childBlock) => {
+export default (blockMap, parentBlockKey, childBlockKey) => {
+  const parentBlock = blockMap.get(parentBlockKey)
+  const childBlock = blockMap.get(childBlockKey)
   const blockMapAfterRemove = removeBlock(blockMap, childBlock)
-  const parentBlockKey = parentBlock.getKey()
-  const childBlockKey = childBlock.getKey()
+
+  console.log('block after remove : ', blockMapAfterRemove)
   const childKeys = parentBlock.getChildKeys()
   const childKeysArray = childKeys.toArray()
   const len = childKeysArray.length
+  let lastChildBlockKey
+
+  if (len) {
+    lastChildBlockKey = childKeysArray[len - 1]
+  }
 
   const queryKey = len ? childKeysArray[len - 1] : parentBlockKey
 
@@ -35,5 +42,29 @@ export default (blockMap, parentBlock, childBlock) => {
     children: List(childKeysArray),
   })
 
-  return newBlockMap.set(parentBlockKey, newParentBlock)
+  newBlockMap = newBlockMap.set(parentBlockKey, newParentBlock)
+
+  if (lastChildBlockKey) {
+    const lastChildBlock = blockMapAfterRemove.get(lastChildBlockKey)
+    const newLastChildBlock = lastChildBlock.merge({
+      nextSibling: childBlockKey
+    })
+    newBlockMap = newBlockMap.set(lastChildBlockKey, newLastChildBlock)
+
+    const newChildBlock = childBlock.merge({
+      prevSibling: lastChildBlockKey,
+      parent: parentBlockKey,
+      nextSibling: null,
+    })
+    newBlockMap = newBlockMap.set(childBlockKey, newChildBlock)
+  } else {
+    const newChildBlock = childBlock.merge({
+      prevSibling: null,
+      parent: parentBlockKey,
+      nextSibling: null,
+    })
+    newBlockMap = newBlockMap.set(childBlockKey, newChildBlock)
+  }
+
+  return newBlockMap
 }

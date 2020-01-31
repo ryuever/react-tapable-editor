@@ -19,6 +19,8 @@ export default (
     return v === targetBlock;
   }).rest();
 
+  console.log('before : ', blocksBefore.toArray(), blocksAfter.toArray())
+
   let newBlockMap = blocksBefore.concat([
     [sourceBlockKey, sourceBlock],
     [targetBlockKey, targetBlock],

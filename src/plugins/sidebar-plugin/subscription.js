@@ -45,6 +45,7 @@ class Subscription {
     const offsetKey = DraftOffsetKey.encode(blockKey, 0, 0)
 
     const node = getNodeByOffsetKey(offsetKey)
+    if (!node) return
 
     const enterHandler = e => this.mouseEnterHandler(e, listenerKey)
     const leaveHandler = e => this.mouseLeaveHandler(e, listenerKey)
