@@ -140,8 +140,6 @@ class Subscription {
     const { hooks } = this.getEditor()
     const sourceBlockKey = getBlockKeyFromListenerKey(listenerKey)
 
-    console.log('trigger enter -------')
-
     hooks.prepareDragStart.call(sourceBlockKey)
   }
 

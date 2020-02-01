@@ -8,9 +8,8 @@ function DragPlugin() {
     const manager = new DragDropManager({
       getEditor,
       onUpdate: ({ targetBlockKey, sourceBlockKey }) => {
-        console.log('target block ', targetBlockKey, sourceBlockKey)
         const { editorState } = getEditor()
-        const newContent = transferBlock(editorState, sourceBlockKey, targetBlockKey, 'right')
+        const newContent = transferBlock(editorState, sourceBlockKey, targetBlockKey, 'left')
         const newState = EditorState.push(editorState, newContent)
         hooks.setState.call(newState)
       }

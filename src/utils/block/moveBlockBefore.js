@@ -34,8 +34,6 @@ export default (
   ], blocksAfter).toOrderedMap();
 
 
-  console.log('move block before : ', blocksBefore.toArray(), blocksAfter.toArray(), newBlockMap, blockMapAfterRemove)
-
   const parentKey = targetBlock.parent;
   const parentBlock = blockMapAfterRemove.get(parentKey)
 

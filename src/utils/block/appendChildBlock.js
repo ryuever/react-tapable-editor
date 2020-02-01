@@ -45,12 +45,12 @@ export default (blockMap, parentBlockKey, childBlockKey) => {
       blockKey
     )).reverse()
 
-  console.log('child group : ',
-    childGroup.toArray(),
-    blocksBeforeParent.toArray(),
-    parentGroup.toArray(),
-    parentGroupRest.toArray()
-  )
+  // console.log('child group : ',
+  //   childGroup.toArray(),
+  //   blocksBeforeParent.toArray(),
+  //   parentGroup.toArray(),
+  //   parentGroupRest.toArray()
+  // )
 
   let newBlockMap = blocksBeforeParent.concat(
     [
@@ -64,7 +64,7 @@ export default (blockMap, parentBlockKey, childBlockKey) => {
     parentGroupRest,
   ).toOrderedMap();
 
-  console.log('new block map ', newBlockMap.toArray())
+  // console.log('new block map ', newBlockMap.toArray())
 
   const childKeys = parentBlock.getChildKeys()
   const childKeysArray = childKeys.toArray()
@@ -108,13 +108,13 @@ export default (blockMap, parentBlockKey, childBlockKey) => {
   const nextChildKeys = next.getChildKeys().toArray()
   const nextLen = nextChildKeys.length
 
+
+  // 一旦成为child，需要将第一个，和最后一个node的`sibling`进行重置
   if (nextLen) {
     const childFirstBlockKey = nextChildKeys[0]
     const childFirstBlock = newBlockMap.get(childFirstBlockKey)
     const childLastBlockKey = nextChildKeys[nextLen - 1]
     const childLastBlock = newBlockMap.get(childLastBlockKey)
-
-    console.log('child ', childFirstBlockKey, childFirstBlock)
 
     {
       const prevSiblingKey = childFirstBlock.getPrevSiblingKey()
