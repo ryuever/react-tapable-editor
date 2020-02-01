@@ -1,44 +1,33 @@
-import removeBlock from './removeBlock'
-import resetSibling from './resetSibling'
-
 export default (
   blockMap,
-  sourceBlockKey,
+  newBlock,
   targetBlockKey,
 ) => {
-  const sourceBlock = blockMap.get(sourceBlockKey)
+  const newBlockKey = newBlock.getKey()
   const targetBlock = blockMap.get(targetBlockKey)
-
-  // 如果说source本来就在target后面的话，就不需要处理了
-  if (targetBlock.getNextSiblingKey() === sourceBlockKey) return blockMap
-
-  const blockMapAfterRemove = removeBlock(blockMap, sourceBlockKey)
-  const sourceBlockAfterRemove = resetSibling(sourceBlock)
-  if (!blockMapAfterRemove) return
-
   if (!targetBlock) return
 
-  const blocksBefore = blockMapAfterRemove.toSeq().takeUntil(function (v) {
+  const blocksBefore = blockMap.toSeq().takeUntil(function (v) {
     return v === targetBlock;
   });
-  const blocksAfter = blockMapAfterRemove.toSeq().skipUntil(function (v) {
+  const blocksAfter = blockMap.toSeq().skipUntil(function (v) {
     return v === targetBlock;
   }).rest();
 
   let newBlockMap = blocksBefore.concat([
     [targetBlockKey, targetBlock],
-    [sourceBlockKey, sourceBlockAfterRemove],
+    [newBlockKey, newBlock],
   ], blocksAfter).toOrderedMap();
 
   const parentKey = targetBlock.parent;
-  const parentBlock = blockMapAfterRemove.get(parentKey)
+  const parentBlock = blockMap.get(parentKey)
 
   if (parentBlock) {
     // adjust parent children
     const childKeys = parentBlock.getChildKeys()
     const insertionIndex = childKeys.indexOf(targetBlockKey) + 1
     const childKeysArray = childKeys.toArray()
-    childKeysArray.splice(insertionIndex, 0, sourceBlockKey)
+    childKeysArray.splice(insertionIndex, 0, newBlockKey)
 
     const newParentBlock = parentBlock.merge({
       children: List(childKeysArray),
@@ -52,22 +41,22 @@ export default (
   if (nextSiblingKey) {
     const nextSiblingBlock = newBlockMap.get(nextSiblingKey)
     const newNextSiblingBlock = nextSiblingBlock.merge({
-      prevSibling: sourceBlockKey
+      prevSibling: newBlockKey
     })
     newBlockMap = newBlockMap.set(nextSiblingKey, newNextSiblingBlock)
   }
 
   {
-    const newSourceBlock = sourceBlockAfterRemove.merge({
+    const nextNewBlock = newBlock.merge({
       prevSibling: targetBlockKey,
       nextSibling: nextSiblingKey
     })
-    newBlockMap = newBlockMap.set(sourceBlockKey, newSourceBlock)
+    newBlockMap = newBlockMap.set(newBlockKey, nextNewBlock)
   }
 
   {
     const newTargetBlock = targetBlock.merge({
-      nextSibling: sourceBlockKey,
+      nextSibling: newBlockKey,
     })
     newBlockMap = newBlockMap.set(targetBlockKey, newTargetBlock)
   }

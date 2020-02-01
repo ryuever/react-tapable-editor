@@ -1,30 +1,40 @@
 import removeBlock from './removeBlock'
+import resetSibling from './resetSibling'
 
 export default (
   blockMap,
-  sourceBlock,
-  targetBlock,
+  sourceBlockKey,
+  targetBlockKey,
 ) => {
-  const blockMapAfterRemove = removeBlock(blockMap, sourceBlock)
+  const sourceBlock = blockMap.get(sourceBlockKey)
+  const t = blockMap.get(targetBlockKey)
+
+  // 如果说source本来就在target前面的话，就不需要处理了
+  if (t.getPrevSiblingKey() === sourceBlockKey) return blockMap
+
+  const blockMapAfterRemove = removeBlock(blockMap, sourceBlockKey)
+  const targetBlock = blockMap.get(targetBlockKey)
+  const sourceBlockAfterRemove = resetSibling(sourceBlock)
+
+
   if (!blockMapAfterRemove) return
 
-  const targetBlockKey = targetBlock.getKey()
-  const sourceBlockKey = sourceBlock.getKey()
   if (!targetBlock) return
 
   const blocksBefore = blockMapAfterRemove.toSeq().takeUntil(function (v) {
-    return v === targetBlock;
+    return v.getKey() === targetBlockKey;
   });
   const blocksAfter = blockMapAfterRemove.toSeq().skipUntil(function (v) {
-    return v === targetBlock;
+    return v.getKey() === targetBlockKey;
   }).rest();
 
-  console.log('before : ', blocksBefore.toArray(), blocksAfter.toArray())
-
   let newBlockMap = blocksBefore.concat([
-    [sourceBlockKey, sourceBlock],
+    [sourceBlockKey, sourceBlockAfterRemove],
     [targetBlockKey, targetBlock],
   ], blocksAfter).toOrderedMap();
+
+
+  console.log('move block before : ', blocksBefore.toArray(), blocksAfter.toArray(), newBlockMap, blockMapAfterRemove)
 
   const parentKey = targetBlock.parent;
   const parentBlock = blockMapAfterRemove.get(parentKey)
@@ -54,7 +64,7 @@ export default (
   }
 
   {
-    const newSourceBlock = sourceBlock.merge({
+    const newSourceBlock = sourceBlockAfterRemove.merge({
       prevSibling: prevSiblingKey,
       nextSibling: targetBlockKey
     })

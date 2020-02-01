@@ -23,7 +23,7 @@ import HandleDroppedFilesPlugin from './plugins/HandleDroppedFilesPlugin'
 import AddImagePlugin from './plugins/AddImagePlugin'
 import InlineToolbarPlugin from './plugins/InlineToolbarPlugin'
 import StateFilterPlugin from './plugins/StateFilterPlugin';
-import CreateNestBlockPlugin from './plugins/CreateNestBlockPlugin'
+// import CreateNestBlockPlugin from './plugins/CreateNestBlockPlugin'
 import DragPlugin from './plugins/drag-plugin'
 import SidebarPlugin from './plugins/sidebar-plugin'
 
@@ -52,7 +52,7 @@ const defaultPlugins = [
   new SelectionChangePlugin(),
   new CustomStyleMapPlugin(),
   new BlockRenderMapPlugin(),
-  new StyleControlPlugin(),
+  // new StyleControlPlugin(),
 
   new AddImagePlugin(),
   new HandleDroppedFilesPlugin(),
@@ -67,9 +67,11 @@ const defaultPlugins = [
 
   new StateFilterPlugin(),
 
-  new CreateNestBlockPlugin(),
+  // new CreateNestBlockPlugin(),
 
   new DragPlugin(),
+
+  // TODO：目前存在的问题是，会造成当输入中文时，selection紊乱
   new SidebarPlugin(),
 ]
 

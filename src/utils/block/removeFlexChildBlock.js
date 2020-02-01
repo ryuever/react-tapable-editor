@@ -1,5 +1,5 @@
 import removeChildBlock from './removeChildBlock'
 
-export default (blockMap, parentBlock, childBlock) => {
-  return removeChildBlock(blockMap, parentBlock, childBlock)
+export default (blockMap, parentBlockKey, childBlockKey) => {
+  return removeChildBlock(blockMap, parentBlockKey, childBlockKey)
 }

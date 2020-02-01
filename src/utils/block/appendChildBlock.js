@@ -1,5 +1,7 @@
 import removeBlock from './removeBlock'
-import { List } from 'immutable'
+import { List, OrderedMap } from 'immutable'
+import resetSibling from './resetSibling'
+import contains from './contains'
 
 /**
  * 1. remove childBlock first
@@ -7,9 +9,63 @@ import { List } from 'immutable'
  */
 
 export default (blockMap, parentBlockKey, childBlockKey) => {
-  const parentBlock = blockMap.get(parentBlockKey)
   const childBlock = blockMap.get(childBlockKey)
-  const blockMapAfterRemove = removeBlock(blockMap, childBlock)
+
+  const blockMapAfterRemove = removeBlock(blockMap, childBlockKey)
+  const childGroup = new OrderedMap()
+
+  const blockMapAfterRemoveChildGroup = blockMapAfterRemove.toSeq().filter(block => {
+    const blockKey = block.getKey()
+    const falsy = contains(blockMapAfterRemove, childBlockKey, blockKey)
+    if (!falsy) return true
+    childGroup.set(blockKey, block)
+    return false
+  })
+
+  // parentBlock需要调用`blockMapAfterRemove`,因为它的`sibling`有可能变化了
+  const parentBlock = blockMapAfterRemoveChildGroup.get(parentBlockKey)
+  const childBlockAfterRemove = resetSibling(childBlock)
+
+  const blocksBeforeParent = blockMapAfterRemoveChildGroup.toSeq().takeUntil(block => {
+    return block.getKey() === parentBlockKey;
+  });
+
+  const parentGroup = blockMapAfterRemoveChildGroup.toSeq().skipUntil(function (block) {
+    return block.getKey() === parentBlockKey;
+  }).takeUntil((_, blockKey) => {
+    const falsy = contains(blockMapAfterRemoveChildGroup, parentBlockKey, blockKey)
+
+    if (falsy) {
+      console.log('contains ', parentBlockKey, blockKey)
+    }
+
+    return !falsy
+  })
+
+  const parentGroupRest = blockMapAfterRemoveChildGroup.toSeq().reverse().takeUntil((_, blockKey) => {
+    return contains(blockMapAfterRemoveChildGroup, parentBlockKey, blockKey)
+  }).reverse()
+
+  console.log('child group : ',
+    childGroup.toArray(),
+    blocksBeforeParent.toArray(),
+    parentGroup.toArray(),
+    parentGroupRest.toArray()
+  )
+
+  let newBlockMap = blocksBeforeParent.concat(
+    [
+      [ parentBlockKey, parentBlock]
+    ],
+    parentGroup,
+    [
+      [childBlockKey, childBlock],
+    ],
+    childGroup,
+    parentGroupRest,
+  ).toOrderedMap();
+
+  console.log('new block map ', newBlockMap.toArray())
 
   const childKeys = parentBlock.getChildKeys()
   const childKeysArray = childKeys.toArray()
@@ -20,22 +76,6 @@ export default (blockMap, parentBlockKey, childBlockKey) => {
     lastChildBlockKey = childKeysArray[len - 1]
   }
 
-  const queryKey = len ? childKeysArray[len - 1] : parentBlockKey
-
-  const blocksBefore = blockMapAfterRemove.toSeq().takeUntil(function (block) {
-    return block.getKey() === queryKey;
-  });
-  const blocksAfter = blockMapAfterRemove.toSeq().skipUntil(function (block) {
-    return block.getKey() === queryKey;
-  }).rest();
-
-  const queryBlock = blockMapAfterRemove.get(queryKey)
-
-  let newBlockMap = blocksBefore.concat([
-    [queryKey, queryBlock],
-    [childBlockKey, childBlock],
-  ], blocksAfter).toOrderedMap();
-
   childKeysArray.push(childBlockKey)
   const newParentBlock = parentBlock.merge({
     children: List(childKeysArray),
@@ -44,20 +84,20 @@ export default (blockMap, parentBlockKey, childBlockKey) => {
   newBlockMap = newBlockMap.set(parentBlockKey, newParentBlock)
 
   if (lastChildBlockKey) {
-    const lastChildBlock = blockMapAfterRemove.get(lastChildBlockKey)
+    const lastChildBlock = newBlockMap.get(lastChildBlockKey)
     const newLastChildBlock = lastChildBlock.merge({
       nextSibling: childBlockKey
     })
     newBlockMap = newBlockMap.set(lastChildBlockKey, newLastChildBlock)
 
-    const newChildBlock = childBlock.merge({
+    const newChildBlock = childBlockAfterRemove.merge({
       prevSibling: lastChildBlockKey,
       parent: parentBlockKey,
       nextSibling: null,
     })
     newBlockMap = newBlockMap.set(childBlockKey, newChildBlock)
   } else {
-    const newChildBlock = childBlock.merge({
+    const newChildBlock = childBlockAfterRemove.merge({
       prevSibling: null,
       parent: parentBlockKey,
       nextSibling: null,

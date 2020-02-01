@@ -38,3 +38,7 @@ insertTextInContentState
 ### DraftOffsetKey
 
 其中会引入`blockKey`
+
+### experimental
+
+`DraftEditorBlockNode.js` -> `DraftEditorNode.js` ->

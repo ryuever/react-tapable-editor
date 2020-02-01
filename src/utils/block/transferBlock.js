@@ -17,13 +17,13 @@ const transferBlock = (
 
   switch (position) {
     case 'top':
-      newBlockMap = moveBlockBefore(blockMap, sourceBlock, targetBlock)
+      newBlockMap = moveBlockBefore(blockMap, sourceBlockKey, targetBlockKey)
       break;
     case 'left':
-      newBlockMap = moveBlockToSide(blockMap, sourceBlock, targetBlock, 'left')
+      newBlockMap = moveBlockToSide(blockMap, sourceBlockKey, targetBlockKey, 'left')
       break;
     case 'right':
-      newBlockMap = moveBlockToSide(blockMap, sourceBlock, targetBlock, 'right')
+      newBlockMap = moveBlockToSide(blockMap, sourceBlockKey, targetBlockKey, 'right')
     default:
       // ...
   }

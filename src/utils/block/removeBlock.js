@@ -8,9 +8,9 @@ import { List } from "immutable"
  * @param {String} position : one of values ['top', 'right', 'left']
  */
 
-export default (blockMap, blockToRemove) => {
-  const blockKey =blockToRemove.getKey()
-  if (!blockToRemove) return
+export default (blockMap, blockKey) => {
+  const blockToRemove = blockMap.get(blockKey)
+  if (!blockToRemove) return blockMap
 
   const blocksBefore = blockMap.toSeq().takeUntil(function (block) {
     return block.getKey() === blockKey;

@@ -89,29 +89,10 @@ const NewEditor = (props) => {
     const lastBlock = newContentState.getLastBlock()
     const lastBlockText = lastBlock.getText()
 
+    // should invoke `DraftTreeInvariants`来验证是否是`validTree`然后才能够存储
     // console.log('on change hooks', convertToRaw(newContentState))
-    const rawState = convertToRaw(newContentState)
+    // const rawState = convertToRaw(newContentState)
 
-    // console.log('rawState.blocks[0] ', rawState.blocks[0])
-    // if (!rawState.blocks[0].children.length) {
-    //   rawState.blocks[0].children = [{
-    //     key: "c1nlb",
-    //     text: "helloworld",
-    //     type: "unstyled",
-    //     depth: 1,
-    //     inlineStyleRanges: [],
-    //     entityRanges: [],
-    //     data: {},
-    //     children: [],
-    //   }]
-    // }
-
-    const state = EditorState.createWithContent(convertFromRaw(rawState))
-
-    // console.log('state : ', nextState, state, rawState)
-    // console.log('nextState : ', nextState, newContentState)
-
-    // hooks.onChange.call(state)
     hooks.onChange.call(nextState);
   }, []);
 
@@ -129,18 +110,6 @@ const NewEditor = (props) => {
   const handleDroppedFiles = useCallback((dropSelection, files) => {
     hooks.handleDroppedFiles.call(editorState, dropSelection, files)
   }, [editorState])
-
-  // const onBlurHandler = useCallback(e => {
-  //   requestAnimationFrame(() => {
-  //     const { editorState } = getEditor()
-  //     const next = EditorState.forceSelection(
-  //       editorState,
-  //       editorState.getSelection().merge({ hasFocus: true })
-  //     )
-
-  //     // hooks.onChange.call(next)
-  //   })
-  // }, [editorState])
 
   const editOnPasteHandler = (editor, e) => {
     const data = new DataTransfer(e.clipboardData)
