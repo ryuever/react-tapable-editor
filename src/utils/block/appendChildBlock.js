@@ -3,43 +3,31 @@ import { List, OrderedMap } from 'immutable'
 import resetSibling from './resetSibling'
 import contains from './contains'
 
-/**
- * 1. remove childBlock first
- * 2. update block data
- */
-
 export default (blockMap, parentBlockKey, childBlockKey) => {
   const childBlock = blockMap.get(childBlockKey)
-
   const blockMapAfterRemove = removeBlock(blockMap, childBlockKey)
-  const childGroup = new OrderedMap()
 
-  const blockMapAfterRemoveChildGroup = blockMapAfterRemove.toSeq().filter(block => {
-    const blockKey = block.getKey()
-    const falsy = contains(blockMapAfterRemove, childBlockKey, blockKey)
-    if (!falsy) return true
-    childGroup.set(blockKey, block)
-    return false
-  })
+  const blockMapAfterRemoveChildGroup = blockMapAfterRemove
+    .toSeq()
+    .filter((block, blockKey) => !contains(blockMap, childBlockKey, blockKey))
+
+  const childGroup = blockMapAfterRemove
+    .toSeq()
+    .filter((block, blockKey) => contains(blockMap, childBlockKey, blockKey))
 
   // parentBlock需要调用`blockMapAfterRemove`,因为它的`sibling`有可能变化了
   const parentBlock = blockMapAfterRemoveChildGroup.get(parentBlockKey)
   const childBlockAfterRemove = resetSibling(childBlock)
 
-  const blocksBeforeParent = blockMapAfterRemoveChildGroup.toSeq().takeUntil(block => {
-    return block.getKey() === parentBlockKey;
-  });
+  const blocksBeforeParent = blockMapAfterRemoveChildGroup
+    .toSeq()
+    .takeUntil(block => block.getKey() === parentBlockKey)
 
-  const parentGroup = blockMapAfterRemoveChildGroup.toSeq().skipUntil(function (block) {
-    return block.getKey() === parentBlockKey;
-  }).takeUntil((_, blockKey) => {
-    const falsy = contains(blockMapAfterRemoveChildGroup, parentBlockKey, blockKey)
-
-    if (falsy) {
-      console.log('contains ', parentBlockKey, blockKey)
-    }
-
-    return !falsy
+  const parentGroup = blockMapAfterRemoveChildGroup
+    .toSeq()
+    .skipUntil(block => block.getKey() === parentBlockKey)
+    .takeUntil((_, blockKey) => {
+    return !contains(blockMapAfterRemoveChildGroup, parentBlockKey, blockKey)
   })
 
   const parentGroupRest = blockMapAfterRemoveChildGroup.toSeq().reverse().takeUntil((_, blockKey) => {
