@@ -33,7 +33,6 @@ export default (
     [targetBlockKey, targetBlock],
   ], blocksAfter).toOrderedMap();
 
-
   const parentKey = targetBlock.parent;
   const parentBlock = blockMapAfterRemove.get(parentKey)
 
