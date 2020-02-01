@@ -4,8 +4,6 @@ const contains = (blockMap, key1, key2) => {
   const block1 = blockMap.get(key1)
   const block2 = blockMap.get(key2)
 
-  // console.log('contains : ', key1, key2)
-
   if (!block1 || !block2) return false
 
   const childKeys = block1.getChildKeys().toArray()

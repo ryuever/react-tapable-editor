@@ -5,11 +5,15 @@ import contains from './contains'
 
 export default (blockMap, parentBlockKey, childBlockKey) => {
   const childBlock = blockMap.get(childBlockKey)
+
+  // 首先需要将block sibling给去掉；否则它会影响最终的sibling依赖
+  const childBlockAfterRemove = resetSibling(childBlock)
+
   const blockMapAfterRemove = removeBlock(blockMap, childBlockKey)
 
   const blockMapAfterRemoveChildGroup = blockMapAfterRemove
     .toSeq()
-    .filter((block, blockKey) => !contains(blockMap, childBlockKey, blockKey))
+    .filter((_, blockKey) => !contains(blockMap, childBlockKey, blockKey))
 
   const childGroup = blockMapAfterRemove
     .toSeq()
@@ -17,7 +21,7 @@ export default (blockMap, parentBlockKey, childBlockKey) => {
 
   // parentBlock需要调用`blockMapAfterRemove`,因为它的`sibling`有可能变化了
   const parentBlock = blockMapAfterRemoveChildGroup.get(parentBlockKey)
-  const childBlockAfterRemove = resetSibling(childBlock)
+  // const childBlockAfterRemove = resetSibling(childBlock)
 
   const blocksBeforeParent = blockMapAfterRemoveChildGroup
     .toSeq()
@@ -26,13 +30,20 @@ export default (blockMap, parentBlockKey, childBlockKey) => {
   const parentGroup = blockMapAfterRemoveChildGroup
     .toSeq()
     .skipUntil(block => block.getKey() === parentBlockKey)
-    .takeUntil((_, blockKey) => {
-    return !contains(blockMapAfterRemoveChildGroup, parentBlockKey, blockKey)
-  })
+    .takeUntil((_, blockKey) => !contains(
+      blockMapAfterRemoveChildGroup,
+      parentBlockKey,
+      blockKey
+    ))
 
-  const parentGroupRest = blockMapAfterRemoveChildGroup.toSeq().reverse().takeUntil((_, blockKey) => {
-    return contains(blockMapAfterRemoveChildGroup, parentBlockKey, blockKey)
-  }).reverse()
+  const parentGroupRest = blockMapAfterRemoveChildGroup
+    .toSeq()
+    .reverse()
+    .takeUntil((_, blockKey) => contains(
+      blockMapAfterRemoveChildGroup,
+      parentBlockKey,
+      blockKey
+    )).reverse()
 
   console.log('child group : ',
     childGroup.toArray(),
@@ -47,7 +58,7 @@ export default (blockMap, parentBlockKey, childBlockKey) => {
     ],
     parentGroup,
     [
-      [childBlockKey, childBlock],
+      [childBlockKey, childBlockAfterRemove],
     ],
     childGroup,
     parentGroupRest,
@@ -91,6 +102,47 @@ export default (blockMap, parentBlockKey, childBlockKey) => {
       nextSibling: null,
     })
     newBlockMap = newBlockMap.set(childBlockKey, newChildBlock)
+  }
+
+  const next = newBlockMap.get(childBlockKey)
+  const nextChildKeys = next.getChildKeys().toArray()
+  const nextLen = nextChildKeys.length
+
+  if (nextLen) {
+    const childFirstBlockKey = nextChildKeys[0]
+    const childFirstBlock = newBlockMap.get(childFirstBlockKey)
+    const childLastBlockKey = nextChildKeys[nextLen - 1]
+    const childLastBlock = newBlockMap.get(childLastBlockKey)
+
+    console.log('child ', childFirstBlockKey, childFirstBlock)
+
+    {
+      const prevSiblingKey = childFirstBlock.getPrevSiblingKey()
+      if (prevSiblingKey) {
+        const prevSiblingBlock = newBlockMap.get(prevSiblingKey).merge({
+          nextSibling: null,
+        })
+        newBlockMap = newBlockMap.set(prevSiblingKey, prevSiblingBlock)
+
+        newBlockMap = newBlockMap.set(childFirstBlockKey, childFirstBlock.merge({
+          prevSibling: null,
+        }))
+      }
+    }
+
+    {
+      const nextSiblingKey = childFirstBlock.getNextSiblingKey()
+      if (nextSiblingKey) {
+        const nextSiblingBlock = newBlockMap.get(nextSiblingKey).merge({
+          prevSibling: null,
+        })
+        newBlockMap = newBlockMap.set(nextSiblingKey, nextSiblingBlock)
+
+        newBlockMap = newBlockMap.set(childLastBlockKey, childLastBlock.merge({
+          nextSibling: null,
+        }))
+      }
+    }
   }
 
   return newBlockMap
