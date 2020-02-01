@@ -11,7 +11,6 @@ export default (blockMap, parentBlockKey, childBlockKey) => {
   const childBlock = blockMap.get(childBlockKey)
   const blockMapAfterRemove = removeBlock(blockMap, childBlock)
 
-  console.log('block after remove : ', blockMapAfterRemove)
   const childKeys = parentBlock.getChildKeys()
   const childKeysArray = childKeys.toArray()
   const len = childKeysArray.length
