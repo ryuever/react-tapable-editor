@@ -1,5 +1,6 @@
 import { CharacterMetadata, EditorState } from 'draft-js'
 import removeBlock from '../utils/block/removeBlock'
+import flattenBlocks from '../utils/block/flattenBlocks'
 import {
   Repeat,
   OrderedSet,
@@ -50,6 +51,7 @@ function StateFilterPlugin() {
           }).takeUntil(function(block, key) {
             return key !== oldStartKey && !!oldBlockMap.get(key)
           }).toOrderedMap().map(function(block, blockKey) {
+            console.log('block key : ', blockKey)
             lastBlockKey = blockKey
             // 通过pasteText中的样式，来补充block中的样式
             const blockText = block.getText()
@@ -84,78 +86,15 @@ function StateFilterPlugin() {
               newBlockMap = newBlockMap.set(blockKey, newBlock)
             }
           })
-          console.log('block ', blockKeyHasChildren)
+          console.log('block next ', newBlockMap)
 
           if (blockKeyHasChildren) {
-            // const block = newBlockMap.get(blockKeyHasChildren)
-            // const childKeys = block.getChildKeys().toArray()
-            // const firstBlockKey = childKeys[0]
-            // const firstBlock = newBlockMap.get(firstBlockKey)
-
-            // const prevSiblingKey = block.getPrevSiblingKey()
-
-            // const newFirstBlock = firstBlock.merge({
-            //   prevSibling: prevSiblingKey,
-            // })
-            // newBlockMap = newBlockMap.set(firstBlockKey, newFirstBlock)
-
-            // const prevSiblingBlock = newBlockMap.get(prevSiblingKey)
-            // const newPrevSiblingBlock = prevSiblingBlock.merge({
-            //   nextSibling: firstBlockKey,
-            // })
-            // newBlockMap = newBlockMap.set(prevSiblingKey, newPrevSiblingBlock)
-
-            // console.log('new block ', newBlockMap, firstBlockKey, prevSiblingKey)
-
             newBlockMap = removeBlock(newBlockMap, blockKeyHasChildren)
           }
 
-          const blocksBefore = newBlockMap
-            .toSeq()
-            .takeUntil((_, key) => key === oldStartKey)
-          const blocksAfter = newBlockMap
-            .toSeq()
-            .skipUntil((_, key) => key === lastBlockKey)
-            .takeUntil((_, k) => k === endKey).concat([[endKey, blockMap.get(endKey)]])
-          const blocks = newBlockMap
-            .toSeq()
-            .skipUntil((_, key) => key === oldStartKey)
-            .takeUntil((_, key) => key === lastBlockKey)
-            .reduce((acc, currentBlock) => {
-              const last = acc.toSeq().last()
-
-              console.log('last ', acc, currentBlock.getKey())
-              const currentBlockKey = currentBlock.getKey()
-              if (last) {
-                console.log('lst ', last.getKey())
-
-                const lastBlockKey = last.getKey()
-                const lastBlock = acc.get(lastBlockKey)
-                const newLastBlock = lastBlock.merge({
-                  nextSibling: currentBlockKey
-                })
-                acc = acc.set(lastBlockKey, newLastBlock)
-                const newCurrentBlock = currentBlock.merge({
-                  prevSibling: lastBlockKey
-                })
-                acc = acc.set(currentBlockKey, newCurrentBlock)
-              } else {
-                acc = acc.set(currentBlockKey, currentBlock)
-              }
-
-              return acc
-            }, new OrderedMap())
-
-          newBlockMap = blocksBefore.concat(blocks, blocksAfter).toOrderedMap();
-
-          console.log('new block : ', blocksBefore.toArray(), blocksAfter.toArray(), blocks.toArray(), newBlockMap.toArray())
-
-          const newContent = contentState.merge({
-            blockMap: newBlockMap,
-          })
-
+          newBlockMap = flattenBlocks(newBlockMap, oldStartKey, lastBlockKey)
+          const newContent = contentState.merge({ blockMap: newBlockMap })
           const next = EditorState.push(editorState, newContent, 'change-block-type')
-          console.log('next - ', next.getCurrentContent().getBlockMap())
           return EditorState.forceSelection(next, newContent.getSelectionAfter())
         } catch (err) {
           console.error('stateFilterPlugin : ', err)
