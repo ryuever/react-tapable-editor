@@ -1,0 +1,11 @@
+.image-wrapper {
+  /* width: 100%; */
+  /* display: flex; */
+  width: 100%;
+  /* float: right; */
+}
+
+.image {
+  width: 100%;
+  margin: auto;
+}

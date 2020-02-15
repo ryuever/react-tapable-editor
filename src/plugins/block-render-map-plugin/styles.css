@@ -1,0 +1,11 @@
+.code-mirror {
+  background-color: #f5f6f7;
+  /* background-color: rgba(0, 0, 0, 0.05); */
+  font-family: 'Inconsolata', 'Menlo', 'Consolas', monospace;
+  font-size: 16px;
+  padding: 20px;
+}
+
+.code-mirror pre {
+  margin: 6px 0;
+}

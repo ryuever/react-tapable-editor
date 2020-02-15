@@ -1,0 +1,64 @@
+.figure-image-right {
+  float: right;
+
+  /* 需要指定`position`否则figure-image无法被点中 */
+  position: relative;
+  clear: both;
+  outline: 0;
+  margin: 0;
+}
+
+.figure-image-right-fill {
+  float: right;
+  margin-right: -150px;
+
+  /* 需要指定`position`否则figure-image无法被点中 */
+  position: relative;
+  clear: both;
+  outline: 0;
+  z-index: 1;
+  margin: 0;
+
+}
+
+.figure-image-left {
+  float: left;
+
+  /* 需要指定`position`否则figure-image无法被点中 */
+  position: relative;
+  clear: both;
+  outline: 0;
+  z-index: 1;
+  margin: 0;
+}
+
+.figure-image-left-fill {
+  float: left;
+  margin-left: -150px;
+
+  /* 需要指定`position`否则figure-image无法被点中 */
+  position: relative;
+  clear: both;
+  outline: 0;
+  z-index: 1;
+  margin: 0;
+}
+
+.figure-image-center {
+  /* 需要指定`position`否则figure-image无法被点中 */
+  position: relative;
+  clear: both;
+  outline: 0;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+}
+
+.display-flex >div {
+  display: flex;
+  flex-direction: row;
+}
+
+.display-flex >div >div[data-block="true"]{
+  width: 50%;
+}
