@@ -1,3 +1,5 @@
+import { List } from 'immutable'
+
 export default (
   blockMap,
   newBlock,

@@ -9,7 +9,7 @@ function DragPlugin() {
       getEditor,
       onUpdate: ({ targetBlockKey, sourceBlockKey }) => {
         const { editorState } = getEditor()
-        const newContent = transferBlock(editorState, sourceBlockKey, targetBlockKey, 'left')
+        const newContent = transferBlock(editorState, sourceBlockKey, targetBlockKey, 'right')
         const newState = EditorState.push(editorState, newContent)
         hooks.setState.call(newState)
       }

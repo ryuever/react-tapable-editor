@@ -36,7 +36,6 @@ import './decorators/prism/theme/prism.css'
 import './decorators/prism/theme/editor.css'
 import MultiDecorator from './decorators/prism/multiple'
 
-
 import Editor from './Editor'
 import decorateComposer from './decoratorComposer'
 const { Provider } = Context
@@ -72,7 +71,7 @@ const defaultPlugins = [
   new DragPlugin(),
 
   // TODO：目前存在的问题是，会造成当输入中文时，selection紊乱
-  // new SidebarPlugin(),
+  new SidebarPlugin(),
 ]
 
 class PluginEditor extends PureComponent {
