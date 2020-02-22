@@ -213,7 +213,7 @@ function PlaceholderPlugin() {
 
           hooks.setState.call(nextState, editorState => {
             // 为了用户在刚打开editor的时候，光标就能够处于激活状态
-            var currentSelection = editorState.getSelection();
+            const currentSelection = editorState.getSelection();
             const hasFocus = currentSelection.getHasFocus();
             if (!hasFocus) {
               editorRef.current.focus();

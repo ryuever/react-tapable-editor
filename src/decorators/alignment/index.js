@@ -48,7 +48,7 @@ const Alignment = WrappedComponent => props => {
     const alignmentToolbarHeight = alignmentToolbar.offsetHeight;
     const alignmentToolbarWidth = alignmentToolbar.offsetWidth;
     const nextTop = top - alignmentToolbarHeight - 15;
-    const offsetRight = rootNode.offsetRight;
+    const { offsetRight } = rootNode;
 
     // 考虑到left的最小和最大值的边界
     const minLeft = 0;
@@ -99,7 +99,7 @@ const Alignment = WrappedComponent => props => {
   const eventHandler = useCallback(e => {
     e.preventDefault();
     e.stopPropagation();
-    const target = e.target;
+    const { target } = e;
     const alignmentToolbar = document.querySelector(".image-toolbar");
 
     if (alignmentToolbar.contains(target) && timeoutHandler.current) {

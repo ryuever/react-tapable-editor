@@ -1,5 +1,6 @@
 import Immutable from "immutable";
-const Map = Immutable.Map;
+
+const { Map } = Immutable;
 
 function getSelectionBlockTypes(editorState) {
   const contentState = editorState.getCurrentContent();

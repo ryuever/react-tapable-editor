@@ -1,7 +1,7 @@
 import { CharacterMetadata, EditorState } from "draft-js";
+import { Repeat, OrderedSet, OrderedMap } from "immutable";
 import removeBlock from "../utils/block/removeBlock";
 import flattenBlocks from "../utils/block/flattenBlocks";
-import { Repeat, OrderedSet, OrderedMap } from "immutable";
 
 function StateFilterPlugin() {
   this.apply = getEditor => {
@@ -18,7 +18,7 @@ function StateFilterPlugin() {
         const lastBlock = contentState.getLastBlock();
         const endKey = lastBlock.getKey();
 
-        let newContentState = contentState;
+        const newContentState = contentState;
 
         // 解决的问题
         // 1. 当用户从vscode复制代码到编辑器中时，会保持原有的style

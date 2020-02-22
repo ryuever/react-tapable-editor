@@ -39,7 +39,6 @@ const Focus = WrappedComponent => props => {
       }
       if (!isCollapsed && focusedRef.current) {
         delaySetState(false);
-        return;
       }
     });
 
@@ -54,7 +53,6 @@ const Focus = WrappedComponent => props => {
       }
       if (startKey !== currentBlockKey && focusedRef.current) {
         delaySetState(false);
-        return;
       }
     });
   }, []);

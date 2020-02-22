@@ -73,7 +73,7 @@ function InlineToolbar() {
         const inlineToolbarWidth = inlineToolbarRef.current.offsetWidth;
         const nextTop = top - inlineToolbarHeight - 15;
         const rootNode = getRootNode(editorRef);
-        const offsetRight = rootNode.offsetRight;
+        const { offsetRight } = rootNode;
 
         // 考虑到left的最小和最大值的边界
         const minLeft = 0;

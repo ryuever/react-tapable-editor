@@ -21,7 +21,7 @@ export default (blockMap, sourceBlockKey, targetBlockKey, position) => {
     // const isFlexRow = parentBlock.getData().get('flexRow')
     let newBlockMap = blockMap;
     let flexBlockKey;
-    let nextKey = sourceBlock.getNextSiblingKey();
+    const nextKey = sourceBlock.getNextSiblingKey();
 
     if (!parentBlock) {
       const emptyBlock = createEmptyBlockNode();
@@ -88,7 +88,7 @@ export default (blockMap, sourceBlockKey, targetBlockKey, position) => {
         // // 找到从flexBlock开始，第一个parent不存在的
         const nextFlexBlock = newBlockMap.get(flexBlockKey);
         const newFlexBlock = nextFlexBlock.merge({
-          nextSibling: nextSibling
+          nextSibling
         });
 
         newBlockMap = newBlockMap.set(flexBlockKey, newFlexBlock);
@@ -145,7 +145,7 @@ export default (blockMap, sourceBlockKey, targetBlockKey, position) => {
         // 找到从flexBlock开始，第一个parent不存在的
         const nextFlexBlock = newBlockMap.get(flexBlockKey);
         const newFlexBlock = nextFlexBlock.merge({
-          nextSibling: nextSibling
+          nextSibling
         });
 
         newBlockMap = newBlockMap.set(flexBlockKey, newFlexBlock);
