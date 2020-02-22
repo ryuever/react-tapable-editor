@@ -1,27 +1,27 @@
-import React, { useRef, useEffect, useCallback } from 'react'
-import { EditorState } from 'draft-js'
-import Divider from './Divider'
+import React, { useRef, useEffect, useCallback } from "react";
+import { EditorState } from "draft-js";
+import Divider from "./Divider";
 
-import Link from '../button/Link'
-import Unlink from '../button/Unlink'
+import Link from "../button/Link";
+import Unlink from "../button/Unlink";
 
-import { createLinkAtSelection } from '../../utils/createEntity'
+import { createLinkAtSelection } from "../../utils/createEntity";
 
 const InputBar = ({ getEditor }) => {
-  const inputRef = useRef()
-  const { hooks } = getEditor()
+  const inputRef = useRef();
+  const { hooks } = getEditor();
 
   useEffect(() => {
-    inputRef.current.focus()
-  }, [])
+    inputRef.current.focus();
+  }, []);
 
   const submit = value => {
-    const { editorState, hooks } = getEditor()
-    const newState = createLinkAtSelection(editorState, value)
-    const currentContent = newState.getCurrentContent()
-    const selection = newState.getSelection()
-    const focusOffset = selection.getFocusOffset()
-    const focusKey = selection.getFocusKey()
+    const { editorState, hooks } = getEditor();
+    const newState = createLinkAtSelection(editorState, value);
+    const currentContent = newState.getCurrentContent();
+    const selection = newState.getSelection();
+    const focusOffset = selection.getFocusOffset();
+    const focusKey = selection.getFocusKey();
 
     // 通过下面的方式，并不能够将cursor放置在刚刚的selection末尾
     // const nextState = EditorState.set(newState, {
@@ -36,29 +36,30 @@ const InputBar = ({ getEditor }) => {
     // hooks.setState.call(nextState)
 
     // 当用户输入完以后，指针是放置在selection的后面
-    const nextState = EditorState.forceSelection(newState,
+    const nextState = EditorState.forceSelection(
+      newState,
       currentContent.getSelectionAfter().merge({
         anchorOffset: focusOffset,
-        anchorKey: focusKey,
+        anchorKey: focusKey
       })
-    )
+    );
 
-    hooks.setState.call(nextState)
-  }
+    hooks.setState.call(nextState);
+  };
 
   const onKeyDownHandler = useCallback(e => {
-    const { key } = e
-    if (key === 'Enter') {
-      hooks.cleanUpLinkClickState.call()
-      e.preventDefault()
-      const inputValue = e.target.value
-      submit(inputValue)
-      hooks.hideInlineToolbar.call()
-    } else if (key === 'Escape') {
-      e.preventDefault()
-      hooks.hideInlineToolbar.call()
+    const { key } = e;
+    if (key === "Enter") {
+      hooks.cleanUpLinkClickState.call();
+      e.preventDefault();
+      const inputValue = e.target.value;
+      submit(inputValue);
+      hooks.hideInlineToolbar.call();
+    } else if (key === "Escape") {
+      e.preventDefault();
+      hooks.hideInlineToolbar.call();
     }
-  }, [])
+  }, []);
 
   return (
     <div className="inline-toolbar-link-inner">
@@ -69,12 +70,12 @@ const InputBar = ({ getEditor }) => {
         onKeyDown={onKeyDownHandler}
       />
       <Divider />
-      <div className='link-action-group'>
-        <Link active={false}/>
+      <div className="link-action-group">
+        <Link active={false} />
         <Unlink active={false} />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default InputBar
+export default InputBar;

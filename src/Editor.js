@@ -1,30 +1,21 @@
-import React, {
-  useCallback,
-  useRef,
-  useEffect,
-} from 'react';
-import {
-  Editor,
-  EditorState,
-  convertToRaw,
-  convertFromRaw,
-} from 'draft-js';
-import Title from './components/title';
-import ImageToolbar from './components/image-toolbar'
-import InlineToolbar from './components/inline-toolbar'
-import compareArray from './utils/compareArray'
+import React, { useCallback, useRef, useEffect } from "react";
+import { Editor, EditorState, convertToRaw, convertFromRaw } from "draft-js";
+import Title from "./components/title";
+import ImageToolbar from "./components/image-toolbar";
+import InlineToolbar from "./components/inline-toolbar";
+import compareArray from "./utils/compareArray";
 
 window.__DRAFT_GKX = {
-  'draft_tree_data_support': true,
-}
+  draft_tree_data_support: true
+};
 
-import './style.css';
+import "./style.css";
 // https://draftjs.org/docs/advanced-topics-issues-and-pitfalls.html#missing-draftcss
-import 'draft-js/dist/Draft.css';
+import "draft-js/dist/Draft.css";
 
-import { withEditor } from './index';
+import { withEditor } from "./index";
 
-const NewEditor = (props) => {
+const NewEditor = props => {
   const {
     getEditor,
     forwardRef,
@@ -32,32 +23,33 @@ const NewEditor = (props) => {
     imageRef,
     inlineRef,
     blockRenderMap,
-    customStyleMap,
+    customStyleMap
   } = props;
   const { hooks, editorState } = getEditor();
   const didUpdate = useRef(false);
   const pasteText = useRef();
-  const lastBlockMapKeys = useRef([])
-  const isInCompositionModeRef = useRef(false)
+  const lastBlockMapKeys = useRef([]);
+  const isInCompositionModeRef = useRef(false);
 
   useEffect(() => {
-    const currentContent = editorState.getCurrentContent()
-    const currentBlockMap = currentContent.getBlockMap()
-    const currentBlockMapKeys = currentBlockMap.keySeq().toArray()
-    const diff = compareArray(lastBlockMapKeys.current, currentBlockMapKeys)
-    const isInCompositionMode = editorState.isInCompositionMode()
+    const currentContent = editorState.getCurrentContent();
+    const currentBlockMap = currentContent.getBlockMap();
+    const currentBlockMapKeys = currentBlockMap.keySeq().toArray();
+    const diff = compareArray(lastBlockMapKeys.current, currentBlockMapKeys);
+    const isInCompositionMode = editorState.isInCompositionMode();
 
-    const force = diff.length || (isInCompositionModeRef.current && !isInCompositionMode)
+    const force =
+      diff.length || (isInCompositionModeRef.current && !isInCompositionMode);
 
-    hooks.syncBlockKeys.call(currentBlockMapKeys, force )
-    isInCompositionModeRef.current = editorState.isInCompositionMode()
-  })
+    hooks.syncBlockKeys.call(currentBlockMapKeys, force);
+    isInCompositionModeRef.current = editorState.isInCompositionMode();
+  });
 
   useEffect(() => {
     if (didUpdate.current) {
       hooks.didUpdate.call(editorState);
       hooks.updatePlaceholder.call(editorState, placeholder);
-      hooks.syncSelectionChange.call(editorState)
+      hooks.syncSelectionChange.call(editorState);
     }
   });
 
@@ -67,27 +59,31 @@ const NewEditor = (props) => {
   }, []);
 
   useEffect(() => {
-    const currentContent = editorState.getCurrentContent()
-    const currentBlockMap = currentContent.getBlockMap()
-    const currentBlockMapKeys = currentBlockMap.keySeq().toArray()
-    const diff = compareArray(lastBlockMapKeys.current, currentBlockMapKeys)
+    const currentContent = editorState.getCurrentContent();
+    const currentBlockMap = currentContent.getBlockMap();
+    const currentBlockMapKeys = currentBlockMap.keySeq().toArray();
+    const diff = compareArray(lastBlockMapKeys.current, currentBlockMapKeys);
 
     if (diff.length) {
-      hooks.updateDragSubscription.call(diff)
+      hooks.updateDragSubscription.call(diff);
     }
 
-    lastBlockMapKeys.current = currentBlockMapKeys
-  })
+    lastBlockMapKeys.current = currentBlockMapKeys;
+  });
 
-  const onChange = useCallback((newEditorState) => {
+  const onChange = useCallback(newEditorState => {
     const { editorState } = getEditor();
 
-    const nextState = hooks.stateFilter.call(editorState, newEditorState, pasteText.current)
+    const nextState = hooks.stateFilter.call(
+      editorState,
+      newEditorState,
+      pasteText.current
+    );
 
-    const newContentState = nextState.getCurrentContent()
-    const blockMap = newContentState.getBlockMap()
-    const lastBlock = newContentState.getLastBlock()
-    const lastBlockText = lastBlock.getText()
+    const newContentState = nextState.getCurrentContent();
+    const blockMap = newContentState.getBlockMap();
+    const lastBlock = newContentState.getLastBlock();
+    const lastBlockText = lastBlock.getText();
 
     // should invoke `DraftTreeInvariants`来验证是否是`validTree`然后才能够存储
     // console.log('on change hooks', convertToRaw(newContentState))
@@ -96,29 +92,33 @@ const NewEditor = (props) => {
     hooks.onChange.call(nextState);
   }, []);
 
-  const handleKeyCommand = useCallback((command, es) => (
-    hooks.handleKeyCommand.call(command, es)
-  ), []);
+  const handleKeyCommand = useCallback(
+    (command, es) => hooks.handleKeyCommand.call(command, es),
+    []
+  );
 
-  const getBlockStyle = useCallback((block) => hooks.blockStyleFn.call(block));
+  const getBlockStyle = useCallback(block => hooks.blockStyleFn.call(block));
 
-  const handleBlockRender = useCallback((contentBlock) => {
-    const { editorState } = getEditor()
-    return hooks.blockRendererFn.call(contentBlock, editorState)
+  const handleBlockRender = useCallback(contentBlock => {
+    const { editorState } = getEditor();
+    return hooks.blockRendererFn.call(contentBlock, editorState);
   });
 
-  const handleDroppedFiles = useCallback((dropSelection, files) => {
-    hooks.handleDroppedFiles.call(editorState, dropSelection, files)
-  }, [editorState])
+  const handleDroppedFiles = useCallback(
+    (dropSelection, files) => {
+      hooks.handleDroppedFiles.call(editorState, dropSelection, files);
+    },
+    [editorState]
+  );
 
   const editOnPasteHandler = (editor, e) => {
-    const data = new DataTransfer(e.clipboardData)
-    console.log('data ', data, data.isRichText())
-  }
+    const data = new DataTransfer(e.clipboardData);
+    console.log("data ", data, data.isRichText());
+  };
 
   const handlePastedText = (text, html, es) => {
-    pasteText.current = text
-  }
+    pasteText.current = text;
+  };
 
   return (
     <div className="miuffy-editor-root">

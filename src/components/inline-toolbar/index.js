@@ -1,56 +1,56 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react'
-import { withEditor } from '../../index';
-import Immutable from 'immutable'
-import './styles.css'
-import StyleControls from './StyleControls'
-import InputBar from './InputBar'
+import React, { useState, useRef, useEffect, useCallback } from "react";
+import { withEditor } from "../../index";
+import Immutable from "immutable";
+import "./styles.css";
+import StyleControls from "./StyleControls";
+import InputBar from "./InputBar";
 
-import getSelectionBlockTypes from '../../utils/getSelectionBlockTypes'
-import getInlineToolbarInlineInfo from '../../utils/getInlineToolbarInlineInfo'
+import getSelectionBlockTypes from "../../utils/getSelectionBlockTypes";
+import getInlineToolbarInlineInfo from "../../utils/getInlineToolbarInlineInfo";
 
 const Toolbar = props => {
-  const { forwardRef, getEditor } = props
+  const { forwardRef, getEditor } = props;
   const [value, setValue] = useState({
     styles: new Immutable.OrderedSet(),
     blockTypes: [],
     inDisplayMode: true,
-    hasLink: false,
-  })
-  const inDisplayModeRef = useRef(true)
+    hasLink: false
+  });
+  const inDisplayModeRef = useRef(true);
 
   useEffect(() => {
-    const { hooks } = getEditor()
-    hooks.inlineBarChange.tap('InlineToolbar', (editorState, visibility) => {
+    const { hooks } = getEditor();
+    hooks.inlineBarChange.tap("InlineToolbar", (editorState, visibility) => {
       const nextValue = {
-        inDisplayMode: visibility === 'hidden' ? true : inDisplayModeRef.current
-      }
+        inDisplayMode: visibility === "hidden" ? true : inDisplayModeRef.current
+      };
 
       if (editorState) {
-        const { styles, hasLink } = getInlineToolbarInlineInfo(editorState)
-        nextValue.styles = styles
-        nextValue.hasLink = hasLink
-        nextValue.blockTypes = getSelectionBlockTypes(editorState)
+        const { styles, hasLink } = getInlineToolbarInlineInfo(editorState);
+        nextValue.styles = styles;
+        nextValue.hasLink = hasLink;
+        nextValue.blockTypes = getSelectionBlockTypes(editorState);
       } else {
-        nextValue.styles = new Immutable.OrderedSet()
-        nextValue.blockTypes = []
-        nextValue.hasLink = false
+        nextValue.styles = new Immutable.OrderedSet();
+        nextValue.blockTypes = [];
+        nextValue.hasLink = false;
       }
 
-      inDisplayModeRef.current = nextValue.inDisplayMode
+      inDisplayModeRef.current = nextValue.inDisplayMode;
 
-      setValue(nextValue)
-    })
-  }, [])
+      setValue(nextValue);
+    });
+  }, []);
 
   const toggleDisplayMode = useCallback(() => {
     setValue({
       ...value,
-      inDisplayMode: !inDisplayMode,
-    })
-    inDisplayModeRef.current = !inDisplayMode
-  }, [inDisplayMode])
+      inDisplayMode: !inDisplayMode
+    });
+    inDisplayModeRef.current = !inDisplayMode;
+  }, [inDisplayMode]);
 
-  const { styles, blockTypes, inDisplayMode, hasLink } = value
+  const { styles, blockTypes, inDisplayMode, hasLink } = value;
 
   return (
     <div className="inline-toolbar" ref={forwardRef}>
@@ -63,14 +63,17 @@ const Toolbar = props => {
           toggleDisplayMode={toggleDisplayMode}
         />
       )}
-      {!inDisplayMode && <InputBar getEditor={getEditor}/>}
+      {!inDisplayMode && <InputBar getEditor={getEditor} />}
       <div className="arrow-down" />
     </div>
-  )
-}
+  );
+};
 
-const MemoToolbar = React.memo(props => {
-  return <Toolbar {...props} />
-}, () => true)
+const MemoToolbar = React.memo(
+  props => {
+    return <Toolbar {...props} />;
+  },
+  () => true
+);
 
-export default withEditor(MemoToolbar)
+export default withEditor(MemoToolbar);

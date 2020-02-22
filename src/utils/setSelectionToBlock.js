@@ -1,9 +1,9 @@
-import { SelectionState, EditorState } from 'draft-js';
-import DraftOffsetKey from 'draft-js/lib/DraftOffsetKey';
+import { SelectionState, EditorState } from "draft-js";
+import DraftOffsetKey from "draft-js/lib/DraftOffsetKey";
 
 // Set selection of editor to next/previous block
 export default (editorState, contentBlock) => {
-  const blockKey = contentBlock.getKey()
+  const blockKey = contentBlock.getKey();
   // TODO verify that always a key-0-0 exists
   const offsetKey = DraftOffsetKey.encode(blockKey, 0, 0);
   const node = document.querySelectorAll(`[data-offset-key="${offsetKey}"]`)[0];
@@ -23,7 +23,7 @@ export default (editorState, contentBlock) => {
       anchorOffset: 0,
       focusKey: blockKey,
       focusOffset: 0,
-      isBackward: false,
+      isBackward: false
     })
-  )
+  );
 };

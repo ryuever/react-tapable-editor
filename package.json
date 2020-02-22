@@ -6,6 +6,11 @@
   "scripts": {
     "examples:basic": "DIR=basic EXT=js webpack-dev-server"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
+  },
   "author": "liuyouchao111@gmail.com",
   "license": "ISC",
   "dependencies": {
@@ -30,6 +35,9 @@
   },
   "devDependencies": {
     "css-loader": "^3.4.1",
+    "husky": "^4.2.3",
+    "prettier": "^1.19.1",
+    "pretty-quick": "^2.0.1",
     "style-loader": "^1.1.2"
   }
 }

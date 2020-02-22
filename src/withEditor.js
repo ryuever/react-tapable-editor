@@ -1,19 +1,20 @@
-import React, { useContext } from 'react';
-import Context from './Context';
+import React, { useContext } from "react";
+import Context from "./Context";
 
 function getDisplayName(WrappedComponent) {
-  return WrappedComponent.displayName || WrappedComponent.name || 'WithEditorComponent';
+  return (
+    WrappedComponent.displayName ||
+    WrappedComponent.name ||
+    "WithEditorComponent"
+  );
 }
 
 export default WrappedComponent => props => {
-  WrappedComponent.displayName = `WrappedComponent(${getDisplayName(WrappedComponent)})`; // eslint-disable-line
+  WrappedComponent.displayName = `WrappedComponent(${getDisplayName(
+    WrappedComponent
+  )})`; // eslint-disable-line
 
   const getEditor = useContext(Context);
 
-  return (
-    <WrappedComponent
-      {...props}
-      getEditor={getEditor}
-    />
-  );
+  return <WrappedComponent {...props} getEditor={getEditor} />;
 };

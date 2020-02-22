@@ -5,19 +5,22 @@
 
 // https://github.com/facebook/draft-js/blob/master/examples/draft-0-9-1/rich/rich.html#L52
 // https://github.com/facebook/draft-js/blob/master/src/model/modifier/RichTextEditorUtil.js#L54
-import { RichUtils } from 'draft-js'
+import { RichUtils } from "draft-js";
 
 function DefaultHandleKeyCommandPlugin(command, editorState) {
   this.apply = getEditor => {
-    const { hooks } = getEditor()
-    hooks.handleKeyCommand.tap('HandleBackspaceOnStartOfBlockPlugin', (command, editorState) => {
-      const newState = RichUtils.handleKeyCommand(editorState, command);
-      if (newState) {
-        hooks.setState.call(newState)
-        return 'handled'
+    const { hooks } = getEditor();
+    hooks.handleKeyCommand.tap(
+      "HandleBackspaceOnStartOfBlockPlugin",
+      (command, editorState) => {
+        const newState = RichUtils.handleKeyCommand(editorState, command);
+        if (newState) {
+          hooks.setState.call(newState);
+          return "handled";
+        }
       }
-    })
-  }
+    );
+  };
 }
 
-export default DefaultHandleKeyCommandPlugin
+export default DefaultHandleKeyCommandPlugin;

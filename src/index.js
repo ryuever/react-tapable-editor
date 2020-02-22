@@ -1,5 +1,3 @@
-import withEditor from './withEditor';
+import withEditor from "./withEditor";
 
-export {
-  withEditor,
-};
+export { withEditor };

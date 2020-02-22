@@ -1,9 +1,9 @@
-var Immutable = require('immutable');
+var Immutable = require("immutable");
 
-var KEY_SEPARATOR = '-';
+var KEY_SEPARATOR = "-";
 
 function MultiDecorator(decorators) {
-    this.decorators = Immutable.List(decorators);
+  this.decorators = Immutable.List(decorators);
 }
 
 /**
@@ -13,24 +13,23 @@ function MultiDecorator(decorators) {
     @return {List<String>}
 */
 MultiDecorator.prototype.getDecorations = function(block, contentState) {
-    var decorations = Array(block.getText().length).fill(null);
+  var decorations = Array(block.getText().length).fill(null);
 
+  this.decorators.forEach(function(decorator, i) {
+    var _decorations = decorator.getDecorations(block, contentState);
 
-    this.decorators.forEach(function(decorator, i) {
-        var _decorations = decorator.getDecorations(block, contentState);
+    _decorations.forEach(function(key, offset) {
+      if (!key) {
+        return;
+      }
 
-        _decorations.forEach(function(key, offset) {
-            if (!key) {
-                return;
-            }
+      key = i + KEY_SEPARATOR + key;
 
-            key = i + KEY_SEPARATOR + key;
-
-            decorations[offset] = key;
-        });
+      decorations[offset] = key;
     });
+  });
 
-    return Immutable.List(decorations);
+  return Immutable.List(decorations);
 };
 
 /**
@@ -40,10 +39,8 @@ MultiDecorator.prototype.getDecorations = function(block, contentState) {
     @return {Function}
 */
 MultiDecorator.prototype.getComponentForKey = function(key) {
-    var decorator = this.getDecoratorForKey(key);
-    return decorator.getComponentForKey(
-        this.getInnerKey(key)
-    );
+  var decorator = this.getDecoratorForKey(key);
+  return decorator.getComponentForKey(this.getInnerKey(key));
 };
 
 /**
@@ -53,10 +50,8 @@ MultiDecorator.prototype.getComponentForKey = function(key) {
     @return {Object}
 */
 MultiDecorator.prototype.getPropsForKey = function(key) {
-    var decorator = this.getDecoratorForKey(key);
-    return decorator.getPropsForKey(
-        this.getInnerKey(key)
-    );
+  var decorator = this.getDecoratorForKey(key);
+  return decorator.getPropsForKey(this.getInnerKey(key));
 };
 
 /**
@@ -66,10 +61,10 @@ MultiDecorator.prototype.getPropsForKey = function(key) {
     @return {Decorator}
 */
 MultiDecorator.prototype.getDecoratorForKey = function(key) {
-    var parts = key.split(KEY_SEPARATOR);
-    var index = Number(parts[0]);
+  var parts = key.split(KEY_SEPARATOR);
+  var index = Number(parts[0]);
 
-    return this.decorators.get(index);
+  return this.decorators.get(index);
 };
 
 /**
@@ -79,8 +74,8 @@ MultiDecorator.prototype.getDecoratorForKey = function(key) {
     @return {String}
 */
 MultiDecorator.prototype.getInnerKey = function(key) {
-    var parts = key.split(KEY_SEPARATOR);
-    return parts.slice(1).join(KEY_SEPARATOR);
+  var parts = key.split(KEY_SEPARATOR);
+  return parts.slice(1).join(KEY_SEPARATOR);
 };
 
 export default MultiDecorator;

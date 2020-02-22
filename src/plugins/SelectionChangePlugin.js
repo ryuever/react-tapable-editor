@@ -4,58 +4,58 @@ const resolveChangeType = ({
   prevSelection,
   isCollapsed,
   hasFocus,
-  selection,
+  selection
 }) => {
-  if (typeof prevIsCollapsed === 'undefined') {
-    return 'init-change'
+  if (typeof prevIsCollapsed === "undefined") {
+    return "init-change";
   }
 
   if (isCollapsed !== prevIsCollapsed) {
-    return 'collapsed-change'
+    return "collapsed-change";
   }
 
   if (hasFocus !== prevHasFocus) {
-    return 'focus-change'
+    return "focus-change";
   }
 
   if (isCollapsed) {
-    const prevStartKey = prevSelection.getStartKey()
-    const startKey = selection.getStartKey()
+    const prevStartKey = prevSelection.getStartKey();
+    const startKey = selection.getStartKey();
 
-    if (prevStartKey === startKey) return 'selection-move-inner-block'
-    return 'selection-move-outer-block'
+    if (prevStartKey === startKey) return "selection-move-inner-block";
+    return "selection-move-outer-block";
   } else {
-    const prevEndKey = prevSelection.getEndKey()
-    const prevStartOffset = prevSelection.getStartOffset()
-    const prevEndOffset = prevSelection.getEndOffset()
-    const endKey = selection.getEndKey()
-    const startOffset = selection.getStartOffset()
-    const endOffset = selection.getEndOffset()
+    const prevEndKey = prevSelection.getEndKey();
+    const prevStartOffset = prevSelection.getStartOffset();
+    const prevEndOffset = prevSelection.getEndOffset();
+    const endKey = selection.getEndKey();
+    const startOffset = selection.getStartOffset();
+    const endOffset = selection.getEndOffset();
 
     if (
       prevEndKey === endKey &&
       prevStartOffset === startOffset &&
       prevEndOffset === endOffset
     ) {
-      return 'selection-range-content-change'
+      return "selection-range-content-change";
     }
 
-    return 'selection-range-size-change'
+    return "selection-range-size-change";
   }
-}
+};
 
 function SelectionChangePlugin() {
-  let prevIsCollapsed = undefined
-  let prevSelection = undefined
-  let prevHasFocus = undefined
+  let prevIsCollapsed = undefined;
+  let prevSelection = undefined;
+  let prevHasFocus = undefined;
 
-  this.apply = (getEditor) => {
+  this.apply = getEditor => {
     const { hooks } = getEditor();
 
-    hooks.syncSelectionChange.tap('SelectionChangePlugin', editorState => {
-      const selection = editorState.getSelection()
-      const isCollapsed = selection.isCollapsed()
-      const hasFocus = selection.getHasFocus()
+    hooks.syncSelectionChange.tap("SelectionChangePlugin", editorState => {
+      const selection = editorState.getSelection();
+      const isCollapsed = selection.isCollapsed();
+      const hasFocus = selection.getHasFocus();
 
       const changeType = resolveChangeType({
         prevIsCollapsed,
@@ -63,49 +63,49 @@ function SelectionChangePlugin() {
         prevSelection,
         isCollapsed,
         hasFocus,
-        selection,
-      })
+        selection
+      });
 
       const payload = {
         changeType,
         oldValue: { prevIsCollapsed, prevHasFocus, prevSelection },
         newValue: { isCollapsed, hasFocus, selection }
-      }
+      };
 
-      prevIsCollapsed = isCollapsed
-      prevHasFocus = hasFocus
-      prevSelection = selection
+      prevIsCollapsed = isCollapsed;
+      prevHasFocus = hasFocus;
+      prevSelection = selection;
 
       // console.log('*** selection change *** : ', payload)
-      switch(changeType) {
-        case 'init-change':
-          hooks.selectionInitChange.call(editorState, payload)
+      switch (changeType) {
+        case "init-change":
+          hooks.selectionInitChange.call(editorState, payload);
           break;
-        case 'collapsed-change':
-          hooks.selectionCollapsedChange.call(editorState, payload)
+        case "collapsed-change":
+          hooks.selectionCollapsedChange.call(editorState, payload);
           break;
-        case 'focus-change':
-          hooks.selectionFocusChange.call(editorState, payload)
+        case "focus-change":
+          hooks.selectionFocusChange.call(editorState, payload);
           break;
-        case 'selection-move-inner-block':
-          hooks.selectionMoveInnerBlock.call(editorState, payload)
+        case "selection-move-inner-block":
+          hooks.selectionMoveInnerBlock.call(editorState, payload);
           break;
-        case 'selection-move-outer-block':
-          hooks.selectionMoveOuterBlock.call(editorState, payload)
+        case "selection-move-outer-block":
+          hooks.selectionMoveOuterBlock.call(editorState, payload);
           break;
-        case 'selection-range-content-change':
-          hooks.selectionRangeContentChange.call(editorState, payload)
-          hooks.selectionRangeChange.call(editorState, payload)
+        case "selection-range-content-change":
+          hooks.selectionRangeContentChange.call(editorState, payload);
+          hooks.selectionRangeChange.call(editorState, payload);
           break;
-        case 'selection-range-size-change':
-          hooks.selectionRangeSizeChange.call(editorState, payload)
-          hooks.selectionRangeChange.call(editorState, payload)
+        case "selection-range-size-change":
+          hooks.selectionRangeSizeChange.call(editorState, payload);
+          hooks.selectionRangeChange.call(editorState, payload);
           break;
         default:
-          // do nothing
+        // do nothing
       }
     });
   };
 }
 
-export default SelectionChangePlugin
+export default SelectionChangePlugin;
