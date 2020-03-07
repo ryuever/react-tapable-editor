@@ -121,11 +121,11 @@ const Toolbar = props => {
     <div className="image-toolbar" ref={forwardRef}>
       <div className="image-toolbar-inner">
         <div className="image-toolbar-action-group">
-          <ImageAlignLeftButton
+          {/* <ImageAlignLeftButton
             activeKey="left"
             active={alignment === "left"}
             clickHandler={clickHandler}
-          />
+          /> */}
           <ImageAlignLeftFillContentButton
             activeKey="leftFill"
             active={alignment === "leftFill"}
