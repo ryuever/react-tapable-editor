@@ -75,8 +75,8 @@ const Resizable = WrappedComponent => props => {
   const onMouseDownHandler = useCallback(e => {
     setResizeMode(true);
     const { clientX, clientY, currentTarget } = e;
-    const offsetWidth = currentTarget.offsetWidth;
-    const offsetHeight = currentTarget.offsetHeight;
+    const { offsetWidth } = currentTarget;
+    const { offsetHeight } = currentTarget;
 
     resizeModeStartCoordinate.current = {
       clientX,

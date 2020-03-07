@@ -2,7 +2,7 @@ import { OrderedMap } from "immutable";
 import findRootNode from "./findRootNode";
 
 const flattenBlocks = (blockMap, startKey, endKey) => {
-  let newBlockMap = blockMap;
+  const newBlockMap = blockMap;
   let prefixBlocks = new OrderedMap();
   let suffixBlocks = new OrderedMap();
 
@@ -24,7 +24,7 @@ const flattenBlocks = (blockMap, startKey, endKey) => {
     .skipUntil((_, key) => key === endKey)
     .skip(1)
     .takeWhile((_, k) => true); // take all after key
-  let blocksAfterFirst = blocksAfter.toSeq().first();
+  const blocksAfterFirst = blocksAfter.toSeq().first();
 
   if (blocksAfterFirst) {
     suffixBlocks = suffixBlocks.set(

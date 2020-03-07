@@ -3,25 +3,26 @@
 import generateRandomKey from "draft-js/lib/generateRandomKey";
 import Immutable from "immutable";
 import { EditorState } from "draft-js";
+
 const { Map, List } = Immutable;
 
-var updateBlockMapLinks = function updateBlockMapLinks(
+const updateBlockMapLinks = function updateBlockMapLinks(
   blockMap,
   newParentBlock,
   originalBlock,
   belowBlock
 ) {
   return blockMap.withMutations(function(blocks) {
-    var originalBlockKey = originalBlock.getKey();
-    var belowBlockKey = belowBlock.getKey(); // update block parent
+    const originalBlockKey = originalBlock.getKey();
+    const belowBlockKey = belowBlock.getKey(); // update block parent
     const parentBlockKey = newParentBlock.getKey();
 
     const originalParentBlockKey = originalBlock.getParentKey();
     const originalParentBlock = blockMap.get(originalParentBlockKey);
 
-    var parentChildrenList = originalParentBlock.getChildKeys();
-    var insertionIndex = parentChildrenList.indexOf(originalBlockKey);
-    var newChildrenArray = parentChildrenList.toArray();
+    const parentChildrenList = originalParentBlock.getChildKeys();
+    const insertionIndex = parentChildrenList.indexOf(originalBlockKey);
+    const newChildrenArray = parentChildrenList.toArray();
 
     newChildrenArray.splice(insertionIndex, 1);
     newChildrenArray.splice(insertionIndex, 0, parentBlockKey);

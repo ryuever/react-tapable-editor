@@ -3,7 +3,7 @@ import React from "react";
 import Immutable from "immutable";
 import Prism from "prismjs";
 
-var KEY_SEPARATOR = "-";
+const KEY_SEPARATOR = "-";
 
 function PrismDecorator(options) {
   this.highlighted = {};
@@ -16,18 +16,18 @@ function PrismDecorator(options) {
  * @return {List<String>}
  */
 PrismDecorator.prototype.getDecorations = function(block) {
-  var tokens,
-    token,
-    tokenId,
-    resultId,
-    offset = 0,
-    tokenCount = 0;
-  var blockKey = block.getKey();
+  let tokens;
+  let token;
+  let tokenId;
+  let resultId;
+  let offset = 0;
+  let tokenCount = 0;
+  const blockKey = block.getKey();
   const blockType = block.getType();
   const blockData = block.getData();
-  var blockText = block.getText();
-  var decorations = Array(blockText.length).fill(null);
-  var highlighted = this.highlighted;
+  const blockText = block.getText();
+  const decorations = Array(blockText.length).fill(null);
+  const { highlighted } = this;
 
   highlighted[blockKey] = {};
 
@@ -35,7 +35,7 @@ PrismDecorator.prototype.getDecorations = function(block) {
     return Immutable.List(decorations);
   }
 
-  var syntax = blockData.get("syntax") || "javascript";
+  const syntax = blockData.get("syntax") || "javascript";
 
   // Allow for no syntax highlighting
   if (syntax == null) {
@@ -43,28 +43,28 @@ PrismDecorator.prototype.getDecorations = function(block) {
   }
 
   // Parse text using Prism
-  var grammar = Prism.languages[syntax];
+  const grammar = Prism.languages[syntax];
   tokens = Prism.tokenize(blockText, grammar);
 
   function processToken(decorations, token, offset) {
     if (typeof token === "string") {
       return;
     }
-    //First write this tokens full length
-    tokenId = "tok" + tokenCount++;
-    resultId = blockKey + "-" + tokenId;
+    // First write this tokens full length
+    tokenId = `tok${tokenCount++}`;
+    resultId = `${blockKey}-${tokenId}`;
     highlighted[blockKey][tokenId] = token;
     occupySlice(decorations, offset, offset + token.length, resultId);
-    //Then recurse through the child tokens, overwriting the parent
-    var childOffset = offset;
-    for (var i = 0; i < token.content.length; i++) {
-      var childToken = token.content[i];
+    // Then recurse through the child tokens, overwriting the parent
+    let childOffset = offset;
+    for (let i = 0; i < token.content.length; i++) {
+      const childToken = token.content[i];
       processToken(decorations, childToken, childOffset);
       childOffset += childToken.length;
     }
   }
 
-  for (var i = 0; i < tokens.length; i++) {
+  for (let i = 0; i < tokens.length; i++) {
     token = tokens[i];
     processToken(decorations, token, offset);
     offset += token.length;
@@ -94,10 +94,10 @@ PrismDecorator.prototype.getComponentForKey = function(key) {
  * @return {Object}
  */
 PrismDecorator.prototype.getPropsForKey = function(key) {
-  var parts = key.split("-");
-  var blockKey = parts[0];
-  var tokId = parts[1];
-  var token = this.highlighted[blockKey][tokId];
+  const parts = key.split("-");
+  const blockKey = parts[0];
+  const tokId = parts[1];
+  const token = this.highlighted[blockKey][tokId];
 
   return {
     type: token.type
@@ -105,7 +105,7 @@ PrismDecorator.prototype.getPropsForKey = function(key) {
 };
 
 function occupySlice(targetArr, start, end, componentKey) {
-  for (var ii = start; ii < end; ii++) {
+  for (let ii = start; ii < end; ii++) {
     targetArr[ii] = componentKey;
   }
 }

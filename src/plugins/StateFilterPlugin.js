@@ -1,7 +1,7 @@
 import { CharacterMetadata, EditorState } from "draft-js";
+import { Repeat, OrderedSet, OrderedMap } from "immutable";
 import removeBlock from "../utils/block/removeBlock";
 import flattenBlocks from "../utils/block/flattenBlocks";
-import { Repeat, OrderedSet, OrderedMap } from "immutable";
 
 function StateFilterPlugin() {
   this.apply = getEditor => {
@@ -16,9 +16,6 @@ function StateFilterPlugin() {
         const changeType = editorState.getLastChangeType();
 
         const lastBlock = contentState.getLastBlock();
-        const endKey = lastBlock.getKey();
-
-        let newContentState = contentState;
 
         // 解决的问题
         // 1. 当用户从vscode复制代码到编辑器中时，会保持原有的style
@@ -26,7 +23,6 @@ function StateFilterPlugin() {
         //    想到的比较合适的解决方式就是，不再使用editorState中的block，通过`text`直接来创建新的block
         //    然后再插入到contentState中
 
-        console.log("old block map ", oldBlockMap, blockMap);
         if (
           changeType === "insert-fragment" &&
           blockMap.size !== oldBlockMap.size
@@ -39,13 +35,13 @@ function StateFilterPlugin() {
             if (oldStartBlock.getType() !== "code-block") return editorState;
 
             const parts = pasteText.split("\n").filter(part => part !== "");
-            console.log("parts 1: ", parts);
             let index = 0;
             let newBlockMap = blockMap;
 
-            console.log("editor state : ", editorState);
             let blockKeyHasChildren;
             let lastBlockKey;
+
+            console.log("block map ", blockMap);
 
             blockMap
               .skipUntil(function(block, key) {
@@ -56,7 +52,6 @@ function StateFilterPlugin() {
               })
               .toOrderedMap()
               .map(function(block, blockKey) {
-                console.log("block key : ", blockKey);
                 lastBlockKey = blockKey;
                 // 通过pasteText中的样式，来补充block中的样式
                 const blockText = block.getText();
@@ -96,11 +91,12 @@ function StateFilterPlugin() {
                   newBlockMap = newBlockMap.set(blockKey, newBlock);
                 }
               });
-            console.log("block next ", newBlockMap);
 
             if (blockKeyHasChildren) {
               newBlockMap = removeBlock(newBlockMap, blockKeyHasChildren);
             }
+
+            console.log("new ", newBlockMap, oldStartKey, lastBlockKey);
 
             newBlockMap = flattenBlocks(newBlockMap, oldStartKey, lastBlockKey);
             const newContent = contentState.merge({ blockMap: newBlockMap });

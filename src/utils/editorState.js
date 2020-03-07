@@ -4,7 +4,7 @@ import { Modifier, EditorState } from "draft-js";
 // https://github.com/facebook/draft-js/blob/master/src/component/handlers/edit/commands/moveSelectionForward.js#L27
 // https://github.com/facebook/draft-js/blob/master/src/component/handlers/edit/commands/keyCommandMoveSelectionToStartOfBlock.js
 export const moveSelectionForward = (editorState, maxDistance) => {
-  var selection = editorState.getSelection(); // Should eventually make this an invariant
+  const selection = editorState.getSelection(); // Should eventually make this an invariant
 
   process.env.NODE_ENV !== "production"
     ? invariant(
@@ -12,11 +12,11 @@ export const moveSelectionForward = (editorState, maxDistance) => {
         "moveSelectionForward should only be called with a collapsed SelectionState"
       )
     : void 0;
-  var key = selection.getStartKey();
-  var offset = selection.getStartOffset();
-  var content = editorState.getCurrentContent();
-  var focusOffset;
-  var block = content.getBlockForKey(key);
+  const key = selection.getStartKey();
+  const offset = selection.getStartOffset();
+  const content = editorState.getCurrentContent();
+  let focusOffset;
+  const block = content.getBlockForKey(key);
 
   if (maxDistance > block.getText().length - offset) {
     focusOffset = block.getText().length;
@@ -25,7 +25,7 @@ export const moveSelectionForward = (editorState, maxDistance) => {
   }
 
   return selection.merge({
-    focusOffset: focusOffset,
+    focusOffset,
     anchorOffset: focusOffset
   });
 };

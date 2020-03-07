@@ -1,11 +1,47 @@
 # react-tapable-editor
 
-## Feature
+_A pluginable, intuitive medium/notion like rich text editor_
 
-### InlineToolbar
+The original idea is to build an easy used rich text editor. `react-tapable-editor` is built on [draft-js](https://github.com/facebook/draft-js), and its plugin system is besed on [tapable](https://github.com/webpack/tapable) which is famous as the engine of [webpack](https://github.com/webpack/webpack).
 
-1. 如果说选中的部分都包含某`inline style`, 那么对应的`button`是`active`状态
-2. 如果说选中部分包含`link`的话，那么`link` button也是`active`状态
-3. 当用户点击`Link`按钮后，选中区域背景会变成灰色
-4. 当点击非`inlineToolbar`区域时，`inlineToolbar`都会消失
+## Features
 
+### BlockStyle
+
+- [x] header
+- [x] quotation
+- [x] list
+- [x] quotation
+
+![gif](./docs/basic.gif)
+
+#### code block
+
+- [x] highlight with prism
+- [x] copy from vscode, style could be preserved.
+- [ ] copy from github, code will suppress into one line.
+
+![code](./docs/code.gif)
+
+#### Image
+
+![image](./docs/image.gif)
+
+### Experimental feature
+
+#### Drag and drop block
+
+![drag-block](./docs/drag-block.gif)
+
+## How to start
+
+```bash
+$ npm install
+$ npm run examples:basic
+```
+
+## FAQ
+
+### why choose draft-js
+
+[awesome-draft-js](https://github.com/nikgraf/awesome-draft-js)

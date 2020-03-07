@@ -24,30 +24,29 @@ const resolveChangeType = ({
 
     if (prevStartKey === startKey) return "selection-move-inner-block";
     return "selection-move-outer-block";
-  } else {
-    const prevEndKey = prevSelection.getEndKey();
-    const prevStartOffset = prevSelection.getStartOffset();
-    const prevEndOffset = prevSelection.getEndOffset();
-    const endKey = selection.getEndKey();
-    const startOffset = selection.getStartOffset();
-    const endOffset = selection.getEndOffset();
-
-    if (
-      prevEndKey === endKey &&
-      prevStartOffset === startOffset &&
-      prevEndOffset === endOffset
-    ) {
-      return "selection-range-content-change";
-    }
-
-    return "selection-range-size-change";
   }
+  const prevEndKey = prevSelection.getEndKey();
+  const prevStartOffset = prevSelection.getStartOffset();
+  const prevEndOffset = prevSelection.getEndOffset();
+  const endKey = selection.getEndKey();
+  const startOffset = selection.getStartOffset();
+  const endOffset = selection.getEndOffset();
+
+  if (
+    prevEndKey === endKey &&
+    prevStartOffset === startOffset &&
+    prevEndOffset === endOffset
+  ) {
+    return "selection-range-content-change";
+  }
+
+  return "selection-range-size-change";
 };
 
 function SelectionChangePlugin() {
-  let prevIsCollapsed = undefined;
-  let prevSelection = undefined;
-  let prevHasFocus = undefined;
+  let prevIsCollapsed;
+  let prevSelection;
+  let prevHasFocus;
 
   this.apply = getEditor => {
     const { hooks } = getEditor();

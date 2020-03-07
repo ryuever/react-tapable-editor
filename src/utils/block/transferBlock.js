@@ -7,7 +7,7 @@ const transferBlock = (
   targetBlockKey,
   position = "top"
 ) => {
-  let currentContent = editorState.getCurrentContent();
+  const currentContent = editorState.getCurrentContent();
   const blockMap = currentContent.getBlockMap();
   const sourceBlock = blockMap.get(sourceBlockKey);
   const targetBlock = blockMap.get(targetBlockKey);

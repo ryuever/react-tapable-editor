@@ -1,6 +1,7 @@
 // https://github.com/facebook/draft-js/blob/master/src/model/transaction/ContentStateInlineStyle.js#L38 modifyInlineStyle
 import Immutable from "immutable";
-const Map = Immutable.Map;
+
+const { Map } = Immutable;
 
 function getSelectionInlineStyle(editorState) {
   const contentState = editorState.getCurrentContent();
@@ -38,7 +39,7 @@ function getSelectionInlineStyle(editorState) {
         sliceEnd = blockKey === endKey ? endOffset : block.getLength();
       }
 
-      let chars = block.getCharacterList();
+      const chars = block.getCharacterList();
       let current;
 
       while (sliceStart < sliceEnd) {

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { withEditor } from "../../index";
 import Immutable from "immutable";
+import { withEditor } from "../../index";
 import "./styles.css";
 import StyleControls from "./StyleControls";
 import InputBar from "./InputBar";

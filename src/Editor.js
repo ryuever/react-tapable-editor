@@ -5,15 +5,15 @@ import ImageToolbar from "./components/image-toolbar";
 import InlineToolbar from "./components/inline-toolbar";
 import compareArray from "./utils/compareArray";
 
-window.__DRAFT_GKX = {
-  draft_tree_data_support: true
-};
-
 import "./style.css";
 // https://draftjs.org/docs/advanced-topics-issues-and-pitfalls.html#missing-draftcss
 import "draft-js/dist/Draft.css";
 
 import { withEditor } from "./index";
+
+window.__DRAFT_GKX = {
+  draft_tree_data_support: true
+};
 
 const NewEditor = props => {
   const {

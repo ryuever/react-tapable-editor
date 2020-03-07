@@ -1,6 +1,6 @@
-var Immutable = require("immutable");
+const Immutable = require("immutable");
 
-var KEY_SEPARATOR = "-";
+const KEY_SEPARATOR = "-";
 
 function MultiDecorator(decorators) {
   this.decorators = Immutable.List(decorators);
@@ -13,10 +13,10 @@ function MultiDecorator(decorators) {
     @return {List<String>}
 */
 MultiDecorator.prototype.getDecorations = function(block, contentState) {
-  var decorations = Array(block.getText().length).fill(null);
+  const decorations = Array(block.getText().length).fill(null);
 
   this.decorators.forEach(function(decorator, i) {
-    var _decorations = decorator.getDecorations(block, contentState);
+    const _decorations = decorator.getDecorations(block, contentState);
 
     _decorations.forEach(function(key, offset) {
       if (!key) {
@@ -39,7 +39,7 @@ MultiDecorator.prototype.getDecorations = function(block, contentState) {
     @return {Function}
 */
 MultiDecorator.prototype.getComponentForKey = function(key) {
-  var decorator = this.getDecoratorForKey(key);
+  const decorator = this.getDecoratorForKey(key);
   return decorator.getComponentForKey(this.getInnerKey(key));
 };
 
@@ -50,7 +50,7 @@ MultiDecorator.prototype.getComponentForKey = function(key) {
     @return {Object}
 */
 MultiDecorator.prototype.getPropsForKey = function(key) {
-  var decorator = this.getDecoratorForKey(key);
+  const decorator = this.getDecoratorForKey(key);
   return decorator.getPropsForKey(this.getInnerKey(key));
 };
 
@@ -61,8 +61,8 @@ MultiDecorator.prototype.getPropsForKey = function(key) {
     @return {Decorator}
 */
 MultiDecorator.prototype.getDecoratorForKey = function(key) {
-  var parts = key.split(KEY_SEPARATOR);
-  var index = Number(parts[0]);
+  const parts = key.split(KEY_SEPARATOR);
+  const index = Number(parts[0]);
 
   return this.decorators.get(index);
 };
@@ -74,7 +74,7 @@ MultiDecorator.prototype.getDecoratorForKey = function(key) {
     @return {String}
 */
 MultiDecorator.prototype.getInnerKey = function(key) {
-  var parts = key.split(KEY_SEPARATOR);
+  const parts = key.split(KEY_SEPARATOR);
   return parts.slice(1).join(KEY_SEPARATOR);
 };
 
