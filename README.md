@@ -44,4 +44,6 @@ $ npm run examples:basic
 
 ### why choose draft-js
 
-[awesome-draft-js](https://github.com/nikgraf/awesome-draft-js)
+- [awesome-draft-js](https://github.com/nikgraf/awesome-draft-js)
+- [Why Wagtail’s new editor is built with Draft.js](https://wagtail.io/blog/why-wagtail-new-editor-is-built-with-draft-js/)
+- [Rethinking rich text pipelines with Draft.js](https://wagtail.io/blog/rethinking-rich-text-pipelines-with-draft-js/)
