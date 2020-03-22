@@ -7,6 +7,7 @@ import "./styles.css";
 const Sidebar = props => {
   const { forwardRef } = props;
   const containerStyleRef = useRef(classes("container"));
+
   return (
     <div className={containerStyleRef.current} ref={forwardRef}>
       <div className="plus">

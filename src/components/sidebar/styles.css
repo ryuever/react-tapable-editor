@@ -4,6 +4,10 @@
   justify-content: center;
   align-items: center;
   height: 24px;
+  position: absolute;
+  top: 1000px;
+  bottom: 1000px;
+  opacity: 0;
 }
 
 .plus {
@@ -28,4 +32,5 @@
 .plus:hover {
   background-color: #eee;
   cursor: pointer;
+  transition: background 120ms ease-in 0s;
 }
