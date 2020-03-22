@@ -4,7 +4,7 @@ import Immutable from "immutable";
 import classNames from "classnames";
 
 import CodeBlock from "./CodeBlock";
-import NextUnstyled from "./NextUnstyled";
+import NextDiv from "./NextDiv";
 
 const UL_WRAP = <ul className={classNames("miuffy-ul")} />;
 const OL_WRAP = <ol className={classNames("miuffy-ol")} />;
@@ -35,7 +35,7 @@ function BlockRenderMapPlugin() {
 
         unstyled: {
           element: "div",
-          wrapper: <NextUnstyled />
+          wrapper: <NextDiv />
         }
       });
 

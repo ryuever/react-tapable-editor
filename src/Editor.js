@@ -1,8 +1,12 @@
 import React, { useCallback, useRef, useEffect } from "react";
 import { Editor, EditorState, convertToRaw, convertFromRaw } from "draft-js";
 import Title from "./components/title";
+
+// `ImageToolbar`, `InlineToolbar` and `Sidebar` only has one instance.
 import ImageToolbar from "./components/image-toolbar";
 import InlineToolbar from "./components/inline-toolbar";
+import Sidebar from "./components/sidebar";
+
 import compareArray from "./utils/compareArray";
 
 import "./style.css";
@@ -22,6 +26,7 @@ const NewEditor = props => {
     placeholder,
     imageRef,
     inlineRef,
+    sidebarRef,
     blockRenderMap,
     customStyleMap
   } = props;
@@ -142,6 +147,7 @@ const NewEditor = props => {
 
       <ImageToolbar forwardRef={imageRef} />
       <InlineToolbar forwardRef={inlineRef} />
+      <Sidebar forwardRef={sidebarRef} />
     </div>
   );
 };
