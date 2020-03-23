@@ -12,8 +12,8 @@ export const getOffsetKeyNodeChildren = offsetKey => {
   );
 };
 
-export const getSelectableNodeByListenerKey = listenerKey => {
+export const getSelectableNodeByOffsetKey = offsetKey => {
   return document.querySelector(
-    `[data-block="true"] [data-id="${listenerKey}"] div.selectable`
+    `[data-block="true"] [data-id="${offsetKey}"] div.selectable`
   );
 };

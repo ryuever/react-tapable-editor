@@ -1,4 +1,5 @@
-import { getNodeByOffsetKey } from "../findNode";
+import { getNodeByBlockKey } from "../findNode";
+import { generateOffsetKey } from "../keyHelper";
 
 export default function getBoundingRectWithSafeArea(
   editorState,
@@ -7,11 +8,13 @@ export default function getBoundingRectWithSafeArea(
   const currentState = editorState.getCurrentContent();
   const blockMap = currentState.getBlockMap();
   const coordinateMap = blockMap.toArray().map(block => {
-    const key = block.getKey();
-    const node = getNodeByOffsetKey(key);
+    const blockKey = block.getKey();
+    const offsetKey = generateOffsetKey(blockKey);
+    const node = getNodeByBlockKey(blockKey);
     const { top, right, bottom, left } = node.getBoundingClientRect();
     return {
-      key,
+      blockKey,
+      offsetKey,
       rect: {
         top,
         right,

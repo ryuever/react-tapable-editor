@@ -197,8 +197,6 @@ class PluginEditor extends PureComponent {
 
     const newContentState = convertFromRaw(rawState);
 
-    console.log("new content : ", newContentState.getBlockMap().toJS());
-
     this.state = {
       editorState: EditorState.createEmpty()
       // editorState: EditorState.createWithContent(newContentState)

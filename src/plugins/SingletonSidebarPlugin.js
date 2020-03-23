@@ -1,10 +1,12 @@
-import { EditorState } from "draft-js";
 import throttle from "../utils/throttle";
 import getBoundingRectWithSafeArea from "../utils/rect/getBoundingRectWithSafeArea";
 import findBlockContainsPoint from "../utils/rect/findBlockContainsPoint";
 import createAddOn from "./sidebar-plugin/createAddOn";
-import { getNodeByOffsetKey } from "../utils/findNode";
-import { getSelectableNodeByListenerKey } from "./sidebar-plugin/utils";
+import {
+  getNodeByOffsetKey,
+  getSelectableNodeByOffsetKey
+} from "../utils/findNode";
+import { extractBlockKeyFromOffsetKey } from "../utils/keyHelper";
 import "./sidebar-plugin/styles.css";
 
 /**
@@ -17,13 +19,11 @@ function SingletonSidebarPlugin() {
   let current = null;
 
   this.apply = getEditor => {
-    const { hooks, editorRef, sidebarRef } = getEditor();
-
     const removeNode = () => {
       try {
         if (!current) return;
-        const { node, child } = current;
-        // check has child first.
+        const { node, child, eventCleaner } = current;
+        if (typeof eventCleaner === "function") eventCleaner;
         if (node.contains(child)) node.removeChild(child);
         current = null;
       } catch (err) {
@@ -38,23 +38,42 @@ function SingletonSidebarPlugin() {
       const y = e.pageY;
 
       const nodeInfo = findBlockContainsPoint(coordinateMap, { x, y });
+      if (!nodeInfo) return;
+      const { offsetKey } = nodeInfo;
+      const node = getNodeByOffsetKey(offsetKey);
+      if (current && current.node === node) return;
+      if (current && current.node !== node) removeNode();
 
-      if (nodeInfo) {
-        const { key } = nodeInfo;
-        const node = getNodeByOffsetKey(key);
-        if (current) {
-          if (current.node === node) return;
-          else removeNode();
-        }
-        const child = createAddOn(key);
-        node.appendChild(child);
-        const selectableNode = getSelectableNodeByListenerKey(key);
-        // https://stackoverflow.com/questions/24148403/trigger-css-transition-on-appended-element
-        requestAnimationFrame(() => {
-          child.classList.add("sidebar-addon-visible");
-        });
-        current = { node, child, key };
-      }
+      const child = createAddOn(offsetKey);
+      node.appendChild(child);
+
+      const selectableNode = getSelectableNodeByOffsetKey(offsetKey);
+      const enterHandler = e => {
+        e.preventDefault();
+        const node = getNodeByOffsetKey(offsetKey);
+        node.setAttribute("draggable", true);
+
+        const { hooks } = getEditor();
+        const blockKey = extractBlockKeyFromOffsetKey(offsetKey);
+        hooks.prepareDragStart.call(blockKey);
+      };
+      const leaveHandler = e => {
+        e.preventDefault();
+        const node = getNodeByOffsetKey(offsetKey);
+        node.removeAttribute("draggable");
+        const { hooks } = getEditor();
+        hooks.teardownDragDrop.call();
+      };
+      selectableNode.addEventListener("mouseenter", enterHandler);
+      selectableNode.addEventListener("mouseleave", leaveHandler);
+      const eventCleaner = () => {
+        selectableNode.removeEventListener("mouseenter", enterHandler);
+        selectableNode.removeEventListener("mouseleave", leaveHandler);
+      };
+
+      // https://stackoverflow.com/questions/24148403/trigger-css-transition-on-appended-element
+      requestAnimationFrame(() => child.classList.add("sidebar-addon-visible"));
+      current = { node, child, offsetKey, eventCleaner };
     };
     const keyDownHandler = e => {
       removeNode();

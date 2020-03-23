@@ -1,10 +1,11 @@
 import { keyExtractor } from "./keyExtractor";
-import { getOffsetKey, getNodeByOffsetKey } from "./utils";
+import { generateOffsetKey } from "../../utils/keyHelper";
+import { getNodeByOffsetKey } from "../../utils/findNode";
 
 class DropTarget {
   constructor({ blockKey, addDropTarget, removeDropTarget }) {
     this.blockKey = blockKey;
-    this.offsetKey = getOffsetKey(this.blockKey);
+    this.offsetKey = generateOffsetKey(this.blockKey);
     this.listenerKey = keyExtractor(blockKey, "target");
     this.addDropTarget = addDropTarget;
     this.removeDropTarget = removeDropTarget;

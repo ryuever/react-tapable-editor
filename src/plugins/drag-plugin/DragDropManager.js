@@ -1,5 +1,6 @@
 import { keyExtractor, blockKeyExtractor } from "./keyExtractor";
-import { getNodeByOffsetKey, getOffsetKey } from "./utils";
+import { getNodeByOffsetKey } from "../../utils/findNode";
+import { generateOffsetKey } from "../../utils/keyHelper";
 import DropTarget from "./DropTarget";
 
 class DragDropManager {
@@ -50,7 +51,9 @@ class DragDropManager {
 
   prepareCandidateSourceHandler(blockKey) {
     const listenerId = keyExtractor(blockKey, "source");
-    const offsetKey = getOffsetKey(blockKey);
+    const offsetKey = generateOffsetKey(blockKey);
+    console.log("offset key ", offsetKey, blockKey, node);
+
     const node = getNodeByOffsetKey(offsetKey);
 
     const dragStartHandler = e => this.dragStartHandler(e, listenerId);
