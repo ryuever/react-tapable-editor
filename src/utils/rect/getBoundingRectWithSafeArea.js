@@ -11,6 +11,8 @@ export default function getBoundingRectWithSafeArea(
     const blockKey = block.getKey();
     const offsetKey = generateOffsetKey(blockKey);
     const node = getNodeByBlockKey(blockKey);
+
+    if (!node) return;
     const { top, right, bottom, left } = node.getBoundingClientRect();
     return {
       blockKey,

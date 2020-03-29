@@ -5,6 +5,7 @@ export default function findBlockContainsPoint(coordinateMap, point) {
 
   for (let i = 0; i < len; i++) {
     const data = coordinateMap[i];
+    if (!data) continue;
     const { rect } = data;
     const { top, right, bottom, left } = rect;
     const { x, y } = point;

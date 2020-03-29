@@ -1,5 +1,11 @@
 import React, { useCallback, useRef, useEffect } from "react";
-import { Editor, EditorState, convertToRaw, convertFromRaw } from "draft-js";
+import {
+  Editor,
+  EditorState,
+  convertToRaw,
+  convertFromRaw,
+  RichUtils
+} from "draft-js";
 import Title from "./components/title";
 
 // `ImageToolbar`, `InlineToolbar` and `Sidebar` only has one instance.
@@ -14,6 +20,7 @@ import "./style.css";
 import "draft-js/dist/Draft.css";
 
 import { withEditor } from "./index";
+const { insertSoftNewline } = RichUtils;
 
 window.__DRAFT_GKX = {
   draft_tree_data_support: true
@@ -116,11 +123,6 @@ const NewEditor = props => {
     [editorState]
   );
 
-  const editOnPasteHandler = (editor, e) => {
-    const data = new DataTransfer(e.clipboardData);
-    console.log("data ", data, data.isRichText());
-  };
-
   const handlePastedText = (text, html, es) => {
     pasteText.current = text;
   };
@@ -141,7 +143,6 @@ const NewEditor = props => {
           ref={forwardRef}
           preserveSelectionOnBlur
           handlePastedText={handlePastedText}
-          // onBlur={onBlurHandler}
         />
       </div>
 

@@ -1,3 +1,21 @@
+/**
+ * 1. mouse enter into block (including safe area and block itself), side bar should display on
+ *    current block. when mouse position do not belong to any block, side bar will be put by the
+ *    side of block where selection exist.
+ * 2. If side bar display, only if you begin to typing characters it will disappear.
+ *    1. select text in same block will not trigger its disappear
+ *    2. select text range including other block, it will make sidebar appear on other block's heading.
+ *    3. click a position will not trigger its disappear
+ * 3. when typing or enter into new line, sidebar should not display...
+ * 4. when hover on a image, how to handle imageBar and sidebar
+ *
+ * The reason why sidebar should be created every times...
+ * 1. An attempt to create a top level Sidebar component, but when fulfill drag functionality,
+ *    It has big trouble...How could i set `draggable` attribute and drag the related block, it means
+ *    sidebar trigger setting block as `draggable` and trigger related block to move. So it'd better make
+ *    sidebar belong to block.
+ */
+
 import throttle from "../utils/throttle";
 import getBoundingRectWithSafeArea from "../utils/rect/getBoundingRectWithSafeArea";
 import findBlockContainsPoint from "../utils/rect/findBlockContainsPoint";
@@ -8,12 +26,6 @@ import {
 } from "../utils/findNode";
 import { extractBlockKeyFromOffsetKey } from "../utils/keyHelper";
 import "./sidebar-plugin/styles.css";
-
-/**
- * The reason why sidebar should be created every times...
- * 1. An attempt to create a top level Sidebar component, but when fulfill drag functionality,
- *    It has big trouble...How could i set `draggable` attribute and drag the related block.
- */
 
 function SingletonSidebarPlugin() {
   let current = null;
@@ -33,7 +45,12 @@ function SingletonSidebarPlugin() {
 
     const mouseMoveHandler = e => {
       const { editorState } = getEditor();
-      const coordinateMap = getBoundingRectWithSafeArea(editorState);
+      const coordinateMap = getBoundingRectWithSafeArea(editorState).filter(
+        v => v
+      );
+
+      if (!coordinateMap) return;
+
       const x = e.pageX;
       const y = e.pageY;
 

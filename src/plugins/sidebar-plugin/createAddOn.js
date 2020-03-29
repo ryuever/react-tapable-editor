@@ -1,9 +1,9 @@
 const svgNS = "http://www.w3.org/2000/svg";
 
-const createAddOn = listenerKey => {
+const createAddOn = nodeKey => {
   const wrapper = document.createElement("div");
   wrapper.classList.add("sidebar-addon");
-  wrapper.setAttribute("data-id", listenerKey);
+  wrapper.setAttribute("data-id", nodeKey);
 
   // add plus icon
   const plusWrapper = document.createElement("div");
@@ -12,7 +12,7 @@ const createAddOn = listenerKey => {
   plus.setAttributeNS(null, "viewBox", "0 0 18 18");
   plus.setAttributeNS(null, "width", "14");
   plus.setAttributeNS(null, "height", "14");
-  plus.setAttributeNS(null, "fill", "rgb(55, 53, 47)");
+  plus.setAttributeNS(null, "fill", "rgba(55, 53, 47, 0.3)");
   const polygon = document.createElementNS(svgNS, "polygon");
   polygon.setAttributeNS(
     null,
@@ -28,7 +28,7 @@ const createAddOn = listenerKey => {
   selectable.setAttributeNS(null, "viewBox", "0 0 10 10");
   selectable.setAttributeNS(null, "width", "14");
   selectable.setAttributeNS(null, "height", "14");
-  selectable.setAttributeNS(null, "fill", "rgb(55, 53, 47)");
+  selectable.setAttributeNS(null, "fill", "rgba(55, 53, 47, 0.3)");
   const path = document.createElementNS(svgNS, "path");
   path.setAttributeNS(
     null,

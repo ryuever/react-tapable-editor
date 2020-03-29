@@ -167,6 +167,7 @@ class PluginEditor extends PureComponent {
     this.inlineToolbarRef = createRef();
     this.imageToolbarRef = createRef();
     this.sidebarRef = createRef();
+    this.dragging = false;
 
     const rawState = {
       blocks: [
@@ -228,12 +229,6 @@ class PluginEditor extends PureComponent {
           callback(newState);
         }
       });
-    });
-
-    this.hooks.setState.intercept({
-      call: (source, target, routeList) => {
-        // console.log('---------source : ', source, target)
-      }
     });
 
     this.hooks.updateDecorator.tap(
@@ -320,7 +315,10 @@ class PluginEditor extends PureComponent {
       editorRef: this.editorRef,
       inlineToolbarRef: this.inlineToolbarRef,
       imageToolbarRef: this.imageToolbarRef,
-      sidebarRef: this.sidebarRef
+      sidebarRef: this.sidebarRef,
+
+      // whether use is dragging a block...
+      isDragging: this.isDragging
     };
   };
 

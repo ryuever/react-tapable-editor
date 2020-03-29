@@ -1,6 +1,7 @@
 import { keyExtractor } from "./keyExtractor";
 import { generateOffsetKey } from "../../utils/keyHelper";
 import { getNodeByOffsetKey } from "../../utils/findNode";
+import throttle from "../../utils/throttle";
 
 class DropTarget {
   constructor({ blockKey, addDropTarget, removeDropTarget }) {
@@ -9,6 +10,11 @@ class DropTarget {
     this.listenerKey = keyExtractor(blockKey, "target");
     this.addDropTarget = addDropTarget;
     this.removeDropTarget = removeDropTarget;
+
+    // this.dragEnterHandler = throttle(this.dragEnterHandler, 100)
+    // this.dragLeaveHandler = throttle(this.dragLeaveHandler, 100)
+    // this.dragOverHandler = throttle(this.dragOverHandler, 50)
+    // this.dropHandler = throttle(this.dropHandler, 100)
 
     this.setup();
   }
@@ -24,12 +30,15 @@ class DropTarget {
     this.removeDropTarget(this.listenerKey);
   };
 
+  /**
+   * https://stackoverflow.com/questions/21339924/drop-event-not-firing-in-chrome
+   * Could not throttle `dragOverHandler` directly. or `dropHandler` will be not triggered.
+   */
   dragOverHandler = e => {
     e.preventDefault();
     console.log("over ", this.listenerKey);
   };
 
-  // https://stackoverflow.com/questions/21339924/drop-event-not-firing-in-chrome
   dropHandler = e => {
     console.log("drop ", this.listenerKey);
   };
