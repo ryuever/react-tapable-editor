@@ -61,12 +61,6 @@ const flattenBlocks = (blockMap, startKey, endKey) => {
       return orderMap;
     }, new OrderedMap());
 
-  // console.log('flattern ----- ', prefixBlocks.toArray())
-  // console.log('flattern ----- ', suffixBlocks.toArray())
-  // console.log('flattern ----- ', blocksBefore.toArray())
-  // console.log('flattern ----- ', blocks.toArray())
-  // console.log('flattern ----- ', blocksAfter.toArray())
-
   if (blocksBeforeLast) {
     const prefixBlock = blocks.toSeq().first();
     blocks = blocks.skip(1);
@@ -81,8 +75,6 @@ const flattenBlocks = (blockMap, startKey, endKey) => {
     blocks = blocks.toSeq().takeUntil((_, key) => key === suffixBlockKey);
     blocksAfter = blocksAfter.toOrderedMap().set(suffixBlockKey, suffixBlock);
   }
-
-  // console.log('final ', blocksBefore, blocks, blocksAfter)
 
   return blocksBefore.concat(blocks, blocksAfter).toOrderedMap();
 };

@@ -21,7 +21,8 @@ import InlineToolbarPlugin from "./plugins/InlineToolbarPlugin";
 import StateFilterPlugin from "./plugins/StateFilterPlugin";
 // import CreateNestBlockPlugin from './plugins/CreateNestBlockPlugin'
 import DragPlugin from "./plugins/drag-plugin";
-import SidebarPlugin from "./plugins/sidebar-plugin";
+// import SidebarPlugin from "./plugins/sidebar-plugin";
+import SingletonSidebarPlugin from "./plugins/SingletonSidebarPlugin";
 
 import LinkSpanDecoratorPlugin from "./plugins/LinkSpanDecoratorPlugin";
 import LinkDecoratorPlugin from "./plugins/LinkDecorator";
@@ -67,7 +68,9 @@ const defaultPlugins = [
   new DragPlugin(),
 
   // TODO：目前存在的问题是，会造成当输入中文时，selection紊乱
-  new SidebarPlugin()
+  // new SidebarPlugin(),
+
+  new SingletonSidebarPlugin()
 ];
 
 class PluginEditor extends PureComponent {
@@ -163,6 +166,8 @@ class PluginEditor extends PureComponent {
     this.editorRef = createRef();
     this.inlineToolbarRef = createRef();
     this.imageToolbarRef = createRef();
+    this.sidebarRef = createRef();
+    this.dragging = false;
 
     const rawState = {
       blocks: [
@@ -193,8 +198,6 @@ class PluginEditor extends PureComponent {
 
     const newContentState = convertFromRaw(rawState);
 
-    console.log("new content : ", newContentState.getBlockMap().toJS());
-
     this.state = {
       editorState: EditorState.createEmpty()
       // editorState: EditorState.createWithContent(newContentState)
@@ -215,8 +218,6 @@ class PluginEditor extends PureComponent {
     });
 
     this.hooks.setState.tap("setState", (editorState, callback) => {
-      // console.log('trigger setState ------', editorState)
-
       const newContentState = editorState.getCurrentContent();
       const blockMap = newContentState.getBlockMap();
       const lastBlock = newContentState.getLastBlock();
@@ -228,12 +229,6 @@ class PluginEditor extends PureComponent {
           callback(newState);
         }
       });
-    });
-
-    this.hooks.setState.intercept({
-      call: (source, target, routeList) => {
-        // console.log('---------source : ', source, target)
-      }
     });
 
     this.hooks.updateDecorator.tap(
@@ -314,14 +309,16 @@ class PluginEditor extends PureComponent {
   }
 
   getEditor = () => {
-    // console.log('+++++++++++++ state ---------', this.state.editorState)
-
     return {
       hooks: this.hooks,
       editorState: this.state.editorState,
       editorRef: this.editorRef,
       inlineToolbarRef: this.inlineToolbarRef,
-      imageToolbarRef: this.imageToolbarRef
+      imageToolbarRef: this.imageToolbarRef,
+      sidebarRef: this.sidebarRef,
+
+      // whether use is dragging a block...
+      isDragging: this.isDragging
     };
   };
 
@@ -341,6 +338,7 @@ class PluginEditor extends PureComponent {
           ref={this.editorRef}
           imageRef={this.imageToolbarRef}
           inlineRef={this.inlineToolbarRef}
+          sidebarRef={this.sidebarRef}
         />
       </Provider>
     );

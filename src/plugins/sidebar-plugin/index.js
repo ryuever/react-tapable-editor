@@ -1,6 +1,17 @@
 import Subscription from "./Subscription";
 import "./styles.css";
 
+/**
+ * 1. mouse enter into block (including safe area and block itself), side bar should display on
+ *    current block. when mouse position do not belong to any block, side bar will be put by the
+ *    side of block where selection exist.
+ * 2. If side bar display, only if you begin to typing characters it will disappear.
+ *    1. select text in same block will not trigger its disappear
+ *    2. select text range including other block, it will make sidebar appear on other block's heading.
+ *    3. click a position will not trigger its disappear
+ * 3. when typing or enter into new line, sidebar should not display...
+ */
+
 // TODO 存在的问题
 // 比如每一次用中文输入法输入完成以后
 
@@ -21,12 +32,12 @@ const globalMouseMoveHandlerCapture = e => {
 
 window.addEventListener("mousemove", globalMouseMoveHandlerCapture, true);
 
-function DragPlugin() {
+function SidebarPlugin() {
   this.apply = getEditor => {
     const { hooks } = getEditor();
     const subscription = new Subscription(getEditor);
 
-    hooks.syncBlockKeys.tap("DragPlugin", (blockKeys, blockChanges) => {
+    hooks.syncBlockKeys.tap("SidebarPlugin", (blockKeys, blockChanges) => {
       if (!resetListener && !blockChanges) return;
 
       subscription.addListeners(blockKeys);
@@ -36,4 +47,4 @@ function DragPlugin() {
   };
 }
 
-export default DragPlugin;
+export default SidebarPlugin;

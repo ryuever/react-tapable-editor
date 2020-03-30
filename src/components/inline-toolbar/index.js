@@ -8,7 +8,7 @@ import InputBar from "./InputBar";
 import getSelectionBlockTypes from "../../utils/getSelectionBlockTypes";
 import getInlineToolbarInlineInfo from "../../utils/getInlineToolbarInlineInfo";
 
-const Toolbar = props => {
+const InlineToolbar = props => {
   const { forwardRef, getEditor } = props;
   const [value, setValue] = useState({
     styles: new Immutable.OrderedSet(),
@@ -71,7 +71,7 @@ const Toolbar = props => {
 
 const MemoToolbar = React.memo(
   props => {
-    return <Toolbar {...props} />;
+    return <InlineToolbar {...props} />;
   },
   () => true
 );

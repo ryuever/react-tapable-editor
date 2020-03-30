@@ -13,7 +13,7 @@
 
 .sidebar-addon-visible {
   opacity: 1;
-  transition: opacity .3s ease-in-out;
+  transition: opacity 0.3s ease-in-out;
 }
 
 .sidebar-addon .plus {
@@ -34,7 +34,7 @@
 
 .sidebar-addon .selectable:hover {
   user-select: none;
-  background: rgba(55, 53, 47, 0.3);
+  background: rgba(55, 53, 47, 0.08);
   transition: background 120ms ease-in 0s;
   cursor: grab;
   border-radius: 3px;

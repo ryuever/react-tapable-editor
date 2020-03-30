@@ -1,3 +1,12 @@
+import { generateOffsetKey } from "./keyHelper";
+
+export function getNodeByBlockKey(blockKey) {
+  const offsetKey = generateOffsetKey(blockKey);
+  return document.querySelector(
+    `[data-block="true"][data-offset-key="${offsetKey}"]`
+  );
+}
+
 export const getNodeByOffsetKey = offsetKey => {
   return document.querySelector(
     `[data-block="true"][data-offset-key="${offsetKey}"]`

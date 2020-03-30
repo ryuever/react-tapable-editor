@@ -41,8 +41,6 @@ function StateFilterPlugin() {
             let blockKeyHasChildren;
             let lastBlockKey;
 
-            console.log("block map ", blockMap);
-
             blockMap
               .skipUntil(function(block, key) {
                 return key === oldStartKey;
@@ -95,8 +93,6 @@ function StateFilterPlugin() {
             if (blockKeyHasChildren) {
               newBlockMap = removeBlock(newBlockMap, blockKeyHasChildren);
             }
-
-            console.log("new ", newBlockMap, oldStartKey, lastBlockKey);
 
             newBlockMap = flattenBlocks(newBlockMap, oldStartKey, lastBlockKey);
             const newContent = contentState.merge({ blockMap: newBlockMap });
