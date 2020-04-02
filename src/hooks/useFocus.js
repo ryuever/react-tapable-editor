@@ -1,22 +1,15 @@
 import React, { useCallback, useRef, useState, useEffect } from "react";
-import setSelectionToBlock from "../../utils/setSelectionToBlock";
-import "./styles.css";
+import setSelectionToBlock from "../utils/setSelectionToBlock";
+import "./styles/useFocus.css";
 
-const Focus = WrappedComponent => props => {
+const useFocus = ({ nodeRef, props }) => {
   const { blockProps, block } = props;
   const { getEditor } = blockProps;
   const { hooks } = getEditor();
-  const isMounted = useRef(false);
   const [focused, setFocus] = useState(false);
   const focusedRef = useRef(false);
   const currentBlockKey = block.getKey();
   const timeoutHandler = useRef();
-
-  useEffect(() => {
-    isMounted.current = true;
-    return () => (isMounted.current = false);
-  }, []);
-
   const setState = useCallback(falsy => {
     setFocus(falsy);
     focusedRef.current = falsy;
@@ -47,7 +40,6 @@ const Focus = WrappedComponent => props => {
         newValue: { selection }
       } = payload;
       const startKey = selection.getStartKey();
-      console.log("xx");
       if (startKey === currentBlockKey && !focusedRef.current) {
         delaySetState(true);
         return;
@@ -68,15 +60,21 @@ const Focus = WrappedComponent => props => {
     hooks.setState.call(newEditorState);
   }, [block]);
 
-  console.log("focus ", focused);
+  useEffect(() => {
+    nodeRef.current.addEventListener("click", handleClick);
+    return () => nodeRef.current.removeEventListener("click", handleClick);
+  }, []);
 
-  const className = focused ? "focused_atomic_active" : "focused_atomic";
-
-  return (
-    <div onClick={handleClick} className={className}>
-      <WrappedComponent {...props} />
-    </div>
-  );
+  // update className after all
+  useEffect(() => {
+    if (focused) {
+      nodeRef.current.classList.remove("focused_atomic");
+      nodeRef.current.classList.add("focused_atomic_active");
+    } else {
+      nodeRef.current.classList.remove("focused_atomic_active");
+      nodeRef.current.classList.add("focused_atomic");
+    }
+  }, [focused]);
 };
 
-export default Focus;
+export default useFocus;

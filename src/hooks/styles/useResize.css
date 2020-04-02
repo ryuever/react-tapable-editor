@@ -1,0 +1,44 @@
+.resizable-component {
+  position: relative;
+  user-select: none;
+}
+
+.left-bar-wrapper {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 20px;
+  cursor: col-resize;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 150ms ease;
+  opacity: 0;
+}
+
+.bar {
+  width: 5px;
+  height: 20%;
+  max-height: 100px;
+  background-color: gray;
+  border-radius: 10px;
+}
+
+.right-bar-wrapper {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 20px;
+  cursor: col-resize;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 150ms ease;
+  opacity: 0;
+}
+
+.bar-visible {
+  opacity: 1;
+}
