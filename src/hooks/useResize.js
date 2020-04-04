@@ -4,60 +4,22 @@
 import React, { useCallback, useState, useRef, useEffect } from "react";
 import { EditorState } from "draft-js";
 import { generateOffsetKey } from "../utils/keyHelper";
-
 import "./styles/useResize.css";
 
-// const LeftBar = React.memo(
-//   props => {
-//     const {
-//       visible,
-//       resizeMode,
-//       onMouseEnterHandler,
-//       onMouseLeaveHandler
-//     } = props;
-
-//     const shouldRender = visible || resizeMode;
-//     return (
-//       <div
-//         className="bar-left"
-//         onMouseEnter={onMouseEnterHandler}
-//         onMouseLeave={onMouseLeaveHandler}
-//       >
-//         {shouldRender && <div className="bar" />}
-//       </div>
-//     );
-//   },
-//   (prev, next) =>
-//     prev.visible === next.visible && prev.resizeMode === next.resizeMode
-// );
-
-// const RightBar = React.memo(
-//   props => {
-//     const {
-//       visible,
-//       resizeMode,
-//       onMouseEnterHandler,
-//       onMouseLeaveHandler
-//     } = props;
-//     const shouldRender = visible || resizeMode;
-//     return (
-//       <div
-//         className="bar-right"
-//         onMouseEnter={onMouseEnterHandler}
-//         onMouseLeave={onMouseLeaveHandler}
-//       >
-//         {shouldRender && <div className="bar" />}
-//       </div>
-//     );
-//   },
-//   (prev, next) =>
-//     prev.visible === next.visible && prev.resizeMode === next.resizeMode
-// );
+/**
+ *
+ * @param {HTMLElement} nodeRef
+ * @param {Object} props
+ *
+ * when calculate nextWidth value, `alignment` param will be a significant factor...
+ *   1. alignment value is left.. Moving to left direction is allowed.
+ *   2. alignment value is right.. Moving to right direction is allowed.
+ *   3. alignment value is center.. Moving to both directions is allowed.
+ */
 
 const useResize = ({ nodeRef, props }) => {
-  const [leftBarVisible, setLeftBarVisible] = useState(false);
-  const [rightBarVisible, setRightBarVisible] = useState(false);
-  const [resizeMode, setResizeMode] = useState(false);
+  console.log("xxxx", nodeRef.current);
+
   const { block, blockProps } = props;
   const { alignment, resizeLayout, getEditor } = blockProps;
   const blockKey = block.getKey();
@@ -71,6 +33,7 @@ const useResize = ({ nodeRef, props }) => {
 
   const mouseMoveTeardown = useRef();
   const resizeModeRef = useRef();
+  const rightToStretchRef = useRef();
 
   useEffect(() => {
     // create a bar and append to nodeRef
@@ -113,65 +76,103 @@ const useResize = ({ nodeRef, props }) => {
     };
   }, []);
 
-  const onMouseDownHandler = useCallback(e => {
-    // setResizeMode(true);
+  const resolveAlignment = useCallback(() => {
+    return "center";
+  }, []);
+
+  const prepareAfterMouseDown = event => {
     resizeModeRef.current = true;
-    const { clientX, clientY, currentTarget } = e;
+    const { clientX, clientY } = event;
     const { offsetWidth, offsetHeight } = nodeRef.current;
 
-    coordinate.current = {
-      clientX,
-      clientY
-    };
+    coordinate.current = { clientX, clientY };
     layout.current = {
       width: offsetWidth,
       height: offsetHeight
     };
 
     document.addEventListener("mousemove", onMouseMoveHandler);
+
+    if (mouseMoveTeardown.current) {
+      mouseMoveTeardown.current();
+    }
+
+    mouseMoveTeardown.current = () => {
+      document.removeEventListener("mousemove", onMouseMoveHandler);
+      mouseMoveTeardown.current = null;
+    };
+  };
+
+  const onMouseDownLeftHandler = useCallback(event => {
+    prepareAfterMouseDown(event);
+    rightToStretchRef.current = false;
+  }, []);
+
+  const onMouseDownRightHandler = useCallback(event => {
+    prepareAfterMouseDown(event);
+    rightToStretchRef.current = true;
+  }, []);
+
+  const onMouseUpHandler = useCallback(e => {
+    resizeModeRef.current = false;
+    if (mouseMoveTeardown.current) {
+      mouseMoveTeardown.current();
+    }
+  }, []);
+
+  // cleanup move event
+  useEffect(
+    () => () => {
+      if (mouseMoveTeardown.current) {
+        mouseMoveTeardown.current();
+        mouseMoveTeardown.current = null;
+      }
+    },
+    []
+  );
+
+  const onMouseMoveHandler = useCallback(({ clientX }) => {
+    if (!resizeModeRef.current) return;
+
+    const { clientX: oldClientX } = coordinate.current;
+
+    let deltaX;
+    if (rightToStretchRef.current) {
+      deltaX = clientX - oldClientX;
+    } else {
+      deltaX = oldClientX - clientX;
+    }
+
+    const alignment = resolveAlignment();
+
+    // 只有当时居中的时候，width的变化需要是滑动距离的两倍
+    if (alignment === "center") {
+      nextWidth.current = `${layout.current.width + deltaX * 2}px`;
+    } else {
+      nextWidth.current = `${layout.current.width + deltaX}px`;
+    }
+    nodeRef.current.style.width = nextWidth.current;
   }, []);
 
   useEffect(() => {
-    leftBarRef.current.addEventListener("mousedown", onMouseDownHandler);
-    rightBarRef.current.addEventListener("mousedown", onMouseDownHandler);
+    leftBarRef.current.addEventListener("mousedown", onMouseDownLeftHandler);
+    rightBarRef.current.addEventListener("mousedown", onMouseDownRightHandler);
+    leftBarRef.current.addEventListener("mouseup", onMouseUpHandler);
+    rightBarRef.current.addEventListener("mouseup", onMouseUpHandler);
 
     return () => {
-      leftBarRef.current.removeEventListener("mousedown", onMouseDownHandler);
-      rightBarRef.current.removeEventListener("mousedown", onMouseDownHandler);
+      leftBarRef.current.removeEventListener(
+        "mousedown",
+        onMouseDownLeftHandler
+      );
+      rightBarRef.current.removeEventListener(
+        "mousedown",
+        onMouseDownRightHandler
+      );
+      leftBarRef.current.removeEventListener("mouseup", onMouseUpHandler);
+      rightBarRef.current.removeEventListener("mouseup", onMouseUpHandler);
     };
   }, []);
-
-  const onMouseMoveHandler = useCallback(
-    e => {
-      const { clientX, clientY } = e;
-      if (!resizeModeRef.current) return;
-
-      const { clientX: oldClientX, clientY: oldClientY } = coordinate.current;
-
-      let deltaX;
-
-      if (leftBarVisible) {
-        deltaX = oldClientX - clientX;
-      } else {
-        deltaX = clientX - oldClientX;
-      }
-
-      // 只有当时居中的时候，width的变化需要是滑动距离的两倍
-      if (alignment === "center") {
-        nextWidth.current = `${layout.current.width + deltaX * 2}px`;
-      } else {
-        nextWidth.current = `${layout.current.width + deltaX}px`;
-      }
-      console.log("value ", nextWidth.current, deltaX, layout.current.width);
-      nodeRef.current.style.width = nextWidth.current;
-
-      // const node = document.querySelector(
-      //   `[data-offset-key="${dataOffsetKey}"]`
-      // );
-      // node.style.width = nextWidth.current;
-    },
-    [resizeMode, alignment, leftBarVisible, rightBarVisible]
-  );
 };
 
 export default useResize;

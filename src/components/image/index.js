@@ -1,15 +1,14 @@
-import React, { createRef } from "react";
+import React, { useRef } from "react";
 import "./styles/index.css";
 import useFocus from "../../hooks/useFocus";
 import useResize from "../../hooks/useResize";
 
 const Image = props => {
   const { block, contentState } = props;
-  const ref = createRef();
+  console.log("create ref ");
+  const ref = useRef();
   useFocus({ nodeRef: ref, props });
   useResize({ nodeRef: ref, props });
-
-  console.log("ref ", ref);
 
   const meta = contentState.getEntity(block.getEntityAt(0)).getData();
   const { src } = meta;
