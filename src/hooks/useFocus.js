@@ -14,14 +14,23 @@ const useFocus = ({ nodeRef, props }) => {
     setFocus(falsy);
     focusedRef.current = falsy;
   }, []);
+  const isMounted = useRef(false);
+
+  // TODO: tapable could not be clear on unmount...
+  useEffect(() => {
+    isMounted.current = true;
+    return () => (isMounted.current = false);
+  }, []);
 
   const delaySetState = useCallback(falsy => {
     clearTimeout(timeoutHandler.current);
     timeoutHandler.current = setTimeout(() => setState(falsy), 50);
   });
 
+  // TODO: pending on fix clear up...
   useEffect(() => {
     hooks.selectionCollapsedChange.tap("Focus", (editorState, payload) => {
+      if (!isMounted.current) return;
       const {
         newValue: { isCollapsed, selection }
       } = payload;
@@ -36,6 +45,7 @@ const useFocus = ({ nodeRef, props }) => {
     });
 
     hooks.selectionMoveOuterBlock.tap("Focus", (editorState, payload) => {
+      if (!isMounted.current) return;
       const {
         newValue: { selection }
       } = payload;
@@ -62,7 +72,9 @@ const useFocus = ({ nodeRef, props }) => {
 
   useEffect(() => {
     nodeRef.current.addEventListener("click", handleClick);
-    return () => nodeRef.current.removeEventListener("click", handleClick);
+    return () => {
+      nodeRef.current.removeEventListener("click", handleClick);
+    };
   }, []);
 
   // update className after all

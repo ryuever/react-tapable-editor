@@ -47,7 +47,6 @@ const Focus = WrappedComponent => props => {
         newValue: { selection }
       } = payload;
       const startKey = selection.getStartKey();
-      console.log("xx");
       if (startKey === currentBlockKey && !focusedRef.current) {
         delaySetState(true);
         return;
@@ -67,8 +66,6 @@ const Focus = WrappedComponent => props => {
     const newEditorState = setSelectionToBlock(editorState, block);
     hooks.setState.call(newEditorState);
   }, [block]);
-
-  console.log("focus ", focused);
 
   const className = focused ? "focused_atomic_active" : "focused_atomic";
 

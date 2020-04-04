@@ -52,7 +52,6 @@ class DragDropManager {
   prepareCandidateSourceHandler(blockKey) {
     const listenerId = keyExtractor(blockKey, "source");
     const offsetKey = generateOffsetKey(blockKey);
-    console.log("offset key ", offsetKey, blockKey, node);
 
     const node = getNodeByOffsetKey(offsetKey);
 

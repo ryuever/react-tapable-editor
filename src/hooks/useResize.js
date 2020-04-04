@@ -6,6 +6,8 @@ import { EditorState } from "draft-js";
 import { generateOffsetKey } from "../utils/keyHelper";
 import "./styles/useResize.css";
 
+const MOVING = "moving";
+
 /**
  *
  * @param {HTMLElement} nodeRef
@@ -20,7 +22,6 @@ import "./styles/useResize.css";
 const useResize = ({ nodeRef, props }) => {
   const { block, blockProps } = props;
   const { alignment, resizeLayout, getEditor } = blockProps;
-  const blockKey = block.getKey();
   const nextWidth = useRef();
   const coordinate = useRef();
   const layout = useRef();
@@ -31,6 +32,9 @@ const useResize = ({ nodeRef, props }) => {
   const mouseMoveTeardown = useRef();
   const resizeModeRef = useRef();
   const rightToStretchRef = useRef();
+
+  // fix: `mouseenter` and `mouseleave` will be triggered on moving under resize mode...
+  let statusRef = useRef(null);
 
   useEffect(() => {
     // create a bar and append to nodeRef
@@ -55,10 +59,12 @@ const useResize = ({ nodeRef, props }) => {
 
   // make resize bar visible when enter into container...
   const onMouseEnterContainer = useCallback(() => {
+    if (statusRef.current === "moving") return;
     leftBarRef.current.classList.add("bar-visible");
     rightBarRef.current.classList.add("bar-visible");
   }, []);
   const onMouseLeaveContainer = useCallback(() => {
+    if (statusRef.current === "moving") return;
     leftBarRef.current.classList.remove("bar-visible");
     rightBarRef.current.classList.remove("bar-visible");
   }, []);
@@ -112,6 +118,8 @@ const useResize = ({ nodeRef, props }) => {
 
   const onMouseUpHandler = useCallback(e => {
     resizeModeRef.current = false;
+    statusRef.current = null;
+
     if (mouseMoveTeardown.current) mouseMoveTeardown.current();
 
     const { editorState, hooks } = getEditor();
@@ -145,6 +153,7 @@ const useResize = ({ nodeRef, props }) => {
 
   const onMouseMoveHandler = useCallback(({ clientX }) => {
     if (!resizeModeRef.current) return;
+    statusRef.current = "moving";
 
     const { clientX: oldClientX } = coordinate.current;
 
