@@ -5,7 +5,8 @@ import useResize from "../../hooks/useResize";
 
 const Image = props => {
   const { block, contentState } = props;
-  console.log("create ref ");
+
+  // createRef does not work. it will create a new instance on every function revoked.
   const ref = useRef();
   useFocus({ nodeRef: ref, props });
   useResize({ nodeRef: ref, props });

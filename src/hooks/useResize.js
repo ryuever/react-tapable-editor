@@ -18,12 +18,9 @@ import "./styles/useResize.css";
  */
 
 const useResize = ({ nodeRef, props }) => {
-  console.log("xxxx", nodeRef.current);
-
   const { block, blockProps } = props;
   const { alignment, resizeLayout, getEditor } = blockProps;
   const blockKey = block.getKey();
-  const dataOffsetKey = generateOffsetKey(blockKey);
   const nextWidth = useRef();
   const coordinate = useRef();
   const layout = useRef();
@@ -115,10 +112,25 @@ const useResize = ({ nodeRef, props }) => {
 
   const onMouseUpHandler = useCallback(e => {
     resizeModeRef.current = false;
-    if (mouseMoveTeardown.current) {
-      mouseMoveTeardown.current();
+    if (mouseMoveTeardown.current) mouseMoveTeardown.current();
+
+    const { editorState, hooks } = getEditor();
+    if (nextWidth.current) {
+      const contentState = editorState.getCurrentContent();
+      const entityKey = block.getEntityAt(0);
+      const newContent = contentState.mergeEntityData(entityKey, {
+        resizeLayout: {
+          width: nextWidth.current
+        }
+      });
+      const nextState = EditorState.push(editorState, newContent);
+      hooks.setState.call(nextState);
     }
   }, []);
+
+  useEffect(() => {
+    nodeRef.current.style.width = resizeLayout.width;
+  }, [resizeLayout.width]);
 
   // cleanup move event
   useEffect(
