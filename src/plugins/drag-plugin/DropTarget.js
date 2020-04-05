@@ -22,7 +22,7 @@ class DropTarget {
   dragEnterHandler = e => {
     e.preventDefault();
     this.addDropTarget(this.listenerKey);
-    console.log("enter ", this.listenerKey);
+    // console.log("enter ", this.listenerKey);
   };
 
   dragLeaveHandler = e => {
@@ -36,11 +36,11 @@ class DropTarget {
    */
   dragOverHandler = e => {
     e.preventDefault();
-    console.log("over ", this.listenerKey);
+    // console.log("over ", this.listenerKey);
   };
 
   dropHandler = e => {
-    console.log("drop ", this.listenerKey);
+    // console.log("drop ", this.listenerKey);
   };
 
   setup() {
