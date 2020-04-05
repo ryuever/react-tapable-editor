@@ -1,12 +1,5 @@
 import { AtomicBlockUtils } from "draft-js";
-
-// import focus from "../decorators/focus";
-import alignment from "../decorators/alignment";
 import Image from "../components/image";
-// import resizable from "../decorators/resizable";
-
-// const DecoratedImage = alignment(Image);
-// const DecoratedImage = resizable(alignment(focus(Image)));
 
 const DecoratedImage = Image;
 function AddImagePlugin() {

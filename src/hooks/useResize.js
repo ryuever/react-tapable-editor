@@ -1,12 +1,9 @@
 // https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers/onmousemove
 // https://media.prod.mdn.mozit.cloud/attachments/2013/03/05/5031/5692db994e59bae0b1c9e66f7df259b9/draggable_elements.html
 
-import React, { useCallback, useState, useRef, useEffect } from "react";
+import { useCallback, useRef, useEffect } from "react";
 import { EditorState } from "draft-js";
-import { generateOffsetKey } from "../utils/keyHelper";
 import "./styles/useResize.css";
-
-const MOVING = "moving";
 
 /**
  *
@@ -94,12 +91,10 @@ const useResize = ({ nodeRef, props }) => {
       height: offsetHeight
     };
 
+    // when narrowing image, mouse may be on the outer of image...
+    // So we'd better add event listener on document...
     document.addEventListener("mousemove", onMouseMoveHandler);
-
-    if (mouseMoveTeardown.current) {
-      mouseMoveTeardown.current();
-    }
-
+    if (mouseMoveTeardown.current) mouseMoveTeardown.current();
     mouseMoveTeardown.current = () => {
       document.removeEventListener("mousemove", onMouseMoveHandler);
       mouseMoveTeardown.current = null;
@@ -122,8 +117,8 @@ const useResize = ({ nodeRef, props }) => {
 
     if (mouseMoveTeardown.current) mouseMoveTeardown.current();
 
-    const { editorState, hooks } = getEditor();
     if (nextWidth.current) {
+      const { editorState, hooks } = getEditor();
       const contentState = editorState.getCurrentContent();
       const entityKey = block.getEntityAt(0);
       const newContent = contentState.mergeEntityData(entityKey, {
@@ -178,8 +173,14 @@ const useResize = ({ nodeRef, props }) => {
   useEffect(() => {
     leftBarRef.current.addEventListener("mousedown", onMouseDownLeftHandler);
     rightBarRef.current.addEventListener("mousedown", onMouseDownRightHandler);
-    leftBarRef.current.addEventListener("mouseup", onMouseUpHandler);
-    rightBarRef.current.addEventListener("mouseup", onMouseUpHandler);
+
+    // leftBarRef.current.addEventListener("mouseup", onMouseUpHandler);
+    // rightBarRef.current.addEventListener("mouseup", onMouseUpHandler);
+
+    // should use document. leftBarRef.current `mouseup` may be not trigger, if
+    // you resize the container, but mouse is on the outer.
+    document.addEventListener("mouseup", onMouseUpHandler);
+    document.addEventListener("mouseup", onMouseUpHandler);
 
     return () => {
       leftBarRef.current.removeEventListener(
@@ -190,8 +191,8 @@ const useResize = ({ nodeRef, props }) => {
         "mousedown",
         onMouseDownRightHandler
       );
-      leftBarRef.current.removeEventListener("mouseup", onMouseUpHandler);
-      rightBarRef.current.removeEventListener("mouseup", onMouseUpHandler);
+      document.removeEventListener("mouseup", onMouseUpHandler);
+      document.removeEventListener("mouseup", onMouseUpHandler);
     };
   }, []);
 };
