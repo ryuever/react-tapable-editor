@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState, useEffect } from "react";
+import { useCallback, useRef, useState, useEffect } from "react";
 import setSelectionToBlock from "../utils/setSelectionToBlock";
 import "./styles/useFocus.css";
 
