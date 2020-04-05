@@ -118,6 +118,7 @@ const useResize = ({ nodeRef, props }) => {
     if (mouseMoveTeardown.current) mouseMoveTeardown.current();
 
     if (nextWidth.current) {
+      const { editorState, hooks } = getEditor();
       const contentState = editorState.getCurrentContent();
       const entityKey = block.getEntityAt(0);
       const newContent = contentState.mergeEntityData(entityKey, {
@@ -125,7 +126,6 @@ const useResize = ({ nodeRef, props }) => {
           width: nextWidth.current
         }
       });
-      const { editorState, hooks } = getEditor();
       const nextState = EditorState.push(editorState, newContent);
       hooks.setState.call(nextState);
     }
