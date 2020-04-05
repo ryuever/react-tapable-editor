@@ -94,11 +94,7 @@ const useResize = ({ nodeRef, props }) => {
     // when narrowing image, mouse may be on the outer of image...
     // So we'd better add event listener on document...
     document.addEventListener("mousemove", onMouseMoveHandler);
-
-    if (mouseMoveTeardown.current) {
-      mouseMoveTeardown.current();
-    }
-
+    if (mouseMoveTeardown.current) mouseMoveTeardown.current();
     mouseMoveTeardown.current = () => {
       document.removeEventListener("mousemove", onMouseMoveHandler);
       mouseMoveTeardown.current = null;
@@ -121,7 +117,6 @@ const useResize = ({ nodeRef, props }) => {
 
     if (mouseMoveTeardown.current) mouseMoveTeardown.current();
 
-    const { editorState, hooks } = getEditor();
     if (nextWidth.current) {
       const contentState = editorState.getCurrentContent();
       const entityKey = block.getEntityAt(0);
@@ -130,6 +125,7 @@ const useResize = ({ nodeRef, props }) => {
           width: nextWidth.current
         }
       });
+      const { editorState, hooks } = getEditor();
       const nextState = EditorState.push(editorState, newContent);
       hooks.setState.call(nextState);
     }
@@ -177,8 +173,14 @@ const useResize = ({ nodeRef, props }) => {
   useEffect(() => {
     leftBarRef.current.addEventListener("mousedown", onMouseDownLeftHandler);
     rightBarRef.current.addEventListener("mousedown", onMouseDownRightHandler);
-    leftBarRef.current.addEventListener("mouseup", onMouseUpHandler);
-    rightBarRef.current.addEventListener("mouseup", onMouseUpHandler);
+
+    // leftBarRef.current.addEventListener("mouseup", onMouseUpHandler);
+    // rightBarRef.current.addEventListener("mouseup", onMouseUpHandler);
+
+    // should use document. leftBarRef.current `mouseup` may be not trigger, if
+    // you resize the container, but mouse is on the outer.
+    document.addEventListener("mouseup", onMouseUpHandler);
+    document.addEventListener("mouseup", onMouseUpHandler);
 
     return () => {
       leftBarRef.current.removeEventListener(
@@ -189,8 +191,8 @@ const useResize = ({ nodeRef, props }) => {
         "mousedown",
         onMouseDownRightHandler
       );
-      leftBarRef.current.removeEventListener("mouseup", onMouseUpHandler);
-      rightBarRef.current.removeEventListener("mouseup", onMouseUpHandler);
+      document.removeEventListener("mouseup", onMouseUpHandler);
+      document.removeEventListener("mouseup", onMouseUpHandler);
     };
   }, []);
 };

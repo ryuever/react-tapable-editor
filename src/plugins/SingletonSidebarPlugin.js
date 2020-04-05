@@ -92,9 +92,8 @@ function SingletonSidebarPlugin() {
       requestAnimationFrame(() => child.classList.add("sidebar-addon-visible"));
       current = { node, child, offsetKey, eventCleaner };
     };
-    const keyDownHandler = e => {
-      removeNode();
-    };
+
+    const keyDownHandler = e => removeNode();
 
     const throttledMoveHandler = throttle(mouseMoveHandler, 50);
     const throttledKeyDownHandler = throttle(keyDownHandler, 50);

@@ -47,6 +47,7 @@ const useAlignment = ({ nodeRef, props }) => {
   // To make nodeRef react to `mouseenter` and `mouseleave` event.
   useEffect(() => {
     nodeRef.current.addEventListener("mouseenter", onMouseEnterHandler);
+    // TODO: should fix...when resize component...mouseleave may not trigger...
     nodeRef.current.addEventListener("mouseleave", onMouseLeaveHandler);
 
     if (mouseEnterRemoverRef.current) mouseEnterRemoverRef.current();
