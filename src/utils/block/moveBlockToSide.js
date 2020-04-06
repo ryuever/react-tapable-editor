@@ -8,6 +8,8 @@ import createEmptyBlockNode from "./createEmptyBlockNode";
 import resetSibling from "./resetSibling";
 import findRootNodeSibling from "./findRootNodeSibling";
 
+// Note: you can only drag a pure block, which means block's children
+// property should be empty list..
 export default (blockMap, sourceBlockKey, targetBlockKey, position) => {
   try {
     const sourceBlock = blockMap.get(sourceBlockKey);
@@ -94,14 +96,18 @@ export default (blockMap, sourceBlockKey, targetBlockKey, position) => {
         newBlockMap = newBlockMap.set(flexBlockKey, newFlexBlock);
       }
 
+      // If place on right, maybe you should hoist target block first...
+      // 1. create a target wrapper, in order to press `enter` in subBlock works well.
       if (position === "right") {
         const targetWrapperBlock = createEmptyBlockNode();
         const targetWrapperBlockKey = targetWrapperBlock.getKey();
+        // Place new parent block before processing block
         newBlockMap = addBlockBefore(
           newBlockMap,
           targetWrapperBlock,
           targetBlockKey
         );
+        // Set new block as parent of processing block
         newBlockMap = appendChildBlock(
           newBlockMap,
           targetWrapperBlockKey,
@@ -113,6 +119,8 @@ export default (blockMap, sourceBlockKey, targetBlockKey, position) => {
           sourceBlockKey,
           targetWrapperBlockKey
         );
+
+        // wrap source block first...
         const sourceWrapperBlock = createEmptyBlockNode();
         const sourceWrapperBlockKey = sourceWrapperBlock.getKey();
         newBlockMap = addBlockBefore(
@@ -125,6 +133,7 @@ export default (blockMap, sourceBlockKey, targetBlockKey, position) => {
           sourceWrapperBlockKey,
           sourceBlockKey
         );
+
         newBlockMap = addBlockBefore(
           newBlockMap,
           flexBlock,
@@ -151,7 +160,25 @@ export default (blockMap, sourceBlockKey, targetBlockKey, position) => {
         newBlockMap = newBlockMap.set(flexBlockKey, newFlexBlock);
       }
     } else {
-      newBlockMap = appendChildBlock(newBlockMap, parentKey, sourceBlockKey);
+      // wrap source block first...
+      const sourceWrapperBlock = createEmptyBlockNode();
+      const sourceWrapperBlockKey = sourceWrapperBlock.getKey();
+      newBlockMap = addBlockBefore(
+        newBlockMap,
+        sourceWrapperBlock,
+        sourceBlockKey
+      );
+      newBlockMap = appendChildBlock(
+        newBlockMap,
+        sourceWrapperBlockKey,
+        sourceBlockKey
+      );
+      const grandParentBlockKey = parentBlock.parent;
+      newBlockMap = appendChildBlock(
+        newBlockMap,
+        grandParentBlockKey,
+        sourceWrapperBlockKey
+      );
     }
     return newBlockMap;
   } catch (err) {

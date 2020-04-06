@@ -33,6 +33,8 @@ The original idea is to build an easy used rich text editor. `react-tapable-edit
 
 ![drag-block](./docs/drag-block.gif)
 
+[drag to make layout design](./docs/drag.md)
+
 ## How to start
 
 ```bash

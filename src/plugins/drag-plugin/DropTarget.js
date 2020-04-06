@@ -10,19 +10,12 @@ class DropTarget {
     this.listenerKey = keyExtractor(blockKey, "target");
     this.addDropTarget = addDropTarget;
     this.removeDropTarget = removeDropTarget;
-
-    // this.dragEnterHandler = throttle(this.dragEnterHandler, 100)
-    // this.dragLeaveHandler = throttle(this.dragLeaveHandler, 100)
-    // this.dragOverHandler = throttle(this.dragOverHandler, 50)
-    // this.dropHandler = throttle(this.dropHandler, 100)
-
     this.setup();
   }
 
   dragEnterHandler = e => {
     e.preventDefault();
     this.addDropTarget(this.listenerKey);
-    console.log("enter ", this.listenerKey);
   };
 
   dragLeaveHandler = e => {
@@ -32,15 +25,11 @@ class DropTarget {
 
   /**
    * https://stackoverflow.com/questions/21339924/drop-event-not-firing-in-chrome
-   * Could not throttle `dragOverHandler` directly. or `dropHandler` will be not triggered.
+   * Could not throttle `dragOverHandler` directly. or `dropHandler` will be not
+   * triggered.
    */
   dragOverHandler = e => {
     e.preventDefault();
-    console.log("over ", this.listenerKey);
-  };
-
-  dropHandler = e => {
-    console.log("drop ", this.listenerKey);
   };
 
   setup() {
@@ -48,7 +37,6 @@ class DropTarget {
     node.addEventListener("dragenter", this.dragEnterHandler);
     node.addEventListener("dragleave", this.dragLeaveHandler);
     node.addEventListener("dragover", this.dragOverHandler);
-    node.addEventListener("drop", this.dropHandler);
 
     return () => {
       this.teardown();
@@ -60,7 +48,6 @@ class DropTarget {
     node.removeEventListener("dragenter", this.dragEnterHandler);
     node.removeEventListener("dragleave", this.dragLeaveHandler);
     node.removeEventListener("dragover", this.dragOverHandler);
-    node.removeEventListener("drop", this.dropHandler);
   }
 }
 

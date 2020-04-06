@@ -65,13 +65,13 @@ const defaultPlugins = [
 
   // new CreateNestBlockPlugin(),
 
-  new DragPlugin()
+  new DragPlugin(),
 
   // TODO：目前存在的问题是，会造成当输入中文时，selection紊乱
   // new SidebarPlugin(),
 
   // TODO: will cause text missing...
-  // new SingletonSidebarPlugin()
+  new SingletonSidebarPlugin()
 ];
 
 class PluginEditor extends PureComponent {

@@ -19,7 +19,8 @@ const useAlignment = ({ nodeRef, props }) => {
     if (alignmentBarEventRemoverRef.current)
       alignmentBarEventRemoverRef.current();
   }, []);
-  useEffect(() => () => teardown());
+  // teardown on un-mount
+  useEffect(() => () => teardown(), []);
 
   const attemptToClearTimeoutHandler = useCallback(() => {
     if (hideBarTimeoutHandler.current)
