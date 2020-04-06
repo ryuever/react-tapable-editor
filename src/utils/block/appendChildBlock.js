@@ -43,13 +43,6 @@ export default (blockMap, parentBlockKey, childBlockKey) => {
     )
     .reverse();
 
-  // console.log('child group : ',
-  //   childGroup.toArray(),
-  //   blocksBeforeParent.toArray(),
-  //   parentGroup.toArray(),
-  //   parentGroupRest.toArray()
-  // )
-
   let newBlockMap = blocksBeforeParent
     .concat(
       [[parentBlockKey, parentBlock]],

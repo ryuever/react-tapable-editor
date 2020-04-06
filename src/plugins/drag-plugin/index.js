@@ -33,6 +33,13 @@ function DragPlugin() {
           infoLog("block map after transform ", newContent.getBlockMap());
         }
         const nextNewContent = insertNewLineAfterAll(newContent);
+
+        if (DEBUG) {
+          infoLog(
+            "block map after insert new line ",
+            nextNewContent.getBlockMap()
+          );
+        }
         const dismissSelection = EditorState.push(
           editorState,
           nextNewContent.merge({

@@ -95,7 +95,7 @@ class DragDropManager {
 
   dragStartHandler = (e, sourceId) => {
     this.dragSourceId = sourceId;
-    this.setup();
+    this.setupDropTarget();
   };
 
   addDropTarget = dropTargetId => {
@@ -107,27 +107,44 @@ class DragDropManager {
     this.dropTargetIds.delete(dropTargetId);
   };
 
-  setup() {
+  /**
+   * setup what block should sensitive to drop event...
+   *
+   * Blocks should setup
+   *   1. null parent and zero length children block
+   *   2. has parent but zero length children block
+   *
+   * Block should not setup
+   *   1. has parent and children
+   */
+  setupDropTarget() {
     const { editorState } = this.getEditor();
     const currentContent = editorState.getCurrentContent();
     const blockMap = currentContent.getBlockMap();
 
     const sourceBlockKey = blockKeyExtractor(this.dragSourceId);
 
-    blockMap
-      .keySeq()
-      .toArray()
-      .forEach(blockKey => {
-        // `dragSource` could not be `dropTarget`
-        if (sourceBlockKey === blockKey) return;
+    blockMap.toSeq().forEach((block, blockKey) => {
+      // `dragSource` could not be `dropTarget`
+      if (sourceBlockKey === blockKey) return;
 
-        const targetListener = new DropTarget({
-          blockKey,
-          addDropTarget: this.addDropTarget,
-          removeDropTarget: this.removeDropTarget
-        });
-        this.dropTargetListeners.push(targetListener);
-      });
+      const { children } = block;
+      const childrenSize = children.size;
+
+      if (!childrenSize) {
+        this.setupBlock(blockKey);
+        console.log("set up block ", blockKey, block);
+      }
+    });
+  }
+
+  setupBlock(blockKey) {
+    const targetListener = new DropTarget({
+      blockKey,
+      addDropTarget: this.addDropTarget,
+      removeDropTarget: this.removeDropTarget
+    });
+    this.dropTargetListeners.push(targetListener);
   }
 
   teardown() {
