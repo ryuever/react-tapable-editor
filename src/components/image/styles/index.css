@@ -2,6 +2,9 @@
   width: 900px;
   margin-left: auto;
   margin-right: auto;
+
+  /* constraint image max size */
+  max-width: 100%;
 }
 
 .image {

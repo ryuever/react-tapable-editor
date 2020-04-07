@@ -21,7 +21,6 @@ import InlineToolbarPlugin from "./plugins/InlineToolbarPlugin";
 import StateFilterPlugin from "./plugins/StateFilterPlugin";
 // import CreateNestBlockPlugin from './plugins/CreateNestBlockPlugin'
 import DragPlugin from "./plugins/drag-plugin";
-// import SidebarPlugin from "./plugins/sidebar-plugin";
 import SingletonSidebarPlugin from "./plugins/SingletonSidebarPlugin";
 
 import LinkSpanDecoratorPlugin from "./plugins/LinkSpanDecoratorPlugin";
@@ -66,9 +65,6 @@ const defaultPlugins = [
   // new CreateNestBlockPlugin(),
 
   new DragPlugin(),
-
-  // TODO：目前存在的问题是，会造成当输入中文时，selection紊乱
-  // new SidebarPlugin(),
 
   // TODO: will cause text missing...
   new SingletonSidebarPlugin()
