@@ -53,8 +53,6 @@ export default (blockMap, parentBlockKey, childBlockKey) => {
     )
     .toOrderedMap();
 
-  // console.log('new block map ', newBlockMap.toArray())
-
   const childKeys = parentBlock.getChildKeys();
   const childKeysArray = childKeys.toArray();
   const len = childKeysArray.length;

@@ -133,7 +133,6 @@ class DragDropManager {
 
       if (!childrenSize) {
         this.setupBlock(blockKey);
-        console.log("set up block ", blockKey, block);
       }
     });
   }
