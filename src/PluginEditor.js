@@ -21,7 +21,7 @@ import InlineToolbarPlugin from "./plugins/InlineToolbarPlugin";
 import StateFilterPlugin from "./plugins/StateFilterPlugin";
 // import CreateNestBlockPlugin from './plugins/CreateNestBlockPlugin'
 import DragPlugin from "./plugins/drag-plugin";
-import SingletonSidebarPlugin from "./plugins/SingletonSidebarPlugin";
+import SidebarPlugin from "./plugins/sidebar-plugin";
 
 import LinkSpanDecoratorPlugin from "./plugins/LinkSpanDecoratorPlugin";
 import LinkDecoratorPlugin from "./plugins/LinkDecorator";
@@ -67,7 +67,7 @@ const defaultPlugins = [
   new DragPlugin(),
 
   // TODO: will cause text missing...
-  new SingletonSidebarPlugin()
+  new SidebarPlugin()
 ];
 
 class PluginEditor extends PureComponent {
