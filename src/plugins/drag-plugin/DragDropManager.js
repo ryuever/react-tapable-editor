@@ -26,22 +26,13 @@ class DragDropManager {
       this.globalDragStartHandlerCapture,
       true
     );
-    window.addEventListener(
-      "dragenter",
-      this.globalDragEnterHandlerCapture,
-      true
-    );
+
     window.addEventListener("drop", this.globalDropHandler);
 
     this.globalPrepareListeners.push(() => {
       window.removeEventListener(
         "dragstart",
         this.globalDragStartHandlerCapture,
-        true
-      );
-      window.removeEventListener(
-        "dragenter",
-        this.globalDragEnterHandlerCapture,
         true
       );
 
@@ -68,11 +59,6 @@ class DragDropManager {
    */
   globalDragStartHandlerCapture = e => {
     this.dragSourceId = null;
-  };
-
-  globalDragEnterHandlerCapture = e => {
-    e.preventDefault();
-    this.dropTargetId = null;
   };
 
   globalDropHandler = e => {

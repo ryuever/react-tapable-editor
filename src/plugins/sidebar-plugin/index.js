@@ -45,16 +45,16 @@ function SidebarPlugin() {
 
     const mouseMoveHandler = e => {
       const { editorState } = getEditor();
-      const coordinateMap = getBoundingRectWithSafeArea(editorState).filter(
-        v => v
-      );
+      const coordinateMap = getBoundingRectWithSafeArea(editorState);
+      const { shiftLeft, shiftRight } = coordinateMap;
+      console.log("shift ", shiftRight);
 
-      if (!coordinateMap) return;
+      if (!shiftLeft) return;
 
       const x = e.pageX;
       const y = e.pageY;
 
-      const nodeInfo = findBlockContainsPoint(coordinateMap, { x, y });
+      const nodeInfo = findBlockContainsPoint(shiftLeft, { x, y });
       if (!nodeInfo) return;
       const { offsetKey } = nodeInfo;
       const node = getNodeByOffsetKey(offsetKey);
