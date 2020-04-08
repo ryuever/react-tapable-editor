@@ -16,18 +16,18 @@
  *    sidebar belong to block.
  */
 
-import throttle from "../utils/throttle";
-import getBoundingRectWithSafeArea from "../utils/rect/getBoundingRectWithSafeArea";
-import findBlockContainsPoint from "../utils/rect/findBlockContainsPoint";
-import createAddOn from "./sidebar-plugin/createAddOn";
+import throttle from "../../utils/throttle";
+import getBoundingRectWithSafeArea from "../../utils/rect/getBoundingRectWithSafeArea";
+import findBlockContainsPoint from "../../utils/rect/findBlockContainsPoint";
 import {
   getNodeByOffsetKey,
   getSelectableNodeByOffsetKey
-} from "../utils/findNode";
-import { extractBlockKeyFromOffsetKey } from "../utils/keyHelper";
-import "./sidebar-plugin/styles.css";
+} from "../../utils/findNode";
+import { extractBlockKeyFromOffsetKey } from "../../utils/keyHelper";
+import "./styles.css";
+import createAddOn from "./createAddOn";
 
-function SingletonSidebarPlugin() {
+function SidebarPlugin() {
   let current = null;
 
   this.apply = getEditor => {
@@ -102,4 +102,4 @@ function SingletonSidebarPlugin() {
   };
 }
 
-export default SingletonSidebarPlugin;
+export default SidebarPlugin;
