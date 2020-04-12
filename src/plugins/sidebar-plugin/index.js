@@ -44,10 +44,10 @@ function SidebarPlugin() {
     };
 
     const mouseMoveHandler = e => {
+      // e.preventDefault()
       const { editorState } = getEditor();
       const coordinateMap = getBoundingRectWithSafeArea(editorState);
       const { shiftLeft, shiftRight } = coordinateMap;
-      console.log("shift ", shiftRight);
 
       if (!shiftLeft) return;
 

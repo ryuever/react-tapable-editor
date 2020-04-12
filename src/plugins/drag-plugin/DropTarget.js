@@ -15,11 +15,13 @@ class DropTarget {
 
   dragEnterHandler = e => {
     e.preventDefault();
+    console.log("x");
     this.addDropTarget(this.listenerKey);
   };
 
   dragLeaveHandler = e => {
     e.preventDefault();
+    console.log("mouse leave ");
     this.removeDropTarget(this.listenerKey);
   };
 
@@ -34,9 +36,12 @@ class DropTarget {
 
   setup() {
     const node = getNodeByOffsetKey(this.offsetKey);
-    node.addEventListener("dragenter", this.dragEnterHandler);
-    node.addEventListener("dragleave", this.dragLeaveHandler);
-    node.addEventListener("dragover", this.dragOverHandler);
+    // node.addEventListener("dragenter", this.dragEnterHandler);
+    // node.addEventListener("dragleave", this.dragLeaveHandler);
+    // node.addEventListener("dragover", this.dragOverHandler);
+    node.addEventListener("mouseenter", this.dragEnterHandler, true);
+    node.addEventListener("mouseleave", this.dragLeaveHandler, true);
+    // node.addEventListener("mouseover", this.dragOverHandler, true);
 
     return () => {
       this.teardown();
@@ -45,9 +50,12 @@ class DropTarget {
 
   teardown() {
     const node = getNodeByOffsetKey(this.offsetKey);
-    node.removeEventListener("dragenter", this.dragEnterHandler);
-    node.removeEventListener("dragleave", this.dragLeaveHandler);
-    node.removeEventListener("dragover", this.dragOverHandler);
+    // node.removeEventListener("dragenter", this.dragEnterHandler);
+    // node.removeEventListener("dragleave", this.dragLeaveHandler);
+    // node.removeEventListener("dragover", this.dragOverHandler);
+    node.removeEventListener("mouseenter", this.dragEnterHandler, true);
+    node.removeEventListener("mouseleave", this.dragLeaveHandler, true);
+    // node.removeEventListener("mouseover", this.dragOverHandler);
   }
 }
 
