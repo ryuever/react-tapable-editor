@@ -25,26 +25,23 @@ class DragDropManager {
   };
 
   prepareGlobalEventHandler() {
-    window.document.addEventListener(
-      "mousedown",
-      this.globalDragStartHandlerCapture,
-      true
-    );
-
-    // window.document.addEventListener('mousemove', this.prevent)
-    // window.document.addEventListener("mouseup", this.globalDropHandler);
-
-    this.globalPrepareListeners.push(() => {
-      window.document.removeEventListener(
-        "mousedown",
-        this.globalDragStartHandlerCapture
-        // true
-      );
-      console.log("clear --");
-      // window.document.removeEventListener('mousemove', this.prevent)
-
-      // window.document.removeEventListener("mouseup", this.globalDropHandler);
-    });
+    // window.document.addEventListener(
+    //   "mousedown",
+    //   this.globalDragStartHandlerCapture,
+    //   // true
+    // );
+    // // window.document.addEventListener('mousemove', this.prevent)
+    // // window.document.addEventListener("mouseup", this.globalDropHandler);
+    // this.globalPrepareListeners.push(() => {
+    //   window.document.removeEventListener(
+    //     "mousedown",
+    //     this.globalDragStartHandlerCapture
+    //     // true
+    //   );
+    //   console.log("clear --");
+    //   // window.document.removeEventListener('mousemove', this.prevent)
+    //   // window.document.removeEventListener("mouseup", this.globalDropHandler);
+    // });
   }
 
   prepareCandidateSourceHandler(blockKey) {
@@ -56,7 +53,9 @@ class DragDropManager {
     const dragStartHandler = e => this.dragStartHandler(e, listenerId);
 
     node.addEventListener("mousedown", dragStartHandler);
+    window.document.addEventListener("mouseup", this.globalDropHandler);
     this.sourcePrepareListeners.push(() => {
+      window.document.removeEventListener("mouseup", this.globalDropHandler);
       node.removeEventListener("mousedown", dragStartHandler);
     });
   }
@@ -67,8 +66,24 @@ class DragDropManager {
   globalDragStartHandlerCapture = e => {
     console.log("mouse down");
     this.dragSourceId = null;
+
+    // window.document.addEventListener('mousemove', this.prevent)
+    // window.document.addEventListener("mouseup", this.globalDropHandler);
+
+    this.globalPrepareListeners.push(() => {
+      // window.document.removeEventListener(
+      //   "mousedown",
+      //   this.globalDragStartHandlerCapture
+      //   // true
+      // );
+      // console.log("clear --");
+      window.document.removeEventListener("mousemove", this.prevent);
+
+      // window.document.removeEventListener("mouseup", this.globalDropHandler);
+    });
+
     window.document.addEventListener("mouseup", this.globalDropHandler);
-    e.preventDefault();
+    // e.preventDefault();
   };
 
   globalDropHandler = e => {
@@ -91,6 +106,7 @@ class DragDropManager {
   };
 
   dragStartHandler = (e, sourceId) => {
+    e.preventDefault();
     this.dragSourceId = sourceId;
     this.setupDropTarget();
   };
@@ -144,15 +160,12 @@ class DragDropManager {
   }
 
   teardown() {
-    debugger;
-    console.log("teare -----");
     this.teardownGlobal();
     this.teardownSource();
     this.teardownTarget();
   }
 
   teardownGlobal() {
-    console.log("teardown global");
     this.globalPrepareListeners.forEach(listener => listener());
     this.globalPrepareListeners = [];
   }
@@ -163,8 +176,6 @@ class DragDropManager {
   }
 
   teardownTarget() {
-    console.log("xxxxx tear target");
-
     this.dropTargetListeners.forEach(targetListener =>
       targetListener.teardown()
     );

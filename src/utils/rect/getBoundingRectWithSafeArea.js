@@ -21,6 +21,7 @@ export default function getBoundingRectWithSafeArea(
 
     // node with children should be omitted.
     if (!node || childrenSize) return;
+
     const { top, right, bottom, left } = node.getBoundingClientRect();
     // right and left both should minus `safeArea`
 
@@ -46,7 +47,6 @@ export default function getBoundingRectWithSafeArea(
       }
     });
   });
-  console.log("shift ", shiftLeft);
 
   return {
     shiftLeft: shiftLeft.filter(v => v),

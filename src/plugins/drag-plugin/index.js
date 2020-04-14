@@ -59,6 +59,7 @@ function DragPlugin() {
     });
 
     hooks.teardownDragDrop.tap("DragPlugin", () => {
+      console.log("trigger tear down ---");
       manager.teardown();
     });
   };

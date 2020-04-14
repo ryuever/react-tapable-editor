@@ -26,6 +26,7 @@ import {
 import { extractBlockKeyFromOffsetKey } from "../../utils/keyHelper";
 import "./styles.css";
 import createAddOn from "./createAddOn";
+import { bindEventsOnce, bindEvents } from "../../utils/event/bindEvents";
 
 function SidebarPlugin() {
   let current = null;
@@ -34,71 +35,116 @@ function SidebarPlugin() {
     const removeNode = () => {
       try {
         if (!current) return;
-        const { node, child, eventCleaner } = current;
-        if (typeof eventCleaner === "function") eventCleaner;
+        const { node, child, teardown } = current;
+        if (typeof teardown === "function") teardown();
         if (node.contains(child)) node.removeChild(child);
         current = null;
       } catch (err) {
-        console.log("err ", err);
+        console.log("[SideBarPlugin]: removeNode error ", err);
       }
     };
 
+    let isDragging = false;
+
     const mouseMoveHandler = e => {
-      // e.preventDefault()
-      const { editorState } = getEditor();
-      const coordinateMap = getBoundingRectWithSafeArea(editorState);
-      const { shiftLeft, shiftRight } = coordinateMap;
+      try {
+        const { editorState } = getEditor();
+        const coordinateMap = getBoundingRectWithSafeArea(editorState);
+        const { shiftLeft, shiftRight } = coordinateMap;
 
-      if (!shiftLeft) return;
+        if (!shiftLeft) return;
 
-      const x = e.pageX;
-      const y = e.pageY;
+        const x = e.pageX;
+        const y = e.pageY;
 
-      const nodeInfo = findBlockContainsPoint(shiftLeft, { x, y });
-      if (!nodeInfo) return;
-      const { offsetKey } = nodeInfo;
-      const node = getNodeByOffsetKey(offsetKey);
-      if (current && current.node === node) return;
-      if (current && current.node !== node) removeNode();
-
-      const child = createAddOn(offsetKey);
-      node.appendChild(child);
-
-      const selectableNode = getSelectableNodeByOffsetKey(offsetKey);
-      const enterHandler = e => {
-        e.preventDefault();
+        const nodeInfo = findBlockContainsPoint(shiftLeft, { x, y });
+        if (!nodeInfo) return;
+        const { offsetKey } = nodeInfo;
         const node = getNodeByOffsetKey(offsetKey);
-        node.setAttribute("draggable", true);
+        if (current && current.node === node) return;
+        if (current && current.node !== node) removeNode();
 
-        const { hooks } = getEditor();
-        const blockKey = extractBlockKeyFromOffsetKey(offsetKey);
-        hooks.prepareDragStart.call(blockKey);
-      };
-      const leaveHandler = e => {
-        e.preventDefault();
-        const node = getNodeByOffsetKey(offsetKey);
-        node.removeAttribute("draggable");
-        const { hooks } = getEditor();
-        hooks.teardownDragDrop.call();
-      };
-      selectableNode.addEventListener("mouseenter", enterHandler);
-      selectableNode.addEventListener("mouseleave", leaveHandler);
-      const eventCleaner = () => {
-        selectableNode.removeEventListener("mouseenter", enterHandler);
-        selectableNode.removeEventListener("mouseleave", leaveHandler);
-      };
+        const child = createAddOn(offsetKey);
+        console.log("add ", node, current && current.node);
+        node.appendChild(child);
 
-      // https://stackoverflow.com/questions/24148403/trigger-css-transition-on-appended-element
-      requestAnimationFrame(() => child.classList.add("sidebar-addon-visible"));
-      current = { node, child, offsetKey, eventCleaner };
+        const selectableNode = getSelectableNodeByOffsetKey(offsetKey);
+        const enterHandler = e => {
+          e.preventDefault();
+          const node = getNodeByOffsetKey(offsetKey);
+
+          const { hooks } = getEditor();
+          const blockKey = extractBlockKeyFromOffsetKey(offsetKey);
+          hooks.prepareDragStart.call(blockKey);
+
+          bindEventsOnce(document, {
+            eventName: "mousedown",
+            fn: () => {
+              if (!isDragging) isDragging = true;
+              bindEventsOnce(document, {
+                eventName: "mouseup",
+                fn: () => {
+                  hooks.teardownDragDrop.call();
+                }
+              });
+            }
+          });
+        };
+        const leaveHandler = e => {
+          e.preventDefault();
+          const { hooks } = getEditor();
+
+          // which means `mousedown` is triggered...
+          if (isDragging) return;
+          hooks.teardownDragDrop.call();
+        };
+
+        const teardown = bindEventsOnce(selectableNode, {
+          eventName: "mouseenter",
+          fn: e => {
+            enterHandler(e);
+            bindEventsOnce(selectableNode, {
+              eventName: "mouseleave",
+              fn: leaveHandler
+            });
+          }
+        });
+
+        // https://stackoverflow.com/questions/24148403/trigger-css-transition-on-appended-element
+        requestAnimationFrame(() =>
+          child.classList.add("sidebar-addon-visible")
+        );
+        current = { node, child, offsetKey, teardown };
+      } catch (err) {
+        console.log("err in SideBar plugin ", err);
+      }
     };
 
-    const keyDownHandler = e => removeNode();
-
+    // when user start input, sidebar should disappear...
+    // Note: `removeChild` will cause `block` delete issue in a situation described below.
+    //   1. hover cursor on a block
+    //   2. type in chinese character on other block
+    //   3. the block content under cursor will be cleared...
+    const keydownHandler = () => {
+      const { editorState } = getEditor();
+      if (editorState.isInCompositionMode()) return;
+      removeNode();
+    };
     const throttledMoveHandler = throttle(mouseMoveHandler, 50);
-    const throttledKeyDownHandler = throttle(keyDownHandler, 50);
-    document.addEventListener("mousemove", throttledMoveHandler);
-    document.addEventListener("keydown", throttledKeyDownHandler);
+    const throttledKeydownHandler = throttle(keydownHandler, 50);
+
+    // global document mousemove to determine which dom cursor is in...
+    // It has a drawback, rect should be calculated on every move...
+    bindEvents(document, [
+      {
+        eventName: "mousemove",
+        fn: throttledMoveHandler
+      },
+      {
+        eventName: "keydown",
+        fn: throttledKeydownHandler
+      }
+    ]);
   };
 }
 
