@@ -1,7 +1,7 @@
 import { keyExtractor } from "./keyExtractor";
 import { generateOffsetKey } from "../../utils/keyHelper";
 import { getNodeByOffsetKey } from "../../utils/findNode";
-import throttle from "../../utils/throttle";
+import { bindEvents } from "../../utils/event/bindEvents";
 
 class DropTarget {
   constructor({ blockKey, addDropTarget, removeDropTarget }) {
@@ -10,18 +10,16 @@ class DropTarget {
     this.listenerKey = keyExtractor(blockKey, "target");
     this.addDropTarget = addDropTarget;
     this.removeDropTarget = removeDropTarget;
-    this.setup();
+    this.teardown = this.setup();
   }
 
-  dragEnterHandler = e => {
+  mouseEnterHandler = e => {
     e.preventDefault();
-    console.log("x");
     this.addDropTarget(this.listenerKey);
   };
 
-  dragLeaveHandler = e => {
+  mouseLeaveHandler = e => {
     e.preventDefault();
-    console.log("mouse leave ");
     this.removeDropTarget(this.listenerKey);
   };
 
@@ -36,26 +34,22 @@ class DropTarget {
 
   setup() {
     const node = getNodeByOffsetKey(this.offsetKey);
-    // node.addEventListener("dragenter", this.dragEnterHandler);
-    // node.addEventListener("dragleave", this.dragLeaveHandler);
-    // node.addEventListener("dragover", this.dragOverHandler);
-    node.addEventListener("mouseenter", this.dragEnterHandler, true);
-    node.addEventListener("mouseleave", this.dragLeaveHandler, true);
-    // node.addEventListener("mouseover", this.dragOverHandler, true);
-
-    return () => {
-      this.teardown();
-    };
-  }
-
-  teardown() {
-    const node = getNodeByOffsetKey(this.offsetKey);
-    // node.removeEventListener("dragenter", this.dragEnterHandler);
-    // node.removeEventListener("dragleave", this.dragLeaveHandler);
-    // node.removeEventListener("dragover", this.dragOverHandler);
-    node.removeEventListener("mouseenter", this.dragEnterHandler, true);
-    node.removeEventListener("mouseleave", this.dragLeaveHandler, true);
-    // node.removeEventListener("mouseover", this.dragOverHandler);
+    return bindEvents(
+      node,
+      [
+        {
+          eventName: "mouseenter",
+          fn: this.mouseEnterHandler
+        },
+        {
+          eventName: "mouseleave",
+          fn: this.mouseLeaveHandler
+        }
+      ],
+      {
+        capture: true
+      }
+    );
   }
 }
 
