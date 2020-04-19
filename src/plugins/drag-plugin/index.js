@@ -55,12 +55,10 @@ function DragPlugin() {
     });
 
     hooks.prepareDragStart.tap("DragPlugin", sourceBlockKey => {
-      console.log("prepare ");
       manager.prepare(sourceBlockKey);
     });
 
     hooks.teardownDragDrop.tap("DragPlugin", () => {
-      console.log("trigger tear down ---");
       manager.teardown();
     });
   };

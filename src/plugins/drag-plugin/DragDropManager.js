@@ -1,7 +1,8 @@
 import { keyExtractor, blockKeyExtractor } from "./keyExtractor";
+import DropTarget from "./DropTarget";
 import { getNodeByOffsetKey } from "../../utils/findNode";
 import { generateOffsetKey } from "../../utils/keyHelper";
-import DropTarget from "./DropTarget";
+import { bindEventsOnce } from "../../utils/event/bindEvents";
 
 class DragDropManager {
   constructor({ getEditor, onUpdate }) {
@@ -10,84 +11,41 @@ class DragDropManager {
     this.committedDropTargetIds = new Set();
     this.getEditor = getEditor;
     this.dropTargetListeners = [];
-    this.globalPrepareListeners = [];
-    this.sourcePrepareListeners = [];
+    this.dragSourceListeners = [];
     this.onUpdate = onUpdate;
   }
 
   prepare(sourceBlockKey) {
-    this.prepareGlobalEventHandler();
     this.prepareCandidateSourceHandler(sourceBlockKey);
   }
 
-  prevent = e => {
+  mousedownHandler = (e, sourceId) => {
+    // `e.preventDefault()` is required to prevent selection on move..
     e.preventDefault();
-  };
 
-  prepareGlobalEventHandler() {
-    // window.document.addEventListener(
-    //   "mousedown",
-    //   this.globalDragStartHandlerCapture,
-    //   // true
-    // );
-    // // window.document.addEventListener('mousemove', this.prevent)
-    // // window.document.addEventListener("mouseup", this.globalDropHandler);
-    // this.globalPrepareListeners.push(() => {
-    //   window.document.removeEventListener(
-    //     "mousedown",
-    //     this.globalDragStartHandlerCapture
-    //     // true
-    //   );
-    //   console.log("clear --");
-    //   // window.document.removeEventListener('mousemove', this.prevent)
-    //   // window.document.removeEventListener("mouseup", this.globalDropHandler);
-    // });
-  }
+    this.dragSourceId = sourceId;
+    this.setupDropTarget();
+  };
 
   prepareCandidateSourceHandler(blockKey) {
     const listenerId = keyExtractor(blockKey, "source");
     const offsetKey = generateOffsetKey(blockKey);
-
     const node = getNodeByOffsetKey(offsetKey);
+    const teardown = bindEventsOnce(node, {
+      eventName: "mousedown",
+      fn: e => {
+        this.mousedownHandler(e, listenerId);
 
-    const dragStartHandler = e => this.dragStartHandler(e, listenerId);
-
-    node.addEventListener("mousedown", dragStartHandler);
-    window.document.addEventListener("mouseup", this.globalDropHandler);
-    this.sourcePrepareListeners.push(() => {
-      window.document.removeEventListener("mouseup", this.globalDropHandler);
-      node.removeEventListener("mousedown", dragStartHandler);
+        bindEventsOnce(window, {
+          eventName: "mouseup",
+          fn: this.globalMouseupHandler
+        });
+      }
     });
+    this.dragSourceListeners.push(teardown);
   }
 
-  /**
-   * first reset `dragSourceId`, and then setup `target` listener.
-   */
-  globalDragStartHandlerCapture = e => {
-    console.log("mouse down");
-    this.dragSourceId = null;
-
-    // window.document.addEventListener('mousemove', this.prevent)
-    // window.document.addEventListener("mouseup", this.globalDropHandler);
-
-    this.globalPrepareListeners.push(() => {
-      // window.document.removeEventListener(
-      //   "mousedown",
-      //   this.globalDragStartHandlerCapture
-      //   // true
-      // );
-      // console.log("clear --");
-      window.document.removeEventListener("mousemove", this.prevent);
-
-      // window.document.removeEventListener("mouseup", this.globalDropHandler);
-    });
-
-    window.document.addEventListener("mouseup", this.globalDropHandler);
-    // e.preventDefault();
-  };
-
-  globalDropHandler = e => {
-    console.log("drop ");
+  globalMouseupHandler = e => {
     this.teardown();
     const targetIds = [...this.committedDropTargetIds];
     const targetId = targetIds.pop();
@@ -103,12 +61,6 @@ class DragDropManager {
     this.committedDropTargetIds = new Set();
     this.dropTargetIds = new Set();
     this.dragSourceId = null;
-  };
-
-  dragStartHandler = (e, sourceId) => {
-    e.preventDefault();
-    this.dragSourceId = sourceId;
-    this.setupDropTarget();
   };
 
   addDropTarget = dropTargetId => {
@@ -160,19 +112,13 @@ class DragDropManager {
   }
 
   teardown() {
-    this.teardownGlobal();
     this.teardownSource();
     this.teardownTarget();
   }
 
-  teardownGlobal() {
-    this.globalPrepareListeners.forEach(listener => listener());
-    this.globalPrepareListeners = [];
-  }
-
   teardownSource() {
-    this.sourcePrepareListeners.forEach(listener => listener());
-    this.sourcePrepareListeners = [];
+    this.dragSourceListeners.forEach(listener => listener());
+    this.dragSourceListeners = [];
   }
 
   teardownTarget() {

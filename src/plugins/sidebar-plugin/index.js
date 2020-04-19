@@ -69,19 +69,17 @@ function SidebarPlugin() {
 
         const selectableNode = getSelectableNodeByOffsetKey(offsetKey);
         const enterHandler = e => {
-          // e.preventDefault();
           const node = getNodeByOffsetKey(offsetKey);
-          // node.setAttribute('draggable', true)
-
           const { hooks } = getEditor();
           const blockKey = extractBlockKeyFromOffsetKey(offsetKey);
           hooks.prepareDragStart.call(blockKey);
 
-          bindEventsOnce(document, {
+          bindEventsOnce(node, {
             eventName: "mousedown",
             fn: () => {
+              // To make teardown or not...
               if (!isDragging) isDragging = true;
-              bindEventsOnce(document, {
+              bindEventsOnce(node, {
                 eventName: "mouseup",
                 fn: () => {
                   hooks.teardownDragDrop.call();
@@ -103,7 +101,6 @@ function SidebarPlugin() {
           eventName: "mouseenter",
           fn: e => {
             enterHandler(e);
-            console.log("trigger enter");
             bindEventsOnce(selectableNode, {
               eventName: "mouseleave",
               fn: leaveHandler
