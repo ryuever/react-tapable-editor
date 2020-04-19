@@ -1,3 +1,5 @@
+// https://github.com/alexreardon/css-box-model/blob/master/src/index.js
+
 import { getNodeByBlockKey } from "../findNode";
 import { generateOffsetKey } from "../keyHelper";
 
