@@ -65,13 +65,13 @@ function SidebarPlugin() {
         if (current && current.node !== node) removeNode();
 
         const child = createAddOn(offsetKey);
-        console.log("add ", node, current && current.node);
         node.appendChild(child);
 
         const selectableNode = getSelectableNodeByOffsetKey(offsetKey);
         const enterHandler = e => {
-          e.preventDefault();
+          // e.preventDefault();
           const node = getNodeByOffsetKey(offsetKey);
+          // node.setAttribute('draggable', true)
 
           const { hooks } = getEditor();
           const blockKey = extractBlockKeyFromOffsetKey(offsetKey);
@@ -103,6 +103,7 @@ function SidebarPlugin() {
           eventName: "mouseenter",
           fn: e => {
             enterHandler(e);
+            console.log("trigger enter");
             bindEventsOnce(selectableNode, {
               eventName: "mouseleave",
               fn: leaveHandler
@@ -120,11 +121,13 @@ function SidebarPlugin() {
       }
     };
 
-    // when user start input, sidebar should disappear...
+    // when user start typing, sidebar should disappear...
     // Note: `removeChild` will cause `block` delete issue in a situation described below.
     //   1. hover cursor on a block
     //   2. type in chinese character on other block
     //   3. the block content under cursor will be cleared...
+    // TODO: In composition mode. blocks will be re-rendered, which may cause removed DOM's
+    //       event handler is not cleared...
     const keydownHandler = () => {
       const { editorState } = getEditor();
       if (editorState.isInCompositionMode()) return;
