@@ -35,6 +35,8 @@ The original idea is to build an easy used rich text editor. `react-tapable-edit
 
 [drag to make layout design](./docs/drag.md)
 
+#### TODO consider smooth reflow...
+
 ## How to start
 
 ```bash
