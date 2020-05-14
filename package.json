@@ -24,7 +24,7 @@
     "classnames": "^2.2.6",
     "draft-js": "^0.11.0",
     "html-webpack-plugin": "^3.2.0",
-    "immutable": "^4.0.0-rc.12",
+    "immutable": "^3.7.4",
     "invariant": "^2.2.4",
     "jest": "^24.9.0",
     "prismjs": "^1.19.0",
