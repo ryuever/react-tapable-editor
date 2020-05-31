@@ -13,7 +13,7 @@ export default ctx => mutationList => {
       addedNodes.forEach(node => {
         const matchedContainer = matchesContainer(node, configs);
         if (matchedContainer !== -1) {
-          ctx.handleContainerElement(node);
+          ctx.handleContainerElement(node, matchedContainer);
           // In case, dragger is batch updated by container..
           ctx.handleDraggers(node);
           DEBUG && console.log("add container ", node);

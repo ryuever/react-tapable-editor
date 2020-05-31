@@ -16,7 +16,7 @@ bindEvents(window, {
 class DND {
   constructor({ configs = [], rootElement }) {
     this.containers = {};
-    this.handleContainers();
+    // this.handleContainers();
     this.configs = configs.map(config => ({
       ...defaultConfig,
       ...config
@@ -47,39 +47,34 @@ class DND {
    * extract `containerSelectors` and prepare `container` and `dragger`
    */
   setUp() {
-    this.containerSelectors = this.configs.map(config => {
-      const { containerSelector } = config;
-      return containerSelector;
-    });
-
-    this.containerSelectors.forEach(containerSelector =>
-      this.handleContainers(containerSelector)
-    );
-
+    this.handleContainers();
     this.handleDraggers();
   }
 
-  handleContainers(containerSelector) {
-    const elements = document.querySelectorAll(containerSelector);
-    if (!elements) return;
+  handleContainers(node = document) {
+    this.configs.map(config => {
+      const { containerSelector } = config;
+      const elements = node.querySelectorAll(containerSelector);
+      if (!elements) return;
 
-    elements.forEach(el => this.handleContainerElement(el));
-  }
-
-  handleContainerElement(el) {
-    const container = new Container({ el, containers: this.containers });
-    setContainerAttributes(container);
-  }
-
-  handleDraggers(container = document) {
-    this.configs.forEach(config => {
-      const { draggerSelector } = config;
-      this.handleDraggerInContainer(container, draggerSelector);
+      elements.forEach(el => this.handleContainerElement(el, config));
     });
   }
 
-  handleDraggerInContainer(container, draggerSelector) {
-    const elements = container.querySelectorAll(draggerSelector);
+  handleContainerElement(el, config) {
+    const container = new Container({ el, containers: this.containers });
+    setContainerAttributes(container, config);
+  }
+
+  handleDraggers(containerNode = document) {
+    this.configs.forEach(config => {
+      const { draggerSelector } = config;
+      this.handleDraggerInContainer(containerNode, draggerSelector);
+    });
+  }
+
+  handleDraggerInContainer(containerNode, draggerSelector) {
+    const elements = containerNode.querySelectorAll(draggerSelector);
     if (!elements) return;
     elements.forEach(el => this.handleDraggerElement(el));
   }

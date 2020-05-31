@@ -1,9 +1,11 @@
-export const setContainerAttributes = container => {
+export const setContainerAttributes = (container, config) => {
+  const { orientation } = config;
   const id = container.id;
   const el = container.el;
 
   el.setAttribute("data-is-container", "true");
   el.setAttribute("data-container-id", id);
+  el.setAttribute("data-orientation", orientation);
 };
 
 export const setDraggerAttributes = (container, dragger) => {
