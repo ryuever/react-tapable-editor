@@ -4,7 +4,6 @@ import transferBlock from "../../utils/block/transferBlock";
 import BlockUtil from "../../utils/block/blockUtil";
 import infoLog from "../../utils/infoLog";
 const { insertNewLineAfterAll } = BlockUtil;
-import dnd from "./dnd";
 
 const DEBUG = true;
 

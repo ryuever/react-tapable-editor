@@ -26,6 +26,8 @@ import SidebarPlugin from "./plugins/sidebar-plugin";
 import LinkSpanDecoratorPlugin from "./plugins/LinkSpanDecoratorPlugin";
 import LinkDecoratorPlugin from "./plugins/LinkDecorator";
 
+import DNDPlugin from "./plugins/dnd-plugin";
+
 import PrismDecorator from "./decorators/prism";
 // import './decorators/prism/theme/prism-solarizedlight.css'
 import "./decorators/prism/theme/prism.css";
@@ -67,7 +69,9 @@ const defaultPlugins = [
   new DragPlugin(),
 
   // TODO: will cause text missing...
-  new SidebarPlugin()
+  new SidebarPlugin(),
+
+  new DNDPlugin()
 ];
 
 class PluginEditor extends PureComponent {
@@ -157,7 +161,8 @@ class PluginEditor extends PureComponent {
 
       // for drag
       prepareDragStart: new SyncHook(["sourceBlockKey"]),
-      teardownDragDrop: new SyncHook()
+      teardownDragDrop: new SyncHook(),
+      afterMounted: new SyncHook()
     };
 
     this.editorRef = createRef();
@@ -210,6 +215,8 @@ class PluginEditor extends PureComponent {
   }
 
   componentDidMount() {
+    this.hooks.afterMounted.call();
+
     this.hooks.onChange.tap("onChange", editorState => {
       this.setState({ editorState });
     });
