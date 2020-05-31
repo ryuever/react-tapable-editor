@@ -1,11 +1,13 @@
 import { containerKeyExtractor } from "./key";
 
 class Container {
-  constructor({ el }) {
+  constructor({ el, containers }) {
     this.el = el;
     this.id = containerKeyExtractor();
-
+    this.containers = containers;
     this.children = [];
+
+    this.containers[this.id] = this;
   }
 
   // used for transition
@@ -16,6 +18,10 @@ class Container {
       const index = this.children.findIndex(child => child === dragger);
       if (index !== -1) this.children.splice(index, 1);
     };
+  }
+
+  cleanup() {
+    delete this.containers[this.id];
   }
 }
 

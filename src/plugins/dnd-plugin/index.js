@@ -6,12 +6,11 @@ function DNDPlugin() {
     hooks.afterMounted.tap("initDNDPlugin", () => {
       const { editorRef } = getEditor();
       new DND({
-        rootElement: '[data-contents="true"]',
-        dndConfigs: [
+        rootElement: ".DraftEditor-root",
+        configs: [
           {
             containerSelector: '[data-contents="true"]',
             draggerSelector: ".miuffy-paragraph"
-            // draggerClass: ''
           }
         ]
       });

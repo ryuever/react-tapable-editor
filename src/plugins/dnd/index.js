@@ -1,10 +1,10 @@
 import { bindEvents } from "../../utils/event/bindEvents";
-import { containerKeyExtractor } from "./key";
 import Container from "./Container";
 import Dragger from "./Dragger";
-import Sabar from "sabar";
-import { isElement } from "./utils";
-import { matchesDragger, findClosestContainer } from "./dom";
+import { findClosestContainer, isElement } from "./dom";
+import defaultConfig from "./defaultConfig";
+import { setContainerAttributes, setDraggerAttributes } from "./setAttributes";
+import mutationHandler from "./mutationHandler";
 
 bindEvents(window, {
   eventName: "mousedown",
@@ -14,10 +14,13 @@ bindEvents(window, {
 });
 
 class DND {
-  constructor({ dndConfigs, rootElement }) {
-    this.containers = [];
+  constructor({ configs = [], rootElement }) {
+    this.containers = {};
     this.handleContainers();
-    this.dndConfigs = dndConfigs;
+    this.configs = configs.map(config => ({
+      ...defaultConfig,
+      ...config
+    }));
     this.rootElement = rootElement;
 
     this.startObserve();
@@ -32,27 +35,7 @@ class DND {
       if (el) rootElement = el;
     }
 
-    const callback = mutationList => {
-      for (let mutation of mutationList) {
-        const { addedNodes, removedNodes } = mutation;
-
-        if (addedNodes.length) {
-          console.log("A child node has been added.", addedNodes);
-
-          addedNodes.forEach(node => {
-            const matched = matchesDragger(node, this.dndConfigs);
-            if (matched === -1) return;
-            this.handleDraggerElement(node);
-          });
-        }
-
-        if (removedNodes.length) {
-          console.log("A child node has been removed.", removedNodes);
-        }
-      }
-    };
-
-    const observer = new MutationObserver(callback);
+    const observer = new MutationObserver(mutationHandler(this));
 
     observer.observe(rootElement, {
       childList: true,
@@ -64,7 +47,7 @@ class DND {
    * extract `containerSelectors` and prepare `container` and `dragger`
    */
   setUp() {
-    this.containerSelectors = this.dndConfigs.map(config => {
+    this.containerSelectors = this.configs.map(config => {
       const { containerSelector } = config;
       return containerSelector;
     });
@@ -73,27 +56,30 @@ class DND {
       this.handleContainers(containerSelector)
     );
 
-    this.dndConfigs.forEach(config => {
-      const { draggerSelector } = config;
-      this.handleDraggerSelector(draggerSelector);
-    });
+    this.handleDraggers();
   }
 
   handleContainers(containerSelector) {
     const elements = document.querySelectorAll(containerSelector);
     if (!elements) return;
 
-    elements.forEach(el => {
-      const container = new Container({ el });
-      const id = container.id;
-      this.containers[id] = container;
-      el.setAttribute("data-is-container", "true");
-      el.setAttribute("data-container-id", id);
+    elements.forEach(el => this.handleContainerElement(el));
+  }
+
+  handleContainerElement(el) {
+    const container = new Container({ el, containers: this.containers });
+    setContainerAttributes(container);
+  }
+
+  handleDraggers(container = document) {
+    this.configs.forEach(config => {
+      const { draggerSelector } = config;
+      this.handleDraggerInContainer(container, draggerSelector);
     });
   }
 
-  handleDraggerSelector(draggerSelector) {
-    const elements = document.querySelectorAll(draggerSelector);
+  handleDraggerInContainer(container, draggerSelector) {
+    const elements = container.querySelectorAll(draggerSelector);
     if (!elements) return;
     elements.forEach(el => this.handleDraggerElement(el));
   }
@@ -108,13 +94,10 @@ class DND {
    */
   handleDraggerElement(el) {
     const container = findClosestContainer(this.containers, el);
-
     if (container === -1) return;
     const dragger = new Dragger({ el, container });
     container.addDirectChild(dragger);
-    el.setAttribute("data-is-dragger", "true");
-    el.setAttribute("data-dragger-id", dragger.id);
-    el.setAttribute("data-container-context", container.id);
+    setDraggerAttributes(container, dragger);
   }
 }
 

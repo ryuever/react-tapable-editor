@@ -1,8 +1,8 @@
 import { draggerKeyExtractor } from "./key";
 
 class Dragger {
-  constructor(el) {
-    this.container = null;
+  constructor({ el, container }) {
+    this.container = container;
     this.el = el;
     this._teardown = null;
     this.id = draggerKeyExtractor();
