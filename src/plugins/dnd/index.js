@@ -1,22 +1,23 @@
+import Sabar from "sabar";
 import { bindEvents } from "../../utils/event/bindEvents";
 import Container from "./Container";
 import Dragger from "./Dragger";
-import { findClosestContainer, isElement } from "./dom";
+import {
+  findClosestContainer,
+  isElement,
+  findClosestDraggerFromEvent
+} from "./dom";
 import defaultConfig from "./defaultConfig";
 import { setContainerAttributes, setDraggerAttributes } from "./setAttributes";
 import mutationHandler from "./mutationHandler";
-
-bindEvents(window, {
-  eventName: "mousedown",
-  fn: e => {
-    console.log("mouse down");
-  }
-});
+import getDimensions from "./middleware/getDimensions";
+import validateContainerRelation from "./middleware/validateContainerRelation";
 
 class DND {
   constructor({ configs = [], rootElement }) {
     this.containers = {};
-    // this.handleContainers();
+    this.draggers = {};
+
     this.configs = configs.map(config => ({
       ...defaultConfig,
       ...config
@@ -25,6 +26,51 @@ class DND {
 
     this.startObserve();
     this.setUp();
+    this.startListen();
+
+    this.prepare = new Sabar({
+      ctx: {
+        containers: this.containers,
+        draggers: this.draggers
+      }
+    });
+
+    this.prepare.use(getDimensions, validateContainerRelation);
+  }
+
+  startListen() {
+    bindEvents(window, {
+      eventName: "mousedown",
+      fn: e => {
+        const dragger = findClosestDraggerFromEvent(e);
+        if (dragger === -1) return;
+        const clone = dragger.cloneNode(true);
+        document.body.appendChild(clone);
+
+        this.prepare.start({});
+
+        // If dragger exists, then start to bind relative listener
+        const unbind = bindEvents(window, [
+          {
+            // target should be moved by mousemove event.
+            eventName: "mousemove",
+            fn: e => {
+              const { clientY, clientX } = e;
+              clone.style.position = "fixed";
+              clone.style.top = `${clientY}px`;
+              clone.style.left = `${clientX}px`;
+            }
+          },
+          {
+            eventName: "mouseup",
+            fn: e => {
+              unbind();
+              document.body.removeChild(clone);
+            }
+          }
+        ]);
+      }
+    });
   }
 
   startObserve() {
@@ -92,6 +138,8 @@ class DND {
     if (container === -1) return;
     const dragger = new Dragger({ el, container });
     container.addDirectChild(dragger);
+    const draggerId = dragger.id;
+    this.draggers[draggerId] = dragger;
     setDraggerAttributes(container, dragger);
   }
 }
