@@ -10,13 +10,19 @@ import {
 import defaultConfig from "./defaultConfig";
 import { setContainerAttributes, setDraggerAttributes } from "./setAttributes";
 import mutationHandler from "./mutationHandler";
-import getDimensions from "./middleware/getDimensions";
-import validateContainerRelation from "./middleware/validateContainerRelation";
+
+import getDimensions from "./middleware/onStart/getDimensions";
+import validateContainers from "./middleware/onStart/validateContainers";
+import attemptToCreateClone from "./middleware/onStart/attemptToCreateClone";
+
+import shouldAcceptDragger from "./middleware/onMove/shouldAcceptDragger";
+import syncCopyPosition from "./middleware/onMove/syncCopyPosition";
 
 class DND {
   constructor({ configs = [], rootElement }) {
     this.containers = {};
     this.draggers = {};
+    this.extra = {};
 
     this.configs = configs.map(config => ({
       ...defaultConfig,
@@ -28,14 +34,26 @@ class DND {
     this.setUp();
     this.startListen();
 
-    this.prepare = new Sabar({
+    this.onStartHandler = new Sabar({
+      ctx: {
+        containers: this.containers,
+        draggers: this.draggers,
+        extra: this.extra
+      }
+    });
+    this.onMoveHandler = new Sabar({
       ctx: {
         containers: this.containers,
         draggers: this.draggers
       }
     });
 
-    this.prepare.use(getDimensions, validateContainerRelation);
+    this.onStartHandler.use(
+      getDimensions,
+      validateContainers,
+      attemptToCreateClone
+    );
+    this.onMoveHandler.use(syncCopyPosition, shouldAcceptDragger);
   }
 
   startListen() {
@@ -44,21 +62,17 @@ class DND {
       fn: e => {
         const dragger = findClosestDraggerFromEvent(e);
         if (dragger === -1) return;
-        const clone = dragger.cloneNode(true);
-        document.body.appendChild(clone);
 
-        this.prepare.start({});
+        this.onStartHandler.start({ dragger });
+        const { clone } = this.extra;
 
         // If dragger exists, then start to bind relative listener
         const unbind = bindEvents(window, [
           {
             // target should be moved by mousemove event.
             eventName: "mousemove",
-            fn: e => {
-              const { clientY, clientX } = e;
-              clone.style.position = "fixed";
-              clone.style.top = `${clientY}px`;
-              clone.style.left = `${clientX}px`;
+            fn: event => {
+              this.onMoveHandler.start({ event, dragger, clone });
             }
           },
           {
@@ -90,7 +104,7 @@ class DND {
   }
 
   /**
-   * extract `containerSelectors` and prepare `container` and `dragger`
+   * extract `containerSelectors` and onStartHandler `container` and `dragger`
    */
   setUp() {
     this.handleContainers();

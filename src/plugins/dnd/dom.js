@@ -55,3 +55,10 @@ export const findClosestDraggerFromEvent = event => {
   if (dragger) return dragger;
   return -1;
 };
+
+export const findClosestContainerFromEvent = event => {
+  const target = event.target;
+  const dragger = closest(target, '[data-is-container="true"]');
+  if (dragger) return dragger;
+  return -1;
+};
