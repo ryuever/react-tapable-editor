@@ -2,11 +2,8 @@ import Sabar from "sabar";
 import { bindEvents } from "../../utils/event/bindEvents";
 import Container from "./Container";
 import Dragger from "./Dragger";
-import {
-  findClosestContainer,
-  isElement,
-  findClosestDraggerFromEvent
-} from "./dom";
+import { isElement } from "./dom";
+import { findClosestContainer, findClosestDraggerFromEvent } from "./find";
 import defaultConfig from "./defaultConfig";
 import { setContainerAttributes, setDraggerAttributes } from "./setAttributes";
 import mutationHandler from "./mutationHandler";
@@ -17,6 +14,7 @@ import attemptToCreateClone from "./middleware/onStart/attemptToCreateClone";
 
 import shouldAcceptDragger from "./middleware/onMove/shouldAcceptDragger";
 import syncCopyPosition from "./middleware/onMove/syncCopyPosition";
+import resolveOverlappingContainer from "./middleware/shared/resolveOverlappedContainer";
 
 class DND {
   constructor({ configs = [], rootElement }) {
@@ -53,7 +51,11 @@ class DND {
       validateContainers,
       attemptToCreateClone
     );
-    this.onMoveHandler.use(syncCopyPosition, shouldAcceptDragger);
+    this.onMoveHandler.use(
+      syncCopyPosition,
+      resolveOverlappingContainer,
+      shouldAcceptDragger
+    );
   }
 
   startListen() {
@@ -117,12 +119,18 @@ class DND {
       const elements = node.querySelectorAll(containerSelector);
       if (!elements) return;
 
-      elements.forEach(el => this.handleContainerElement(el, config));
+      elements.forEach(el =>
+        this.handleContainerElement(el, config, this.configs)
+      );
     });
   }
 
-  handleContainerElement(el, config) {
-    const container = new Container({ el, containers: this.containers });
+  handleContainerElement(el, config, dndConfig) {
+    const container = new Container({
+      el,
+      containers: this.containers,
+      dndConfig
+    });
     setContainerAttributes(container, config);
   }
 

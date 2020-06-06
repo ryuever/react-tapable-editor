@@ -1,11 +1,12 @@
 import { containerKeyExtractor } from "./key";
 
 class Container {
-  constructor({ el, containers }) {
+  constructor({ el, containers, dndConfig }) {
     this.el = el;
     this.id = containerKeyExtractor();
     this.containers = containers;
     this.children = [];
+    this.dndConfig = dndConfig;
 
     this.containers[this.id] = this;
   }
