@@ -18,4 +18,16 @@ class SortedItems {
     const { id } = item;
     return this.items.findIndex(item => item.id === id);
   }
+
+  getSize() {
+    return this.items.length;
+  }
+
+  getItem(index) {
+    return this.items[index];
+  }
+
+  slice(...args) {
+    return this.items.slice.apply(null, args);
+  }
 }

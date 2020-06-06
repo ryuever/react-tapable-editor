@@ -1,5 +1,4 @@
 import Sabar from "sabar";
-import { bindEvents } from "../../utils/event/bindEvents";
 import Container from "./Container";
 import Dragger from "./Dragger";
 import { isElement } from "./dom";
@@ -19,34 +18,54 @@ import resolvePlacedInfo from "./middleware/onMove/resolvePlacedInfo";
 
 import resolveRawPlacedInfo from "./middleware/shared/resolveRawPlacedInfo";
 import resolveOverlappingContainer from "./middleware/shared/resolveOverlappedContainer";
+import { SyncHook } from "tapable";
+
+import MouseSensor from "./sensor/mouse";
 
 class DND {
   constructor({ configs = [], rootElement }) {
     this.containers = {};
     this.draggers = {};
     this.extra = {};
+    this.effects = {
+      container: [],
+      draggers: [],
+      containerEffects: [],
+      draggerEffects: []
+    };
 
     this.configs = configs.map(config => ({
       ...defaultConfig,
       ...config
     }));
+
+    this.containerEffects = [];
+    this.draggerEffects = [];
+
+    this.hooks = {
+      syncEffects: new SyncHook("values")
+    };
     this.rootElement = rootElement;
 
     this.startObserve();
     this.setUp();
-    this.startListen();
+    this.initSensor();
 
     this.onStartHandler = new Sabar({
       ctx: {
         containers: this.containers,
         draggers: this.draggers,
-        extra: this.extra
+        extra: this.extra,
+        hooks: this.hooks
       }
     });
+
     this.onMoveHandler = new Sabar({
       ctx: {
         containers: this.containers,
-        draggers: this.draggers
+        draggers: this.draggers,
+        effects: this.effects,
+        hooks: this.hooks
       }
     });
 
@@ -64,37 +83,21 @@ class DND {
       resolveRawPlacedInfo,
       resolvePlacedInfo
     );
+
+    this.hooks.syncEffects.tap("syncEffects", ({ effects }) => {
+      this.effects = effects;
+    });
   }
 
-  startListen() {
-    bindEvents(window, {
-      eventName: "mousedown",
-      fn: event => {
-        const dragger = findClosestDraggerFromEvent(event);
-        if (dragger === -1) return;
+  moveAPI() {
+    return {
+      effects: this.effects
+    };
+  }
 
-        this.onStartHandler.start({ dragger, event });
-        const { clone } = this.extra;
-
-        // If dragger exists, then start to bind relative listener
-        const unbind = bindEvents(window, [
-          {
-            // target should be moved by mousemove event.
-            eventName: "mousemove",
-            fn: event => {
-              this.onMoveHandler.start({ event, dragger, clone });
-            }
-          },
-          {
-            eventName: "mouseup",
-            fn: e => {
-              unbind();
-              document.body.removeChild(clone);
-            }
-          }
-        ]);
-      }
-    });
+  initSensor() {
+    this.sensor = new MouseSensor({ moveAPI: this.moveAPI.bind(this) });
+    this.sensor.start();
   }
 
   startObserve() {

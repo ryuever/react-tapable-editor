@@ -1,5 +1,3 @@
-import { orientationToAxis, axisMeasure } from "../../utils";
-
 const operation = {
   REPLACE: "replace",
   REMOVE: "remove",
@@ -8,7 +6,7 @@ const operation = {
 
 export default ({ dragger }, ctx, actions) => {
   const { isMovingOnHomeContainer, placedAtRaw, overlappedContainer } = ctx;
-  const { index: rawIndex, dragger: placedDragger } = placedAtRaw;
+  const { index: rawIndex } = placedAtRaw;
   const placedAt = {
     index: undefined
   };
@@ -22,16 +20,12 @@ export default ({ dragger }, ctx, actions) => {
 
   // when `isMovingOnHomeContainer` is true, the relative position of dragger and dropped place
   // will matter on final `placedAt.index`
+  const { children } = overlappedContainer;
+  const draggerItemIndex = children.findIndex(dragger);
+  const moveAfter = draggerItemIndex < rawIndex;
 
-  const { dimension, id } = dragger;
-
-  // dragger is moving overlapped on itself
-  if (id === placedDragger.id) {
-  } else {
-    const { orientation } = overlappedContainer;
-    const axis = orientationToAxis[orientation];
-    const [minProperty] = axisMeasure[axis];
-    const moveAfter =
-      dragger.dimension[minProperty] < placedDragger.dimension[minProperty];
-  }
+  placedAt.operation = operation["REORDER"];
+  placedAt.index = moveAfter ? rawIndex - 1 : rawIndex;
+  ctx.placedAt = placedAt;
+  actions.next();
 };

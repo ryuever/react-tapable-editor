@@ -20,11 +20,11 @@ export default ({ event }, ctx, actions) => {
   const { orientation, children } = overlappingContainer;
 
   const axis = orientationToAxis[orientation];
-  const len = children.length;
+  const len = children.getSize();
   const clientValue = event[axisClientMeasure[axis]];
 
   for (let i = 0; i < len; i++) {
-    const child = children[i];
+    const child = children.getItem(i);
     const [min, max] = axisMeasure[axis];
     const { [min]: minValue, [max]: minValue } = child.dimension;
 
