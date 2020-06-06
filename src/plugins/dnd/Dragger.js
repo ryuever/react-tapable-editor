@@ -6,6 +6,7 @@ class Dragger {
     this.el = el;
     this._teardown = null;
     this.id = draggerKeyExtractor();
+    this.dimension = {};
   }
 
   teardown() {

@@ -14,6 +14,10 @@ import attemptToCreateClone from "./middleware/onStart/attemptToCreateClone";
 
 import shouldAcceptDragger from "./middleware/onMove/shouldAcceptDragger";
 import syncCopyPosition from "./middleware/onMove/syncCopyPosition";
+import movingOnHomeContainer from "./middleware/onMove/movingOnHomeContainer";
+import resolvePlacedInfo from "./middleware/onMove/resolvePlacedInfo";
+
+import resolveRawPlacedInfo from "./middleware/shared/resolveRawPlacedInfo";
 import resolveOverlappingContainer from "./middleware/shared/resolveOverlappedContainer";
 
 class DND {
@@ -49,23 +53,27 @@ class DND {
     this.onStartHandler.use(
       getDimensions,
       validateContainers,
-      attemptToCreateClone
+      attemptToCreateClone,
+      resolveRawPlacedInfo
     );
     this.onMoveHandler.use(
       syncCopyPosition,
       resolveOverlappingContainer,
-      shouldAcceptDragger
+      shouldAcceptDragger,
+      movingOnHomeContainer,
+      resolveRawPlacedInfo,
+      resolvePlacedInfo
     );
   }
 
   startListen() {
     bindEvents(window, {
       eventName: "mousedown",
-      fn: e => {
-        const dragger = findClosestDraggerFromEvent(e);
+      fn: event => {
+        const dragger = findClosestDraggerFromEvent(event);
         if (dragger === -1) return;
 
-        this.onStartHandler.start({ dragger });
+        this.onStartHandler.start({ dragger, event });
         const { clone } = this.extra;
 
         // If dragger exists, then start to bind relative listener
