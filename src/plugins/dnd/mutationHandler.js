@@ -1,6 +1,6 @@
 import { matchesDragger, matchesContainer } from "./dom";
 
-const DEBUG = true;
+const DEBUG = false;
 
 export default ctx => mutationList => {
   const containers = ctx.containers;
@@ -19,6 +19,7 @@ export default ctx => mutationList => {
           DEBUG && console.log("add container ", node);
         }
 
+        // A container could be a dragger
         const matchedDragger = matchesDragger(node, configs);
         if (matchedDragger !== -1) {
           ctx.handleDraggerElement(node);

@@ -15,7 +15,9 @@ body {
   width: 100%;
   height: 100%;
   position: relative;
-  font-family: Helvetica Neue,-apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,Roboto,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,Myriad Pro,Hiragino Sans,Yu Gothic,Lucida Grande,sans-serif;
+  font-family: Helvetica Neue, -apple-system, BlinkMacSystemFont, Segoe UI,
+    PingFang SC, Roboto, Microsoft YaHei, Source Han Sans SC, Noto Sans CJK SC,
+    Myriad Pro, Hiragino Sans, Yu Gothic, Lucida Grande, sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -36,7 +38,7 @@ body {
 .miuffy-editor .article-title,
 .miuffy-editor div[data-contents="true"] > div
 /* .miuffy-editor div[data-contents="true"] > figure */
-{
+ {
   width: 900px;
   max-width: 100%;
   margin-left: auto;
@@ -47,6 +49,7 @@ div[data-contents="true"] {
   /* display: flex;
   flex-direction: column;
   align-items: center; */
+  padding: 5px;
 }
 
 .miuffy-paragraph {

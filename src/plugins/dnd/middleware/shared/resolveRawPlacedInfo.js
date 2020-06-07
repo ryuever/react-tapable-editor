@@ -26,9 +26,9 @@ export default ({ event }, ctx, actions) => {
   for (let i = 0; i < len; i++) {
     const child = children.getItem(i);
     const [min, max] = axisMeasure[axis];
-    const { [min]: minValue, [max]: minValue } = child.dimension;
+    const { [min]: minValue, [max]: maxValue } = child.dimension;
 
-    if (!isClamped(clientValue, minValue, minValue)) break;
+    if (!isClamped(clientValue, minValue, maxValue)) break;
     placedAtRaw = {
       index: i,
       dragger: child,

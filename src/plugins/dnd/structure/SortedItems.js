@@ -31,3 +31,5 @@ class SortedItems {
     return this.items.slice.apply(null, args);
   }
 }
+
+export default SortedItems;

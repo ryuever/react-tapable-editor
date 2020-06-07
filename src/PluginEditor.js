@@ -66,7 +66,7 @@ const defaultPlugins = [
 
   // new CreateNestBlockPlugin(),
 
-  new DragPlugin(),
+  // new DragPlugin(),
 
   // TODO: will cause text missing...
   new SidebarPlugin(),

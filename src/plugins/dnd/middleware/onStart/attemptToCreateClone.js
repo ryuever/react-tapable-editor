@@ -3,7 +3,8 @@
  */
 
 export default ({ dragger }, ctx, actions) => {
-  ctx.extra.clone = dragger.cloneNode(true);
+  const { el } = dragger;
+  ctx.extra.clone = el.cloneNode(true);
   document.body.appendChild(ctx.extra.clone);
 
   actions.next();

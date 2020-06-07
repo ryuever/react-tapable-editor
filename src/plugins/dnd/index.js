@@ -2,8 +2,8 @@ import Sabar from "sabar";
 import Container from "./Container";
 import Dragger from "./Dragger";
 import { isElement } from "./dom";
-import { findClosestContainer, findClosestDraggerFromEvent } from "./find";
-import defaultConfig from "./defaultConfig";
+import { findClosestContainer } from "./find";
+import resolveConfig from "./resolveConfig";
 import { setContainerAttributes, setDraggerAttributes } from "./setAttributes";
 import mutationHandler from "./mutationHandler";
 
@@ -11,19 +11,18 @@ import getDimensions from "./middleware/onStart/getDimensions";
 import validateContainers from "./middleware/onStart/validateContainers";
 import attemptToCreateClone from "./middleware/onStart/attemptToCreateClone";
 
-import shouldAcceptDragger from "./middleware/onMove/shouldAcceptDragger";
 import syncCopyPosition from "./middleware/onMove/syncCopyPosition";
 import movingOnHomeContainer from "./middleware/onMove/movingOnHomeContainer";
 import resolvePlacedInfo from "./middleware/onMove/resolvePlacedInfo";
 
 import resolveRawPlacedInfo from "./middleware/shared/resolveRawPlacedInfo";
-import resolveOverlappingContainer from "./middleware/shared/resolveOverlappedContainer";
+import getDropTarget from "./middleware/shared/getDropTarget";
 import { SyncHook } from "tapable";
 
-import MouseSensor from "./sensor/mouse";
+import MouseSensor from "./sensors/mouse";
 
 class DND {
-  constructor({ configs = [], rootElement }) {
+  constructor({ configs = [], rootElement, ...rest }) {
     this.containers = {};
     this.draggers = {};
     this.extra = {};
@@ -34,10 +33,7 @@ class DND {
       draggerEffects: []
     };
 
-    this.configs = configs.map(config => ({
-      ...defaultConfig,
-      ...config
-    }));
+    this.configs = resolveConfig(configs, rest);
 
     this.containerEffects = [];
     this.draggerEffects = [];
@@ -49,7 +45,6 @@ class DND {
 
     this.startObserve();
     this.setUp();
-    this.initSensor();
 
     this.onStartHandler = new Sabar({
       ctx: {
@@ -72,33 +67,54 @@ class DND {
     this.onStartHandler.use(
       getDimensions,
       validateContainers,
-      attemptToCreateClone,
-      resolveRawPlacedInfo
+      resolveRawPlacedInfo,
+      attemptToCreateClone
     );
     this.onMoveHandler.use(
       syncCopyPosition,
-      resolveOverlappingContainer,
-      shouldAcceptDragger,
-      movingOnHomeContainer,
-      resolveRawPlacedInfo,
-      resolvePlacedInfo
+      getDropTarget
+      // movingOnHomeContainer,
+      // resolveRawPlacedInfo,
+      // resolvePlacedInfo
     );
 
     this.hooks.syncEffects.tap("syncEffects", ({ effects }) => {
       this.effects = effects;
     });
+
+    this.initSensor();
   }
 
-  moveAPI() {
+  moveAPI = () => {
     return {
       effects: this.effects
     };
-  }
+  };
+
+  getClone = () => {
+    return this.extra.clone;
+  };
 
   initSensor() {
-    this.sensor = new MouseSensor({ moveAPI: this.moveAPI.bind(this) });
+    this.sensor = new MouseSensor({
+      moveAPI: this.moveAPI,
+      getClone: this.getClone,
+      onStartHandler: this.onStartHandler,
+      onMoveHandler: this.onMoveHandler,
+      getDragger: this.getDragger,
+      getContainer: this.getContainer,
+      configs: this.configs
+    });
     this.sensor.start();
   }
+
+  getDragger = draggerId => {
+    return this.draggers[draggerId];
+  };
+
+  getContainer = containerId => {
+    return this.containers[containerId];
+  };
 
   startObserve() {
     let rootElement = this.rootElement;
@@ -140,6 +156,7 @@ class DND {
     const container = new Container({
       el,
       containers: this.containers,
+      containerConfig: config,
       dndConfig
     });
     setContainerAttributes(container, config);

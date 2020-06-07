@@ -3,7 +3,7 @@ import SortedItems from "./structure/SortedItems";
 import { orientationToAxis, axisMeasure } from "./utils";
 
 class Container {
-  constructor({ el, containers, dndConfig }) {
+  constructor({ el, containers, dndConfig, containerConfig }) {
     this.el = el;
     this.id = containerKeyExtractor();
     this.containers = containers;
@@ -11,13 +11,14 @@ class Container {
       sorter: this.sorter.bind(this)
     });
     this.dndConfig = dndConfig;
+    this.containerConfig = containerConfig;
 
     this.containers[this.id] = this;
     this.dimension = {};
   }
 
   sorter(a, b) {
-    const { orientation } = this.dndConfig;
+    const { orientation } = this.containerConfig;
     const axis = orientationToAxis[orientation];
     const [minProperty] = axisMeasure[axis];
     return a.dimension[minProperty] < b.dimension[minProperty];

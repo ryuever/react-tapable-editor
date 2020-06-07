@@ -1,22 +1,4 @@
-const contains = (a, b) => {
-  const { top: aTop, right: aRight, bottom: aBottom, left: aLeft } = a;
-
-  const { top: bTop, right: bRight, bottom: bBottom, left: bLeft } = b;
-
-  return aTop < bTop && aRight > bRight && aBottom > bBottom && aLeft < bLeft;
-};
-
-// https://stackoverflow.com/questions/2752349/fast-rectangle-to-rectangle-intersection
-// https://stackoverflow.com/questions/16005136/how-do-i-see-if-two-rectangles-intersect-in-javascript-or-pseudocode/29614525
-// https://codereview.stackexchange.com/questions/185323/find-the-intersect-area-of-two-overlapping-rectangles
-const intersect = (a, b) => {
-  return (
-    a.left <= b.right &&
-    a.right >= b.left &&
-    a.top <= b.bottom &&
-    a.bottom >= b.top
-  );
-};
+import { intersect, coincide, contains } from "../../dom";
 
 /**
  * 1. Container should be enclosed by other container entirely.
@@ -31,10 +13,14 @@ export default (_, ctx, actions) => {
   const len = keys.length;
 
   for (let i = 0; i < len; i++) {
+    const containerA = containers[keys[i]];
     for (let j = i + 1; j < len; j++) {
-      const a = containers[i];
-      const b = containers[j];
-      if (intersect(a, b)) {
+      const containerB = containers[keys[j]];
+      const a = containerA.dimension.rect;
+      const b = containerB.dimension.rect;
+
+      // To ensure there are spaces between containers.
+      if (intersect(a, b) && !coincide(a, b) && !contains(a, b)) {
         throw new Error("The interaction of containers is forbidden");
       }
     }

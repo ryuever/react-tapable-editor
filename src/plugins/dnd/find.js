@@ -48,20 +48,25 @@ export const findClosestContainer = (containers, el) => {
  * @param {Object} containers
  *
  */
-export const findClosestDroppableContainerFromEvent = (event, containers) => {
+export const findClosestDropTargetFromEvent = (event, containers) => {
   let node = event.target;
   let container;
 
-  while ((container = findClosestContainer(containers, node)) !== -1) {
+  while (
+    (container = findClosestContainer(containers, node)) !== -1 &&
+    node !== document.body
+  ) {
     const { dndConfig } = container;
     if (node.matches(dndConfig.draggerSelector)) return container;
-    else node = container.el;
+    // current node will be resolved if it matches selector...
+    // So we should use its parentNode for next processing..
+    else node = container.el.parentNode;
   }
 
   return -1;
 };
 
-export const findClosestDraggerFromEvent = event => {
+export const findClosestDraggerElementFromEvent = event => {
   const target = event.target;
   const dragger = closest(target, '[data-is-dragger="true"]');
   if (dragger) return dragger;
