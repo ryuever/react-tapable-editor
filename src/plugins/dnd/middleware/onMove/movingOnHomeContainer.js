@@ -2,10 +2,15 @@
  * In order to determine whether dragger is moving on its direct parent container.
  */
 export default ({ dragger }, ctx, actions) => {
-  const { parent } = dragger;
-  const { overlappedContainer } = ctx;
+  const { container } = dragger;
+  const { targetContainer } = ctx;
 
-  ctx.isMovingOnHomeContainer = parent.id === overlappedContainer.id;
+  if (!targetContainer) {
+    actions.next();
+    return;
+  }
+
+  ctx.isMovingOnHomeContainer = container.id === targetContainer.id;
 
   actions.next();
 };

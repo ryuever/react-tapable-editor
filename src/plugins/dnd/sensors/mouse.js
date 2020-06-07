@@ -30,7 +30,7 @@ class Mouse {
         const target = event.target;
         if (!hasDraggerHandlerMatched(target, this.configs)) return;
         // https://stackoverflow.com/a/19164149/2006805 In order to prevent text
-        // selection on move
+        // selection when moving cursor
         event.preventDefault();
         const draggerId = el.getAttribute("data-dragger-id");
         const dragger = this.getDragger(draggerId);

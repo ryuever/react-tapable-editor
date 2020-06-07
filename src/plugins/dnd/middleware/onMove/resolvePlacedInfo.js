@@ -6,6 +6,12 @@ const operation = {
 
 export default ({ dragger }, ctx, actions) => {
   const { isMovingOnHomeContainer, placedAtRaw, overlappedContainer } = ctx;
+
+  if (!placedAtRaw) {
+    actions.next();
+    return;
+  }
+
   const { index: rawIndex } = placedAtRaw;
   const placedAt = {
     index: undefined
@@ -14,6 +20,7 @@ export default ({ dragger }, ctx, actions) => {
   if (!isMovingOnHomeContainer) {
     placedAt.index = rawIndex;
     placedAt.operation = operation["REPLACE"];
+    ctx.placedAt = placedAt;
     actions.next();
     return;
   }

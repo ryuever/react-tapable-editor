@@ -8,6 +8,45 @@ const shouldAcceptDragger = (containerConfig, dragger) => {
   return el.matches(draggerSelector);
 };
 
+const pickClosestContainer = pendingContainers => {
+  const len = pendingContainers.length;
+  if (len <= 1) return pendingContainers[0];
+  const isVerified = Object.create(null);
+
+  for (let i = 0; i < len; i++) {
+    let container = pendingContainers[i];
+    const containerId = container.id;
+    if (typeof isVerified[containerId] !== "undefined") {
+      break;
+    }
+
+    isVerified[containerId] = {
+      used: true,
+      container
+    };
+
+    let parentContainer = container.parentContainer;
+
+    while (parentContainer) {
+      const parentContainerId = parentContainer.id;
+      if (typeof isVerified[parentContainerId] !== "undefined") {
+        parentContainer = null;
+      } else {
+        parentContainer = parentContainer.parentContainer;
+      }
+      isVerified[parentContainerId].used = false;
+    }
+  }
+
+  const remaining = [];
+
+  for (let [key, value] of Object.entries(isVerified)) {
+    if (value.used) remaining.push(value.container);
+  }
+
+  return remaining[0];
+};
+
 const getContainer = ({ event, dragger }, ctx, actions) => {
   const { clientX, clientY } = event;
   const { containers } = ctx;
@@ -27,6 +66,8 @@ const getContainer = ({ event, dragger }, ctx, actions) => {
       pendingContainers.push(container);
     }
   }
+
+  ctx.targetContainer = pickClosestContainer(pendingContainers);
   actions.next();
 };
 

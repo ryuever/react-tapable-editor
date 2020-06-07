@@ -8,17 +8,19 @@ import {
  * According to event target position to find the placed index.
  */
 export default ({ event }, ctx, actions) => {
-  const { overlappingContainer } = ctx;
-  const placedAtRaw = {
+  const { targetContainer } = ctx;
+  let placedAtRaw = {
     rawIndex: undefined
   };
-  if (!overlappingContainer) {
+  if (!targetContainer) {
     actions.next();
     return;
   }
 
-  const { orientation, children } = overlappingContainer;
-
+  const {
+    containerConfig: { orientation },
+    children
+  } = targetContainer;
   const axis = orientationToAxis[orientation];
   const len = children.getSize();
   const clientValue = event[axisClientMeasure[axis]];
@@ -26,7 +28,7 @@ export default ({ event }, ctx, actions) => {
   for (let i = 0; i < len; i++) {
     const child = children.getItem(i);
     const [min, max] = axisMeasure[axis];
-    const { [min]: minValue, [max]: maxValue } = child.dimension;
+    const { [min]: minValue, [max]: maxValue } = child.dimension.rect;
 
     if (!isClamped(clientValue, minValue, maxValue)) break;
     placedAtRaw = {
@@ -39,8 +41,8 @@ export default ({ event }, ctx, actions) => {
     return;
   }
 
-  placedAtRaw = {
-    index: i + i,
+  ctx.placedAtRaw = {
+    index: len,
     dragger: null,
     isLast: true
   };

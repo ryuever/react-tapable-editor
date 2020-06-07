@@ -18,6 +18,7 @@ import resolvePlacedInfo from "./middleware/onMove/resolvePlacedInfo";
 import resolveRawPlacedInfo from "./middleware/shared/resolveRawPlacedInfo";
 import getDropTarget from "./middleware/shared/getContainer";
 import { SyncHook } from "tapable";
+import closest from "./closest";
 
 import MouseSensor from "./sensors/mouse";
 
@@ -72,10 +73,13 @@ class DND {
     );
     this.onMoveHandler.use(
       syncCopyPosition,
-      getDropTarget
-      // movingOnHomeContainer,
-      // resolveRawPlacedInfo,
-      // resolvePlacedInfo
+      getDropTarget,
+      movingOnHomeContainer,
+      resolveRawPlacedInfo,
+      resolvePlacedInfo,
+      (_, ctx) => {
+        console.log("ctx ", ctx);
+      }
     );
 
     this.hooks.syncEffects.tap("syncEffects", ({ effects }) => {
@@ -159,6 +163,12 @@ class DND {
       containerConfig: config,
       dndConfig
     });
+    const parentContainerNode = closest(el, '[data-is-container="true"]');
+    if (parentContainerNode) {
+      const containerId = parentContainerNode.getAttribute("data-container-id");
+      const parentContainer = this.containers[containerId];
+      container.parentContainer = parentContainer;
+    }
     setContainerAttributes(container, config);
   }
 
