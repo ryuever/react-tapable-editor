@@ -16,7 +16,7 @@ import movingOnHomeContainer from "./middleware/onMove/movingOnHomeContainer";
 import resolvePlacedInfo from "./middleware/onMove/resolvePlacedInfo";
 
 import resolveRawPlacedInfo from "./middleware/shared/resolveRawPlacedInfo";
-import getDropTarget from "./middleware/shared/getDropTarget";
+import getDropTarget from "./middleware/shared/getContainer";
 import { SyncHook } from "tapable";
 
 import MouseSensor from "./sensors/mouse";

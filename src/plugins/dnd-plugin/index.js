@@ -16,7 +16,13 @@ function DNDPlugin() {
           {
             orientation: "horizontal",
             containerSelector: ".miuffy-paragraph",
-            draggerSelector: ".miuffy-paragraph >div:first-child"
+            draggerSelector: ".miuffy-paragraph >div:first-child",
+            shouldAcceptDragger: el => {
+              return (
+                el.matches(".miuffy-paragraph") ||
+                el.matches(".miuffy-paragraph >div:first-child")
+              );
+            }
           }
         ]
       });

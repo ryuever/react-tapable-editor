@@ -7,7 +7,8 @@ const reservedKeys = [
   "orientation",
   "draggerHandlerSelector",
   "containerSelector",
-  "draggerSelector"
+  "draggerSelector",
+  "shouldAcceptDragger"
 ];
 
 export default (configs, globalConfigs) => {

@@ -1,18 +1,14 @@
 const shouldAcceptDragger = (containerConfig, dragger) => {
   const { draggerSelector, shouldAcceptDragger } = containerConfig;
-
-  if (dragger.el.matches(draggerSelector)) {
-    if (typeof shouldAcceptDragger === "function") {
-      return shouldAcceptDragger();
-    } else {
-      return true;
-    }
-  } else {
-    return false;
+  const { el } = dragger;
+  if (typeof shouldAcceptDragger === "function") {
+    return shouldAcceptDragger(el);
   }
+
+  return el.matches(draggerSelector);
 };
 
-const getDropTarget = ({ event, dragger }, ctx, actions) => {
+const getContainer = ({ event, dragger }, ctx, actions) => {
   const { clientX, clientY } = event;
   const { containers } = ctx;
   const keys = Object.keys(containers);
@@ -27,13 +23,11 @@ const getDropTarget = ({ event, dragger }, ctx, actions) => {
       containerConfig
     } = container;
     const point = [clientX, clientY];
-
     if (within(point) && shouldAcceptDragger(containerConfig, dragger)) {
       pendingContainers.push(container);
     }
   }
-
   actions.next();
 };
 
-export default getDropTarget;
+export default getContainer;
