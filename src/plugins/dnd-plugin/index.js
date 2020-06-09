@@ -1,4 +1,5 @@
 import DND from "../dnd";
+const noop = () => {};
 
 function DNDPlugin() {
   this.apply = getEditor => {
@@ -8,6 +9,8 @@ function DNDPlugin() {
       new DND({
         rootElement: ".DraftEditor-root",
         draggerHandlerSelector: ".sidebar-addon-visible",
+        containerEffect: () => noop,
+        draggerEffect: () => noop,
         configs: [
           {
             containerSelector: '[data-contents="true"]',

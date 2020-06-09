@@ -28,7 +28,7 @@ class SortedItems {
   }
 
   slice(...args) {
-    return this.items.slice.apply(null, args);
+    return [].slice.apply(this.items, args);
   }
 }
 

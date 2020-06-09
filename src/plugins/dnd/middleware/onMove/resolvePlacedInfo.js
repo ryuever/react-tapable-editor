@@ -5,7 +5,7 @@ const operation = {
 };
 
 export default ({ dragger }, ctx, actions) => {
-  const { isMovingOnHomeContainer, placedAtRaw, overlappedContainer } = ctx;
+  const { isMovingOnHomeContainer, placedAtRaw, targetContainer } = ctx;
 
   if (!placedAtRaw) {
     actions.next();
@@ -27,7 +27,7 @@ export default ({ dragger }, ctx, actions) => {
 
   // when `isMovingOnHomeContainer` is true, the relative position of dragger and dropped place
   // will matter on final `placedAt.index`
-  const { children } = overlappedContainer;
+  const { children } = targetContainer;
   const draggerItemIndex = children.findIndex(dragger);
   const moveAfter = draggerItemIndex < rawIndex;
 

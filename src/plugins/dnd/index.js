@@ -14,6 +14,7 @@ import attemptToCreateClone from "./middleware/onStart/attemptToCreateClone";
 import syncCopyPosition from "./middleware/onMove/syncCopyPosition";
 import movingOnHomeContainer from "./middleware/onMove/movingOnHomeContainer";
 import resolvePlacedInfo from "./middleware/onMove/resolvePlacedInfo";
+import updateEffects from "./middleware/onMove/updateEffects";
 
 import resolveRawPlacedInfo from "./middleware/shared/resolveRawPlacedInfo";
 import getDropTarget from "./middleware/shared/getContainer";
@@ -28,7 +29,7 @@ class DND {
     this.draggers = {};
     this.extra = {};
     this.effects = {
-      container: [],
+      containers: [],
       draggers: [],
       containerEffects: [],
       draggerEffects: []
@@ -40,7 +41,7 @@ class DND {
     this.draggerEffects = [];
 
     this.hooks = {
-      syncEffects: new SyncHook("values")
+      syncEffects: new SyncHook(["values"])
     };
     this.rootElement = rootElement;
 
@@ -77,13 +78,14 @@ class DND {
       movingOnHomeContainer,
       resolveRawPlacedInfo,
       resolvePlacedInfo,
+      updateEffects,
       (_, ctx) => {
         console.log("ctx ", ctx);
       }
     );
 
-    this.hooks.syncEffects.tap("syncEffects", ({ effects }) => {
-      this.effects = effects;
+    this.hooks.syncEffects.tap("syncEffects", values => {
+      this.effects = values.effects;
     });
 
     this.initSensor();
@@ -91,7 +93,7 @@ class DND {
 
   moveAPI = () => {
     return {
-      effects: this.effects
+      prevEffects: this.effects
     };
   };
 

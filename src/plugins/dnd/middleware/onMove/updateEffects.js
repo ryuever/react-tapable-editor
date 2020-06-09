@@ -43,17 +43,33 @@ const diff = (a, b) => {
 };
 
 export default ({ prevEffects }, ctx, actions) => {
-  const { placedAt, overlappedContainer, hooks } = ctx;
+  const { placedAt, targetContainer, hooks } = ctx;
+
+  if (!targetContainer) {
+    actions.next();
+    return;
+  }
+
+  // Do not have position to place. If there are pending effects, then do these first.
+  if (!placedAt) {
+    // do pending effects
+    actions.next();
+    return;
+  }
+
   const { index } = placedAt;
-  const { children } = overlappedContainer;
-
+  const { children } = targetContainer;
   const nextDraggers = children.slice(index);
-  const nextContainer = overlappedContainer;
-
-  const { draggers, container, containerEffects, draggerEffects } = prevEffects;
+  const nextContainer = [].concat(targetContainer);
+  const {
+    draggers,
+    containers,
+    containerEffects,
+    draggerEffects
+  } = prevEffects;
 
   const { actions: diffContainer, remaining: remainingContainer } = diff(
-    container,
+    containers,
     nextContainer
   );
   const { actions: diffDraggers, remaining: remainingDraggers } = diff(
@@ -76,7 +92,7 @@ export default ({ prevEffects }, ctx, actions) => {
 
     if (operation === "remove") {
       const index = containerEffects.findIndex(
-        ({ container }) => container.id === itemId
+        ({ containers }) => containers.id === itemId
       );
       if (index !== -1)
         pendingCleanupContainerEffects.push(
@@ -111,14 +127,21 @@ export default ({ prevEffects }, ctx, actions) => {
   pendingCleanupDraggerEffects.forEach(({ teardown }) => teardown());
 
   const newContainerEffects = pendingContainerEffects.map(item => {
+    const {
+      containerConfig: { containerEffect }
+    } = targetContainer;
+
     const teardown = containerEffect(item.el);
     return {
-      container: item,
+      containers: item,
       teardown
     };
   });
 
   const newDraggerEffects = pendingDraggerEffects.map(item => {
+    const {
+      containerConfig: { draggerEffect }
+    } = targetContainer;
     const teardown = draggerEffect(item.el);
     return {
       dragger: item,
@@ -130,7 +153,7 @@ export default ({ prevEffects }, ctx, actions) => {
     effects: {
       containerEffects: [...containerEffects, ...newContainerEffects],
       draggerEffects: [...draggerEffects, ...newDraggerEffects],
-      container: remainingContainer,
+      containers: remainingContainer,
       draggers: remainingDraggers
     }
   });
