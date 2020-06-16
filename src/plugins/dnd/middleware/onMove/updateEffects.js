@@ -2,6 +2,7 @@
  * Effects is used to update the style of element. However, when its the time to
  * remove effects should be reconsidered.
  */
+import reporter from "../../reporter";
 
 const diff = (a, b) => {
   const copyA = a.slice();
@@ -92,7 +93,7 @@ export default ({ prevEffects }, ctx, actions) => {
 
     if (operation === "remove") {
       const index = containerEffects.findIndex(
-        ({ containers }) => containers.id === itemId
+        ({ container }) => container.id === itemId
       );
       if (index !== -1)
         pendingCleanupContainerEffects.push(
@@ -123,8 +124,14 @@ export default ({ prevEffects }, ctx, actions) => {
     }
   }
 
-  pendingCleanupContainerEffects.forEach(({ teardown }) => teardown());
-  pendingCleanupDraggerEffects.forEach(({ teardown }) => teardown());
+  pendingCleanupContainerEffects.forEach(({ teardown, container }) => {
+    reporter.logRemoveEffect(container);
+    teardown();
+  });
+  pendingCleanupDraggerEffects.forEach(({ teardown, dragger }) => {
+    reporter.logRemoveEffect(dragger);
+    teardown();
+  });
 
   const newContainerEffects = pendingContainerEffects.map(item => {
     const {
@@ -132,8 +139,11 @@ export default ({ prevEffects }, ctx, actions) => {
     } = targetContainer;
 
     const teardown = containerEffect(item.el);
+
+    reporter.logAddEffect(item);
+
     return {
-      containers: item,
+      container: item,
       teardown
     };
   });
@@ -143,6 +153,7 @@ export default ({ prevEffects }, ctx, actions) => {
       containerConfig: { draggerEffect }
     } = targetContainer;
     const teardown = draggerEffect(item.el);
+    reporter.logAddEffect(item);
     return {
       dragger: item,
       teardown

@@ -17,7 +17,7 @@ export default (configs, globalConfigs) => {
   return configs.map(config => {
     const next = {
       ...globalConfigs,
-      defaultConfig,
+      ...defaultConfig,
       ...config
     };
     const o = {};

@@ -28,8 +28,12 @@ export function find(list, predicate) {
   return undefined;
 }
 
-export const findClosestContainer = (containers, el) => {
-  const directParent = closest(el, '[data-is-container="true"]');
+// `closest` will return itself if self matches selector.
+// So, it needs support condition in which self should be excluded.
+export const findClosestContainer = (containers, el, strictMode) => {
+  const node = strictMode ? el.parentNode : el;
+
+  const directParent = closest(node, '[data-is-container="true"]');
   const containerKeys = Object.keys(containers);
   const len = containerKeys.length;
 

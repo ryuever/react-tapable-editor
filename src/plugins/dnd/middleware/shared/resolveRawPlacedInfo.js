@@ -4,6 +4,7 @@ import {
   isClamped,
   axisClientMeasure
 } from "../../utils";
+
 /**
  * According to event target position to find the placed index.
  */

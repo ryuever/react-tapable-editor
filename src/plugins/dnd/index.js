@@ -74,13 +74,15 @@ class DND {
     );
     this.onMoveHandler.use(
       syncCopyPosition,
+
+      // First, find the target container with smallest scope...
       getDropTarget,
       movingOnHomeContainer,
       resolveRawPlacedInfo,
       resolvePlacedInfo,
       updateEffects,
       (_, ctx) => {
-        console.log("ctx ", ctx);
+        // console.log("ctx ", ctx);
       }
     );
 
@@ -196,7 +198,7 @@ class DND {
    *
    */
   handleDraggerElement(el) {
-    const container = findClosestContainer(this.containers, el);
+    const container = findClosestContainer(this.containers, el, true);
     if (container === -1) return;
     const dragger = new Dragger({ el, container });
     container.addDirectChild(dragger);
