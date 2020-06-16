@@ -14,7 +14,13 @@ function DNDPlugin() {
         configs: [
           {
             containerSelector: '[data-contents="true"]',
-            draggerSelector: ".miuffy-paragraph"
+            draggerSelector: ".miuffy-paragraph",
+            containerEffect: el => {
+              el.style.backgroundColor = "red";
+              return () => {
+                el.style.backgroundColor = "transparent";
+              };
+            }
           },
           {
             orientation: "horizontal",
@@ -25,6 +31,18 @@ function DNDPlugin() {
                 el.matches(".miuffy-paragraph") ||
                 el.matches(".miuffy-paragraph >div:first-child")
               );
+            },
+            containerEffect: el => {
+              el.style.backgroundColor = "green";
+              return () => {
+                el.style.backgroundColor = "transparent";
+              };
+            },
+            draggerEffect: el => {
+              el.style.backgroundColor = "yellow";
+              return () => {
+                el.style.backgroundColor = "transparent";
+              };
             }
           }
         ]

@@ -22,6 +22,7 @@ import { SyncHook } from "tapable";
 import closest from "./closest";
 
 import MouseSensor from "./sensors/mouse";
+import reporter from "./reporter";
 
 class DND {
   constructor({ configs = [], rootElement, ...rest }) {
@@ -41,7 +42,8 @@ class DND {
     this.draggerEffects = [];
 
     this.hooks = {
-      syncEffects: new SyncHook(["values"])
+      syncEffects: new SyncHook(["values"]),
+      cleanupEffects: new SyncHook()
     };
     this.rootElement = rootElement;
 
@@ -89,13 +91,25 @@ class DND {
     this.hooks.syncEffects.tap("syncEffects", values => {
       this.effects = values.effects;
     });
+    this.hooks.cleanupEffects.tap("cleanupEffects", () => {
+      const { containerEffects, draggerEffects } = this.effects;
+      containerEffects.forEach(({ container, teardown }) => {
+        reporter.logRemoveEffect(container);
+        teardown();
+      });
+      draggerEffects.forEach(({ dragger, teardown }) => {
+        reporter.logRemoveEffect(dragger);
+        teardown();
+      });
+    });
 
     this.initSensor();
   }
 
   moveAPI = () => {
     return {
-      prevEffects: this.effects
+      prevEffects: this.effects,
+      hooks: this.hooks
     };
   };
 

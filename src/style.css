@@ -59,6 +59,7 @@ div[data-contents="true"] {
   margin: 0;
   letter-spacing: 0.05em;
   position: relative;
+  padding: 5px;
 }
 
 .miuffy-blockquote {

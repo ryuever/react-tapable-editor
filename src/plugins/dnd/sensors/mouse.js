@@ -57,6 +57,8 @@ class Mouse {
             eventName: "mouseup",
             fn: e => {
               unbind();
+              const { hooks } = this.moveAPI();
+              hooks.cleanupEffects.call();
               document.body.removeChild(clone);
             }
           }
