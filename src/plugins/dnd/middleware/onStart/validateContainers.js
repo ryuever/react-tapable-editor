@@ -1,4 +1,4 @@
-import { intersect, coincide, contains } from "../../dom";
+import { intersect, coincide, contains } from "../../collision";
 
 /**
  * 1. Container should be enclosed by other container entirely.

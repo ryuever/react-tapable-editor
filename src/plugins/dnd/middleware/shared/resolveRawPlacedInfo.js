@@ -4,6 +4,7 @@ import {
   isClamped,
   axisClientMeasure
 } from "../../utils";
+import { positionInRect } from "../../collision";
 
 /**
  * According to event target position to find the placed index.
@@ -29,13 +30,15 @@ export default ({ event }, ctx, actions) => {
   for (let i = 0; i < len; i++) {
     const child = children.getItem(i);
     const [min, max] = axisMeasure[axis];
-    const { [min]: minValue, [max]: maxValue } = child.dimension.rect;
+    const rect = child.dimension.rect;
+    const { [min]: minValue, [max]: maxValue } = rect;
 
     if (!isClamped(clientValue, minValue, maxValue)) break;
     placedAtRaw = {
       index: i,
       dragger: child,
-      isLast: false
+      isLast: false,
+      position: positionInRect([event.clientX, event.clientY], rect)
     };
     ctx.placedAtRaw = placedAtRaw;
     actions.next();
