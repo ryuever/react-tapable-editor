@@ -37,6 +37,28 @@ export const within = (rect, point) => {
   return clamped(clientX, left, right) && clamped(clientY, top, bottom);
 };
 
+export const pointInRectWithOrientation = (
+  point,
+  rect,
+  orientation = "vertical"
+) => {
+  const { top, right, bottom, left } = rect;
+
+  if (orientation === "vertical") {
+    const topPart = { top, right, bottom: top + (bottom - top) / 2, left };
+    const bottomPart = { top: top + (bottom - top) / 2, right, bottom, left };
+
+    if (within(topPart, point)) return "top";
+    else if (within(bottomPart, point)) return "bottom";
+  } else {
+    const leftPart = { top, right: left + (right - left) / 2, bottom, left };
+    const rightPart = { top, right, bottom, left: left + (right - left) / 2 };
+
+    if (within(leftPart, point)) return "left";
+    else if (within(rightPart, point)) return "right";
+  }
+};
+
 export const pointInCenter = rect => {
   const { top, right, bottom, left } = rect;
 
@@ -46,7 +68,7 @@ export const pointInCenter = rect => {
 // point in polygon https://stackoverflow.com/questions/46634887/javascript-point-in-polygon-performance-improvement
 // Point in triangle: https://blackpawn.com/texts/pointinpoly/default.html
 // https://github.com/mattdesl/point-in-triangle/blob/master/index.js
-// collision detection https://developer.mozilla.org/en-US/docs/Games/Tutorials/2D_Breakout_game_pure_JavaScript/Collision_detection
+// https://developer.mozilla.org/en-US/docs/Games/Tutorials/2D_Breakout_game_pure_JavaScript/Collision_detection
 
 export const positionInRect = (point, rect) => {
   const { top, right, bottom, left } = rect;
@@ -78,10 +100,10 @@ export const positionInRect = (point, rect) => {
   }
 };
 
-//http://www.blackpawn.com/texts/pointinpoly/
+// http://www.blackpawn.com/texts/pointinpoly/
 const pointInTriangle = (point, triangle) => {
-  //compute vectors & dot products
-  var cx = point[0],
+  // compute vectors & dot products
+  const cx = point[0],
     cy = point[1],
     t0 = triangle[0],
     t1 = triangle[1],
@@ -99,7 +121,7 @@ const pointInTriangle = (point, triangle) => {
     dot12 = v1x * v2x + v1y * v2y;
 
   // Compute barycentric coordinates
-  var b = dot00 * dot11 - dot01 * dot01,
+  const b = dot00 * dot11 - dot01 * dot01,
     inv = b === 0 ? 0 : 1 / b,
     u = (dot11 * dot02 - dot01 * dot12) * inv,
     v = (dot00 * dot12 - dot01 * dot02) * inv;

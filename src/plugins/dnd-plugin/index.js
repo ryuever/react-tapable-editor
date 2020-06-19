@@ -15,10 +15,15 @@ function DNDPlugin() {
           {
             containerSelector: '[data-contents="true"]',
             draggerSelector: ".miuffy-paragraph",
-            containerEffect: el => {
-              el.style.backgroundColor = "red";
+            containerEffect: (el, draggerElement) => {
+              const draggerRect = draggerElement.getBoundingClientRect();
+              const { height } = draggerRect;
+              el.style.transformY = height;
+              // el.classList.add('')
+              // el.style.backgroundColor = "red";
               return () => {
-                el.style.backgroundColor = "transparent";
+                el.style.transformY = 0;
+                // el.style.backgroundColor = "transparent";
               };
             }
           },
@@ -38,10 +43,20 @@ function DNDPlugin() {
                 el.style.backgroundColor = "transparent";
               };
             },
-            draggerEffect: el => {
-              el.style.backgroundColor = "yellow";
+            draggerEffect: (el, draggerElement) => {
+              const draggerRect = draggerElement.getBoundingClientRect();
+              const targetRect = el.getBoundingClientRect();
+              const { width } = draggerRect;
+              el.style.transform = `translateX(${width / 2}px)`;
+              el.style.height = `${targetRect.height * 2}px`;
+              el.style.width = `${targetRect.width / 2}px`;
+              el.style.transition = "all 0.5s ease-in";
+
               return () => {
-                el.style.backgroundColor = "transparent";
+                el.style.transform = `translateX(0px)`;
+                el.style.height = `${targetRect.height}px`;
+                el.style.width = `${targetRect.width}px`;
+                el.style.transition = "all 0.5s ease-in";
               };
             }
           }

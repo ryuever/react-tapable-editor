@@ -34,11 +34,17 @@ export default ({ event }, ctx, actions) => {
     const { [min]: minValue, [max]: maxValue } = rect;
 
     if (!isClamped(clientValue, minValue, maxValue)) break;
+    const position = positionInRect(
+      [event.clientX, event.clientY],
+      rect,
+      orientation
+    );
+
     placedAtRaw = {
       index: i,
       dragger: child,
       isLast: false,
-      position: positionInRect([event.clientX, event.clientY], rect)
+      position
     };
     ctx.placedAtRaw = placedAtRaw;
     actions.next();

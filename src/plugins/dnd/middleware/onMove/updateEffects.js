@@ -43,7 +43,7 @@ const diff = (a, b) => {
   };
 };
 
-export default ({ prevEffects }, ctx, actions) => {
+export default ({ prevEffects, dragger }, ctx, actions) => {
   const { placedAt, targetContainer, hooks } = ctx;
 
   if (!targetContainer) {
@@ -138,7 +138,7 @@ export default ({ prevEffects }, ctx, actions) => {
       containerConfig: { containerEffect }
     } = targetContainer;
 
-    const teardown = containerEffect(item.el);
+    const teardown = containerEffect(item.el, dragger.el);
 
     reporter.logAddEffect(item);
 
@@ -152,7 +152,7 @@ export default ({ prevEffects }, ctx, actions) => {
     const {
       containerConfig: { draggerEffect }
     } = targetContainer;
-    const teardown = draggerEffect(item.el);
+    const teardown = draggerEffect(item.el, dragger.el);
     reporter.logAddEffect(item);
     return {
       dragger: item,
