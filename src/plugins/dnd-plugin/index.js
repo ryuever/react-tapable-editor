@@ -16,14 +16,21 @@ function DNDPlugin() {
             containerSelector: '[data-contents="true"]',
             draggerSelector: ".miuffy-paragraph",
             containerEffect: (el, draggerElement) => {
+              el.style.backgroundColor = "red";
+              return () => {
+                el.style.backgroundColor = "transparent";
+              };
+            },
+            draggerEffect: (el, draggerElement) => {
+              el.style.backgroundColor = "yellow";
               const draggerRect = draggerElement.getBoundingClientRect();
               const { height } = draggerRect;
-              el.style.transformY = height;
-              // el.classList.add('')
-              // el.style.backgroundColor = "red";
+              el.style.transform = `translateY(${height}px)`;
+              el.style.transition = "all 0.5s ease-in";
               return () => {
-                el.style.transformY = 0;
-                // el.style.backgroundColor = "transparent";
+                el.style.backgroundColor = "transparent";
+                el.style.transform = `translateY(0px)`;
+                el.style.transition = "all 0.5s ease-in";
               };
             }
           },

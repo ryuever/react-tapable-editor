@@ -7,6 +7,11 @@ const operation = {
 export default ({ dragger }, ctx, actions) => {
   const { isMovingOnHomeContainer, placedAtRaw, targetContainer } = ctx;
 
+  if (!targetContainer) {
+    actions.abort();
+    return;
+  }
+
   if (!placedAtRaw) {
     actions.next();
     return;
@@ -34,5 +39,6 @@ export default ({ dragger }, ctx, actions) => {
   placedAt.operation = operation["REORDER"];
   placedAt.index = moveAfter ? rawIndex - 1 : rawIndex;
   ctx.placedAt = placedAt;
+
   actions.next();
 };

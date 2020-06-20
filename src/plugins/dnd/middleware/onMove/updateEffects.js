@@ -60,7 +60,10 @@ export default ({ prevEffects, dragger }, ctx, actions) => {
 
   const { index } = placedAt;
   const { children } = targetContainer;
+
+  // Items behind index should be reconsidered.
   const nextDraggers = children.slice(index);
+
   const nextContainer = [].concat(targetContainer);
   const {
     draggers,

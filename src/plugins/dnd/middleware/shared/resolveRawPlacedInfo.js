@@ -32,8 +32,8 @@ export default ({ event }, ctx, actions) => {
     const [min, max] = axisMeasure[axis];
     const rect = child.dimension.rect;
     const { [min]: minValue, [max]: maxValue } = rect;
+    if (!isClamped(clientValue, minValue, maxValue)) continue;
 
-    if (!isClamped(clientValue, minValue, maxValue)) break;
     const position = positionInRect(
       [event.clientX, event.clientY],
       rect,
