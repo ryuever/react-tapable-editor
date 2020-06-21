@@ -12,7 +12,7 @@ export default ({ dragger }, ctx, actions) => {
   ctx.extra.clone.style.width = width;
   ctx.extra.clone.style.height = height;
   ctx.extra.clone.style.zIndex = 1;
-  ctx.extra.clone.style.backgroundColor = "#eee";
+  ctx.extra.clone.style.backgroundColor = "transparent";
 
   document.body.appendChild(ctx.extra.clone);
   const styles = document.defaultView.getComputedStyle(el);

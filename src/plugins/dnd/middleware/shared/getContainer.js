@@ -49,7 +49,8 @@ const pickClosestContainer = pendingContainers => {
 
 const getContainer = ({ event, dragger }, ctx, actions) => {
   const { clientX, clientY } = event;
-  const { containers } = ctx;
+  const { containers, dndConfig } = ctx;
+  const { mode } = dndConfig;
   const keys = Object.keys(containers);
   const len = keys.length;
   const pendingContainers = [];
@@ -67,7 +68,17 @@ const getContainer = ({ event, dragger }, ctx, actions) => {
     }
   }
 
-  ctx.targetContainer = pickClosestContainer(pendingContainers);
+  let nextContainer = pendingContainers;
+
+  // in `nested` mode, `horizontal` container is not considered
+  if (mode === "nested") {
+    nextContainer = pendingContainers.filter(container => {
+      const { orientation } = container.containerConfig;
+      return orientation === "vertical";
+    });
+  }
+
+  ctx.targetContainer = pickClosestContainer(nextContainer);
   actions.next();
 };
 

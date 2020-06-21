@@ -8,6 +8,7 @@ function DNDPlugin() {
       const { editorRef } = getEditor();
       new DND({
         rootElement: ".DraftEditor-root",
+        mode: "nested",
         draggerHandlerSelector: ".sidebar-addon-visible",
         containerEffect: () => noop,
         draggerEffect: () => noop,
@@ -26,11 +27,10 @@ function DNDPlugin() {
               const draggerRect = draggerElement.getBoundingClientRect();
               const { height } = draggerRect;
               el.style.transform = `translateY(${height}px)`;
-              el.style.transition = "all 0.5s ease-in";
+              el.style.transition = "transform 0.25s ease-in";
               return () => {
                 el.style.backgroundColor = "transparent";
                 el.style.transform = `translateY(0px)`;
-                el.style.transition = "all 0.5s ease-in";
               };
             }
           },
@@ -57,13 +57,15 @@ function DNDPlugin() {
               el.style.transform = `translateX(${width / 2}px)`;
               el.style.height = `${targetRect.height * 2}px`;
               el.style.width = `${targetRect.width / 2}px`;
-              el.style.transition = "all 0.5s ease-in";
+              el.style.transition =
+                "height 0.25s ease-in, width 0.25 ease-in, transform 0.25 ease-in";
 
               return () => {
                 el.style.transform = `translateX(0px)`;
                 el.style.height = `${targetRect.height}px`;
                 el.style.width = `${targetRect.width}px`;
-                el.style.transition = "all 0.5s ease-in";
+                el.style.transition =
+                  "height 0.25s ease-in, width 0.25 ease-in, transform 0.25 ease-in";
               };
             }
           }

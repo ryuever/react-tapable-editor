@@ -27,6 +27,8 @@ export default ({ event }, ctx, actions) => {
   const len = children.getSize();
   const clientValue = event[axisClientMeasure[axis]];
 
+  // TODO: start from index 0 is not a goods solution, which may cause
+  // performance issue. Binary search or interval tree could be a better choice
   for (let i = 0; i < len; i++) {
     const child = children.getItem(i);
     const [min, max] = axisMeasure[axis];

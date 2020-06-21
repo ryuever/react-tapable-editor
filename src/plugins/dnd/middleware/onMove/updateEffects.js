@@ -52,11 +52,13 @@ export default ({ prevEffects, dragger }, ctx, actions) => {
   }
 
   // Do not have position to place. If there are pending effects, then do these first.
-  if (!placedAt) {
+  if (!placedAt || !placedAt.index) {
     // do pending effects
     actions.next();
     return;
   }
+
+  console.log("placedAt ", { ...placedAt });
 
   const { index } = placedAt;
   const { children } = targetContainer;

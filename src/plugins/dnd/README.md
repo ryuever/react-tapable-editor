@@ -25,3 +25,11 @@
 
 // `getDraggablesInsideDroppable` 获取当前放置到的container中的所有dragger对象
 ```
+
+## How does overlapping work
+
+### nested dragging component
+
+1. When moving on dragger element, only vertical dnd should be considered.
+2. If under `nested` mode, moving on candidate dragger element should be locked on `vertical` orientation
+3. Only `candidateDraggers` has `collisionPadding`

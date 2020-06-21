@@ -3,11 +3,13 @@ import Container from "./Container";
 import Dragger from "./Dragger";
 import { isElement } from "./dom";
 import { findClosestContainer } from "./find";
-import resolveConfig from "./resolveConfig";
+import resolveDndConfig from "./configs/resolveDndConfig";
+import resolveConfig from "./configs/resolveConfig";
 import { setContainerAttributes, setDraggerAttributes } from "./setAttributes";
 import mutationHandler from "./mutationHandler";
 
 import getDimensions from "./middleware/onStart/getDimensions";
+import getDimensionsNested from "./middleware/onStart/getDimensionsNested";
 import validateContainers from "./middleware/onStart/validateContainers";
 import attemptToCreateClone from "./middleware/onStart/attemptToCreateClone";
 
@@ -17,6 +19,7 @@ import resolvePlacedInfo from "./middleware/onMove/resolvePlacedInfo";
 import updateEffects from "./middleware/onMove/updateEffects";
 
 import resolveRawPlacedInfo from "./middleware/shared/resolveRawPlacedInfo";
+import resolveNestedRawPlaceInfo from "./middleware/shared/resolveNestedRawPlaceInfo";
 import getDropTarget from "./middleware/shared/getContainer";
 import { SyncHook } from "tapable";
 import closest from "./closest";
@@ -37,6 +40,9 @@ class DND {
     };
 
     this.configs = resolveConfig(configs, rest);
+    this.dndConfig = resolveDndConfig(rest);
+
+    console.log("this dndConfig ", this.dndConfig);
 
     this.containerEffects = [];
     this.draggerEffects = [];
@@ -55,7 +61,8 @@ class DND {
         containers: this.containers,
         draggers: this.draggers,
         extra: this.extra,
-        hooks: this.hooks
+        hooks: this.hooks,
+        dndConfig: this.dndConfig
       }
     });
 
@@ -64,12 +71,14 @@ class DND {
         containers: this.containers,
         draggers: this.draggers,
         effects: this.effects,
-        hooks: this.hooks
+        hooks: this.hooks,
+        dndConfig: this.dndConfig
       }
     });
 
     this.onStartHandler.use(
       getDimensions,
+      getDimensionsNested,
       validateContainers,
       resolveRawPlacedInfo,
       attemptToCreateClone
@@ -80,7 +89,8 @@ class DND {
       // First, find the target container with smallest scope...
       getDropTarget,
       movingOnHomeContainer,
-      resolveRawPlacedInfo,
+      // resolveRawPlacedInfo,
+      resolveNestedRawPlaceInfo,
       resolvePlacedInfo,
       updateEffects,
       (_, ctx) => {
