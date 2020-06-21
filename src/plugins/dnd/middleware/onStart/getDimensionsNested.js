@@ -51,7 +51,6 @@ export default (_, ctx, actions) => {
       secondCollisionRect
     };
   }
-  console.log("ctx ", ctx);
 
   actions.next();
 };

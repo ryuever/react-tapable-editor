@@ -4,6 +4,13 @@ const operation = {
   REORDER: "reorder"
 };
 
+const returnRoot = info => {
+  const { childInfo } = info;
+
+  if (childInfo) return returnRoot(childInfo);
+  else return info;
+};
+
 export default ({ dragger }, ctx, actions) => {
   const { isMovingOnHomeContainer, placedAtRaw, targetContainer } = ctx;
 
@@ -17,9 +24,12 @@ export default ({ dragger }, ctx, actions) => {
     return;
   }
 
-  const { index: rawIndex } = placedAtRaw;
+  const root = returnRoot(placedAtRaw);
+
+  const { index: rawIndex, dragger: candidatePositionDragger } = root;
   const placedAt = {
-    index: undefined
+    index: undefined,
+    candidatePositionDragger
   };
 
   if (!isMovingOnHomeContainer) {
@@ -34,6 +44,13 @@ export default ({ dragger }, ctx, actions) => {
   // will matter on final `placedAt.index`
   const { children } = targetContainer;
   const draggerItemIndex = children.findIndex(dragger);
+
+  // move to self, then do nothing
+  if (draggerItemIndex === rawIndex) {
+    actions.abort();
+    return;
+  }
+
   const moveAfter = draggerItemIndex < rawIndex;
 
   placedAt.operation = operation["REORDER"];

@@ -43,17 +43,21 @@ const getInfo = (point, children, containers, orientation) => {
     }
 
     if (within(secondCollisionRect, point)) {
-      continue;
+      info.index = i + 1;
+      info.dragger = child;
+      info.isLast = false;
+      break;
     }
 
     if (within(rect, point)) {
-      info.index = i;
-      info.dragger = child;
-      info.isLast = false;
+      if (orientation === "vertical") {
+        info.index = i;
+        info.dragger = child;
+        info.isLast = false;
+      }
 
-      // TODO: There is a possible point is in the gap between draggers...
-      // Then loop on child, find the clamped value....
-      // self is a container, point should be placed between draggers
+      // `childNode.querySelector` will ignore dom itself.
+      // So it requires to process when this dom is a container
       if (childNode.matches('[data-is-container="true"]')) {
         const id = childNode.getAttribute("data-container-id");
         const container = containers[id];
@@ -62,31 +66,18 @@ const getInfo = (point, children, containers, orientation) => {
           children,
           containerConfig: { orientation: currentOrientation }
         } = container;
-        const xInfo = getInfo(point, children, containers, currentOrientation);
-
-        if (!xInfo) {
-          const axis = orientationToAxis[orientation];
-          const [minKey, maxKey] = axisMeasure[axis];
-          const clientValue = event[axisClientMeasure[axis]];
-          const index = findClampedIndex(clientValue, children, minKey, maxKey);
-
-          console.log("index ", clientValue, children, minKey, maxKey);
-
-          info.childInfo = {
-            index: index,
-            dragger: children.getItem(index)
-          };
-        } else {
-          info.childInfo = xInfo;
-        }
-        console.log("child node -----------", id, info);
+        info.childInfo = getInfo(
+          point,
+          children,
+          containers,
+          currentOrientation
+        );
       } else {
         // dragger is a container...
         // Attempt to get container beneath current element node.
         const containerNodes = childNode.querySelector(
           '[data-is-container="true"]'
         );
-        console.log("container node ", containerNodes);
 
         // If there is no matched element, the value of `containerNodes` will be null
         if (!containerNodes) return;
@@ -120,6 +111,7 @@ const getInfo = (point, children, containers, orientation) => {
             }
           }
         }
+        break;
       }
     }
   }
@@ -142,8 +134,5 @@ export default ({ event }, ctx, actions) => {
   // First, check point is within `horizontal` collision padding rect.
   const point = [event.clientX, event.clientY];
   ctx.placedAtRaw = getInfo(point, children, containers, orientation);
-
-  console.log("place at row ", ctx.placedAtRaw);
-
   actions.next();
 };

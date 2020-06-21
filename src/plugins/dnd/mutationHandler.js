@@ -1,4 +1,5 @@
 import { matchesDragger, matchesContainer } from "./dom";
+import reporter from "./reporter";
 
 const DEBUG = false;
 
@@ -16,14 +17,14 @@ export default ctx => mutationList => {
           ctx.handleContainerElement(node, matchedContainer);
           // In case, dragger is batch updated by container..
           ctx.handleDraggers(node);
-          DEBUG && console.log("add container ", node);
+          DEBUG && reporter.addContainerNode(node);
         }
 
         // A container could be a dragger
         const matchedDragger = matchesDragger(node, configs);
         if (matchedDragger !== -1) {
           ctx.handleDraggerElement(node);
-          DEBUG && console.log("add dragger ", node);
+          DEBUG && reporter.addDraggerNode(node);
         }
       });
     }
@@ -35,7 +36,7 @@ export default ctx => mutationList => {
         if (matchedContainer !== -1) {
           const containerId = node.getAttribute("data-container-id");
           const container = containers[containerId];
-          DEBUG && console.log("remove container ", node);
+          DEBUG && reporter.removeContainerNode(node);
           if (container) container.cleanup();
         }
       });

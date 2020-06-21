@@ -42,8 +42,6 @@ class DND {
     this.configs = resolveConfig(configs, rest);
     this.dndConfig = resolveDndConfig(rest);
 
-    console.log("this dndConfig ", this.dndConfig);
-
     this.containerEffects = [];
     this.draggerEffects = [];
 

@@ -4,6 +4,10 @@
  */
 import reporter from "../../reporter";
 
+const isFunction = fn => typeof fn === "function";
+
+const DEBUG = true;
+
 const diff = (a, b) => {
   const copyA = a.slice();
   const copyB = b.slice();
@@ -44,27 +48,27 @@ const diff = (a, b) => {
 };
 
 export default ({ prevEffects, dragger }, ctx, actions) => {
-  const { placedAt, targetContainer, hooks } = ctx;
+  const { placedAt, hooks } = ctx;
+  const { index, candidatePositionDragger } = placedAt;
 
-  if (!targetContainer) {
+  if (!candidatePositionDragger) {
     actions.next();
     return;
   }
 
   // Do not have position to place. If there are pending effects, then do these first.
-  if (!placedAt || !placedAt.index) {
+  if (!placedAt || typeof placedAt.index === "undefined") {
     // do pending effects
     actions.next();
     return;
   }
 
-  console.log("placedAt ", { ...placedAt });
-
-  const { index } = placedAt;
+  const { container: targetContainer } = candidatePositionDragger;
   const { children } = targetContainer;
 
   // Items behind index should be reconsidered.
   const nextDraggers = children.slice(index);
+  const highlightItem = nextDraggers[0];
 
   const nextContainer = [].concat(targetContainer);
   const {
@@ -130,12 +134,12 @@ export default ({ prevEffects, dragger }, ctx, actions) => {
   }
 
   pendingCleanupContainerEffects.forEach(({ teardown, container }) => {
-    reporter.logRemoveEffect(container);
-    teardown();
+    DEBUG && reporter.logRemoveEffect(container);
+    isFunction(teardown) && teardown();
   });
   pendingCleanupDraggerEffects.forEach(({ teardown, dragger }) => {
-    reporter.logRemoveEffect(dragger);
-    teardown();
+    DEBUG && reporter.logRemoveEffect(dragger);
+    isFunction(teardown) && teardown();
   });
 
   const newContainerEffects = pendingContainerEffects.map(item => {
@@ -143,9 +147,12 @@ export default ({ prevEffects, dragger }, ctx, actions) => {
       containerConfig: { containerEffect }
     } = targetContainer;
 
-    const teardown = containerEffect(item.el, dragger.el);
+    const teardown = containerEffect({
+      el: item.el,
+      draggerElement: dragger.el
+    });
 
-    reporter.logAddEffect(item);
+    DEBUG && reporter.logAddEffect(item);
 
     return {
       container: item,
@@ -157,8 +164,17 @@ export default ({ prevEffects, dragger }, ctx, actions) => {
     const {
       containerConfig: { draggerEffect }
     } = targetContainer;
-    const teardown = draggerEffect(item.el, dragger.el);
-    reporter.logAddEffect(item);
+
+    const teardown = draggerEffect({
+      el: item.el,
+      draggerElement: dragger.el,
+      vNode: item,
+      placedAtIndex: placedAt.index,
+      operation: placedAt.operation,
+      dimension: item.dimension.rect,
+      isHighlightItem: highlightItem.id === item.id
+    });
+    DEBUG && reporter.logAddEffect(item);
     return {
       dragger: item,
       teardown

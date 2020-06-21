@@ -2,7 +2,17 @@ import DND from "../dnd";
 const noop = () => {};
 
 function DNDPlugin() {
+  let verticalIndicator;
+  let horizontalIndicator;
+
+  const createIndicatorBar = () => {
+    verticalIndicator = document.createElement("div");
+    document.body.appendChild(verticalIndicator);
+    horizontalIndicator = document.createElement("div");
+    document.body.appendChild(horizontalIndicator);
+  };
   this.apply = getEditor => {
+    createIndicatorBar();
     const { hooks } = getEditor();
     hooks.afterMounted.tap("initDNDPlugin", () => {
       const { editorRef } = getEditor();
@@ -16,22 +26,32 @@ function DNDPlugin() {
           {
             containerSelector: '[data-contents="true"]',
             draggerSelector: ".miuffy-paragraph",
-            containerEffect: (el, draggerElement) => {
-              el.style.backgroundColor = "red";
-              return () => {
-                el.style.backgroundColor = "transparent";
-              };
-            },
-            draggerEffect: (el, draggerElement) => {
-              el.style.backgroundColor = "yellow";
-              const draggerRect = draggerElement.getBoundingClientRect();
-              const { height } = draggerRect;
-              el.style.transform = `translateY(${height}px)`;
-              el.style.transition = "transform 0.25s ease-in";
-              return () => {
-                el.style.backgroundColor = "transparent";
-                el.style.transform = `translateY(0px)`;
-              };
+            draggerEffect: options => {
+              const { isHighlightItem, dimension } = options;
+              const { top, right, left } = dimension;
+
+              if (isHighlightItem) {
+                horizontalIndicator.style.position = "absolute";
+                horizontalIndicator.style.width = `${right - left}px`;
+                horizontalIndicator.style.height = `3px`;
+                horizontalIndicator.style.top = `${top}px`;
+                horizontalIndicator.style.left = `${left - 10}px`;
+                horizontalIndicator.style.backgroundColor = "#69c0ff";
+                horizontalIndicator.style.transition =
+                  "background-color 250ms ease-in";
+
+                return () => {
+                  horizontalIndicator.style.position = "absolute";
+                  horizontalIndicator.style.width = "0px";
+                  horizontalIndicator.style.height = `0px`;
+                  horizontalIndicator.style.top = `0px`;
+                  horizontalIndicator.style.left = `0px`;
+                  horizontalIndicator.style.backgroundColor = "transparent";
+                  horizontalIndicator.style.transition =
+                    "background-color 250ms ease-out";
+                };
+              }
+              return () => {};
             }
           },
           {
@@ -44,29 +64,32 @@ function DNDPlugin() {
                 el.matches(".miuffy-paragraph >div:first-child")
               );
             },
-            containerEffect: el => {
-              el.style.backgroundColor = "green";
-              return () => {
-                el.style.backgroundColor = "transparent";
-              };
-            },
-            draggerEffect: (el, draggerElement) => {
-              const draggerRect = draggerElement.getBoundingClientRect();
-              const targetRect = el.getBoundingClientRect();
-              const { width } = draggerRect;
-              el.style.transform = `translateX(${width / 2}px)`;
-              el.style.height = `${targetRect.height * 2}px`;
-              el.style.width = `${targetRect.width / 2}px`;
-              el.style.transition =
-                "height 0.25s ease-in, width 0.25 ease-in, transform 0.25 ease-in";
+            draggerEffect: options => {
+              const { isHighlightItem, dimension } = options;
+              const { top, bottom, left } = dimension;
 
-              return () => {
-                el.style.transform = `translateX(0px)`;
-                el.style.height = `${targetRect.height}px`;
-                el.style.width = `${targetRect.width}px`;
-                el.style.transition =
-                  "height 0.25s ease-in, width 0.25 ease-in, transform 0.25 ease-in";
-              };
+              if (isHighlightItem) {
+                verticalIndicator.style.position = "absolute";
+                verticalIndicator.style.width = "3px";
+                verticalIndicator.style.height = `${bottom - top}px`;
+                verticalIndicator.style.top = `${top}px`;
+                verticalIndicator.style.left = `${left - 10}px`;
+                verticalIndicator.style.backgroundColor = "#69c0ff";
+                verticalIndicator.style.transition =
+                  "background-color 250ms ease-in";
+
+                return () => {
+                  verticalIndicator.style.position = "absolute";
+                  verticalIndicator.style.width = "0px";
+                  verticalIndicator.style.height = `0px`;
+                  verticalIndicator.style.top = `0px`;
+                  verticalIndicator.style.left = `0px`;
+                  verticalIndicator.style.backgroundColor = "transparent";
+                  verticalIndicator.style.transition =
+                    "background-color 250ms ease-out";
+                };
+              }
+              return () => {};
             }
           }
         ]
