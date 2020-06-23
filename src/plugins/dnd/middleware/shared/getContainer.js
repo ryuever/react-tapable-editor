@@ -47,6 +47,16 @@ const pickClosestContainer = pendingContainers => {
   return remaining[0];
 };
 
+/**
+ *
+ * @param {*} param0
+ * @param {*} ctx
+ * @param {*} actions
+ *
+ * Difference between `targetContainer` and `impactContainer`...
+ * `impactContainer` is bound with `impactDragger`. There is a situation
+ * point is in the place between dragger and container...
+ */
 const getContainer = ({ event, dragger }, ctx, actions) => {
   const { clientX, clientY } = event;
   const { containers, dndConfig } = ctx;
@@ -79,6 +89,7 @@ const getContainer = ({ event, dragger }, ctx, actions) => {
   }
 
   ctx.targetContainer = pickClosestContainer(nextContainer);
+  ctx.impact.impactContainer = ctx.targetContainer;
   actions.next();
 };
 

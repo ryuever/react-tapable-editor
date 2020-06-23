@@ -16,3 +16,5 @@ export const axisClientMeasure = {
 export const isClamped = (value, min, max) => {
   return value >= min && value <= max;
 };
+
+export const isFunction = fn => typeof fn === "function";

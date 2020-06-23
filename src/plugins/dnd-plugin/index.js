@@ -27,7 +27,8 @@ function DNDPlugin() {
             containerSelector: '[data-contents="true"]',
             draggerSelector: ".miuffy-paragraph",
             draggerEffect: options => {
-              const { isHighlightItem, dimension } = options;
+              const { isHighlightItem, dimension, upstream } = options;
+              console.log("options ", options);
               const { top, right, left } = dimension;
 
               if (isHighlightItem) {
@@ -65,7 +66,7 @@ function DNDPlugin() {
               );
             },
             draggerEffect: options => {
-              const { isHighlightItem, dimension } = options;
+              const { isHighlightItem, dimension, upstream } = options;
               const { top, bottom, left } = dimension;
 
               if (isHighlightItem) {

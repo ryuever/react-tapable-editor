@@ -60,6 +60,9 @@ function DNDPlugin() {
                 el.style.backgroundColor = "transparent";
               };
             },
+
+            targetDraggerEffect: () => {},
+
             draggerEffect: options => {
               console.log("options : ", options);
               const { el, draggerElement } = options;

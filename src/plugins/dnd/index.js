@@ -26,6 +26,7 @@ import closest from "./closest";
 
 import MouseSensor from "./sensors/mouse";
 import reporter from "./reporter";
+import ContainersEffects from "./ContainersEffects";
 
 class DND {
   constructor({ configs = [], rootElement, ...rest }) {
@@ -38,6 +39,8 @@ class DND {
       containerEffects: [],
       draggerEffects: []
     };
+
+    this.containersEffects = new ContainersEffects();
 
     this.configs = resolveConfig(configs, rest);
     this.dndConfig = resolveDndConfig(rest);
@@ -60,7 +63,9 @@ class DND {
         draggers: this.draggers,
         extra: this.extra,
         hooks: this.hooks,
-        dndConfig: this.dndConfig
+        dndConfig: this.dndConfig,
+        containersEffects: this.containersEffects,
+        impact: {}
       }
     });
 
@@ -70,7 +75,10 @@ class DND {
         draggers: this.draggers,
         effects: this.effects,
         hooks: this.hooks,
-        dndConfig: this.dndConfig
+        dndConfig: this.dndConfig,
+        containersEffects: this.containersEffects,
+        prevImpact: {},
+        impact: {}
       }
     });
 

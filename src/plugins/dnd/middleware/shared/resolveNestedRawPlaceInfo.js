@@ -37,22 +37,27 @@ const getInfo = (point, children, containers, orientation) => {
 
     if (within(firstCollisionRect, point)) {
       info.index = i;
-      info.dragger = child;
+      info.targetDragger = child;
       info.isLast = false;
+      info.tailing = false;
+      info.impactPosition = "left";
       break;
     }
 
     if (within(secondCollisionRect, point)) {
+      console.log("trigger from second");
       info.index = i + 1;
-      info.dragger = child;
+      info.targetDragger = child;
       info.isLast = false;
+      info.tailing = true;
+      info.impactPosition = "right";
       break;
     }
 
     if (within(rect, point)) {
       if (orientation === "vertical") {
         info.index = i;
-        info.dragger = child;
+        info.targetDragger = child;
         info.isLast = false;
       }
 
@@ -87,7 +92,7 @@ const getInfo = (point, children, containers, orientation) => {
         // If node does not has inner container(self inclusive)
         if (!containersLength) {
           const position = positionInRect(point, rect, orientation);
-          info.position = position;
+          info.impactPosition = position;
         } else {
           for (let index = 0; index < containersLength; index++) {
             containerNode = containerNodes[index];
@@ -134,5 +139,7 @@ export default ({ event }, ctx, actions) => {
   // First, check point is within `horizontal` collision padding rect.
   const point = [event.clientX, event.clientY];
   ctx.placedAtRaw = getInfo(point, children, containers, orientation);
+
+  console.log("place raw ", ctx.placedAtRaw);
   actions.next();
 };

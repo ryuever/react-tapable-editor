@@ -12,7 +12,12 @@ const returnRoot = info => {
 };
 
 export default ({ dragger }, ctx, actions) => {
-  const { isMovingOnHomeContainer, placedAtRaw, targetContainer } = ctx;
+  const {
+    isMovingOnHomeContainer,
+    placedAtRaw,
+    targetContainer,
+    impactPosition
+  } = ctx;
 
   if (!targetContainer) {
     actions.abort();
@@ -24,38 +29,66 @@ export default ({ dragger }, ctx, actions) => {
     return;
   }
 
-  const root = returnRoot(placedAtRaw);
+  const upstreamPosition = ["top", "left"];
+  const downstreamPosition = ["right", "bottom"];
 
-  const { index: rawIndex, dragger: candidatePositionDragger } = root;
+  const root = returnRoot(placedAtRaw);
+  const { index: rawIndex, targetDragger, tailing } = root;
   const placedAt = {
     index: undefined,
-    candidatePositionDragger
+    targetDragger,
+    tailing
   };
 
+  const impact = {
+    downstreamDraggers: [],
+    upstreamDraggers: [],
+
+    impactPosition: null,
+    impactDragger: targetDragger,
+    impactContainer: targetDragger.container
+  };
+
+  const { children } = targetContainer;
+
   if (!isMovingOnHomeContainer) {
-    placedAt.index = rawIndex;
-    placedAt.operation = operation["REPLACE"];
-    ctx.placedAt = placedAt;
+    impact.index = rawIndex;
+    impact.operation = operation["REPLACE"];
+    impact.placedAt = placedAt;
+    impact.downstreamDraggers = children.slice(rawIndex + 1);
+    if (downstreamPosition.indexOf(impactPosition) !== -1) {
+      impact.downstreamDraggers.push(children.getItem(rawIndex));
+    }
+    ctx.impact = impact;
+
     actions.next();
     return;
   }
 
   // when `isMovingOnHomeContainer` is true, the relative position of dragger and dropped place
   // will matter on final `placedAt.index`
-  const { children } = targetContainer;
   const draggerItemIndex = children.findIndex(dragger);
 
-  // move to self, then do nothing
-  if (draggerItemIndex === rawIndex) {
-    actions.abort();
-    return;
+  // array.slice(a, b): a inclusive, b exclusive
+  // target dragger is not processed
+  if (draggerItemIndex > rawIndex) {
+    impact.downstreamDraggers = children.slice(rawIndex + 1, draggerItemIndex);
+    impact.upstreamDraggers = [];
+  } else if (draggerItemIndex < rawIndex) {
+    impact.downstreamDraggers = [];
+    impact.upstreamDraggers = children.slice(draggerItemIndex, rawIndex);
+
+    if (downstreamPosition.indexOf(impactPosition) !== -1) {
+      impact.upstreamDraggers.push(children.getItem(rawIndex));
+    }
+  } else {
+    impact.upstreamDraggers = [];
+    impact.downstreamDraggers = [];
   }
+  impact.operation = operation["REORDER"];
+  impact.index = rawIndex;
 
-  const moveAfter = draggerItemIndex < rawIndex;
-
-  placedAt.operation = operation["REORDER"];
-  placedAt.index = moveAfter ? rawIndex - 1 : rawIndex;
-  ctx.placedAt = placedAt;
+  ctx.impact = impact;
 
   actions.next();
 };
