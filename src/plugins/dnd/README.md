@@ -33,3 +33,61 @@
 1. When moving on dragger element, only vertical dnd should be considered.
 2. If under `nested` mode, moving on candidate dragger element should be locked on `vertical` orientation
 3. Only `candidateDraggers` has `collisionPadding`
+
+## Impact
+
+### has placeholder
+
+`draggerEffect` is used to placed candidateDragger on right position and should be required.
+
+### not has placeholder
+
+##
+
+## How to work
+
+Only if moving on home container, there is `upstreamEffect`.
+
+1. enter home container: all the component below point index should be considered.
+   1. component index greater than dragger original index, reset `upstreamEffect`
+   2. component index less than dragger original index, trigger `downstreamEffect`
+2. enter other container
+   1. all the component below point index should trigger `downstreamEffect`
+3. leave home container:
+   3. withPlaceholder
+      1. true:
+         1. component index greater than dragger original index, reset `downstreamEffect`
+         2. component index less than dragger original index, trigger `upstreamEffect`
+      2. false:
+         1. reset the effect of previous impact dragger
+4. leave other container: reset all of its effects
+5. move on home container:
+   1. move up: point should be at the upper half of direct upper sibling element
+      1. beneath dragger original position
+         1. down element is to reset `upstreamEffect`
+      2. upper dragger original position
+         1. down element is to trigger `downstreamEffect`
+   2. move down: point should be at the down half of direct upper sibling element
+      1. beneath dragger original position
+         1. up element is to trigger `upstreamEffect`
+      2. upper dragger original position
+         1. up element is to reset `downstreamEffect`
+6. move on other container:
+   1. move up: point should be at the upper half of direct upper sibling element
+      1. down element is to trigger `downstreamEffect`
+   2. move down: point should be at the down half of direct upper sibling element
+      1. up element is to reset `downstreamEffect`
+
+## props
+
+### rootConfig
+
+#### withPlaceholder: boolean
+
+default to be true..
+
+### containerConfig
+
+#### placeholderRenderer: boolean
+
+It is meaningful only if `withPlaceholder` is true and its default value is set as blank area.

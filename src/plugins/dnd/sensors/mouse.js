@@ -34,6 +34,9 @@ class Mouse {
         event.preventDefault();
         const draggerId = el.getAttribute("data-dragger-id");
         const dragger = this.getDragger(draggerId);
+        const vContainer = dragger.container;
+        const liftUpVDraggerIndex = vContainer.children.findIndex(dragger);
+
         this.onStartHandler.start({ dragger, event });
         const clone = this.getClone();
 
@@ -43,12 +46,19 @@ class Mouse {
             // target should be moved by mousemove event.
             eventName: "mousemove",
             fn: event => {
+              const impactPoint = [event.clientX, event.clientY];
               event.preventDefault();
               event.stopPropagation();
               this.onMoveHandler.start({
-                event,
+                // event,
+                impactPoint,
+                impactVDragger: dragger,
+                liftUpVDragger: dragger,
+                liftUpVDraggerIndex,
                 dragger,
                 clone,
+                isHomeContainer: vContainer =>
+                  vContainer.id === dragger.container.id,
                 ...this.moveAPI()
               });
             }

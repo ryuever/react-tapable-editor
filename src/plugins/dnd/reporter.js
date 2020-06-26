@@ -6,10 +6,7 @@ const capitalize = s => {
 function reporter() {
   this.logAddEffect = component => {
     const id = component.id;
-    console.log(
-      `Add effect to component %c${id}`,
-      "background: #222; color: red"
-    );
+    `Add effect to component %c${id}`, "background: #222; color: red";
   };
 
   this.logRemoveEffect = component => {

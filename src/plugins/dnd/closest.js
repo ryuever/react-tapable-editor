@@ -32,6 +32,12 @@ function closestPonyfill(el, selector) {
   return closestPonyfill(el.parentElement, selector);
 }
 
+// current element will be excluded from search result
+export const exclusiveClosest = (el, selector) => {
+  const parent = el.parentNode;
+  if (parent) return closest(parent, selector);
+};
+
 export default function closest(el, selector) {
   // Using native closest for maximum speed where we can
   if (el.closest) {

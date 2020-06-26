@@ -28,18 +28,34 @@ export default class ContainerEffects {
     if (isFunction(fn)) fn();
   }
 
-  teardown() {
-    this.impactDraggerEffects.forEach(({ teardown }) =>
-      this.assertRun(teardown)
-    );
-    this.impactContainerEffects.forEach(({ teardown }) =>
-      this.assertRun(teardown)
-    );
-    this.upstreamDraggersEffects.forEach(({ teardown }) =>
-      this.assertRun(teardown)
-    );
+  clearDownstream() {
     this.downstreamDraggersEffects.forEach(({ teardown }) =>
       this.assertRun(teardown)
     );
+  }
+
+  clearUpstream() {
+    this.upstreamDraggersEffects.forEach(({ teardown }) =>
+      this.assertRun(teardown)
+    );
+  }
+
+  clearDragger() {
+    this.impactDraggerEffects.forEach(({ teardown }) =>
+      this.assertRun(teardown)
+    );
+  }
+
+  clearContainer() {
+    this.impactContainerEffects.forEach(({ teardown }) =>
+      this.assertRun(teardown)
+    );
+  }
+
+  teardown() {
+    this.clearContainer();
+    this.clearDragger();
+    this.clearUpstream();
+    this.clearDownstream();
   }
 }

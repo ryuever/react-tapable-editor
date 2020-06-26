@@ -18,6 +18,7 @@ import movingOnHomeContainer from "./middleware/onMove/movingOnHomeContainer";
 import resolvePlacedInfo from "./middleware/onMove/resolvePlacedInfo";
 import updateEffects from "./middleware/onMove/updateEffects";
 
+import getImpactRawInfo from "./middleware/shared/getImpactRawInfo";
 import resolveRawPlacedInfo from "./middleware/shared/resolveRawPlacedInfo";
 import resolveNestedRawPlaceInfo from "./middleware/shared/resolveNestedRawPlaceInfo";
 import getDropTarget from "./middleware/shared/getContainer";
@@ -43,6 +44,8 @@ class DND {
     this.containersEffects = new ContainersEffects();
 
     this.configs = resolveConfig(configs, rest);
+
+    // global config to control all of the containers...
     this.dndConfig = resolveDndConfig(rest);
 
     this.containerEffects = [];
@@ -61,6 +64,8 @@ class DND {
       ctx: {
         containers: this.containers,
         draggers: this.draggers,
+        vDraggers: this.draggers,
+        vContainers: this.containers,
         extra: this.extra,
         hooks: this.hooks,
         dndConfig: this.dndConfig,
@@ -73,12 +78,14 @@ class DND {
       ctx: {
         containers: this.containers,
         draggers: this.draggers,
+        vDraggers: this.draggers,
+        vContainers: this.containers,
         effects: this.effects,
         hooks: this.hooks,
         dndConfig: this.dndConfig,
         containersEffects: this.containersEffects,
         prevImpact: {},
-        impact: {}
+        impact: {} // has placeholder or not...
       }
     });
 
@@ -91,14 +98,14 @@ class DND {
     );
     this.onMoveHandler.use(
       syncCopyPosition,
-
+      getImpactRawInfo,
       // First, find the target container with smallest scope...
-      getDropTarget,
-      movingOnHomeContainer,
-      // resolveRawPlacedInfo,
-      resolveNestedRawPlaceInfo,
-      resolvePlacedInfo,
-      updateEffects,
+      // getDropTarget,
+      // movingOnHomeContainer,
+      // // resolveRawPlacedInfo,
+      // resolveNestedRawPlaceInfo,
+      // resolvePlacedInfo,
+      // updateEffects,
       (_, ctx) => {
         // console.log("ctx ", ctx);
       }
