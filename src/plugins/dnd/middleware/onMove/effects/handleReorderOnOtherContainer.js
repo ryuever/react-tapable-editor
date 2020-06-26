@@ -1,45 +1,30 @@
-const handleReorderOnHomeContainer = (
-  { liftUpVDraggerIndex, isHomeContainer },
-  ctx,
-  actions
-) => {
+const handleReorderOnHomeContainer = (ctx, actions) => {
   const {
-    actions: { operation, isOnHomeContainer }
+    actions: { operation, isHomeContainerFocused, effectsManager }
   } = ctx;
 
-  if (operation !== "reorder") {
-    actions.next();
-    return;
-  }
-
-  if (isOnHomeContainer) {
+  if (operation !== "reorder" || isHomeContainerFocused) {
     actions.next();
     return;
   }
 
   const {
-    impactRawInfo,
-    prevImpact,
-    containerEffects,
-    dndConfig: { withPlaceholder },
-    impact
+    impactRawInfo: {
+      candidateVDragger,
+      impactVContainer: {
+        containerConfig: { orientation, draggerEffect }
+      },
+      impactPosition,
+      candidateVDraggerIndex
+    },
+    impact: { index: currentIndex }
   } = ctx;
+  const measure = orientationToMeasure(orientation);
 
-  const {
-    candidateVDragger,
-    impactVContainer,
-    impactPosition,
-    candidateVDraggerIndex
-  } = impactRawInfo;
-
-  const { index: currentIndex } = impact;
-  const {
-    containerConfig: { orientation }
-  } = impactVContainer;
-  const axis = orientationToAxis[orientation];
-  const measure = axisMeasure[axis];
-
-  const effectsManager = containerEffects.find(prevImpactVContainer.id);
+  if (typeof draggerEffect !== "function") {
+    actions.next();
+    return;
+  }
 
   // move down
   if (currentIndex < candidateVDraggerIndex) {
@@ -66,7 +51,7 @@ const handleReorderOnHomeContainer = (
       vDragger: candidateVDragger,
       teardown: draggerEffect({
         el: vDragger.el,
-        needMove: true,
+        shouldMove: true,
         placedPosition: measure[0],
         downstream: true
       })

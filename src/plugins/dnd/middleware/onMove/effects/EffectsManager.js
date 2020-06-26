@@ -1,6 +1,6 @@
 import { isFunction } from "./utils";
 
-export default class ContainerEffects {
+export default class EffectsManager {
   constructor({ dragger, impactContainer }) {
     this.dragger = dragger;
     this.impactContainer = impactContainer;

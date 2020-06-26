@@ -14,9 +14,18 @@ import validateContainers from "./middleware/onStart/validateContainers";
 import attemptToCreateClone from "./middleware/onStart/attemptToCreateClone";
 
 import syncCopyPosition from "./middleware/onMove/syncCopyPosition";
-import movingOnHomeContainer from "./middleware/onMove/movingOnHomeContainer";
-import resolvePlacedInfo from "./middleware/onMove/resolvePlacedInfo";
-import updateEffects from "./middleware/onMove/updateEffects";
+import handleLeaveContainer from "./middleware/onMove/effects/handleLeaveContainer";
+import handleEnterContainer from "./middleware/onMove/effects/handleEnterContainer";
+import handleEnterHomeContainer from "./middleware/onMove/effects/handleEnterHomeContainer";
+import handleEnterOtherContainer from "./middleware/onMove/effects/handleEnterOtherContainer";
+import handleImpactDraggerEffectOnEnter from "./middleware/onMove/effects/handleImpactDraggerEffectOnEnter";
+import handleReorder from "./middleware/onMove/effects/handleReorder";
+import handleReorderOnHomeContainer from "./middleware/onMove/effects/handleReorderOnHomeContainer";
+import handleReorderOnOtherContainer from "./middleware/onMove/effects/handleReorderOnOtherContainer";
+import handleImpactDraggerEffectOnReorder from "./middleware/onMove/effects/handleImpactDraggerEffectOnReorder";
+// import movingOnHomeContainer from "./middleware/onMove/movingOnHomeContainer";
+// import resolvePlacedInfo from "./middleware/onMove/resolvePlacedInfo";
+// import updateEffects from "./middleware/onMove/updateEffects";
 
 import getImpactRawInfo from "./middleware/shared/getImpactRawInfo";
 import resolveRawPlacedInfo from "./middleware/shared/resolveRawPlacedInfo";
@@ -27,7 +36,8 @@ import closest from "./closest";
 
 import MouseSensor from "./sensors/mouse";
 import reporter from "./reporter";
-import ContainersEffects from "./ContainersEffects";
+import DndEffects from "./middleware/onMove/effects/DndEffects";
+// import ContainersEffects from "./ContainersEffects";
 
 class DND {
   constructor({ configs = [], rootElement, ...rest }) {
@@ -41,7 +51,8 @@ class DND {
       draggerEffects: []
     };
 
-    this.containersEffects = new ContainersEffects();
+    // this.containersEffects = new ContainersEffects();
+    this.dndEffects = new DndEffects();
 
     this.configs = resolveConfig(configs, rest);
 
@@ -70,7 +81,8 @@ class DND {
         hooks: this.hooks,
         dndConfig: this.dndConfig,
         containersEffects: this.containersEffects,
-        impact: {}
+        impact: {},
+        dndEffects: new DndEffects()
       }
     });
 
@@ -85,6 +97,7 @@ class DND {
         dndConfig: this.dndConfig,
         containersEffects: this.containersEffects,
         prevImpact: {},
+        dndEffects: this.dndEffects,
         impact: {} // has placeholder or not...
       }
     });
@@ -99,6 +112,15 @@ class DND {
     this.onMoveHandler.use(
       syncCopyPosition,
       getImpactRawInfo,
+      handleLeaveContainer,
+      handleEnterContainer,
+      handleEnterHomeContainer,
+      handleEnterOtherContainer,
+      handleImpactDraggerEffectOnEnter,
+      handleReorder,
+      handleReorderOnHomeContainer,
+      handleReorderOnOtherContainer,
+      handleImpactDraggerEffectOnReorder,
       // First, find the target container with smallest scope...
       // getDropTarget,
       // movingOnHomeContainer,

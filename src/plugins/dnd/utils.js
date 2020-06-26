@@ -8,6 +8,11 @@ export const axisMeasure = {
   x: ["left", "right"]
 };
 
+export const orientationToMeasure = orientation => {
+  const axis = orientationToAxis[orientation];
+  return axisMeasure[axis];
+};
+
 export const axisClientMeasure = {
   x: "clientX",
   y: "clientY"

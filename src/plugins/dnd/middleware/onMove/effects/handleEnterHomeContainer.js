@@ -1,58 +1,60 @@
-import handleEnterContainer from "./handleEnterContainer";
+import { orientationToMeasure } from "../../../utils";
 
 const handleEnterHomeContainer = ({ liftUpVDraggerIndex }, ctx, actions) => {
+  const {
+    impactRawInfo,
+    effectsManager,
+    action: { operation, isHomeContainerFocused }
+  } = ctx;
+
+  if (operation !== "onEnter" || !isHomeContainerFocused) {
+    actions.next();
+    return;
+  }
+
   const {
     candidateVDragger,
     impactVContainer,
     impactPosition,
     candidateVDraggerIndex
   } = impactRawInfo;
-  const { orientation, impactDraggerEffect, draggerEffect } = impactVContainer;
 
   const {
-    impactRawInfo,
-    prevImpact,
-    containerEffects,
-    dndConfig: { withPlaceholder },
-    impact
-  } = ctx;
-
-  const effectsManager = containerEffects.find(prevImpactVContainer.id);
-
-  const {
-    containerConfig: { containerEffect },
+    containerConfig: { containerEffect, draggerEffect, orientation },
     children
   } = impactVContainer;
 
-  const axis = orientationToAxis[orientation];
-  const measure = axisMeasure[axis];
+  const measure = orientationToMeasure(orientation);
   const positionIndex = measure.indexOf(impactPosition);
   const impact = {};
 
   if (typeof containerEffect === "function") {
-    effectsManager.impactContainerEffects.push({
-      teardown: containerEffect({
-        el: impactVContainer.el
-      })
+    const teardown = containerEffect({
+      el: impactVContainer.el
     });
+    effectsManager.impactContainerEffects.push({
+      teardown,
+      vContainer: impactVContainer
+    });
+  }
+
+  if (typeof draggerEffect !== "function") {
+    actions.next();
+    return;
   }
 
   if (candidateVDraggerIndex === liftUpVDraggerIndex) {
     if (!positionIndex) effectsManager.upstreamDraggerEffects.teardown();
     else {
-      let leftIndex;
+      const remainingEffects = [];
       effectsManager.upstreamDraggerEffects.forEach(
-        ({ vDragger, teardown }, index) => {
+        ({ vDragger, teardown }) => {
           if (vDragger.id !== candidateVDragger.id) teardown();
-          else {
-            leftIndex = index;
-          }
+          else remainingEffects.push({ vDragger, teardown });
         }
       );
 
-      if (typeof leftIndex !== "undefined")
-        effectsManager.upstreamDraggerEffects =
-          effectsManager.upstreamDraggerEffects[leftIndex];
+      effectsManager.upstreamDraggerEffects = remainingEffects;
     }
   }
 
@@ -64,15 +66,13 @@ const handleEnterHomeContainer = ({ liftUpVDraggerIndex }, ctx, actions) => {
     }
     for (let i = initialValue; i < liftUpVDraggerIndex; i++) {
       const vDragger = children.getItem(i);
-      effectsManager.downstreamDraggersEffects.push({
-        teardown: draggerEffect({
-          el: vDragger.el,
-          needMove: true,
-          downstream: true,
-          placedPosition: measure[0]
-        }),
-        vDragger
+      const teardown = draggerEffect({
+        el: vDragger.el,
+        shouldMove: true,
+        downstream: true,
+        placedPosition: measure[0]
       });
+      effectsManager.downstreamDraggersEffects.push({ teardown, vDragger });
     }
   }
 
