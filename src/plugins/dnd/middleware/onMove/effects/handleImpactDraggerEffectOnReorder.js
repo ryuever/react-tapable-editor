@@ -4,8 +4,7 @@ const handleImpactDraggerEffectOnReorder = (ctx, actions) => {
   const {
     impactRawInfo,
     prevImpact,
-    effectsManager,
-    action: { operation }
+    action: { operation, effectsManager }
   } = ctx;
 
   if (operation !== "reorder") {
@@ -21,12 +20,10 @@ const handleImpactDraggerEffectOnReorder = (ctx, actions) => {
       containerConfig: { orientation, impactDraggerEffect }
     },
     impactPosition,
-    candidateVDragger
+    candidateVDragger,
+    candidateVDraggerIndex
   } = impactRawInfo;
-  const { impactPosition, candidateVDraggerIndex } = impactRawInfo;
-
   const measure = orientationToMeasure(orientation);
-  const positionIndex = measure.indexOf(impactPosition);
 
   if (typeof impactDraggerEffect === "function") {
     if (
@@ -38,7 +35,9 @@ const handleImpactDraggerEffectOnReorder = (ctx, actions) => {
         el: candidateVDragger.el,
         shouldMove: true,
         placedPosition: measure[1],
-        downstream: false
+        downstream: false,
+        dimension: candidateVDragger.dimension.rect,
+        isHighlight: true
       });
       effectsManager.impactDraggerEffects.push({
         teardown,
@@ -54,7 +53,9 @@ const handleImpactDraggerEffectOnReorder = (ctx, actions) => {
           el: candidateVDragger.el,
           shouldMove: true,
           placedPosition: measure[0],
-          downstream: true
+          downstream: true,
+          dimension: candidateVDragger.dimension.rect,
+          isHighlight: true
         });
         effectsManager.impactDraggerEffects.push({
           teardown,

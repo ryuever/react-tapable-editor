@@ -2,9 +2,9 @@ import { orientationToMeasure } from "./../../../utils";
 
 const handleLeaveHomeContainer = (ctx, actions) => {
   const {
-    action: { operation, isHomeContainerFocused, effectsManager },
     prevImpact,
-    dndConfig: { withPlaceholder }
+    dndConfig: { withPlaceholder },
+    action: { operation, isHomeContainerFocused, effectsManager }
   } = ctx;
 
   if (operation !== "onLeave" || !isHomeContainerFocused) {
@@ -42,7 +42,9 @@ const handleLeaveHomeContainer = (ctx, actions) => {
       el: vDragger.el,
       shouldMove: true,
       placedPosition: measure[0],
-      downstream: false
+      downstream: false,
+      dimension: vDragger.dimension.rect,
+      isHighlight: false
     });
 
     effectsManager.upstreamDraggerEffects.push({

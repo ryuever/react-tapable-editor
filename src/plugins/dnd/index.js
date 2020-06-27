@@ -14,6 +14,8 @@ import validateContainers from "./middleware/onStart/validateContainers";
 import attemptToCreateClone from "./middleware/onStart/attemptToCreateClone";
 
 import syncCopyPosition from "./middleware/onMove/syncCopyPosition";
+import addIntermediateCtxValue from "./middleware/onMove/addIntermediateCtxValue";
+import removeIntermediateCtxValue from "./middleware/onMove/removeIntermediateCtxValue";
 import handleLeaveContainer from "./middleware/onMove/effects/handleLeaveContainer";
 import handleEnterContainer from "./middleware/onMove/effects/handleEnterContainer";
 import handleEnterHomeContainer from "./middleware/onMove/effects/handleEnterHomeContainer";
@@ -23,33 +25,20 @@ import handleReorder from "./middleware/onMove/effects/handleReorder";
 import handleReorderOnHomeContainer from "./middleware/onMove/effects/handleReorderOnHomeContainer";
 import handleReorderOnOtherContainer from "./middleware/onMove/effects/handleReorderOnOtherContainer";
 import handleImpactDraggerEffectOnReorder from "./middleware/onMove/effects/handleImpactDraggerEffectOnReorder";
-// import movingOnHomeContainer from "./middleware/onMove/movingOnHomeContainer";
-// import resolvePlacedInfo from "./middleware/onMove/resolvePlacedInfo";
-// import updateEffects from "./middleware/onMove/updateEffects";
 
 import getImpactRawInfo from "./middleware/shared/getImpactRawInfo";
-import resolveRawPlacedInfo from "./middleware/shared/resolveRawPlacedInfo";
-import resolveNestedRawPlaceInfo from "./middleware/shared/resolveNestedRawPlaceInfo";
-import getDropTarget from "./middleware/shared/getContainer";
 import { SyncHook } from "tapable";
 import closest from "./closest";
 
 import MouseSensor from "./sensors/mouse";
 import reporter from "./reporter";
 import DndEffects from "./middleware/onMove/effects/DndEffects";
-// import ContainersEffects from "./ContainersEffects";
 
 class DND {
   constructor({ configs = [], rootElement, ...rest }) {
     this.containers = {};
     this.draggers = {};
     this.extra = {};
-    this.effects = {
-      containers: [],
-      draggers: [],
-      containerEffects: [],
-      draggerEffects: []
-    };
 
     // this.containersEffects = new ContainersEffects();
     this.dndEffects = new DndEffects();
@@ -58,9 +47,6 @@ class DND {
 
     // global config to control all of the containers...
     this.dndConfig = resolveDndConfig(rest);
-
-    this.containerEffects = [];
-    this.draggerEffects = [];
 
     this.hooks = {
       syncEffects: new SyncHook(["values"]),
@@ -82,6 +68,7 @@ class DND {
         dndConfig: this.dndConfig,
         containersEffects: this.containersEffects,
         impact: {},
+        prevImpact: {},
         dndEffects: new DndEffects()
       }
     });
@@ -98,6 +85,7 @@ class DND {
         containersEffects: this.containersEffects,
         prevImpact: {},
         dndEffects: this.dndEffects,
+        prevImpact: {},
         impact: {} // has placeholder or not...
       }
     });
@@ -106,12 +94,13 @@ class DND {
       getDimensions,
       getDimensionsNested,
       validateContainers,
-      resolveRawPlacedInfo,
+      // resolveRawPlacedInfo,
       attemptToCreateClone
     );
     this.onMoveHandler.use(
       syncCopyPosition,
       getImpactRawInfo,
+      addIntermediateCtxValue,
       handleLeaveContainer,
       handleEnterContainer,
       handleEnterHomeContainer,
@@ -121,6 +110,7 @@ class DND {
       handleReorderOnHomeContainer,
       handleReorderOnOtherContainer,
       handleImpactDraggerEffectOnReorder,
+      removeIntermediateCtxValue,
       // First, find the target container with smallest scope...
       // getDropTarget,
       // movingOnHomeContainer,
@@ -132,21 +122,6 @@ class DND {
         // console.log("ctx ", ctx);
       }
     );
-
-    this.hooks.syncEffects.tap("syncEffects", values => {
-      this.effects = values.effects;
-    });
-    this.hooks.cleanupEffects.tap("cleanupEffects", () => {
-      const { containerEffects, draggerEffects } = this.effects;
-      containerEffects.forEach(({ container, teardown }) => {
-        reporter.logRemoveEffect(container);
-        teardown();
-      });
-      draggerEffects.forEach(({ dragger, teardown }) => {
-        reporter.logRemoveEffect(dragger);
-        teardown();
-      });
-    });
 
     this.initSensor();
   }

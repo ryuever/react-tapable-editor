@@ -1,6 +1,8 @@
+import { orientationToMeasure } from "../../../utils";
+
 const handleReorderOnHomeContainer = (ctx, actions) => {
   const {
-    actions: { operation, isHomeContainerFocused, effectsManager }
+    action: { operation, isHomeContainerFocused, effectsManager }
   } = ctx;
 
   if (operation !== "reorder" || isHomeContainerFocused) {
@@ -33,10 +35,15 @@ const handleReorderOnHomeContainer = (ctx, actions) => {
       return;
     }
 
-    const index = effectsManager.downstreamEffects.findIndex(({ vDragger }) => {
-      return vDragger.id === candidateVDragger.id;
-    });
-    const { teardown } = effectsManager.downstreamEffects.splice(index, 1);
+    const index = effectsManager.downstreamDraggersEffects.findIndex(
+      ({ vDragger }) => {
+        return vDragger.id === candidateVDragger.id;
+      }
+    );
+    const { teardown } = effectsManager.downstreamDraggersEffects.splice(
+      index,
+      1
+    );
     teardown();
   }
 
@@ -47,14 +54,18 @@ const handleReorderOnHomeContainer = (ctx, actions) => {
       return;
     }
 
-    effectsManager.downstreamEffects.push({
+    const teardown = draggerEffect({
+      el: candidateVDragger.el,
+      shouldMove: true,
+      placedPosition: measure[0],
+      downstream: true,
+      dimension: candidateVDragger.dimension.rect,
+      isHighlight: true
+    });
+
+    effectsManager.downstreamDraggersEffects.push({
       vDragger: candidateVDragger,
-      teardown: draggerEffect({
-        el: vDragger.el,
-        shouldMove: true,
-        placedPosition: measure[0],
-        downstream: true
-      })
+      teardown
     });
   }
 

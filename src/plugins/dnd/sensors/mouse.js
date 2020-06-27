@@ -49,6 +49,12 @@ class Mouse {
               const impactPoint = [event.clientX, event.clientY];
               event.preventDefault();
               event.stopPropagation();
+              const isHomeContainer = vContainer => {
+                return vContainer
+                  ? vContainer.id === dragger.container.id
+                  : false;
+              };
+
               this.onMoveHandler.start({
                 // event,
                 impactPoint,
@@ -57,8 +63,7 @@ class Mouse {
                 liftUpVDraggerIndex,
                 dragger,
                 clone,
-                isHomeContainer: vContainer =>
-                  vContainer.id === dragger.container.id,
+                isHomeContainer,
                 ...this.moveAPI()
               });
             }

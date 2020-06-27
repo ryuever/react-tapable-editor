@@ -30,7 +30,7 @@
     "prismjs": "^1.19.0",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
-    "sabar": "^0.2.1",
+    "sabar": "^0.3.2",
     "ts-loader": "^6.0.4",
     "webpack": "^4.39.3",
     "webpack-cli": "^3.3.7",

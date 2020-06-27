@@ -3,8 +3,7 @@ import { orientationToMeasure } from "../../../utils";
 const handleEnterHomeContainer = ({ liftUpVDraggerIndex }, ctx, actions) => {
   const {
     impactRawInfo,
-    effectsManager,
-    action: { operation, isHomeContainerFocused }
+    action: { operation, isHomeContainerFocused, effectsManager }
   } = ctx;
 
   if (operation !== "onEnter" || !isHomeContainerFocused) {
@@ -60,17 +59,18 @@ const handleEnterHomeContainer = ({ liftUpVDraggerIndex }, ctx, actions) => {
 
   if (candidateVDraggerIndex < liftUpVDraggerIndex) {
     effectsManager.upstreamDraggerEffects.teardown();
-    let initialValue = candidateVDraggerIndex;
-    if (positionIndex) {
-      initialValue = initialValue + 1;
-    }
+    const initialValue = candidateVDraggerIndex;
     for (let i = initialValue; i < liftUpVDraggerIndex; i++) {
       const vDragger = children.getItem(i);
+      const isHighlight = initialValue === i;
+
       const teardown = draggerEffect({
         el: vDragger.el,
-        shouldMove: true,
-        downstream: true,
-        placedPosition: measure[0]
+        shouldMove: !isHighlight || !positionIndex,
+        downstream: !isHighlight || !positionIndex,
+        placedPosition: measure[0],
+        dimension: vDragger.dimension.rect,
+        isHighlight
       });
       effectsManager.downstreamDraggersEffects.push({ teardown, vDragger });
     }

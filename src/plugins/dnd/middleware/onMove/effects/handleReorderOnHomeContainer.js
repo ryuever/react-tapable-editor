@@ -6,7 +6,7 @@ const handleReorderOnHomeContainer = (
   actions
 ) => {
   const {
-    actions: { operation, isHomeContainerFocused, effectsManager }
+    action: { operation, isHomeContainerFocused, effectsManager }
   } = ctx;
 
   if (operation !== "reorder" || !isHomeContainerFocused) {
@@ -33,6 +33,7 @@ const handleReorderOnHomeContainer = (
     return;
   }
 
+  // move down
   if (currentIndex < candidateVDraggerIndex) {
     if (impactPosition === measure[0]) {
       actions.next();
@@ -40,24 +41,30 @@ const handleReorderOnHomeContainer = (
     }
 
     if (candidateVDraggerIndex <= liftUpVDraggerIndex) {
-      const index = effectsManager.downstreamEffects.findIndex(
+      const index = effectsManager.downstreamDraggersEffects.findIndex(
         ({ vDragger }) => {
           return vDragger.id === candidateVDragger.id;
         }
       );
-      const { teardown } = effectsManager.downstreamEffects.splice(index, 1);
+      const { teardown } = effectsManager.downstreamDraggersEffects.splice(
+        index,
+        1
+      );
       teardown();
     }
 
     if (candidateVDraggerIndex > liftUpVDraggerIndex) {
-      effectsManager.upstreamEffects.push({
+      const teardown = draggerEffect({
+        el: candidateVDragger.el,
+        shouldMove: true,
+        placedPosition: measure[1],
+        downstream: false,
+        dimension: candidateVDragger.dimension.rect,
+        isHighlight: true
+      });
+      effectsManager.upstreamDraggersEffects.push({
         vDragger: candidateVDragger,
-        teardown: draggerEffect({
-          el: vDragger.el,
-          shouldMove: true,
-          placedPosition: measure[1],
-          downstream: false
-        })
+        teardown
       });
     }
   }
@@ -70,22 +77,30 @@ const handleReorderOnHomeContainer = (
     }
 
     if (candidateVDraggerIndex < liftUpVDraggerIndex) {
-      effectsManager.downstreamEffects.push({
+      const teardown = draggerEffect({
+        el: candidateVDragger.el,
+        shouldMove: true,
+        placedPosition: measure[0],
+        downstream: true,
+        dimension: candidateVDragger.dimension.rect,
+        isHighlight: true
+      });
+      effectsManager.downstreamDraggersEffects.push({
         vDragger: candidateVDragger,
-        teardown: draggerEffect({
-          el: vDragger.el,
-          shouldMove: true,
-          placedPosition: measure[0],
-          downstream: true
-        })
+        teardown
       });
     }
 
     if (candidateVDraggerIndex >= liftUpVDraggerIndex) {
-      const index = effectsManager.upstreamEffects.findIndex(({ vDragger }) => {
-        return vDragger.id === candidateVDragger.id;
-      });
-      const { teardown } = effectsManager.upstreamEffects.splice(index, 1);
+      const index = effectsManager.upstreamDraggersEffects.findIndex(
+        ({ vDragger }) => {
+          return vDragger.id === candidateVDragger.id;
+        }
+      );
+      const { teardown } = effectsManager.upstreamDraggersEffects.splice(
+        index,
+        1
+      );
       teardown();
     }
   }

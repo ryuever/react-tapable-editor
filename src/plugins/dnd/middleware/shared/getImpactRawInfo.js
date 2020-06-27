@@ -1,9 +1,6 @@
 import {
-  getVDragger,
-  draggerElementFromPoint,
   getVContainer,
   containerElementFromPoint,
-  closestDraggerElementFromElement,
   closestExclusiveContainerNodeFromElement
 } from "../../setAttributes";
 import { within, positionInRect } from "../../collision";
@@ -18,6 +15,8 @@ const shouldAccept = (vContainer, vDragger) => {
 
   return el.matches(draggerSelector);
 };
+
+const DEBUG = true;
 
 const getRawInfo = ({
   impactPoint,
@@ -126,18 +125,20 @@ const getImpactRawInfo = ({ impactPoint, liftUpVDragger }, ctx, actions) => {
   };
 
   if (candidateContainerElement) {
-    impactRawInfo = getRawInfo({
-      impactPoint,
-      candidateContainerElement,
-      vDraggers,
-      vContainers,
-      liftUpVDragger,
-      isFirst: true,
-      isNested
-    });
+    impactRawInfo =
+      getRawInfo({
+        impactPoint,
+        candidateContainerElement,
+        vDraggers,
+        vContainers,
+        liftUpVDragger,
+        isFirst: true,
+        isNested
+      }) || {};
   }
 
   ctx.impactRawInfo = impactRawInfo;
+  console.log("impact raw ", ctx.impactRawInfo);
 
   actions.next();
 };

@@ -1,4 +1,4 @@
-const handleLeaveContainer = (ctx, actions) => {
+const handleLeaveContainer = ({ isHomeContainer }, ctx, actions) => {
   const { impactRawInfo, prevImpact, containerEffects } = ctx;
 
   const prevImpactVContainer = prevImpact.impactVContainer;

@@ -27,11 +27,13 @@ function DNDPlugin() {
             containerSelector: '[data-contents="true"]',
             draggerSelector: ".miuffy-paragraph",
             draggerEffect: options => {
-              const { isHighlightItem, dimension, upstream } = options;
+              const { isHighlight, dimension } = options;
               console.log("options ", options);
               const { top, right, left } = dimension;
 
-              if (isHighlightItem) {
+              console.log("is hight ", isHighlight);
+
+              if (isHighlight) {
                 horizontalIndicator.style.position = "absolute";
                 horizontalIndicator.style.width = `${right - left}px`;
                 horizontalIndicator.style.height = `3px`;
@@ -66,10 +68,10 @@ function DNDPlugin() {
               );
             },
             draggerEffect: options => {
-              const { isHighlightItem, dimension, upstream } = options;
+              const { isHighlight, dimension } = options;
               const { top, bottom, left } = dimension;
 
-              if (isHighlightItem) {
+              if (isHighlight) {
                 verticalIndicator.style.position = "absolute";
                 verticalIndicator.style.width = "3px";
                 verticalIndicator.style.height = `${bottom - top}px`;

@@ -1,8 +1,9 @@
+import { orientationToMeasure } from "../../../utils";
+
 const handleEnterOtherContainer = (ctx, actions) => {
   const {
     impactRawInfo,
-    effectsManager,
-    action: { operation, isHomeContainerFocused }
+    action: { operation, isHomeContainerFocused, effectsManager }
   } = ctx;
 
   if (operation !== "onEnter" || isHomeContainerFocused) {
@@ -54,13 +55,16 @@ const handleEnterOtherContainer = (ctx, actions) => {
 
   for (let i = initialValue; i < len; i++) {
     const vDragger = children.getItem(i);
+    const isHighlight = i === initialValue;
     const teardown = draggerEffect({
       placedPosition: measure[0],
-      shouldMove: true,
+      shouldMove: !isHighlight || !positionIndex,
+      downstream: !isHighlight || !positionIndex,
       el: vDragger.el,
-      downstream: true
+      dimension: vDragger.dimension.rect,
+      isHighlight
     });
-    effectsManager.impactDownstreamEffects.push({ teardown, vDragger });
+    effectsManager.downstreamDraggersEffects.push({ teardown, vDragger });
   }
 
   ctx.impact = impact;

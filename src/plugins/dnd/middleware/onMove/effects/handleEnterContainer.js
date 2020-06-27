@@ -1,6 +1,10 @@
 import EffectsManager from "./EffectsManager";
 
-const handleEnterContainer = ({ lifeUpDragger }, ctx, actions) => {
+const handleEnterContainer = (
+  { lifeUpDragger, isHomeContainer },
+  ctx,
+  actions
+) => {
   const { impactRawInfo, prevImpact, dndEffects } = ctx;
 
   const prevImpactVContainer = prevImpact.impactVContainer;
@@ -12,10 +16,10 @@ const handleEnterContainer = ({ lifeUpDragger }, ctx, actions) => {
       currentImpactVContainer &&
       prevImpactVContainer.id !== currentImpactVContainer.id)
   ) {
-    let effectsManager = containerEffects.find(currentImpactVContainer.id);
+    let effectsManager = dndEffects.find(currentImpactVContainer.id);
     const { impactVContainer } = impactRawInfo;
 
-    if (effectsManager === -1) {
+    if (!effectsManager) {
       effectsManager = new EffectsManager({
         dragger: lifeUpDragger,
         impactContainer: impactVContainer
@@ -26,7 +30,9 @@ const handleEnterContainer = ({ lifeUpDragger }, ctx, actions) => {
 
     ctx.action = {
       operation: "onEnter",
-      isHomeContainerFocused: !isHomeContainer(prevImpactVContainer),
+      isHomeContainerFocused: prevImpactVContainer
+        ? !isHomeContainer(prevImpactVContainer)
+        : false,
       effectsManager
     };
   }

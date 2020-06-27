@@ -3,8 +3,7 @@ import { orientationToMeasure } from "../../../utils";
 const handleImpactDraggerEffectOnEnter = (ctx, actions) => {
   const {
     impactRawInfo,
-    effectsManager,
-    action: { operation }
+    action: { operation, effectsManager }
   } = ctx;
 
   if (operation !== "onEnter") {
@@ -19,7 +18,6 @@ const handleImpactDraggerEffectOnEnter = (ctx, actions) => {
     impactPosition,
     candidateVDragger
   } = impactRawInfo;
-  const { impactPosition } = impactRawInfo;
 
   const measure = orientationToMeasure(orientation);
   const positionIndex = measure.indexOf(impactPosition);
@@ -29,7 +27,9 @@ const handleImpactDraggerEffectOnEnter = (ctx, actions) => {
       el,
       shouldMove: !positionIndex,
       downstream: !positionIndex,
-      placedPosition: measure[0]
+      placedPosition: measure[0],
+      dimension: impactVContainer.dimension.rect,
+      isHighlight: true
     });
 
     effectsManager.impactDraggerEffects.push({
