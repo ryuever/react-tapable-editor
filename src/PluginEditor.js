@@ -6,7 +6,6 @@ import {
   convertFromRaw
 } from "draft-js";
 import { SyncHook, SyncBailHook, SyncWaterfallHook } from "tapable";
-import Immutable from "immutable";
 import Context from "./Context";
 import PlaceholderPlugin from "./plugins/PlaceholderPlugin";
 import BlockStyleFnPlugin from "./plugins/BlockStyleFnPlugin";
@@ -26,7 +25,7 @@ import SidebarPlugin from "./plugins/sidebar-plugin";
 import LinkSpanDecoratorPlugin from "./plugins/LinkSpanDecoratorPlugin";
 import LinkDecoratorPlugin from "./plugins/LinkDecorator";
 
-import DNDPlugin from "./plugins/dnd-plugin";
+import DNDPlugin from "./plugins/dnd-plugin/configNest";
 
 import PrismDecorator from "./decorators/prism";
 // import './decorators/prism/theme/prism-solarizedlight.css'
@@ -37,7 +36,9 @@ import MultiDecorator from "./decorators/prism/multiple";
 import Editor from "./Editor";
 import decorateComposer from "./decoratorComposer";
 const { Provider } = Context;
-const { Map } = Immutable;
+
+// import nestedData from '../mock/nested'
+import dndHelperData from "../mock/dndHelper";
 
 window.__DRAFT_GKX = {
   draft_tree_data_support: true
@@ -171,38 +172,12 @@ class PluginEditor extends PureComponent {
     this.sidebarRef = createRef();
     this.dragging = false;
 
-    const rawState = {
-      blocks: [
-        {
-          key: "A",
-          text: "",
-          children: [
-            {
-              key: "B",
-              text: "",
-              data: new Map({ flexRow: true }),
-              children: [
-                { key: "C", text: "left block", children: [] },
-                { key: "D", text: "right block", children: [] }
-              ]
-            },
-            {
-              key: "E",
-              type: "header-one",
-              text: "This is a tree based document!",
-              children: []
-            }
-          ]
-        }
-      ],
-      entityMap: {}
-    };
-
+    const rawState = dndHelperData;
     const newContentState = convertFromRaw(rawState);
 
     this.state = {
-      editorState: EditorState.createEmpty()
-      // editorState: EditorState.createWithContent(newContentState)
+      // editorState: EditorState.createEmpty()
+      editorState: EditorState.createWithContent(newContentState)
     };
 
     this.plugins.forEach(plugin => {
