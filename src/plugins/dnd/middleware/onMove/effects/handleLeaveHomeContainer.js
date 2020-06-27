@@ -1,8 +1,11 @@
 import { orientationToMeasure } from "./../../../utils";
 
-const handleLeaveHomeContainer = (ctx, actions) => {
+const handleLeaveHomeContainer = (
+  { prevImpact, liftUpVDraggerIndex },
+  ctx,
+  actions
+) => {
   const {
-    prevImpact,
     dndConfig: { withPlaceholder },
     action: { operation, isHomeContainerFocused, effectsManager }
   } = ctx;
@@ -20,10 +23,9 @@ const handleLeaveHomeContainer = (ctx, actions) => {
 
   const {
     index,
-    impactContainer: {
+    impactVContainer: {
       children,
-      draggerEffect,
-      containerConfig: { orientation }
+      containerConfig: { orientation, draggerEffect }
     }
   } = prevImpact;
 
@@ -47,7 +49,7 @@ const handleLeaveHomeContainer = (ctx, actions) => {
       isHighlight: false
     });
 
-    effectsManager.upstreamDraggerEffects.push({
+    effectsManager.upstreamDraggersEffects.push({
       teardown,
       vDragger
     });

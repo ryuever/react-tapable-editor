@@ -13,20 +13,27 @@ const handleReorderOnHomeContainer = (ctx, actions) => {
   const {
     impactRawInfo: {
       candidateVDragger,
-      impactVContainer: {
-        containerConfig: { orientation, draggerEffect }
-      },
+      impactVContainer,
       impactPosition,
       candidateVDraggerIndex
     },
     impact: { index: currentIndex }
   } = ctx;
+  const {
+    containerConfig: { orientation, draggerEffect }
+  } = impactVContainer;
+
   const measure = orientationToMeasure(orientation);
 
   if (typeof draggerEffect !== "function") {
     actions.next();
     return;
   }
+
+  const impact = {
+    impactVContainer,
+    index: candidateVDraggerIndex
+  };
 
   // move down
   if (currentIndex < candidateVDraggerIndex) {
@@ -40,11 +47,12 @@ const handleReorderOnHomeContainer = (ctx, actions) => {
         return vDragger.id === candidateVDragger.id;
       }
     );
-    const { teardown } = effectsManager.downstreamDraggersEffects.splice(
-      index,
-      1
-    );
-    teardown();
+
+    if (index !== -1) {
+      const { teardown } = effectsManager.downstreamDraggersEffects[index];
+      effectsManager.downstreamDraggersEffects.splice(index, 1);
+      teardown();
+    }
   }
 
   // move up
@@ -68,6 +76,8 @@ const handleReorderOnHomeContainer = (ctx, actions) => {
       teardown
     });
   }
+
+  ctx.impact = impact;
 
   actions.next();
 };

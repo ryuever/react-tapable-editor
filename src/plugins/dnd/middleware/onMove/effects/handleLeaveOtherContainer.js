@@ -3,10 +3,11 @@ const handleLeaveOtherContainer = (ctx, actions) => {
     action: { operation, isHomeContainerFocused, effectsManager }
   } = ctx;
   if (operation !== "onLeave" || isHomeContainerFocused) {
-    effectsManager.teardown();
     actions.next();
     return;
   }
+
+  effectsManager.teardown();
 
   actions.next();
 };

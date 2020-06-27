@@ -1,5 +1,11 @@
-const handleLeaveContainer = ({ isHomeContainer }, ctx, actions) => {
-  const { impactRawInfo, prevImpact, containerEffects } = ctx;
+import report from "../../../reporter";
+
+const handleLeaveContainer = (
+  { isHomeContainer, prevImpact },
+  ctx,
+  actions
+) => {
+  const { impactRawInfo, dndEffects } = ctx;
 
   const prevImpactVContainer = prevImpact.impactVContainer;
   const currentImpactVContainer = impactRawInfo.impactVContainer;
@@ -15,11 +21,12 @@ const handleLeaveContainer = ({ isHomeContainer }, ctx, actions) => {
       currentImpactVContainer &&
       prevImpactVContainer.id !== currentImpactVContainer.id)
   ) {
-    const effectsManager = containerEffects.find(prevImpactVContainer.id);
+    const effectsManager = dndEffects.find(prevImpactVContainer.id);
+    report.logLeaveContainer(prevImpactVContainer);
 
     ctx.action = {
       operation: "onLeave",
-      isHomeContainerFocused: !isHomeContainer(prevImpactVContainer),
+      isHomeContainerFocused: isHomeContainer(prevImpactVContainer),
       effectsManager: effectsManager
     };
   }

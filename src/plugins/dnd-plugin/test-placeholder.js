@@ -21,16 +21,19 @@ function DNDPlugin() {
         mode: "nested",
         draggerHandlerSelector: ".sidebar-addon-visible",
         containerEffect: () => noop,
-        withPlaceholder: false,
+        draggerEffect: () => noop,
         configs: [
           {
             containerSelector: '[data-contents="true"]',
             draggerSelector: ".miuffy-paragraph",
-            impactDraggerEffect: options => {
-              const { dimension, placedPosition } = options;
-              console.log("trigger- --");
+            draggerEffect: options => {
+              const { isHighlight, dimension, placedPosition } = options;
+              console.log("options ", options);
               const { top, right, left, bottom, height } = dimension;
-              requestAnimationFrame(() => {
+
+              console.log("is hight ", isHighlight);
+
+              if (isHighlight) {
                 if (placedPosition === "top") {
                   horizontalIndicator.style.top = `${top}px`;
                 } else {
@@ -42,20 +45,22 @@ function DNDPlugin() {
                 horizontalIndicator.style.height = `3px`;
                 horizontalIndicator.style.left = `${left - 10}px`;
                 horizontalIndicator.style.backgroundColor = "#69c0ff";
-                horizontalIndicator.style.opacity = 1;
-                horizontalIndicator.style.transition = "opacity 1000ms ease-in";
-              });
+                horizontalIndicator.style.transition =
+                  "background-color 250ms ease-in";
 
-              return () => {
-                verticalIndicator.style.removeProperty("transition");
-                horizontalIndicator.style.position = "absolute";
-                horizontalIndicator.style.width = "0px";
-                horizontalIndicator.style.height = `0px`;
-                horizontalIndicator.style.top = `0px`;
-                horizontalIndicator.style.left = `0px`;
-                horizontalIndicator.style.opacity = 0;
-                horizontalIndicator.style.backgroundColor = "transparent";
-              };
+                return () => {
+                  console.log("clean up ", options);
+                  horizontalIndicator.style.position = "absolute";
+                  horizontalIndicator.style.width = "0px";
+                  horizontalIndicator.style.height = `0px`;
+                  horizontalIndicator.style.top = `0px`;
+                  horizontalIndicator.style.left = `0px`;
+                  horizontalIndicator.style.backgroundColor = "transparent";
+                  horizontalIndicator.style.transition =
+                    "background-color 250ms ease-out";
+                };
+              }
+              return () => {};
             }
           },
           {
@@ -68,35 +73,32 @@ function DNDPlugin() {
                 el.matches(".miuffy-paragraph >div:first-child")
               );
             },
-            impactDraggerEffect: options => {
-              const { dimension, placedPosition } = options;
-              const { top, bottom, left, right } = dimension;
+            draggerEffect: options => {
+              const { isHighlight, dimension } = options;
+              const { top, bottom, left } = dimension;
 
-              if (placedPosition === "left") {
-                verticalIndicator.style.left = `${left - 10}px`;
-              } else {
-                verticalIndicator.style.left = `${right + 10}px`;
-              }
-              requestAnimationFrame(() => {
+              if (isHighlight) {
                 verticalIndicator.style.position = "absolute";
                 verticalIndicator.style.width = "3px";
                 verticalIndicator.style.height = `${bottom - top}px`;
                 verticalIndicator.style.top = `${top}px`;
+                verticalIndicator.style.left = `${left - 10}px`;
                 verticalIndicator.style.backgroundColor = "#69c0ff";
-                verticalIndicator.style.opacity = 1;
-                verticalIndicator.style.transition = "opacity 250ms ease-in";
-              });
+                verticalIndicator.style.transition =
+                  "background-color 250ms ease-in";
 
-              return () => {
-                verticalIndicator.style.removeProperty("transition");
-                verticalIndicator.style.position = "absolute";
-                verticalIndicator.style.width = "0px";
-                verticalIndicator.style.height = `0px`;
-                verticalIndicator.style.top = `0px`;
-                verticalIndicator.style.left = `0px`;
-                verticalIndicator.style.opacity = 0;
-                verticalIndicator.style.backgroundColor = "transparent";
-              };
+                return () => {
+                  verticalIndicator.style.position = "absolute";
+                  verticalIndicator.style.width = "0px";
+                  verticalIndicator.style.height = `0px`;
+                  verticalIndicator.style.top = `0px`;
+                  verticalIndicator.style.left = `0px`;
+                  verticalIndicator.style.backgroundColor = "transparent";
+                  verticalIndicator.style.transition =
+                    "background-color 250ms ease-out";
+                };
+              }
+              return () => {};
             }
           }
         ]

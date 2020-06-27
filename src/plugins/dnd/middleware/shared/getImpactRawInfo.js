@@ -3,7 +3,7 @@ import {
   containerElementFromPoint,
   closestExclusiveContainerNodeFromElement
 } from "../../setAttributes";
-import { within, positionInRect } from "../../collision";
+import { within, pointInRectWithOrientation } from "../../collision";
 
 const shouldAccept = (vContainer, vDragger) => {
   const { containerConfig } = vContainer;
@@ -16,7 +16,7 @@ const shouldAccept = (vContainer, vDragger) => {
   return el.matches(draggerSelector);
 };
 
-const DEBUG = true;
+const DEBUG = false;
 
 const getRawInfo = ({
   impactPoint,
@@ -28,6 +28,11 @@ const getRawInfo = ({
 }) => {
   // console.log('candidateContainerElement ', candidateContainerElement)
   const vContainer = getVContainer(candidateContainerElement, vContainers);
+
+  // If dragger move on to itself or its children's node container.
+  // then return...
+  if (liftUpVDragger.el.contains(vContainer.el)) return;
+
   const {
     containerConfig: { orientation },
     children
@@ -41,7 +46,7 @@ const getRawInfo = ({
         // console.log('vDragger.dimension ', vDragger.dimension, impactPoint)
         const { firstCollisionRect, secondCollisionRect } = vDragger.dimension;
         if (within(firstCollisionRect, impactPoint)) {
-          console.log("hit before ", vContainer.id);
+          DEBUG && console.log("hit before ", vContainer.id);
           return {
             candidateVDragger: vDragger,
             candidateVDraggerIndex: i,
@@ -51,7 +56,7 @@ const getRawInfo = ({
         }
 
         if (within(secondCollisionRect, impactPoint)) {
-          console.log("hit after ", vContainer.id);
+          DEBUG && console.log("hit after ", vContainer.id);
           return {
             candidateVDragger: vDragger,
             candidateVDraggerIndex: i,
@@ -62,8 +67,12 @@ const getRawInfo = ({
       } else {
         const rect = vDragger.dimension.rect;
         if (within(rect, impactPoint)) {
-          console.log("hit main ", vContainer.id);
-          const position = positionInRect(impactPoint, rect);
+          DEBUG && console.log("hit main ", vContainer.id);
+          const position = pointInRectWithOrientation(
+            impactPoint,
+            rect,
+            orientation
+          );
 
           return {
             candidateVDragger: vDragger,
@@ -137,8 +146,9 @@ const getImpactRawInfo = ({ impactPoint, liftUpVDragger }, ctx, actions) => {
       }) || {};
   }
 
+  // console.log('impact raw ', impactRawInfo)
   ctx.impactRawInfo = impactRawInfo;
-  console.log("impact raw ", ctx.impactRawInfo);
+  // console.log("impact raw ", ctx.impactRawInfo);
 
   actions.next();
 };

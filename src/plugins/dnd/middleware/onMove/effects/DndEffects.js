@@ -7,16 +7,16 @@ export default class DndEffects {
     return this.children[id];
   }
 
-  add(containerEffects) {
-    const { id } = containerEffects;
-    this.children[id] = containerEffects;
+  add(effectsManager) {
+    const { id } = effectsManager;
+    this.children[id] = effectsManager;
     return () => {
       delete this.children[id];
     };
   }
 
-  remove(containerEffects) {
-    const id = containerEffects.id;
+  remove(effectsManager) {
+    const id = effectsManager.id;
     if (this.children[id]) {
       this.children[id].teardown();
       delete this.children[id];
@@ -24,8 +24,8 @@ export default class DndEffects {
   }
 
   teardown() {
-    for (let id in children) {
-      const child = children[id];
+    for (let id in this.children) {
+      const child = this.children[id];
       child.teardown();
     }
   }

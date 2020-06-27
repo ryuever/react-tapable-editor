@@ -24,6 +24,14 @@ function reporter() {
   this.addContainerNode = manipulateNode("add", "container");
   this.addDraggerNode = manipulateNode("add", "dragger");
   this.removeContainerNode = manipulateNode("remove", "container");
+
+  this.logEnterContainer = container => {
+    console.log(`On enter: %c${container.id}`, "color: #bada55");
+  };
+
+  this.logLeaveContainer = container => {
+    console.log(`On leave: %c${container.id}`, "color: #bada55");
+  };
 }
 
 export default new reporter();

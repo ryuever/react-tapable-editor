@@ -17,14 +17,15 @@ import syncCopyPosition from "./middleware/onMove/syncCopyPosition";
 import addIntermediateCtxValue from "./middleware/onMove/addIntermediateCtxValue";
 import removeIntermediateCtxValue from "./middleware/onMove/removeIntermediateCtxValue";
 import handleLeaveContainer from "./middleware/onMove/effects/handleLeaveContainer";
+import handleLeaveHomeContainer from "./middleware/onMove/effects/handleLeaveHomeContainer";
+import handleLeaveOtherContainer from "./middleware/onMove/effects/handleLeaveOtherContainer";
 import handleEnterContainer from "./middleware/onMove/effects/handleEnterContainer";
 import handleEnterHomeContainer from "./middleware/onMove/effects/handleEnterHomeContainer";
 import handleEnterOtherContainer from "./middleware/onMove/effects/handleEnterOtherContainer";
-import handleImpactDraggerEffectOnEnter from "./middleware/onMove/effects/handleImpactDraggerEffectOnEnter";
 import handleReorder from "./middleware/onMove/effects/handleReorder";
 import handleReorderOnHomeContainer from "./middleware/onMove/effects/handleReorderOnHomeContainer";
 import handleReorderOnOtherContainer from "./middleware/onMove/effects/handleReorderOnOtherContainer";
-import handleImpactDraggerEffectOnReorder from "./middleware/onMove/effects/handleImpactDraggerEffectOnReorder";
+import handleImpactDraggerEffect from "./middleware/onMove/effects/handleImpactDraggerEffect";
 
 import getImpactRawInfo from "./middleware/shared/getImpactRawInfo";
 import { SyncHook } from "tapable";
@@ -53,6 +54,7 @@ class DND {
       cleanupEffects: new SyncHook()
     };
     this.rootElement = rootElement;
+    this.impact = {};
 
     this.startObserve();
     this.setUp();
@@ -67,7 +69,6 @@ class DND {
         hooks: this.hooks,
         dndConfig: this.dndConfig,
         containersEffects: this.containersEffects,
-        impact: {},
         prevImpact: {},
         dndEffects: new DndEffects()
       }
@@ -83,10 +84,8 @@ class DND {
         hooks: this.hooks,
         dndConfig: this.dndConfig,
         containersEffects: this.containersEffects,
-        prevImpact: {},
         dndEffects: this.dndEffects,
-        prevImpact: {},
-        impact: {} // has placeholder or not...
+        prevImpact: {}
       }
     });
 
@@ -102,22 +101,16 @@ class DND {
       getImpactRawInfo,
       addIntermediateCtxValue,
       handleLeaveContainer,
+      handleLeaveHomeContainer,
+      handleLeaveOtherContainer,
       handleEnterContainer,
       handleEnterHomeContainer,
       handleEnterOtherContainer,
-      handleImpactDraggerEffectOnEnter,
       handleReorder,
       handleReorderOnHomeContainer,
       handleReorderOnOtherContainer,
-      handleImpactDraggerEffectOnReorder,
+      handleImpactDraggerEffect,
       removeIntermediateCtxValue,
-      // First, find the target container with smallest scope...
-      // getDropTarget,
-      // movingOnHomeContainer,
-      // // resolveRawPlacedInfo,
-      // resolveNestedRawPlaceInfo,
-      // resolvePlacedInfo,
-      // updateEffects,
       (_, ctx) => {
         // console.log("ctx ", ctx);
       }
@@ -129,8 +122,13 @@ class DND {
   moveAPI = () => {
     return {
       prevEffects: this.effects,
-      hooks: this.hooks
+      hooks: this.hooks,
+      prevImpact: this.impact
     };
+  };
+
+  updateImpact = impact => {
+    this.impact = impact;
   };
 
   getClone = () => {
@@ -145,7 +143,9 @@ class DND {
       onMoveHandler: this.onMoveHandler,
       getDragger: this.getDragger,
       getContainer: this.getContainer,
-      configs: this.configs
+      configs: this.configs,
+      dndEffects: this.dndEffects,
+      updateImpact: this.updateImpact
     });
     this.sensor.start();
   }

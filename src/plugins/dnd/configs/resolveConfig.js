@@ -10,7 +10,8 @@ const reservedKeys = [
   "draggerSelector",
   "shouldAcceptDragger",
   "containerEffect",
-  "draggerEffect"
+  "draggerEffect",
+  "impactDraggerEffect"
 ];
 
 export default (configs, globalConfigs) => {

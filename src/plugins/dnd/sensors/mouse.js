@@ -10,7 +10,9 @@ class Mouse {
     onMoveHandler,
     getDragger,
     getContainer,
-    configs
+    configs,
+    dndEffects,
+    updateImpact
   }) {
     this.moveAPI = moveAPI;
     this.getClone = getClone;
@@ -19,6 +21,8 @@ class Mouse {
     this.onStartHandler = onStartHandler;
     this.onMoveHandler = onMoveHandler;
     this.configs = configs;
+    this.dndEffects = dndEffects;
+    this.updateImpact = updateImpact;
   }
 
   start() {
@@ -55,7 +59,7 @@ class Mouse {
                   : false;
               };
 
-              this.onMoveHandler.start({
+              const result = this.onMoveHandler.start({
                 // event,
                 impactPoint,
                 impactVDragger: dragger,
@@ -66,14 +70,16 @@ class Mouse {
                 isHomeContainer,
                 ...this.moveAPI()
               });
+
+              const { impact } = result;
+              if (impact) this.updateImpact(impact);
             }
           },
           {
             eventName: "mouseup",
             fn: e => {
               unbind();
-              const { hooks } = this.moveAPI();
-              hooks.cleanupEffects.call();
+              this.dndEffects.teardown();
               document.body.removeChild(clone);
             }
           }

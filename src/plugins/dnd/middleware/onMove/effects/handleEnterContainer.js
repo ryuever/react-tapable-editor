@@ -1,11 +1,12 @@
 import EffectsManager from "./EffectsManager";
+import report from "../../../reporter";
 
 const handleEnterContainer = (
-  { lifeUpDragger, isHomeContainer },
+  { lifeUpDragger, isHomeContainer, prevImpact },
   ctx,
   actions
 ) => {
-  const { impactRawInfo, prevImpact, dndEffects } = ctx;
+  const { impactRawInfo, dndEffects } = ctx;
 
   const prevImpactVContainer = prevImpact.impactVContainer;
   const currentImpactVContainer = impactRawInfo.impactVContainer;
@@ -28,12 +29,15 @@ const handleEnterContainer = (
       dndEffects.add(effectsManager);
     }
 
+    report.logEnterContainer(currentImpactVContainer);
+
     ctx.action = {
       operation: "onEnter",
-      isHomeContainerFocused: prevImpactVContainer
-        ? !isHomeContainer(prevImpactVContainer)
-        : false,
+      isHomeContainerFocused: isHomeContainer(currentImpactVContainer),
       effectsManager
+    };
+    ctx.impact = {
+      impactVContainer: currentImpactVContainer
     };
   }
 

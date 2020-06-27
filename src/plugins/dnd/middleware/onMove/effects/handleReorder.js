@@ -1,20 +1,20 @@
-const handleReorder = ({ isHomeContainer }, ctx, actions) => {
+const handleReorder = ({ prevImpact, isHomeContainer }, ctx, actions) => {
   const {
     impactRawInfo: { impactVContainer: currentImpactVContainer },
-    prevImpact: { impactVContainer: prevImpactVContainer },
-    containerEffects
+    dndEffects
   } = ctx;
+  const { impactVContainer: prevImpactVContainer } = prevImpact;
 
   if (
     prevImpactVContainer &&
     currentImpactVContainer &&
     prevImpactVContainer.id === currentImpactVContainer.id
   ) {
-    let effectsManager = containerEffects.find(currentImpactVContainer.id);
+    let effectsManager = dndEffects.find(currentImpactVContainer.id);
 
     ctx.action = {
       operation: "reorder",
-      isHomeContainerFocused: !isHomeContainer(currentImpactVContainer),
+      isHomeContainerFocused: isHomeContainer(currentImpactVContainer),
       effectsManager
     };
 
