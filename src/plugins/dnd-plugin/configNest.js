@@ -29,7 +29,6 @@ function DNDPlugin() {
               '[data-contents="true"] >div:first-child >div:first-child .miuffy-paragraph',
             impactDraggerEffect: options => {
               const { dimension, placedPosition } = options;
-              console.log("trigger- --");
               const { top, right, left, bottom, height } = dimension;
               requestAnimationFrame(() => {
                 if (placedPosition === "top") {
@@ -75,9 +74,9 @@ function DNDPlugin() {
               const { top, bottom, left, right } = dimension;
 
               if (placedPosition === "left") {
-                verticalIndicator.style.left = `${left - 10}px`;
+                verticalIndicator.style.left = `${left - 5}px`;
               } else {
-                verticalIndicator.style.left = `${right + 10}px`;
+                verticalIndicator.style.left = `${right + 5}px`;
               }
               requestAnimationFrame(() => {
                 verticalIndicator.style.position = "absolute";
@@ -101,53 +100,53 @@ function DNDPlugin() {
               };
             }
           },
-          {
-            orientation: "horizontal",
-            containerSelector:
-              ".display-flex.miuffy-paragraph >div:first-child",
-            draggerSelector: ".miuffy-paragraph >div:first-child",
-            shouldAcceptDragger: el => {
-              return (
-                el.matches(".miuffy-paragraph") ||
-                el.matches(".miuffy-paragraph >div:first-child")
-              );
-            },
-            impactDraggerEffect: options => {
-              const { dimension, placedPosition } = options;
-              const { top, bottom, left, right } = dimension;
+          // {
+          //   orientation: "horizontal",
+          //   containerSelector:
+          //     ".display-flex.miuffy-paragraph >div:first-child",
+          //   draggerSelector: ".miuffy-paragraph >div:first-child",
+          //   shouldAcceptDragger: el => {
+          //     return (
+          //       el.matches(".miuffy-paragraph") ||
+          //       el.matches(".miuffy-paragraph >div:first-child")
+          //     );
+          //   },
+          //   impactDraggerEffect: options => {
+          //     const { dimension, placedPosition } = options;
+          //     const { top, bottom, left, right } = dimension;
 
-              if (placedPosition === "left") {
-                verticalIndicator.style.left = `${left - 10}px`;
-              } else {
-                verticalIndicator.style.left = `${right + 10}px`;
-              }
-              requestAnimationFrame(() => {
-                verticalIndicator.style.position = "absolute";
-                verticalIndicator.style.width = "3px";
-                verticalIndicator.style.height = `${bottom - top}px`;
-                verticalIndicator.style.top = `${top}px`;
-                verticalIndicator.style.backgroundColor = "#69c0ff";
-                verticalIndicator.style.opacity = 1;
-                verticalIndicator.style.transition = "opacity 250ms ease-in";
-              });
+          //     if (placedPosition === "left") {
+          //       verticalIndicator.style.left = `${left - 10}px`;
+          //     } else {
+          //       verticalIndicator.style.left = `${right + 10}px`;
+          //     }
+          //     requestAnimationFrame(() => {
+          //       verticalIndicator.style.position = "absolute";
+          //       verticalIndicator.style.width = "3px";
+          //       verticalIndicator.style.height = `${bottom - top}px`;
+          //       verticalIndicator.style.top = `${top}px`;
+          //       verticalIndicator.style.backgroundColor = "#69c0ff";
+          //       verticalIndicator.style.opacity = 1;
+          //       verticalIndicator.style.transition = "opacity 250ms ease-in";
+          //     });
 
-              return () => {
-                verticalIndicator.style.removeProperty("transition");
-                verticalIndicator.style.position = "absolute";
-                verticalIndicator.style.width = "0px";
-                verticalIndicator.style.height = `0px`;
-                verticalIndicator.style.top = `0px`;
-                verticalIndicator.style.left = `0px`;
-                verticalIndicator.style.opacity = 0;
-                verticalIndicator.style.backgroundColor = "transparent";
-              };
-            }
-          },
+          //     return () => {
+          //       verticalIndicator.style.removeProperty("transition");
+          //       verticalIndicator.style.position = "absolute";
+          //       verticalIndicator.style.width = "0px";
+          //       verticalIndicator.style.height = `0px`;
+          //       verticalIndicator.style.top = `0px`;
+          //       verticalIndicator.style.left = `0px`;
+          //       verticalIndicator.style.opacity = 0;
+          //       verticalIndicator.style.backgroundColor = "transparent";
+          //     };
+          //   }
+          // },
           {
             orientation: "vertical",
             containerSelector:
-              ".display-flex.miuffy-paragraph >div:first-child >div >div",
-            draggerSelector: ".miuffy-paragraph >div:first-child",
+              ".display-flex.miuffy-paragraph >div:first-child >div",
+            draggerSelector: ".miuffy-paragraph",
             shouldAcceptDragger: el => {
               return (
                 el.matches(".miuffy-paragraph") ||
@@ -158,16 +157,16 @@ function DNDPlugin() {
               const { dimension, placedPosition } = options;
               const { top, bottom, left, right } = dimension;
 
-              if (placedPosition === "left") {
-                verticalIndicator.style.left = `${left - 10}px`;
+              if (placedPosition === "top") {
+                verticalIndicator.style.top = `${top - 5}px`;
               } else {
-                verticalIndicator.style.left = `${right + 10}px`;
+                verticalIndicator.style.top = `${bottom + 5}px`;
               }
               requestAnimationFrame(() => {
                 verticalIndicator.style.position = "absolute";
-                verticalIndicator.style.width = "3px";
-                verticalIndicator.style.height = `${bottom - top}px`;
-                verticalIndicator.style.top = `${top}px`;
+                verticalIndicator.style.width = `${right - left}px`;
+                verticalIndicator.style.height = "3px";
+                verticalIndicator.style.left = `${left}px`;
                 verticalIndicator.style.backgroundColor = "#69c0ff";
                 verticalIndicator.style.opacity = 1;
                 verticalIndicator.style.transition = "opacity 250ms ease-in";
