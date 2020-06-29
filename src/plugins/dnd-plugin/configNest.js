@@ -1,5 +1,9 @@
+import { EditorState } from "draft-js";
 import DND from "../dnd";
-const noop = () => {};
+import transferBlock from "../../utils/block/transferBlock";
+import { extractBlockKeyFromOffsetKey } from "../../utils/keyHelper";
+import BlockUtil from "../../utils/block/blockUtil";
+const { insertNewLineAfterAll } = BlockUtil;
 
 function DNDPlugin() {
   let verticalIndicator;
@@ -11,25 +15,85 @@ function DNDPlugin() {
     horizontalIndicator = document.createElement("div");
     document.body.appendChild(horizontalIndicator);
   };
+
+  const logger = (
+    { dragger, candidateDragger, container, placedPosition },
+    getEditor
+  ) => {
+    const draggerOffsetKey = dragger.getAttribute("data-offset-key");
+    const candidateDraggerOffsetKey = candidateDragger.getAttribute(
+      "data-offset-key"
+    );
+    const containerOffsetKey = container.getAttribute("data-offset-key");
+
+    console.log(
+      `placed ${draggerOffsetKey} to the ${placedPosition} of ${candidateDraggerOffsetKey}, which is included in ${containerOffsetKey}`
+    );
+  };
+
   this.apply = getEditor => {
     createIndicatorBar();
     const { hooks } = getEditor();
+
+    const { editorState } = getEditor();
+    const contentState = editorState.getCurrentContent();
+    console.log("block ", contentState.getBlockMap());
+
     hooks.afterMounted.tap("initDNDPlugin", () => {
-      const { editorRef } = getEditor();
       new DND({
+        onDrop: ({ dragger, candidateDragger, placedPosition }) => {
+          const draggerOffsetKey = dragger.getAttribute("data-offset-key");
+          const candidateDraggerOffsetKey = candidateDragger.getAttribute(
+            "data-offset-key"
+          );
+          const sourceBlockKey = extractBlockKeyFromOffsetKey(draggerOffsetKey);
+          const targetBlockKey = extractBlockKeyFromOffsetKey(
+            candidateDraggerOffsetKey
+          );
+          const { editorState, hooks } = getEditor();
+
+          console.log("transfer ", sourceBlockKey, targetBlockKey);
+
+          const newContent = transferBlock(
+            editorState,
+            sourceBlockKey,
+            targetBlockKey,
+            placedPosition
+          );
+          const nextNewContent = insertNewLineAfterAll(newContent);
+          const selection = editorState.getSelection();
+          console.log("new content ", newContent);
+
+          // if (DEBUG) {
+          //   infoLog(
+          //     "block map after insert new line ",
+          //     nextNewContent.getBlockMap()
+          //   );
+          // }
+          const dismissSelection = EditorState.push(
+            editorState,
+            nextNewContent.merge({
+              selectionBefore: selection,
+              selectionAfter: nextNewContent
+                .getSelectionAfter()
+                .set("hasFocus", false)
+            })
+          );
+
+          hooks.setState.call(dismissSelection);
+        },
         rootElement: ".DraftEditor-root",
         mode: "nested",
         draggerHandlerSelector: ".sidebar-addon-visible",
         withPlaceholder: false,
         configs: [
           {
-            containerSelector:
-              '[data-contents="true"] >div:first-child >div:first-child',
-            draggerSelector:
-              '[data-contents="true"] >div:first-child >div:first-child .miuffy-paragraph',
+            containerSelector: '[data-contents="true"] ',
+            draggerSelector: '[data-contents="true"]  .miuffy-paragraph',
             impactDraggerEffect: options => {
               const { dimension, placedPosition } = options;
-              const { top, right, left, bottom, height } = dimension;
+              const { top, right, left, height } = dimension;
+              logger(options, getEditor);
               requestAnimationFrame(() => {
                 if (placedPosition === "top") {
                   horizontalIndicator.style.top = `${top}px`;
@@ -60,8 +124,7 @@ function DNDPlugin() {
           },
           {
             orientation: "horizontal",
-            containerSelector:
-              '[data-contents="true"] >div:first-child >div:first-child >div.miuffy-paragraph',
+            containerSelector: '[data-contents="true"] >div.miuffy-paragraph',
             draggerSelector: ".miuffy-paragraph >div:first-child",
             shouldAcceptDragger: el => {
               return (
@@ -72,6 +135,7 @@ function DNDPlugin() {
             impactDraggerEffect: options => {
               const { dimension, placedPosition } = options;
               const { top, bottom, left, right } = dimension;
+              logger(options, getEditor);
 
               if (placedPosition === "left") {
                 verticalIndicator.style.left = `${left - 5}px`;
@@ -100,48 +164,6 @@ function DNDPlugin() {
               };
             }
           },
-          // {
-          //   orientation: "horizontal",
-          //   containerSelector:
-          //     ".display-flex.miuffy-paragraph >div:first-child",
-          //   draggerSelector: ".miuffy-paragraph >div:first-child",
-          //   shouldAcceptDragger: el => {
-          //     return (
-          //       el.matches(".miuffy-paragraph") ||
-          //       el.matches(".miuffy-paragraph >div:first-child")
-          //     );
-          //   },
-          //   impactDraggerEffect: options => {
-          //     const { dimension, placedPosition } = options;
-          //     const { top, bottom, left, right } = dimension;
-
-          //     if (placedPosition === "left") {
-          //       verticalIndicator.style.left = `${left - 10}px`;
-          //     } else {
-          //       verticalIndicator.style.left = `${right + 10}px`;
-          //     }
-          //     requestAnimationFrame(() => {
-          //       verticalIndicator.style.position = "absolute";
-          //       verticalIndicator.style.width = "3px";
-          //       verticalIndicator.style.height = `${bottom - top}px`;
-          //       verticalIndicator.style.top = `${top}px`;
-          //       verticalIndicator.style.backgroundColor = "#69c0ff";
-          //       verticalIndicator.style.opacity = 1;
-          //       verticalIndicator.style.transition = "opacity 250ms ease-in";
-          //     });
-
-          //     return () => {
-          //       verticalIndicator.style.removeProperty("transition");
-          //       verticalIndicator.style.position = "absolute";
-          //       verticalIndicator.style.width = "0px";
-          //       verticalIndicator.style.height = `0px`;
-          //       verticalIndicator.style.top = `0px`;
-          //       verticalIndicator.style.left = `0px`;
-          //       verticalIndicator.style.opacity = 0;
-          //       verticalIndicator.style.backgroundColor = "transparent";
-          //     };
-          //   }
-          // },
           {
             orientation: "vertical",
             containerSelector:
@@ -156,6 +178,7 @@ function DNDPlugin() {
             impactDraggerEffect: options => {
               const { dimension, placedPosition } = options;
               const { top, bottom, left, right } = dimension;
+              logger(options, getEditor);
 
               if (placedPosition === "top") {
                 verticalIndicator.style.top = `${top - 5}px`;

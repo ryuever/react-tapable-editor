@@ -12,7 +12,8 @@ class Mouse {
     getContainer,
     configs,
     dndEffects,
-    updateImpact
+    updateImpact,
+    dndConfig
   }) {
     this.moveAPI = moveAPI;
     this.getClone = getClone;
@@ -23,6 +24,7 @@ class Mouse {
     this.configs = configs;
     this.dndEffects = dndEffects;
     this.updateImpact = updateImpact;
+    this.dndConfig = dndConfig;
   }
 
   start() {
@@ -43,6 +45,7 @@ class Mouse {
 
         this.onStartHandler.start({ dragger, event });
         const clone = this.getClone();
+        let output;
 
         // If dragger exists, then start to bind relative listener
         const unbind = bindEvents(window, [
@@ -72,6 +75,7 @@ class Mouse {
               });
 
               const { impact } = result;
+              output = result.output;
               if (impact) this.updateImpact(impact);
             }
           },
@@ -79,6 +83,11 @@ class Mouse {
             eventName: "mouseup",
             fn: e => {
               unbind();
+
+              if (this.dndConfig.onDrop) {
+                this.dndConfig.onDrop(output);
+              }
+
               this.dndEffects.teardown();
               document.body.removeChild(clone);
             }

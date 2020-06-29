@@ -145,7 +145,8 @@ class DND {
       getContainer: this.getContainer,
       configs: this.configs,
       dndEffects: this.dndEffects,
-      updateImpact: this.updateImpact
+      updateImpact: this.updateImpact,
+      dndConfig: this.dndConfig
     });
     this.sensor.start();
   }

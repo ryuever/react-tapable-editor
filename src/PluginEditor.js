@@ -176,8 +176,8 @@ class PluginEditor extends PureComponent {
     const newContentState = convertFromRaw(rawState);
 
     this.state = {
-      // editorState: EditorState.createEmpty()
-      editorState: EditorState.createWithContent(newContentState)
+      editorState: EditorState.createEmpty()
+      // editorState: EditorState.createWithContent(newContentState)
     };
 
     this.plugins.forEach(plugin => {

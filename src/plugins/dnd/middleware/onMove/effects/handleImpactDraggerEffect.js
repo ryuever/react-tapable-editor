@@ -1,7 +1,7 @@
 import { orientationToMeasure } from "../../../utils";
 import { generateEffectKey } from "./utils";
 
-const handleImpactDraggerEffect = (ctx, actions) => {
+const handleImpactDraggerEffect = ({ liftUpVDragger }, ctx, actions) => {
   const {
     impactRawInfo,
     dndEffects,
@@ -16,7 +16,6 @@ const handleImpactDraggerEffect = (ctx, actions) => {
   }
 
   const {
-    el,
     containerConfig: { orientation, impactDraggerEffect }
   } = impactVContainer;
 
@@ -38,7 +37,9 @@ const handleImpactDraggerEffect = (ctx, actions) => {
     if (index === -1) {
       effectsManager.clearImpactDraggerEffects();
       const teardown = impactDraggerEffect({
-        el,
+        dragger: liftUpVDragger.el,
+        container: impactVContainer.el,
+        candidateDragger: candidateVDragger.el,
         shouldMove: !positionIndex,
         downstream: !positionIndex,
         placedPosition: impactPosition,
@@ -52,6 +53,13 @@ const handleImpactDraggerEffect = (ctx, actions) => {
         key: effectKey
       });
     }
+
+    ctx.output = {
+      dragger: liftUpVDragger.el,
+      candidateDragger: candidateVDragger.el,
+      container: impactVContainer.el,
+      placedPosition: impactPosition
+    };
   }
 
   actions.next();

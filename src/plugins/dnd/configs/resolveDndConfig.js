@@ -11,7 +11,8 @@ const reservedKeys = [
   "mode",
   "collisionPadding",
   "withPlaceholder",
-  "isNested"
+  "isNested",
+  "onDrop"
 ];
 
 export default dndConfig => {
