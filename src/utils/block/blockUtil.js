@@ -16,7 +16,6 @@ const BlockUtil = {
    * 2. Add a new empty block
    * 3. reset selection
    */
-
   insertNewLineAfterAll: function(currentState) {
     const lastBlock = currentState.getLastBlock();
     const lastBlockText = lastBlock.getText();
@@ -63,7 +62,52 @@ const BlockUtil = {
 
   removeEmptyLineAfterAll: function(editorState) {},
 
-  insertDelimiter: function(editorState) {}
+  insertDelimiter: function(editorState) {},
+
+  blocksBefore: function(blockMap, block) {
+    return blockMap.toSeq().takeUntil(function(v) {
+      return v === block;
+    });
+  },
+
+  blocksAfter: function(blockMap, block) {
+    return blockMap
+      .toSeq()
+      .skipUntil(function(v) {
+        return v === block;
+      })
+      .skip(1);
+  },
+
+  // moveBlockInContentState
+  // removeRangeFromContentState.js
+  transformBlock: function transformBlock(key, blockMap, func) {
+    if (!key) {
+      return;
+    }
+
+    var block = blockMap.get(key);
+
+    if (!block) {
+      return;
+    }
+
+    return func(block);
+  },
+
+  getChildrenAfterRemoveBlock: function getChildrenAfterRemoveBlock(
+    parentBlock,
+    block
+  ) {
+    const parentChildrenList = parentBlock.getChildKeys();
+    const blockKey = block.getKey();
+    return parentChildrenList["delete"](parentChildrenList.indexOf(blockKey));
+  },
+
+  getChildrenSize: function getChildrenSize(parentBlock) {
+    const parentChildrenList = parentBlock.getChildKeys();
+    return parentChildrenList.size();
+  }
 };
 
 export default BlockUtil;

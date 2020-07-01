@@ -31,7 +31,7 @@ const useResize = ({ nodeRef, props }) => {
   const rightToStretchRef = useRef();
 
   // fix: `mouseenter` and `mouseleave` will be triggered on moving under resize mode...
-  let statusRef = useRef(null);
+  const statusRef = useRef(null);
 
   useEffect(() => {
     // create a bar and append to nodeRef

@@ -1,4 +1,8 @@
 import { List } from "immutable";
+import blockUtil from "./blockUtil";
+import blockMutationUtil from "./blockMutationUtil";
+
+const updateBlockMapLinks = () => {};
 
 /**
  *
@@ -8,57 +12,50 @@ import { List } from "immutable";
  * @param {String} position : one of values ['top', 'right', 'left']
  */
 
-export default (blockMap, blockKey) => {
-  const blockToRemove = blockMap.get(blockKey);
+function removeBlock(blockMap, block, removeParentIfHasNoChild) {
+  const blockToRemove = block;
+  const blockKey = block.getKey();
   if (!blockToRemove) return blockMap;
 
-  const blocksBefore = blockMap.toSeq().takeUntil(function(block) {
-    return block.getKey() === blockKey;
-  });
-  const blocksAfter = blockMap
-    .toSeq()
-    .skipUntil(function(block) {
-      return block.getKey() === blockKey;
-    })
-    .rest();
+  const blocksBefore = blockUtil.blocksBefore(blockMap, block);
+  const blocksAfter = blockUtil.blocksAfter(blockMap, block);
 
   let newBlockMap = blocksBefore.concat(blocksAfter).toOrderedMap();
 
   const parentKey = blockToRemove.parent;
-  const parentBlock = blockMap.get(parentKey);
 
-  if (parentBlock) {
-    // adjust parent children
-    const childKeys = parentBlock.getChildKeys();
-    const removeIndex = childKeys.indexOf(blockKey);
-    const childKeysArray = childKeys.toArray();
-    childKeysArray.splice(removeIndex, 1);
+  blockMutationUtil.transformBlock(parentKey, newBlockMap, function(block) {
+    blockMutationUtil.deleteFromChildrenList(block, blockKey);
+  });
 
-    const newParentBlock = parentBlock.merge({
-      children: List(childKeysArray)
-    });
+  const newParentBlock = newBlockMap.get(parentKey);
+  const childrenSize = blockUtil.getChildrenSize(newParentBlock);
 
-    newBlockMap = newBlockMap.set(parentKey, newParentBlock);
-  }
+  if (removeParentIfHasNoChild && !childrenSize) {
+    return removeBlock(newBlockMap, newParentBlock, removeParentIfHasNoChild);
+  } else {
+    blockMutationUtil.transformBlock(
+      blockToRemove.getPrevSiblingKey(),
+      newBlockMap,
+      function(block) {
+        return block.merge({
+          nextSibling: blockToRemove.getNextSiblingKey()
+        });
+      }
+    );
 
-  const prevSiblingKey = blockToRemove.getPrevSiblingKey();
-  const nextSiblingKey = blockToRemove.getNextSiblingKey();
-
-  if (prevSiblingKey) {
-    const prevSiblingBlock = newBlockMap.get(prevSiblingKey);
-    const newPrevSiblingBlock = prevSiblingBlock.merge({
-      nextSibling: nextSiblingKey
-    });
-    newBlockMap = newBlockMap.set(prevSiblingKey, newPrevSiblingBlock);
-  }
-  if (nextSiblingKey) {
-    const nextSiblingBlock = newBlockMap.get(nextSiblingKey);
-    const newNextSiblingBlock = nextSiblingBlock.merge({
-      prevSibling: prevSiblingKey
-    });
-
-    newBlockMap = newBlockMap.set(nextSiblingKey, newNextSiblingBlock);
+    blockMutationUtil.transformBlock(
+      blockToRemove.getNextSiblingKey(),
+      newBlockMap,
+      function(block) {
+        return block.merge({
+          prevSibling: blockToRemove.getPrevSiblingKey()
+        });
+      }
+    );
   }
 
   return newBlockMap;
-};
+}
+
+export default removeBlock;
