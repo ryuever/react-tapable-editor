@@ -1,70 +1,102 @@
 import createEmptyBlockNode from "./createEmptyBlockNode";
 import removeBlock from "./removeBlock";
 import blockMutationUtil from "./blockMutationUtil";
+import blockUtil from "./blockUtil";
 import { List } from "immutable";
 
-const wrapBlock = (editorState, sourceBlockKey, targetBlockKey) => {
-  const currentContent = editorState.getCurrentContent();
-  let blockMap = currentContent.getBlockMap();
+/**
+ *
+ * @param {*} editorState
+ * @param {*} sourceBlockKey
+ * @param {*} targetBlockKey
+ *
+ * The parent of topMost block is null...
+ */
+const wrapBlock = (originalBlockMap, targetBlockKey) => {
+  let blockMap = originalBlockMap;
   const targetBlock = blockMap.get(targetBlockKey);
   const parentBlockKey = targetBlock.getParentKey();
   const parentBlock = blockMap.get(parentBlockKey);
-  const data = parentBlock.getData();
 
-  if (!data.flexRow) {
-    const containerBlock = createEmptyBlockNode();
-    containerBlock.set("data", parentBlock.getData().merge({ flexRow: true }));
-    containerBlock.set("parent", parentBlockKey);
+  let parentData;
+  if (parentBlock) {
+    parentData = parentBlock.getData();
+  }
 
-    const blockToRemove = blockMap.get(sourceBlockKey);
-    blockMap = removeBlock(blockMap, blockToRemove, true);
-    const childrenList = parentBlock.getChildKeys();
-
-    // splitBlockInContentState.js
-    const insertionIndex = childrenList.indexOf(targetBlockKey) + 1;
-    var newChildrenArray = parentChildrenList.toArray();
-    newChildrenArray.splice(insertionIndex, 0, belowBlockKey);
-    const parentKey = parentBlock.getKey();
-
-    blockMap.set(
-      parentKey,
-      block.merge({
-        children: List(newChildrenArray)
-      })
-    );
-    const targetBlock = blockMap.get(targetBlockKey);
-
-    blockMap = removeBlock(blockMap, targetBlock, false);
-
-    containerBlock.setIn("prevSibling", targetBlock.getPreSibling());
-    containerBlock.setIn("nextSibling", targetBlock.getNextSibling());
-
-    const nextTargetBlock = targetBlock.merge({
-      prevSibling: null,
-      nextSibling: null,
-      parent: containerBlock.getKey()
+  if (!parentData || !parentData.flexRow) {
+    let containerBlock = createEmptyBlockNode().merge({
+      data: { flexRow: true },
+      children: List([targetBlockKey]),
+      parent: parentBlockKey
     });
 
-    BlockMutationUtil.transformBlock(
-      containerBlock.getKey(),
-      blockMap,
-      function(block) {
-        return block.merge({
-          children: List(targetBlockKey)
-        });
-      }
-    );
+    const containerBlockKey = containerBlock.getKey();
+
+    if (parentBlock) {
+      const childrenList = parentBlock.getChildKeys();
+
+      // splitBlockInContentState.js
+      const insertionIndex = childrenList.indexOf(targetBlockKey) + 1;
+      var newChildrenArray = parentChildrenList.toArray();
+      newChildrenArray.splice(insertionIndex, 0, belowBlockKey);
+      const parentKey = parentBlock.getKey();
+
+      blockMap = blockMap.set(
+        parentKey,
+        block.merge({
+          children: List(newChildrenArray)
+        })
+      );
+    }
 
     const blocksBefore = blockUtil.blocksBefore(blockMap, targetBlock);
     const blocksAfter = blockUtil.blocksAfter(blockMap, targetBlock);
 
-    return blocksBefore
+    blockMap = blocksBefore
       .concat([
         [containerBlockKey, containerBlock],
-        [targetBlockKey, nextTargetBlock]
+        [targetBlockKey, targetBlock]
       ])
       .concat(blocksAfter)
       .toOrderedMap();
+
+    return blockMap.withMutations(function(blocks) {
+      blockMutationUtil.transformBlock(containerBlockKey, blocks, function(
+        block
+      ) {
+        return block.merge({
+          prevSibling: targetBlock.getPrevSiblingKey(),
+          nextSibling: targetBlock.getNextSiblingKey()
+        });
+      });
+
+      blockMutationUtil.transformBlock(
+        targetBlock.getPrevSiblingKey(),
+        blocks,
+        function(block) {
+          return block.merge({
+            nextSibling: containerBlockKey
+          });
+        }
+      );
+      blockMutationUtil.transformBlock(
+        targetBlock.getNextSiblingKey(),
+        blocks,
+        function(block) {
+          return block.merge({
+            prevSibling: containerBlockKey
+          });
+        }
+      );
+
+      blockMutationUtil.transformBlock(targetBlockKey, blocks, function(block) {
+        return block.merge({
+          prevSibling: null,
+          nextSibling: null,
+          parent: containerBlock.getKey()
+        });
+      });
+    });
   }
 };
 

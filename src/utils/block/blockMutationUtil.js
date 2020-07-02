@@ -12,7 +12,7 @@ const BlockMutationUtil = {
       return;
     }
 
-    block.set(key, func(block));
+    blockMap.set(key, func(block));
   },
 
   deleteFromChildrenList: function deleteFromChildrenList(

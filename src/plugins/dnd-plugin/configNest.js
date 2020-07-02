@@ -1,6 +1,7 @@
 import { EditorState } from "draft-js";
 import DND from "../dnd";
-import transferBlock from "../../utils/block/transferBlock";
+import transfer from "../../utils/block/transfer";
+// import transferBlock from "../../utils/block/transferBlock";
 import { extractBlockKeyFromOffsetKey } from "../../utils/keyHelper";
 import BlockUtil from "../../utils/block/blockUtil";
 const { insertNewLineAfterAll } = BlockUtil;
@@ -54,12 +55,17 @@ function DNDPlugin() {
 
           console.log("transfer ", sourceBlockKey, targetBlockKey);
 
-          const newContent = transferBlock(
+          const newContent = transfer(
             editorState,
             sourceBlockKey,
             targetBlockKey,
             placedPosition
           );
+
+          console.log("new content ", newContent.toJS());
+
+          if (!newContent) return;
+
           const nextNewContent = insertNewLineAfterAll(newContent);
           const selection = editorState.getSelection();
           console.log("new content ", newContent);

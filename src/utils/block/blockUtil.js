@@ -105,6 +105,7 @@ const BlockUtil = {
   },
 
   getChildrenSize: function getChildrenSize(parentBlock) {
+    if (!parentBlock) return;
     const parentChildrenList = parentBlock.getChildKeys();
     return parentChildrenList.size();
   }
