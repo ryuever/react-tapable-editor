@@ -8,10 +8,14 @@ function BlockStyleFnPlugin() {
       const block = props[0];
       const cls = [];
       const blockData = block.getData();
-      const isFlexRow = blockData.get("flexRow");
+      // const isFlexRow = blockData.get("flexRow");
 
-      if (block.children.size && isFlexRow) {
-        cls.push("display-flex");
+      const isDataWrapper = blockData.get("data-wrapper");
+      const dataDirection = blockData.get("data-direction");
+
+      if (block.children.size && isDataWrapper) {
+        // cls.push("display-flex");
+        cls.push(`data-wrapper-${dataDirection}`);
       }
 
       switch (block.getType()) {

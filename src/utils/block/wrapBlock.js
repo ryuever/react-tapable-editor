@@ -12,7 +12,7 @@ import { List } from "immutable";
  *
  * The parent of topMost block is null...
  */
-const wrapBlock = (originalBlockMap, targetBlockKey) => {
+const wrapBlock = (originalBlockMap, targetBlockKey, direction = "row") => {
   let blockMap = originalBlockMap;
   const targetBlock = blockMap.get(targetBlockKey);
   const parentBlockKey = targetBlock.getParentKey();
@@ -25,7 +25,11 @@ const wrapBlock = (originalBlockMap, targetBlockKey) => {
 
   if (!parentData || !parentData.flexRow) {
     let containerBlock = createEmptyBlockNode().merge({
-      data: { flexRow: true },
+      data: {
+        flexRow: true,
+        "data-wrapper": true,
+        "data-direction": direction
+      },
       children: List([targetBlockKey]),
       parent: parentBlockKey
     });
