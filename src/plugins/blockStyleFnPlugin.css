@@ -62,12 +62,12 @@
   width: 50%;
 } */
 
-.data-wrapper-column {
+.data-wrapper-column > div {
   display: flex;
   flex-direction: column;
 }
 
-.data-wrapper-row {
+.data-wrapper-row > div {
   display: flex;
   flex-direction: row;
 }

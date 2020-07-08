@@ -108,6 +108,24 @@ const BlockUtil = {
     if (!parentBlock) return;
     const parentChildrenList = parentBlock.getChildKeys();
     return parentChildrenList.size();
+  },
+
+  getChildrenBlocks: function(blockMap, block) {
+    return blockMap
+      .toSeq()
+      .skipUntil(v => v === block)
+      .skip(1)
+      .takeUntil(function(v) {
+        let parent = v.parent;
+        while (parent) {
+          if (parent === block.getKey()) return false;
+          parent !== block.getKey();
+          parent = parent.parent;
+        }
+
+        return true;
+      })
+      .toOrderedMap();
   }
 };
 

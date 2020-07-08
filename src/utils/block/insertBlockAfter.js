@@ -1,43 +1,54 @@
 import blockUtil from "./blockUtil";
+import blockMutationUtil from "./blockMutationUtil";
+import { List } from "immutable";
 
 /**
- * 1. If target block has children, sourceBlock should be placed after all
- *    of its children.
+ * If target block has children, sourceBlock should be placed after all
+ * of its children.
  */
 function insertBlockAfter(blockMap, targetBlock, sourceBlock) {
-  const nextSiblingBlock = targetBlock.getNextSiblingKey();
   const blocksBefore = blockUtil.blocksBefore(blockMap, targetBlock);
+  const sourceBlockKey = sourceBlock.getKey();
+  const targetBlockKey = targetBlock.getKey();
 
-  const children = blockMap
-    .toSeq()
-    .skipUntil(function(v) {
-      console.log("v2 ", v);
-      return v === targetBlock;
-    })
-    .skip(1)
-    .takeUntil(function(v) {
-      let parent = v.parent;
-      while (parent) {
-        if (parent === targetBlock.getKey()) return false;
-        parent !== targetBlock.getKey();
-        parent = parent.parent;
-      }
-
-      return true;
-    })
-    .toOrderedMap();
-
-  const lastBlock = children.last();
+  const childrenBlocks = blockUtil.getChildrenBlocks(blockMap, targetBlock);
+  const lastBlock = childrenBlocks.size ? childrenBlocks.last() : targetBlock;
   const blocksAfter = blockUtil.blocksAfter(blockMap, lastBlock);
 
   const newBlockMap = blocksBefore
     .concat([[targetBlock.getKey(), targetBlock]])
-    .concat(children.toSeq())
+    .concat(childrenBlocks.size ? childrenBlocks.toSeq() : [])
     .concat([[sourceBlock.getKey(), sourceBlock]])
     .concat(blocksAfter)
     .toOrderedMap();
 
-  console.log("source ", sourceBlock, newBlockMap, blockMap);
+  return newBlockMap.withMutations(function(blocks) {
+    blockMutationUtil.transformBlock(sourceBlockKey, blocks, function(block) {
+      return block.merge({
+        prevSibling: targetBlockKey,
+        nextSibling: targetBlock.getNextSiblingKey(),
+        parent: targetBlock.parent
+      });
+    });
+
+    blockMutationUtil.transformBlock(targetBlock.parent, blocks, function(
+      block
+    ) {
+      const parentChildrenList = block.getChildKeys();
+      const newChildrenArray = parentChildrenList.toArray();
+      newChildrenArray.push(sourceBlockKey);
+
+      return block.merge({
+        children: List(newChildrenArray)
+      });
+    });
+
+    blockMutationUtil.transformBlock(targetBlockKey, blocks, function(block) {
+      return block.merge({
+        nextSibling: sourceBlockKey
+      });
+    });
+  });
 }
 
 export default insertBlockAfter;

@@ -2,11 +2,13 @@ import removeBlock from "./removeBlock";
 import wrapBlock from "./wrapBlock";
 import insertBlockAfter from "./insertBlockAfter";
 import createEmptyBlockNode from "./createEmptyBlockNode";
+import appendChild from "./appendChild";
 import { List } from "immutable";
 
 const transferToRight = (editorState, sourceBlockKey, targetBlockKey) => {
   const currentState = editorState.getCurrentContent();
   let blockMap = currentState.getBlockMap();
+  const sourceBlock = blockMap.get(sourceBlockKey);
   blockMap = removeBlock(blockMap, sourceBlockKey);
   blockMap = wrapBlock(blockMap, targetBlockKey, "column");
   const parentKey = blockMap.get(targetBlockKey).parent;
@@ -18,12 +20,20 @@ const transferToRight = (editorState, sourceBlockKey, targetBlockKey) => {
       "data-wrapper": true,
       "data-direction": "column"
     },
-    children: List([sourceBlockKey]),
+    children: List([]),
     parent: null
   });
 
-  insertBlockAfter(blockMap, blockMap.get(parentKey), containerBlock);
-
+  blockMap = insertBlockAfter(
+    blockMap,
+    blockMap.get(parentKey),
+    containerBlock
+  );
+  blockMap = appendChild(
+    blockMap,
+    blockMap.get(containerBlock.getKey()),
+    sourceBlock
+  );
   return blockMap;
 };
 

@@ -53,8 +53,6 @@ function DNDPlugin() {
           );
           const { editorState, hooks } = getEditor();
 
-          console.log("transfer ", sourceBlockKey, targetBlockKey);
-
           const newContent = transfer(
             editorState,
             sourceBlockKey,
@@ -66,9 +64,9 @@ function DNDPlugin() {
 
           if (!newContent) return;
 
-          const nextNewContent = insertNewLineAfterAll(newContent);
-          const selection = editorState.getSelection();
-          console.log("new content ", newContent);
+          // const nextNewContent = insertNewLineAfterAll(newContent);
+          // const selection = editorState.getSelection();
+          // console.log("new content ", newContent);
 
           // if (DEBUG) {
           //   infoLog(
@@ -78,12 +76,13 @@ function DNDPlugin() {
           // }
           const dismissSelection = EditorState.push(
             editorState,
-            nextNewContent.merge({
-              selectionBefore: selection,
-              selectionAfter: nextNewContent
-                .getSelectionAfter()
-                .set("hasFocus", false)
-            })
+            newContent
+            // nextNewContent.merge({
+            //   selectionBefore: selection,
+            //   selectionAfter: nextNewContent
+            //     .getSelectionAfter()
+            //     .set("hasFocus", false)
+            // })
           );
 
           hooks.setState.call(dismissSelection);
