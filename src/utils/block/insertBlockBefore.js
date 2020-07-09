@@ -25,6 +25,16 @@ function insertBlockBefore(blockMap, targetBlock, sourceBlock) {
       });
     });
 
+    blockMutationUtil.transformBlock(
+      targetBlock.getPrevSiblingKey(),
+      blocks,
+      function(block) {
+        return block.merge({
+          nextSibling: sourceBlockKey
+        });
+      }
+    );
+
     blockMutationUtil.transformBlock(targetBlockKey, blocks, function(block) {
       return block.merge({
         prevSibling: sourceBlockKey
