@@ -1,3 +1,4 @@
+import { List } from "immutable";
 import removeBlock from "./removeBlock";
 import resetSibling from "./resetSibling";
 

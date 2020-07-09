@@ -21,7 +21,6 @@ export default (blockMap, parentBlockKey, childBlockKey) => {
 
   // parentBlock需要调用`blockMapAfterRemove`,因为它的`sibling`有可能变化了
   const parentBlock = blockMapAfterRemoveChildGroup.get(parentBlockKey);
-  // const childBlockAfterRemove = resetSibling(childBlock)
 
   const blocksBeforeParent = blockMapAfterRemoveChildGroup
     .toSeq()

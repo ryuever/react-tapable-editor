@@ -1,3 +1,5 @@
+import { List } from "immutable";
+
 export default (blockMap, newBlock, targetBlockKey) => {
   const newBlockKey = newBlock.getKey();
   const targetBlock = blockMap.get(targetBlockKey);

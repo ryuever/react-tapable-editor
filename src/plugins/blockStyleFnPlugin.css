@@ -18,7 +18,6 @@
   outline: 0;
   z-index: 1;
   margin: 0;
-
 }
 
 .figure-image-left {
@@ -54,11 +53,21 @@
   box-sizing: border-box;
 }
 
-.display-flex >div {
+/* .display-flex >div {
   display: flex;
   flex-direction: row;
 }
 
 .display-flex >div >div[data-block="true"]{
   width: 50%;
+} */
+
+.data-wrapper-column > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.data-wrapper-row > div {
+  display: flex;
+  flex-direction: row;
 }

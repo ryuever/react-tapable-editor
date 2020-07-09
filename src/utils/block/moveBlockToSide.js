@@ -107,6 +107,7 @@ export default (blockMap, sourceBlockKey, targetBlockKey, position) => {
           targetWrapperBlock,
           targetBlockKey
         );
+
         // Set new block as parent of processing block
         newBlockMap = appendChildBlock(
           newBlockMap,
@@ -181,7 +182,5 @@ export default (blockMap, sourceBlockKey, targetBlockKey, position) => {
       );
     }
     return newBlockMap;
-  } catch (err) {
-    console.log("`moveBlockToSide` ", err);
-  }
+  } catch (err) {}
 };

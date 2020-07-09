@@ -31,11 +31,13 @@ class DragDropManager {
     const listenerId = keyExtractor(blockKey, "source");
     const offsetKey = generateOffsetKey(blockKey);
     const node = getNodeByOffsetKey(offsetKey);
+
     const teardown = bindEventsOnce(node, {
       eventName: "mousedown",
       fn: e => {
         this.mousedownHandler(e, listenerId);
 
+        // `mouseup` event handler should be bound after user's interaction..
         bindEventsOnce(window, {
           eventName: "mouseup",
           fn: this.globalMouseupHandler

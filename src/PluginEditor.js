@@ -6,7 +6,6 @@ import {
   convertFromRaw
 } from "draft-js";
 import { SyncHook, SyncBailHook, SyncWaterfallHook } from "tapable";
-import Immutable from "immutable";
 import Context from "./Context";
 import PlaceholderPlugin from "./plugins/PlaceholderPlugin";
 import BlockStyleFnPlugin from "./plugins/BlockStyleFnPlugin";
@@ -26,6 +25,8 @@ import SidebarPlugin from "./plugins/sidebar-plugin";
 import LinkSpanDecoratorPlugin from "./plugins/LinkSpanDecoratorPlugin";
 import LinkDecoratorPlugin from "./plugins/LinkDecorator";
 
+import DNDPlugin from "./plugins/dnd-plugin/configNest";
+
 import PrismDecorator from "./decorators/prism";
 // import './decorators/prism/theme/prism-solarizedlight.css'
 import "./decorators/prism/theme/prism.css";
@@ -35,7 +36,9 @@ import MultiDecorator from "./decorators/prism/multiple";
 import Editor from "./Editor";
 import decorateComposer from "./decoratorComposer";
 const { Provider } = Context;
-const { Map } = Immutable;
+
+// import nestedData from '../mock/nested'
+import dndHelperData from "../mock/dndHelper";
 
 window.__DRAFT_GKX = {
   draft_tree_data_support: true
@@ -64,10 +67,12 @@ const defaultPlugins = [
 
   // new CreateNestBlockPlugin(),
 
-  new DragPlugin(),
+  // new DragPlugin(),
 
   // TODO: will cause text missing...
-  new SidebarPlugin()
+  new SidebarPlugin(),
+
+  new DNDPlugin()
 ];
 
 class PluginEditor extends PureComponent {
@@ -157,7 +162,8 @@ class PluginEditor extends PureComponent {
 
       // for drag
       prepareDragStart: new SyncHook(["sourceBlockKey"]),
-      teardownDragDrop: new SyncHook()
+      teardownDragDrop: new SyncHook(),
+      afterMounted: new SyncHook()
     };
 
     this.editorRef = createRef();
@@ -166,33 +172,7 @@ class PluginEditor extends PureComponent {
     this.sidebarRef = createRef();
     this.dragging = false;
 
-    const rawState = {
-      blocks: [
-        {
-          key: "A",
-          text: "",
-          children: [
-            {
-              key: "B",
-              text: "",
-              data: new Map({ flexRow: true }),
-              children: [
-                { key: "C", text: "left block", children: [] },
-                { key: "D", text: "right block", children: [] }
-              ]
-            },
-            {
-              key: "E",
-              type: "header-one",
-              text: "This is a tree based document!",
-              children: []
-            }
-          ]
-        }
-      ],
-      entityMap: {}
-    };
-
+    const rawState = dndHelperData;
     const newContentState = convertFromRaw(rawState);
 
     this.state = {
@@ -210,6 +190,8 @@ class PluginEditor extends PureComponent {
   }
 
   componentDidMount() {
+    this.hooks.afterMounted.call();
+
     this.hooks.onChange.tap("onChange", editorState => {
       this.setState({ editorState });
     });
