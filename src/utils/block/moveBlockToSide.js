@@ -17,8 +17,6 @@ export default (blockMap, sourceBlockKey, targetBlockKey, position) => {
     const parentKey = targetBlock.parent;
     const parentBlock = blockMap.get(parentKey);
 
-    console.log("parent key", parentKey, parentBlock);
-
     const sourceNextSibling = sourceBlock.getNextSiblingKey();
 
     // 首先查看parentNode是否包含`isFlexRow` data
@@ -110,13 +108,6 @@ export default (blockMap, sourceBlockKey, targetBlockKey, position) => {
           targetBlockKey
         );
 
-        console.log(
-          "new block ",
-          newBlockMap,
-          targetWrapperBlockKey,
-          targetBlockKey
-        );
-
         // Set new block as parent of processing block
         newBlockMap = appendChildBlock(
           newBlockMap,
@@ -191,7 +182,5 @@ export default (blockMap, sourceBlockKey, targetBlockKey, position) => {
       );
     }
     return newBlockMap;
-  } catch (err) {
-    console.log("`moveBlockToSide` ", err);
-  }
+  } catch (err) {}
 };

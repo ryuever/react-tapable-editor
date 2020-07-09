@@ -1,7 +1,6 @@
 import transferToTop from "./transferToTop";
-import transferToRight from "./transferToRight";
 import transferToBottom from "./transferToBottom";
-import transferToLeft from "./transferToLeft";
+import horizontalTransfer from "./horizontalTransfer";
 
 const requiredError = prop => {
   throw new Error(`${prop} is required in transfer function`);
@@ -20,13 +19,23 @@ const transfer = (editorState, sourceBlockKey, targetBlockKey, position) => {
       blockMap = transferToTop(editorState, sourceBlockKey, targetBlockKey);
       break;
     case "right":
-      blockMap = transferToRight(editorState, sourceBlockKey, targetBlockKey);
+      blockMap = horizontalTransfer(
+        editorState,
+        sourceBlockKey,
+        targetBlockKey,
+        "right"
+      );
       break;
     case "bottom":
       blockMap = transferToBottom(editorState, sourceBlockKey, targetBlockKey);
       break;
-    case "Left":
-      blockMap = transferToLeft(editorState, sourceBlockKey, targetBlockKey);
+    case "left":
+      blockMap = horizontalTransfer(
+        editorState,
+        sourceBlockKey,
+        targetBlockKey,
+        "left"
+      );
       break;
   }
 
