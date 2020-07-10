@@ -1,12 +1,12 @@
-import { orientationToMeasure } from "../../../utils";
+import { orientationToMeasure } from '../../../utils';
 
 const handleEnterHomeContainer = ({ liftUpVDraggerIndex }, ctx, actions) => {
   const {
     impactRawInfo,
-    action: { operation, isHomeContainerFocused, effectsManager }
+    action: { operation, isHomeContainerFocused, effectsManager },
   } = ctx;
 
-  if (operation !== "onEnter" || !isHomeContainerFocused) {
+  if (operation !== 'onEnter' || !isHomeContainerFocused) {
     actions.next();
     return;
   }
@@ -15,35 +15,35 @@ const handleEnterHomeContainer = ({ liftUpVDraggerIndex }, ctx, actions) => {
     candidateVDragger,
     impactVContainer,
     impactPosition,
-    candidateVDraggerIndex
+    candidateVDraggerIndex,
   } = impactRawInfo;
 
   const {
     containerConfig: { containerEffect, draggerEffect, orientation },
-    children
+    children,
   } = impactVContainer;
 
   const measure = orientationToMeasure(orientation);
   const positionIndex = measure.indexOf(impactPosition);
 
-  if (typeof containerEffect === "function") {
+  if (typeof containerEffect === 'function') {
     const teardown = containerEffect({
-      el: impactVContainer.el
+      el: impactVContainer.el,
     });
     effectsManager.impactContainerEffects.push({
       teardown,
-      vContainer: impactVContainer
+      vContainer: impactVContainer,
     });
   }
 
-  if (typeof draggerEffect !== "function") {
+  if (typeof draggerEffect !== 'function') {
     actions.next();
     return;
   }
 
   const impact = {
     impactVContainer,
-    index: positionIndex ? candidateVDraggerIndex + 1 : candidateVDraggerIndex
+    index: positionIndex ? candidateVDraggerIndex + 1 : candidateVDraggerIndex,
   };
 
   if (candidateVDraggerIndex === liftUpVDraggerIndex) {
@@ -74,7 +74,7 @@ const handleEnterHomeContainer = ({ liftUpVDraggerIndex }, ctx, actions) => {
         downstream: !isHighlight || !positionIndex,
         placedPosition: isHighlight ? impactPosition : measure[0],
         dimension: vDragger.dimension.rect,
-        isHighlight
+        isHighlight,
       });
       effectsManager.downstreamDraggersEffects.push({ teardown, vDragger });
     }
@@ -83,7 +83,7 @@ const handleEnterHomeContainer = ({ liftUpVDraggerIndex }, ctx, actions) => {
   if (candidateVDraggerIndex > liftUpVDraggerIndex) {
     const initialValue = liftUpVDraggerIndex + 1;
     let endValue = candidateVDraggerIndex;
-    if (positionIndex) endValue = endValue + 1;
+    if (positionIndex) endValue += 1;
     const reserved = [];
     const reservedEffects = [];
     for (let i = initialValue; i < endValue; i++) {
@@ -92,7 +92,7 @@ const handleEnterHomeContainer = ({ liftUpVDraggerIndex }, ctx, actions) => {
     }
 
     effectsManager.upstreamDraggersEffects.forEach(({ teardown, vDragger }) => {
-      const id = vDragger.id;
+      const { id } = vDragger;
       const index = reserved.findIndex(vDragger => vDragger.id === id);
       if (index !== -1) {
         reservedEffects.push({ teardown, vDragger });

@@ -1,5 +1,5 @@
-import { SelectionState, EditorState } from "draft-js";
-import DraftOffsetKey from "draft-js/lib/DraftOffsetKey";
+import { SelectionState, EditorState } from 'draft-js';
+import DraftOffsetKey from 'draft-js/lib/DraftOffsetKey';
 
 // Set selection of editor to next/previous block
 export default (editorState, contentBlock) => {
@@ -23,7 +23,7 @@ export default (editorState, contentBlock) => {
       anchorOffset: 0,
       focusKey: blockKey,
       focusOffset: 0,
-      isBackward: false
+      isBackward: false,
     })
   );
 };

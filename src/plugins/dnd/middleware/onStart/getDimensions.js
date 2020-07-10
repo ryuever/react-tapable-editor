@@ -1,8 +1,8 @@
 // only resolve the style of container or dragger enclosed by container.
-import { isElementVisibleInViewport, withinElement } from "../../dom";
+import { isElementVisibleInViewport, withinElement } from '../../dom';
 
 const getDimension = v => {
-  const el = v.el;
+  const { el } = v;
   const rect = el.getBoundingClientRect();
   return rect;
 };
@@ -11,7 +11,7 @@ const getDimension = v => {
 // whether it is visible or not.
 const getSubject = el => {
   return {
-    isVisible: isElementVisibleInViewport(el)
+    isVisible: isElementVisibleInViewport(el),
   };
 };
 
@@ -24,7 +24,7 @@ export default (_, ctx, actions) => {
     const dragger = draggers[key];
     const rect = getDimension(dragger);
     dragger.dimension = {
-      rect
+      rect,
     };
   });
 
@@ -34,7 +34,7 @@ export default (_, ctx, actions) => {
     container.dimension = {
       rect,
       subject: getSubject(container.el),
-      within: withinElement(container.el)
+      within: withinElement(container.el),
     };
   });
 

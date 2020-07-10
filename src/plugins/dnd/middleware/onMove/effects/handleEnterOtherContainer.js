@@ -1,12 +1,12 @@
-import { orientationToMeasure } from "../../../utils";
+import { orientationToMeasure } from '../../../utils';
 
 const handleEnterOtherContainer = (ctx, actions) => {
   const {
     impactRawInfo,
-    action: { operation, isHomeContainerFocused, effectsManager }
+    action: { operation, isHomeContainerFocused, effectsManager },
   } = ctx;
 
-  if (operation !== "onEnter" || isHomeContainerFocused) {
+  if (operation !== 'onEnter' || isHomeContainerFocused) {
     actions.next();
     return;
   }
@@ -14,28 +14,28 @@ const handleEnterOtherContainer = (ctx, actions) => {
   const {
     impactVContainer,
     impactPosition,
-    candidateVDraggerIndex
+    candidateVDraggerIndex,
   } = impactRawInfo;
 
   const {
     containerConfig: { containerEffect, draggerEffect, orientation },
-    children
+    children,
   } = impactVContainer;
 
   const measure = orientationToMeasure(orientation);
   const positionIndex = measure.indexOf(impactPosition);
 
-  if (typeof containerEffect === "function") {
+  if (typeof containerEffect === 'function') {
     const teardown = containerEffect({
-      el: impactVContainer.el
+      el: impactVContainer.el,
     });
     effectsManager.impactContainerEffects.push({
       teardown,
-      vContainer: impactVContainer
+      vContainer: impactVContainer,
     });
   }
 
-  if (typeof draggerEffect !== "function") {
+  if (typeof draggerEffect !== 'function') {
     actions.next();
     return;
   }
@@ -43,12 +43,12 @@ const handleEnterOtherContainer = (ctx, actions) => {
   let initialValue = candidateVDraggerIndex;
 
   if (positionIndex === 1) {
-    initialValue = initialValue + 1;
+    initialValue += 1;
   }
 
   const impact = {
     index: initialValue,
-    impactVContainer
+    impactVContainer,
   };
 
   const len = children.getSize();
@@ -62,7 +62,7 @@ const handleEnterOtherContainer = (ctx, actions) => {
       downstream: !isHighlight || !positionIndex,
       el: vDragger.el,
       dimension: vDragger.dimension.rect,
-      isHighlight
+      isHighlight,
     });
     effectsManager.downstreamDraggersEffects.push({ teardown, vDragger });
   }

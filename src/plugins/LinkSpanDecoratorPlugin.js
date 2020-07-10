@@ -1,11 +1,11 @@
-import LinkSpan from "../components/link-span";
+import LinkSpan from '../components/link-span';
 
 function LinkSpanDecoratorPlugin() {
   this.apply = getEditor => {
     const { hooks } = getEditor();
 
     hooks.updateDecorator.tap(
-      "LinkSpanDecoratorPlugin",
+      'LinkSpanDecoratorPlugin',
       (pairs = [], editorState) => {
         const strategy = (contentBlock, cb, contentState) => {
           if (!contentState) return;
@@ -15,14 +15,14 @@ function LinkSpanDecoratorPlugin() {
             if (!entityKey) return false;
             const entityType = contentState.getEntity(entityKey).getType();
 
-            return entityType === "LINK_SPAN";
+            return entityType === 'LINK_SPAN';
           }, cb);
         };
 
         return [].concat(
           {
             strategy,
-            component: LinkSpan
+            component: LinkSpan,
           },
           pairs
         );

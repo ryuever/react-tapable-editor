@@ -1,4 +1,4 @@
-import closest from "../closest";
+import closest from '../closest';
 
 export const hasDraggerHandlerMatched = (el, configs) => {
   const len = configs.length;

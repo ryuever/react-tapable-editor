@@ -1,4 +1,4 @@
-import { EditorState, SelectionState } from "draft-js";
+import { EditorState, SelectionState } from 'draft-js';
 
 /**
  * Returns a new EditorState where the Selection is at the end.
@@ -19,7 +19,7 @@ const moveSelectionToEnd = editorState => {
     anchorKey: key,
     anchorOffset: length,
     focusKey: key,
-    focusOffset: length
+    focusOffset: length,
   });
 
   return EditorState.acceptSelection(editorState, selection);

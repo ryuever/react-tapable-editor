@@ -1,15 +1,15 @@
-import { find } from "./find";
+import { find } from './find';
 
 const supportedMatchesName = (() => {
-  const base = "matches";
+  const base = 'matches';
 
   // Server side rendering
-  if (typeof document === "undefined") {
+  if (typeof document === 'undefined') {
     return base;
   }
 
   // See https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API
-  const candidates = [base, "msMatchesSelector", "webkitMatchesSelector"];
+  const candidates = [base, 'msMatchesSelector', 'webkitMatchesSelector'];
 
   const value = find(candidates, name => name in Element.prototype);
 

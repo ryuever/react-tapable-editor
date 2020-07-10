@@ -1,24 +1,24 @@
-export const DNDMode = ["fluid", "snap"];
+export const DNDMode = ['fluid', 'snap'];
 
 const defaultDndConfig = {
   mode: DNDMode[0],
   collisionPadding: 10,
   withPlaceholder: true,
-  isNested: true
+  isNested: true,
 };
 
 const reservedKeys = [
-  "mode",
-  "collisionPadding",
-  "withPlaceholder",
-  "isNested",
-  "onDrop"
+  'mode',
+  'collisionPadding',
+  'withPlaceholder',
+  'isNested',
+  'onDrop',
 ];
 
 export default dndConfig => {
   const next = {
     ...defaultDndConfig,
-    ...dndConfig
+    ...dndConfig,
   };
   const o = {};
 

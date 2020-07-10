@@ -1,14 +1,14 @@
 const operation = {
-  REPLACE: "replace",
-  REMOVE: "remove",
-  REORDER: "reorder"
+  REPLACE: 'replace',
+  REMOVE: 'remove',
+  REORDER: 'reorder',
 };
 
 const returnRoot = info => {
   const { childInfo } = info;
 
   if (childInfo) return returnRoot(childInfo);
-  else return info;
+  return info;
 };
 
 export default ({ dragger }, ctx, actions) => {
@@ -16,7 +16,7 @@ export default ({ dragger }, ctx, actions) => {
     isMovingOnHomeContainer,
     placedAtRaw,
     targetContainer,
-    impactPosition
+    impactPosition,
   } = ctx;
 
   if (!targetContainer) {
@@ -29,15 +29,15 @@ export default ({ dragger }, ctx, actions) => {
     return;
   }
 
-  const upstreamPosition = ["top", "left"];
-  const downstreamPosition = ["right", "bottom"];
+  const upstreamPosition = ['top', 'left'];
+  const downstreamPosition = ['right', 'bottom'];
 
   const root = returnRoot(placedAtRaw);
   const { index: rawIndex, targetDragger, tailing } = root;
   const placedAt = {
     index: undefined,
     targetDragger,
-    tailing
+    tailing,
   };
 
   const impact = {
@@ -46,14 +46,14 @@ export default ({ dragger }, ctx, actions) => {
 
     impactPosition: null,
     impactDragger: targetDragger,
-    impactContainer: targetDragger.container
+    impactContainer: targetDragger.container,
   };
 
   const { children } = targetContainer;
 
   if (!isMovingOnHomeContainer) {
     impact.index = rawIndex;
-    impact.operation = operation["REPLACE"];
+    impact.operation = operation.REPLACE;
     impact.placedAt = placedAt;
     impact.downstreamDraggers = children.slice(rawIndex + 1);
     if (downstreamPosition.indexOf(impactPosition) !== -1) {
@@ -85,7 +85,7 @@ export default ({ dragger }, ctx, actions) => {
     impact.upstreamDraggers = [];
     impact.downstreamDraggers = [];
   }
-  impact.operation = operation["REORDER"];
+  impact.operation = operation.REORDER;
   impact.index = rawIndex;
 
   ctx.impact = impact;

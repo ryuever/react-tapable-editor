@@ -1,6 +1,6 @@
-import insertBlockBefore from "./insertBlockBefore";
-import insertBlockAfter from "./insertBlockAfter";
-import removeBlock from "./removeBlock";
+import insertBlockBefore from './insertBlockBefore';
+import insertBlockAfter from './insertBlockAfter';
+import removeBlock from './removeBlock';
 
 const verticalTransfer = (
   editorState,
@@ -13,11 +13,11 @@ const verticalTransfer = (
   const sourceBlock = blockMap.get(sourceBlockKey);
   const targetBlock = blockMap.get(targetBlockKey);
   blockMap = removeBlock(blockMap, sourceBlockKey);
-  if (direction === "top") {
+  if (direction === 'top') {
     return insertBlockBefore(blockMap, targetBlock, sourceBlock);
   }
 
-  if (direction === "bottom") {
+  if (direction === 'bottom') {
     return insertBlockAfter(blockMap, targetBlock, sourceBlock);
   }
 };

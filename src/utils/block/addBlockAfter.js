@@ -1,4 +1,4 @@
-import { List } from "immutable";
+import { List } from 'immutable';
 
 export default (blockMap, newBlock, targetBlockKey) => {
   const newBlockKey = newBlock.getKey();
@@ -19,7 +19,7 @@ export default (blockMap, newBlock, targetBlockKey) => {
     .concat(
       [
         [targetBlockKey, targetBlock],
-        [newBlockKey, newBlock]
+        [newBlockKey, newBlock],
       ],
       blocksAfter
     )
@@ -36,7 +36,7 @@ export default (blockMap, newBlock, targetBlockKey) => {
     childKeysArray.splice(insertionIndex, 0, newBlockKey);
 
     const newParentBlock = parentBlock.merge({
-      children: List(childKeysArray)
+      children: List(childKeysArray),
     });
 
     newBlockMap = newBlockMap.set(parentKey, newParentBlock);
@@ -47,7 +47,7 @@ export default (blockMap, newBlock, targetBlockKey) => {
   if (nextSiblingKey) {
     const nextSiblingBlock = newBlockMap.get(nextSiblingKey);
     const newNextSiblingBlock = nextSiblingBlock.merge({
-      prevSibling: newBlockKey
+      prevSibling: newBlockKey,
     });
     newBlockMap = newBlockMap.set(nextSiblingKey, newNextSiblingBlock);
   }
@@ -55,14 +55,14 @@ export default (blockMap, newBlock, targetBlockKey) => {
   {
     const nextNewBlock = newBlock.merge({
       prevSibling: targetBlockKey,
-      nextSibling: nextSiblingKey
+      nextSibling: nextSiblingKey,
     });
     newBlockMap = newBlockMap.set(newBlockKey, nextNewBlock);
   }
 
   {
     const newTargetBlock = targetBlock.merge({
-      nextSibling: newBlockKey
+      nextSibling: newBlockKey,
     });
     newBlockMap = newBlockMap.set(targetBlockKey, newTargetBlock);
   }

@@ -1,12 +1,12 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
-import Immutable from "immutable";
-import { withEditor } from "../../index";
-import "./styles.css";
-import StyleControls from "./StyleControls";
-import InputBar from "./InputBar";
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import Immutable from 'immutable';
+import { withEditor } from '../../index';
+import './styles.css';
+import StyleControls from './StyleControls';
+import InputBar from './InputBar';
 
-import getSelectionBlockTypes from "../../utils/getSelectionBlockTypes";
-import getInlineToolbarInlineInfo from "../../utils/getInlineToolbarInlineInfo";
+import getSelectionBlockTypes from '../../utils/getSelectionBlockTypes';
+import getInlineToolbarInlineInfo from '../../utils/getInlineToolbarInlineInfo';
 
 const InlineToolbar = props => {
   const { forwardRef, getEditor } = props;
@@ -14,15 +14,16 @@ const InlineToolbar = props => {
     styles: new Immutable.OrderedSet(),
     blockTypes: [],
     inDisplayMode: true,
-    hasLink: false
+    hasLink: false,
   });
   const inDisplayModeRef = useRef(true);
 
   useEffect(() => {
     const { hooks } = getEditor();
-    hooks.inlineBarChange.tap("InlineToolbar", (editorState, visibility) => {
+    hooks.inlineBarChange.tap('InlineToolbar', (editorState, visibility) => {
       const nextValue = {
-        inDisplayMode: visibility === "hidden" ? true : inDisplayModeRef.current
+        inDisplayMode:
+          visibility === 'hidden' ? true : inDisplayModeRef.current,
       };
 
       if (editorState) {
@@ -40,15 +41,15 @@ const InlineToolbar = props => {
 
       setValue(nextValue);
     });
-  }, []);
+  }, [getEditor]);
 
   const toggleDisplayMode = useCallback(() => {
     setValue({
       ...value,
-      inDisplayMode: !inDisplayMode
+      inDisplayMode: !inDisplayMode,
     });
     inDisplayModeRef.current = !inDisplayMode;
-  }, [inDisplayMode]);
+  }, [inDisplayMode, value]);
 
   const { styles, blockTypes, inDisplayMode, hasLink } = value;
 

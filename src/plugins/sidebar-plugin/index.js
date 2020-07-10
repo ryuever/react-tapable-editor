@@ -16,17 +16,17 @@
  *    sidebar belong to block.
  */
 
-import throttle from "../../utils/throttle";
-import getBoundingRectWithSafeArea from "../../utils/rect/getBoundingRectWithSafeArea";
-import findBlockContainsPoint from "../../utils/rect/findBlockContainsPoint";
+import throttle from '../../utils/throttle';
+import getBoundingRectWithSafeArea from '../../utils/rect/getBoundingRectWithSafeArea';
+import findBlockContainsPoint from '../../utils/rect/findBlockContainsPoint';
 import {
   getNodeByOffsetKey,
-  getSelectableNodeByOffsetKey
-} from "../../utils/findNode";
-import { extractBlockKeyFromOffsetKey } from "../../utils/keyHelper";
-import "./styles.css";
-import createAddOn from "./createAddOn";
-import { bindEventsOnce, bindEvents } from "../../utils/event/bindEvents";
+  getSelectableNodeByOffsetKey,
+} from '../../utils/findNode';
+import { extractBlockKeyFromOffsetKey } from '../../utils/keyHelper';
+import './styles.css';
+import createAddOn from './createAddOn';
+import { bindEventsOnce, bindEvents } from '../../utils/event/bindEvents';
 
 function SidebarPlugin() {
   let current = null;
@@ -36,11 +36,11 @@ function SidebarPlugin() {
       try {
         if (!current) return;
         const { node, child, teardown } = current;
-        if (typeof teardown === "function") teardown();
+        if (typeof teardown === 'function') teardown();
         if (node.contains(child)) node.removeChild(child);
         current = null;
       } catch (err) {
-        console.log("[SideBarPlugin]: removeNode error ", err);
+        console.log('[SideBarPlugin]: removeNode error ', err);
       }
     };
 
@@ -75,17 +75,17 @@ function SidebarPlugin() {
           hooks.prepareDragStart.call(blockKey);
 
           bindEventsOnce(node, {
-            eventName: "mousedown",
+            eventName: 'mousedown',
             fn: () => {
               // To make teardown or not...
               if (!isDragging) isDragging = true;
               bindEventsOnce(node, {
-                eventName: "mouseup",
+                eventName: 'mouseup',
                 fn: () => {
                   hooks.teardownDragDrop.call();
-                }
+                },
               });
-            }
+            },
           });
         };
         const leaveHandler = e => {
@@ -98,23 +98,23 @@ function SidebarPlugin() {
         };
 
         const teardown = bindEventsOnce(selectableNode, {
-          eventName: "mouseenter",
+          eventName: 'mouseenter',
           fn: e => {
             enterHandler(e);
             bindEventsOnce(selectableNode, {
-              eventName: "mouseleave",
-              fn: leaveHandler
+              eventName: 'mouseleave',
+              fn: leaveHandler,
             });
-          }
+          },
         });
 
         // https://stackoverflow.com/questions/24148403/trigger-css-transition-on-appended-element
         requestAnimationFrame(() =>
-          child.classList.add("sidebar-addon-visible")
+          child.classList.add('sidebar-addon-visible')
         );
         current = { node, child, offsetKey, teardown };
       } catch (err) {
-        console.log("err in SideBar plugin ", err);
+        console.log('err in SideBar plugin ', err);
       }
     };
 
@@ -137,13 +137,13 @@ function SidebarPlugin() {
     // It has a drawback, rect should be calculated on every move...
     bindEvents(document, [
       {
-        eventName: "mousemove",
-        fn: throttledMoveHandler
+        eventName: 'mousemove',
+        fn: throttledMoveHandler,
       },
       {
-        eventName: "keydown",
-        fn: throttledKeydownHandler
-      }
+        eventName: 'keydown',
+        fn: throttledKeydownHandler,
+      },
     ]);
   };
 }

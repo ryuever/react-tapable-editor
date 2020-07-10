@@ -1,11 +1,11 @@
-import { orientationToMeasure } from "../../../utils";
+import { orientationToMeasure } from '../../../utils';
 
 const handleReorderOnHomeContainer = (ctx, actions) => {
   const {
-    action: { operation, isHomeContainerFocused, effectsManager }
+    action: { operation, isHomeContainerFocused, effectsManager },
   } = ctx;
 
-  if (operation !== "reorder" || isHomeContainerFocused) {
+  if (operation !== 'reorder' || isHomeContainerFocused) {
     actions.next();
     return;
   }
@@ -15,24 +15,24 @@ const handleReorderOnHomeContainer = (ctx, actions) => {
       candidateVDragger,
       impactVContainer,
       impactPosition,
-      candidateVDraggerIndex
+      candidateVDraggerIndex,
     },
-    impact: { index: currentIndex }
+    impact: { index: currentIndex },
   } = ctx;
   const {
-    containerConfig: { orientation, draggerEffect }
+    containerConfig: { orientation, draggerEffect },
   } = impactVContainer;
 
   const measure = orientationToMeasure(orientation);
 
-  if (typeof draggerEffect !== "function") {
+  if (typeof draggerEffect !== 'function') {
     actions.next();
     return;
   }
 
   const impact = {
     impactVContainer,
-    index: candidateVDraggerIndex
+    index: candidateVDraggerIndex,
   };
 
   // move down
@@ -68,12 +68,12 @@ const handleReorderOnHomeContainer = (ctx, actions) => {
       placedPosition: measure[0],
       downstream: true,
       dimension: candidateVDragger.dimension.rect,
-      isHighlight: true
+      isHighlight: true,
     });
 
     effectsManager.downstreamDraggersEffects.push({
       vDragger: candidateVDragger,
-      teardown
+      teardown,
     });
   }
 

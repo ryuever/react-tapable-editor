@@ -5,7 +5,7 @@ const getRootNode = editorRef => {
   if (!editorRef) return;
 
   let rootNode = editorRef.current.editor;
-  while (rootNode.className.indexOf("DraftEditor-root") === -1) {
+  while (rootNode.className.indexOf('DraftEditor-root') === -1) {
     rootNode = rootNode.parentNode;
   }
 

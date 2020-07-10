@@ -1,15 +1,15 @@
 import {
   getVContainer,
   containerElementFromPoint,
-  closestExclusiveContainerNodeFromElement
-} from "../../setAttributes";
-import { within, pointInRectWithOrientation } from "../../collision";
+  closestExclusiveContainerNodeFromElement,
+} from '../../setAttributes';
+import { within, pointInRectWithOrientation } from '../../collision';
 
 const shouldAccept = (vContainer, vDragger) => {
   const { containerConfig } = vContainer;
-  const el = vDragger.el;
+  const { el } = vDragger;
   const { draggerSelector, shouldAcceptDragger } = containerConfig;
-  if (typeof shouldAcceptDragger === "function") {
+  if (typeof shouldAcceptDragger === 'function') {
     return shouldAcceptDragger(el);
   }
 
@@ -24,7 +24,7 @@ const getRawInfo = ({
   vDraggers,
   vContainers,
   liftUpVDragger,
-  isNested
+  isNested,
 }) => {
   // console.log('candidateContainerElement ', candidateContainerElement)
   const vContainer = getVContainer(candidateContainerElement, vContainers);
@@ -35,39 +35,39 @@ const getRawInfo = ({
 
   const {
     containerConfig: { orientation },
-    children
+    children,
   } = vContainer;
 
   if (shouldAccept(vContainer, liftUpVDragger)) {
     for (let i = 0; i < children.getSize(); i++) {
       const vDragger = children.getItem(i);
       // `inNested` mode, horizontal container's sensitive areas is on two sides.
-      if (isNested && orientation === "horizontal") {
+      if (isNested && orientation === 'horizontal') {
         // console.log('vDragger.dimension ', vDragger.dimension, impactPoint)
         const { firstCollisionRect, secondCollisionRect } = vDragger.dimension;
         if (within(firstCollisionRect, impactPoint)) {
-          DEBUG && console.log("hit before ", vContainer.id);
+          DEBUG && console.log('hit before ', vContainer.id);
           return {
             candidateVDragger: vDragger,
             candidateVDraggerIndex: i,
-            impactPosition: "left",
-            impactVContainer: vContainer
+            impactPosition: 'left',
+            impactVContainer: vContainer,
           };
         }
 
         if (within(secondCollisionRect, impactPoint)) {
-          DEBUG && console.log("hit after ", vContainer.id);
+          DEBUG && console.log('hit after ', vContainer.id);
           return {
             candidateVDragger: vDragger,
             candidateVDraggerIndex: i,
-            impactPosition: "right",
-            impactVContainer: vContainer
+            impactPosition: 'right',
+            impactVContainer: vContainer,
           };
         }
       } else {
-        const rect = vDragger.dimension.rect;
+        const { rect } = vDragger.dimension;
         if (within(rect, impactPoint)) {
-          DEBUG && console.log("hit main ", vContainer.id);
+          DEBUG && console.log('hit main ', vContainer.id);
           const position = pointInRectWithOrientation(
             impactPoint,
             rect,
@@ -78,7 +78,7 @@ const getRawInfo = ({
             candidateVDragger: vDragger,
             candidateVDraggerIndex: i,
             impactPosition: position,
-            impactVContainer: vContainer
+            impactVContainer: vContainer,
           };
         }
       }
@@ -99,7 +99,7 @@ const getRawInfo = ({
     vContainers,
     liftUpVDragger,
     isFirst: false,
-    isNested
+    isNested,
   });
 };
 
@@ -130,7 +130,7 @@ const getImpactRawInfo = ({ impactPoint, liftUpVDragger }, ctx, actions) => {
     candidateVDragger: null,
     impactVContainer: null,
     impactPosition: null,
-    candidateVDraggerIndex: null
+    candidateVDraggerIndex: null,
   };
 
   if (candidateContainerElement) {
@@ -142,7 +142,7 @@ const getImpactRawInfo = ({ impactPoint, liftUpVDragger }, ctx, actions) => {
         vContainers,
         liftUpVDragger,
         isFirst: true,
-        isNested
+        isNested,
       }) || {};
   }
 

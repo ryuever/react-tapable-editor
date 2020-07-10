@@ -40,22 +40,22 @@ export const within = (rect, point) => {
 export const pointInRectWithOrientation = (
   point,
   rect,
-  orientation = "vertical"
+  orientation = 'vertical'
 ) => {
   const { top, right, bottom, left } = rect;
 
-  if (orientation === "vertical") {
+  if (orientation === 'vertical') {
     const topPart = { top, right, bottom: top + (bottom - top) / 2, left };
     const bottomPart = { top: top + (bottom - top) / 2, right, bottom, left };
 
-    if (within(topPart, point)) return "top";
-    else if (within(bottomPart, point)) return "bottom";
+    if (within(topPart, point)) return 'top';
+    if (within(bottomPart, point)) return 'bottom';
   } else {
     const leftPart = { top, right: left + (right - left) / 2, bottom, left };
     const rightPart = { top, right, bottom, left: left + (right - left) / 2 };
 
-    if (within(leftPart, point)) return "left";
-    else if (within(rightPart, point)) return "right";
+    if (within(leftPart, point)) return 'left';
+    if (within(rightPart, point)) return 'right';
   }
 };
 
@@ -76,21 +76,21 @@ export const positionInRect = (point, rect) => {
 
   const scope = [
     {
-      position: "top",
-      points: [[left, top], [right, top], centerPoint]
+      position: 'top',
+      points: [[left, top], [right, top], centerPoint],
     },
     {
-      position: "right",
-      points: [[right, top], centerPoint, [right, bottom]]
+      position: 'right',
+      points: [[right, top], centerPoint, [right, bottom]],
     },
     {
-      position: "bottom",
-      points: [centerPoint, [left, bottom], [right, bottom]]
+      position: 'bottom',
+      points: [centerPoint, [left, bottom], [right, bottom]],
     },
     {
-      position: "left",
-      points: [[left, top], centerPoint, [left, bottom]]
-    }
+      position: 'left',
+      points: [[left, top], centerPoint, [left, bottom]],
+    },
   ];
 
   for (let i = 0; i < scope.length; i++) {
@@ -103,27 +103,27 @@ export const positionInRect = (point, rect) => {
 // http://www.blackpawn.com/texts/pointinpoly/
 const pointInTriangle = (point, triangle) => {
   // compute vectors & dot products
-  const cx = point[0],
-    cy = point[1],
-    t0 = triangle[0],
-    t1 = triangle[1],
-    t2 = triangle[2],
-    v0x = t2[0] - t0[0],
-    v0y = t2[1] - t0[1],
-    v1x = t1[0] - t0[0],
-    v1y = t1[1] - t0[1],
-    v2x = cx - t0[0],
-    v2y = cy - t0[1],
-    dot00 = v0x * v0x + v0y * v0y,
-    dot01 = v0x * v1x + v0y * v1y,
-    dot02 = v0x * v2x + v0y * v2y,
-    dot11 = v1x * v1x + v1y * v1y,
-    dot12 = v1x * v2x + v1y * v2y;
+  const cx = point[0];
+  const cy = point[1];
+  const t0 = triangle[0];
+  const t1 = triangle[1];
+  const t2 = triangle[2];
+  const v0x = t2[0] - t0[0];
+  const v0y = t2[1] - t0[1];
+  const v1x = t1[0] - t0[0];
+  const v1y = t1[1] - t0[1];
+  const v2x = cx - t0[0];
+  const v2y = cy - t0[1];
+  const dot00 = v0x * v0x + v0y * v0y;
+  const dot01 = v0x * v1x + v0y * v1y;
+  const dot02 = v0x * v2x + v0y * v2y;
+  const dot11 = v1x * v1x + v1y * v1y;
+  const dot12 = v1x * v2x + v1y * v2y;
 
   // Compute barycentric coordinates
-  const b = dot00 * dot11 - dot01 * dot01,
-    inv = b === 0 ? 0 : 1 / b,
-    u = (dot11 * dot02 - dot01 * dot12) * inv,
-    v = (dot00 * dot12 - dot01 * dot02) * inv;
+  const b = dot00 * dot11 - dot01 * dot01;
+  const inv = b === 0 ? 0 : 1 / b;
+  const u = (dot11 * dot02 - dot01 * dot12) * inv;
+  const v = (dot00 * dot12 - dot01 * dot02) * inv;
   return u >= 0 && v >= 0 && u + v < 1;
 };

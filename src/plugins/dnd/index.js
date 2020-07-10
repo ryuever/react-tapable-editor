@@ -1,39 +1,39 @@
-import Sabar from "sabar";
-import Container from "./Container";
-import Dragger from "./Dragger";
-import { isElement } from "./dom";
-import { findClosestContainer } from "./find";
-import resolveDndConfig from "./configs/resolveDndConfig";
-import resolveConfig from "./configs/resolveConfig";
-import { setContainerAttributes, setDraggerAttributes } from "./setAttributes";
-import mutationHandler from "./mutationHandler";
+import Sabar from 'sabar';
+import { SyncHook } from 'tapable';
+import Container from './Container';
+import Dragger from './Dragger';
+import { isElement } from './dom';
+import { findClosestContainer } from './find';
+import resolveDndConfig from './configs/resolveDndConfig';
+import resolveConfig from './configs/resolveConfig';
+import { setContainerAttributes, setDraggerAttributes } from './setAttributes';
+import mutationHandler from './mutationHandler';
 
-import getDimensions from "./middleware/onStart/getDimensions";
-import getDimensionsNested from "./middleware/onStart/getDimensionsNested";
-import validateContainers from "./middleware/onStart/validateContainers";
-import attemptToCreateClone from "./middleware/onStart/attemptToCreateClone";
+import getDimensions from './middleware/onStart/getDimensions';
+import getDimensionsNested from './middleware/onStart/getDimensionsNested';
+import validateContainers from './middleware/onStart/validateContainers';
+import attemptToCreateClone from './middleware/onStart/attemptToCreateClone';
 
-import syncCopyPosition from "./middleware/onMove/syncCopyPosition";
-import addIntermediateCtxValue from "./middleware/onMove/addIntermediateCtxValue";
-import removeIntermediateCtxValue from "./middleware/onMove/removeIntermediateCtxValue";
-import handleLeaveContainer from "./middleware/onMove/effects/handleLeaveContainer";
-import handleLeaveHomeContainer from "./middleware/onMove/effects/handleLeaveHomeContainer";
-import handleLeaveOtherContainer from "./middleware/onMove/effects/handleLeaveOtherContainer";
-import handleEnterContainer from "./middleware/onMove/effects/handleEnterContainer";
-import handleEnterHomeContainer from "./middleware/onMove/effects/handleEnterHomeContainer";
-import handleEnterOtherContainer from "./middleware/onMove/effects/handleEnterOtherContainer";
-import handleReorder from "./middleware/onMove/effects/handleReorder";
-import handleReorderOnHomeContainer from "./middleware/onMove/effects/handleReorderOnHomeContainer";
-import handleReorderOnOtherContainer from "./middleware/onMove/effects/handleReorderOnOtherContainer";
-import handleImpactDraggerEffect from "./middleware/onMove/effects/handleImpactDraggerEffect";
+import syncCopyPosition from './middleware/onMove/syncCopyPosition';
+import addIntermediateCtxValue from './middleware/onMove/addIntermediateCtxValue';
+import removeIntermediateCtxValue from './middleware/onMove/removeIntermediateCtxValue';
+import handleLeaveContainer from './middleware/onMove/effects/handleLeaveContainer';
+import handleLeaveHomeContainer from './middleware/onMove/effects/handleLeaveHomeContainer';
+import handleLeaveOtherContainer from './middleware/onMove/effects/handleLeaveOtherContainer';
+import handleEnterContainer from './middleware/onMove/effects/handleEnterContainer';
+import handleEnterHomeContainer from './middleware/onMove/effects/handleEnterHomeContainer';
+import handleEnterOtherContainer from './middleware/onMove/effects/handleEnterOtherContainer';
+import handleReorder from './middleware/onMove/effects/handleReorder';
+import handleReorderOnHomeContainer from './middleware/onMove/effects/handleReorderOnHomeContainer';
+import handleReorderOnOtherContainer from './middleware/onMove/effects/handleReorderOnOtherContainer';
+import handleImpactDraggerEffect from './middleware/onMove/effects/handleImpactDraggerEffect';
 
-import getImpactRawInfo from "./middleware/shared/getImpactRawInfo";
-import { SyncHook } from "tapable";
-import closest from "./closest";
+import getImpactRawInfo from './middleware/shared/getImpactRawInfo';
+import closest from './closest';
 
-import MouseSensor from "./sensors/mouse";
-import reporter from "./reporter";
-import DndEffects from "./middleware/onMove/effects/DndEffects";
+import MouseSensor from './sensors/mouse';
+import reporter from './reporter';
+import DndEffects from './middleware/onMove/effects/DndEffects';
 
 class DND {
   constructor({ configs = [], rootElement, ...rest }) {
@@ -50,8 +50,8 @@ class DND {
     this.dndConfig = resolveDndConfig(rest);
 
     this.hooks = {
-      syncEffects: new SyncHook(["values"]),
-      cleanupEffects: new SyncHook()
+      syncEffects: new SyncHook(['values']),
+      cleanupEffects: new SyncHook(),
     };
     this.rootElement = rootElement;
     this.impact = {};
@@ -70,8 +70,8 @@ class DND {
         dndConfig: this.dndConfig,
         containersEffects: this.containersEffects,
         prevImpact: {},
-        dndEffects: new DndEffects()
-      }
+        dndEffects: new DndEffects(),
+      },
     });
 
     this.onMoveHandler = new Sabar({
@@ -85,8 +85,8 @@ class DND {
         dndConfig: this.dndConfig,
         containersEffects: this.containersEffects,
         dndEffects: this.dndEffects,
-        prevImpact: {}
-      }
+        prevImpact: {},
+      },
     });
 
     this.onStartHandler.use(
@@ -123,7 +123,7 @@ class DND {
     return {
       prevEffects: this.effects,
       hooks: this.hooks,
-      prevImpact: this.impact
+      prevImpact: this.impact,
     };
   };
 
@@ -146,7 +146,7 @@ class DND {
       configs: this.configs,
       dndEffects: this.dndEffects,
       updateImpact: this.updateImpact,
-      dndConfig: this.dndConfig
+      dndConfig: this.dndConfig,
     });
     this.sensor.start();
   }
@@ -160,7 +160,7 @@ class DND {
   };
 
   startObserve() {
-    let rootElement = this.rootElement;
+    let { rootElement } = this;
 
     if (!isElement(rootElement)) {
       const el = document.querySelector(this.rootElement);
@@ -171,7 +171,7 @@ class DND {
 
     observer.observe(rootElement, {
       childList: true,
-      subtree: true
+      subtree: true,
     });
   }
 
@@ -200,11 +200,11 @@ class DND {
       el,
       containers: this.containers,
       containerConfig: config,
-      dndConfig
+      dndConfig,
     });
     const parentContainerNode = closest(el, '[data-is-container="true"]');
     if (parentContainerNode) {
-      const containerId = parentContainerNode.getAttribute("data-container-id");
+      const containerId = parentContainerNode.getAttribute('data-container-id');
       const parentContainer = this.containers[containerId];
       container.parentContainer = parentContainer;
     }

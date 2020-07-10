@@ -1,8 +1,8 @@
 // 主要是为了解决在`isInCompositionMode`模式下，进行`inlineStyle`切换的时候，会出现
 // 刚刚触发的`inlineStyle`变化并不会作用到接下来的输入的问题。目前的处理方式就是在
 // toggle inline style以及换行的时候，默认添加一个`\u200B`字符
-import { Modifier, EditorState, SelectionState } from "draft-js";
-import { splitAtLastCharacterAndForwardSelection } from "../utils/editorState";
+import { Modifier, EditorState, SelectionState } from 'draft-js';
+import { splitAtLastCharacterAndForwardSelection } from '../utils/editorState';
 
 function StyleControlPlugin() {
   const selectionWithNonWidthCharacter = {};
@@ -14,7 +14,7 @@ function StyleControlPlugin() {
     // 2. 查看触发`inlineStyle`变化位置的前一个字符是否是`\u200B`，如果是的话，就将新的
     //    inlineStyle应用到它上面，否则就插入一个`\u200B`字符
     hooks.afterInlineStyleApplied.tap(
-      "StyleControlPlugin",
+      'StyleControlPlugin',
       (newEditorState, editorState, inlineStyle) => {
         const nextEditorState = newEditorState || editorState;
         const currentContent = nextEditorState.getCurrentContent();
@@ -33,27 +33,27 @@ function StyleControlPlugin() {
           let action;
           let markerSelection;
 
-          if (lastCharacter === "\u200B") {
+          if (lastCharacter === '\u200B') {
             markerSelection = selection.merge({
               anchorOffset: len - 1,
-              focusOffset: len
+              focusOffset: len,
             });
             newCurrentState = Modifier.applyInlineStyle(
               currentContent,
               markerSelection,
               inlineStyle
             );
-            action = "change-inline-style";
+            action = 'change-inline-style';
           } else {
             markerSelection = selection;
             newCurrentState = Modifier.insertText(
               currentContent,
               selection,
-              "\u200B",
+              '\u200B',
               currentInlineStyle,
               null
             );
-            action = "insert-characters";
+            action = 'insert-characters';
 
             if (!selectionWithNonWidthCharacter[startKey])
               selectionWithNonWidthCharacter[startKey] = {};
@@ -82,7 +82,7 @@ function StyleControlPlugin() {
     // 1. 当进行换行的时候，需要判断最后一个字符是否是`\u200B`；如果是的话，在该字符的前面进行中断；
     // 2. 如果不是，就要看最后一个字符是否有inlineStyle，如果有就插入一个新的`\u200B`；没有就不做
     // 处理
-    hooks.handleKeyCommand.tap("StyleControlPlugin", (command, editorState) => {
+    hooks.handleKeyCommand.tap('StyleControlPlugin', (command, editorState) => {
       const selection = editorState.getSelection();
       const currentContent = editorState.getCurrentContent();
       const endKey = selection.getEndKey();
@@ -90,12 +90,12 @@ function StyleControlPlugin() {
       const blockSize = block.getLength();
       const text = block.getText();
 
-      if (!selection.isCollapsed()) return "not-handled";
+      if (!selection.isCollapsed()) return 'not-handled';
 
-      if (command === "split-block") {
+      if (command === 'split-block') {
         if (text) {
           const charAtLast = block.getText()[blockSize - 1];
-          if (charAtLast === "\u200B") {
+          if (charAtLast === '\u200B') {
             const newState = splitAtLastCharacterAndForwardSelection(
               editorState
             );
@@ -112,11 +112,11 @@ function StyleControlPlugin() {
             const group = selectionWithNonWidthCharacter[afterBlockKey];
             group[0] = afterSelection.merge({
               anchorOffset: 0,
-              focusOffset: 0
+              focusOffset: 0,
             });
 
             hooks.setState.call(newState);
-            return "handled";
+            return 'handled';
           }
         }
 
@@ -126,7 +126,7 @@ function StyleControlPlugin() {
           const nextContent = Modifier.insertText(
             currentContent,
             selection,
-            "\u200B",
+            '\u200B',
             currentStyle,
             null
           );
@@ -145,16 +145,16 @@ function StyleControlPlugin() {
           const group = selectionWithNonWidthCharacter[afterBlockKey];
           group[0] = afterSelection.merge({
             anchorOffset: 0,
-            focusOffset: 0
+            focusOffset: 0,
           });
 
           hooks.setState.call(newState);
-          return "handled";
+          return 'handled';
         }
       }
     });
 
-    hooks.didUpdate.tap("RemoveLastNonWidthCharacterPlugin", editorState => {
+    hooks.didUpdate.tap('RemoveLastNonWidthCharacterPlugin', editorState => {
       // return
       const selection = editorState.getSelection();
       const currentState = editorState.getCurrentContent();
@@ -185,14 +185,14 @@ function StyleControlPlugin() {
             // 合理的方案，会出现很多的不一致的情况，比如说在行首，触发了inlineStyle这个时候马上删除
             // 你接下来输入的字符第一个会被删除掉。。。因为 selectionWithNonWidthCharacter还标记
             // 着行首是一个空字符。。。
-            if (blockText[markerSelectionPosition] !== "\u200B") return;
+            if (blockText[markerSelectionPosition] !== '\u200B') return;
 
             const newContent = Modifier.removeRange(
               content,
               markerSelection.merge({
-                focusOffset: markerSelectionPosition + 1
+                focusOffset: markerSelectionPosition + 1,
               }),
-              "backward"
+              'backward'
             );
 
             // 通过设置新的`selectionAfter`为了解决，当比如中文输入完以后，光标应该回到哪个位置；
@@ -201,17 +201,17 @@ function StyleControlPlugin() {
             const newState = EditorState.push(
               editorState,
               newContent.set(
-                "selectionAfter",
+                'selectionAfter',
                 new SelectionState({
                   anchorKey: currentStartKey,
                   anchorOffset: selection.getAnchorOffset() - 1,
                   focusKey: currentStartKey,
                   focusOffset: selection.getAnchorOffset() - 1,
                   isBackward: false,
-                  hasFocus: true
+                  hasFocus: true,
                 })
               ),
-              "delete-character"
+              'delete-character'
             );
 
             return newState;

@@ -1,5 +1,5 @@
-import { getVisibleSelectionRect } from "draft-js";
-import getRootNode from "./getRootNode";
+import { getVisibleSelectionRect } from 'draft-js';
+import getRootNode from './getRootNode';
 
 const getSelectionRectRelativeToOffsetParent = editorRef => {
   const rootNode = getRootNode(editorRef);
@@ -19,7 +19,7 @@ const getSelectionRectRelativeToOffsetParent = editorRef => {
     right: left + width,
     bottom: top + height,
     width,
-    height
+    height,
   };
 };
 

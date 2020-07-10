@@ -5,16 +5,16 @@ const readFile = file => {
     lastModifiedDate,
     name,
     size,
-    type
+    type,
   } = file;
 
-  if (!fileType.startsWith("image/")) return Promise.resolve();
+  if (!fileType.startsWith('image/')) return Promise.resolve();
   const reader = new FileReader();
 
   return new Promise((resolve, reject) => {
     reader.onload = e => {
       const {
-        target: { result: src }
+        target: { result: src },
       } = e;
       resolve({
         src,
@@ -22,7 +22,7 @@ const readFile = file => {
         size,
         type,
         lastModifiedDate,
-        lastModified
+        lastModified,
       });
     };
 
@@ -38,7 +38,7 @@ function HandleDroppedFilesPlugin() {
   this.apply = getEditor => {
     const { hooks } = getEditor();
     hooks.handleDroppedFiles.tap(
-      "HandleDroppedFilesPlugin",
+      'HandleDroppedFilesPlugin',
       (editorState, dropSelection, files) => {
         const jobs = [];
         files.forEach(file => {

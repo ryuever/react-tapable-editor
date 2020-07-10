@@ -1,8 +1,8 @@
-import createEmptyBlockNode from "./createEmptyBlockNode";
-import removeBlock from "./removeBlock";
-import blockMutationUtil from "./blockMutationUtil";
-import blockUtil from "./blockUtil";
-import { List } from "immutable";
+import { List } from 'immutable';
+import createEmptyBlockNode from './createEmptyBlockNode';
+import removeBlock from './removeBlock';
+import blockMutationUtil from './blockMutationUtil';
+import blockUtil from './blockUtil';
 
 /**
  *
@@ -12,7 +12,7 @@ import { List } from "immutable";
  *
  * The parent of topMost block is null...
  */
-const wrapBlock = (originalBlockMap, targetBlockKey, direction = "row") => {
+const wrapBlock = (originalBlockMap, targetBlockKey, direction = 'row') => {
   let blockMap = originalBlockMap;
   const targetBlock = blockMap.get(targetBlockKey);
   const parentBlockKey = targetBlock.getParentKey();
@@ -24,14 +24,14 @@ const wrapBlock = (originalBlockMap, targetBlockKey, direction = "row") => {
   }
 
   if (!parentData || !parentData.flexRow) {
-    let containerBlock = createEmptyBlockNode().merge({
+    const containerBlock = createEmptyBlockNode().merge({
       data: {
         flexRow: true,
-        "data-wrapper": true,
-        "data-direction": direction
+        'data-wrapper': true,
+        'data-direction': direction,
       },
       children: List([targetBlockKey]),
-      parent: parentBlockKey
+      parent: parentBlockKey,
     });
 
     const containerBlockKey = containerBlock.getKey();
@@ -41,14 +41,14 @@ const wrapBlock = (originalBlockMap, targetBlockKey, direction = "row") => {
 
       // splitBlockInContentState.js
       const insertionIndex = childrenList.indexOf(targetBlockKey) + 1;
-      var newChildrenArray = parentChildrenList.toArray();
+      const newChildrenArray = parentChildrenList.toArray();
       newChildrenArray.splice(insertionIndex, 0, belowBlockKey);
       const parentKey = parentBlock.getKey();
 
       blockMap = blockMap.set(
         parentKey,
         block.merge({
-          children: List(newChildrenArray)
+          children: List(newChildrenArray),
         })
       );
     }
@@ -59,7 +59,7 @@ const wrapBlock = (originalBlockMap, targetBlockKey, direction = "row") => {
     blockMap = blocksBefore
       .concat([
         [containerBlockKey, containerBlock],
-        [targetBlockKey, targetBlock]
+        [targetBlockKey, targetBlock],
       ])
       .concat(blocksAfter)
       .toOrderedMap();
@@ -70,7 +70,7 @@ const wrapBlock = (originalBlockMap, targetBlockKey, direction = "row") => {
       ) {
         return block.merge({
           prevSibling: targetBlock.getPrevSiblingKey(),
-          nextSibling: targetBlock.getNextSiblingKey()
+          nextSibling: targetBlock.getNextSiblingKey(),
         });
       });
 
@@ -79,7 +79,7 @@ const wrapBlock = (originalBlockMap, targetBlockKey, direction = "row") => {
         blocks,
         function(block) {
           return block.merge({
-            nextSibling: containerBlockKey
+            nextSibling: containerBlockKey,
           });
         }
       );
@@ -88,7 +88,7 @@ const wrapBlock = (originalBlockMap, targetBlockKey, direction = "row") => {
         blocks,
         function(block) {
           return block.merge({
-            prevSibling: containerBlockKey
+            prevSibling: containerBlockKey,
           });
         }
       );
@@ -97,7 +97,7 @@ const wrapBlock = (originalBlockMap, targetBlockKey, direction = "row") => {
         return block.merge({
           prevSibling: null,
           nextSibling: null,
-          parent: containerBlock.getKey()
+          parent: containerBlock.getKey(),
         });
       });
     });

@@ -1,7 +1,7 @@
-import { EditorState, Modifier, SelectionState } from "draft-js";
-import DraftOffsetKey from "draft-js/lib/DraftOffsetKey";
-import { hasText } from "../utils/contentBlock";
-import { moveSelectionForward } from "../utils/editorState";
+import { EditorState, Modifier, SelectionState } from 'draft-js';
+import DraftOffsetKey from 'draft-js/lib/DraftOffsetKey';
+import { hasText } from '../utils/contentBlock';
+import { moveSelectionForward } from '../utils/editorState';
 
 // 解决的场景问题：新打开的文档尚未输入问题，这个时候如果我们触发了style
 // 的变化（block和inline）也应该应用到`placeholder`
@@ -16,7 +16,7 @@ function PlaceholderPlugin() {
   this.apply = getEditor => {
     const { hooks, editorRef } = getEditor();
 
-    hooks.handleKeyCommand.tap("PlaceholderPlugin", (command, editorState) => {
+    hooks.handleKeyCommand.tap('PlaceholderPlugin', (command, editorState) => {
       const contentState = editorState.getCurrentContent();
       const selection = editorState.getSelection();
       const blockMap = contentState.getBlockMap();
@@ -35,17 +35,17 @@ function PlaceholderPlugin() {
           const commands = [
             // 不能够禁掉`split-block`；否则当只有一个空行的时候，敲enter键就没啥用了
             // 'split-block',
-            "backspace"
+            'backspace',
           ];
           if (commands.indexOf(command) !== -1) {
-            return "handled";
+            return 'handled';
           }
         }
       }
     });
 
     hooks.toggleWaterfallBlockType.tap(
-      "PlaceholderPlugin",
+      'PlaceholderPlugin',
       (newEditorState, editorState, blockType) => {
         const currentEditorState = newEditorState || editorState;
         const currentContent = currentEditorState.getCurrentContent();
@@ -61,19 +61,19 @@ function PlaceholderPlugin() {
           anchorOffset: 0,
           focusKey: firstBlockKey,
           focusOffset: 0,
-          isBackward: false
+          isBackward: false,
         });
 
         editorRef.current.blur();
 
         if (hasFocus) {
           const typeToSet =
-            firstBlock.getType() === blockType ? "unstyled" : blockType;
-          const blurSelection = newSelection.set("hasFocus", false);
+            firstBlock.getType() === blockType ? 'unstyled' : blockType;
+          const blurSelection = newSelection.set('hasFocus', false);
           const next = EditorState.push(
             currentEditorState,
             Modifier.setBlockType(currentContent, selection, typeToSet),
-            "change-block-type"
+            'change-block-type'
           );
           return EditorState.acceptSelection(next, blurSelection);
         }
@@ -84,7 +84,7 @@ function PlaceholderPlugin() {
 
     // updatePlaceholder会在`mount`和`didUpdate`的时候都会触发
     hooks.updatePlaceholder.tap(
-      "PlaceholderPlugin",
+      'PlaceholderPlugin',
       (editorState, placeholder) => {
         const contentState = editorState.getCurrentContent();
         const selection = editorState.getSelection();
@@ -98,12 +98,12 @@ function PlaceholderPlugin() {
           const newBlockMap = contentState.getBlockMap().delete(firstBlockKey);
           const withoutFirstBlock = contentState.merge({
             blockMap: newBlockMap,
-            selectionAfter: selection
+            selectionAfter: selection,
           });
           this.hasPlaceholderBlock = null;
           this.placeholderNode = null;
           hooks.setState.call(
-            EditorState.push(editorState, withoutFirstBlock, "remove-range")
+            EditorState.push(editorState, withoutFirstBlock, 'remove-range')
           );
           return;
         }
@@ -130,14 +130,14 @@ function PlaceholderPlugin() {
               // 当中文输入结束时，指针还在最后的位置
               // 2. 之所以+1；因为在实际使用中，如果输入中文的话，它第一次的指针显示位置是不对的
               const withoutFirstBlock = contentState.merge({
-                blockMap: newBlockMap
+                blockMap: newBlockMap,
               });
               this.placeholderBlock = null;
               this.hasPlaceholderBlock = false;
               const nextState = EditorState.push(
                 editorState,
                 withoutFirstBlock,
-                "remove-range"
+                'remove-range'
               );
               // 主要是修复`isInCompositionMode`模式下，当输入结束时，需要将光标设置到光标最后所在的位置
               hooks.setState.call(
@@ -145,7 +145,7 @@ function PlaceholderPlugin() {
                   nextState,
                   selection.merge({
                     anchorOffset: 1,
-                    focusOffset: 1
+                    focusOffset: 1,
                   })
                   // withoutFirstBlock.getSelectionAfter()
                 )
@@ -159,8 +159,8 @@ function PlaceholderPlugin() {
             )[0];
 
             if (node) {
-              node.style.color = "#9197a3";
-              node.style.position = "absolute";
+              node.style.color = '#9197a3';
+              node.style.position = 'absolute';
             }
             if (this.selection && !editorState.getSelection().getHasFocus()) {
               hooks.setState.call(
@@ -192,7 +192,7 @@ function PlaceholderPlugin() {
           const nextState = EditorState.push(
             newState,
             newCurrentState,
-            "split-block"
+            'split-block'
           );
 
           this.hasPlaceholderBlock = true;
@@ -207,8 +207,8 @@ function PlaceholderPlugin() {
           )[0];
 
           if (this.placeholderNode) {
-            this.placeholderNode.style.color = "#9197a3";
-            this.placeholderNode.style.position = "absolute";
+            this.placeholderNode.style.color = '#9197a3';
+            this.placeholderNode.style.position = 'absolute';
           }
 
           hooks.setState.call(nextState, editorState => {

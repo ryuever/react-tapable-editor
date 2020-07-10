@@ -1,4 +1,4 @@
-import { draggerKeyExtractor } from "./key";
+import { draggerKeyExtractor } from './key';
 
 class Dragger {
   constructor({ el, container }) {
@@ -11,7 +11,7 @@ class Dragger {
 
   teardown() {
     if (!this.container) return;
-    if (typeof this._teardown === "function") this._teardown();
+    if (typeof this._teardown === 'function') this._teardown();
   }
 }
 

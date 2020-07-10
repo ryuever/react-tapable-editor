@@ -1,5 +1,5 @@
 // https://github.com/facebook/draft-js/blob/master/src/model/transaction/ContentStateInlineStyle.js#L38 modifyInlineStyle
-import Immutable from "immutable";
+import Immutable from 'immutable';
 
 const { Map } = Immutable;
 
@@ -56,7 +56,7 @@ function getSelectionInlineStyle(editorState) {
         const entityKey = char.getEntity();
         if (entityKey) {
           const entityType = contentState.getEntity(entityKey).getType();
-          hasLink = entityType === "LINK";
+          hasLink = entityType === 'LINK';
         }
 
         // 计算inline `styles`；一旦已经知道`intersect`为空，那么就不再进行处理了
@@ -84,7 +84,7 @@ function getSelectionInlineStyle(editorState) {
 
   return {
     styles,
-    hasLink
+    hasLink,
   };
 }
 

@@ -1,5 +1,5 @@
-import { OrderedMap } from "immutable";
-import findRootNode from "./findRootNode";
+import { OrderedMap } from 'immutable';
+import findRootNode from './findRootNode';
 
 const flattenBlocks = (blockMap, startKey, endKey) => {
   const newBlockMap = blockMap;
@@ -52,7 +52,7 @@ const flattenBlocks = (blockMap, startKey, endKey) => {
         const newLastBlock = lastBlock.merge({ nextSibling: currentBlockKey });
         orderMap = orderMap.set(lastBlockKey, newLastBlock);
         const newCurrentBlock = currentBlock.merge({
-          prevSibling: lastBlockKey
+          prevSibling: lastBlockKey,
         });
         orderMap = orderMap.set(currentBlockKey, newCurrentBlock);
       } else {

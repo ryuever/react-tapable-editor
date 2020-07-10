@@ -1,55 +1,55 @@
-import horizontalTransfer from "./horizontalTransfer";
-import verticalTransfer from "./verticalTransfer";
+import horizontalTransfer from './horizontalTransfer';
+import verticalTransfer from './verticalTransfer';
 
 const requiredError = prop => {
   throw new Error(`${prop} is required in transfer function`);
 };
 
 const transfer = (editorState, sourceBlockKey, targetBlockKey, position) => {
-  if (!editorState) requiredError("editorState");
-  if (!sourceBlockKey) requiredError("sourceBlockKey");
-  if (!targetBlockKey) requiredError("targetBlockKey");
-  if (!position) requiredError("position");
+  if (!editorState) requiredError('editorState');
+  if (!sourceBlockKey) requiredError('sourceBlockKey');
+  if (!targetBlockKey) requiredError('targetBlockKey');
+  if (!position) requiredError('position');
   const currentState = editorState.getCurrentContent();
 
   let blockMap;
   switch (position) {
-    case "top":
+    case 'top':
       blockMap = verticalTransfer(
         editorState,
         sourceBlockKey,
         targetBlockKey,
-        "top"
+        'top'
       );
       break;
-    case "right":
+    case 'right':
       blockMap = horizontalTransfer(
         editorState,
         sourceBlockKey,
         targetBlockKey,
-        "right"
+        'right'
       );
       break;
-    case "bottom":
+    case 'bottom':
       blockMap = verticalTransfer(
         editorState,
         sourceBlockKey,
         targetBlockKey,
-        "bottom"
+        'bottom'
       );
       break;
-    case "left":
+    case 'left':
       blockMap = horizontalTransfer(
         editorState,
         sourceBlockKey,
         targetBlockKey,
-        "left"
+        'left'
       );
       break;
   }
 
   return currentState.merge({
-    blockMap: blockMap
+    blockMap,
   });
 };
 

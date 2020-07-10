@@ -1,12 +1,12 @@
-import React, { useCallback, useState, useEffect, useRef } from "react";
+import React, { useCallback, useState, useEffect, useRef } from 'react';
 
-import { withEditor } from "../../index";
-import ImageAlignCenter from "../button/ImageAlignCenter";
-import ImageAlignLeftFillContent from "../button/ImageAlignLeftFillContent";
-import ImageAlignRightFillContent from "../button/ImageAlignRightFillContent";
-import ImageAlignLeft from "../button/ImageAlignLeft";
-import "./styles.css";
-import { EditorState, SelectionState } from "draft-js";
+import { withEditor } from '../../index';
+import ImageAlignCenter from '../button/ImageAlignCenter';
+import ImageAlignLeftFillContent from '../button/ImageAlignLeftFillContent';
+import ImageAlignRightFillContent from '../button/ImageAlignRightFillContent';
+import ImageAlignLeft from '../button/ImageAlignLeft';
+import './styles.css';
+import { EditorState, SelectionState } from 'draft-js';
 
 const ImageAlignCenterButton = ({ activeKey, clickHandler, active }) => {
   const handleClick = () => clickHandler(activeKey);
@@ -21,7 +21,7 @@ const ImageAlignLeftButton = ({ activeKey, clickHandler, active }) => {
 const ImageAlignLeftFillContentButton = ({
   activeKey,
   clickHandler,
-  active
+  active,
 }) => {
   const handleClick = () => clickHandler(activeKey);
   return <ImageAlignLeftFillContent active={active} onClick={handleClick} />;
@@ -30,7 +30,7 @@ const ImageAlignLeftFillContentButton = ({
 const ImageAlignRightFillContentButton = ({
   activeKey,
   clickHandler,
-  active
+  active,
 }) => {
   const handleClick = () => clickHandler(activeKey);
   return <ImageAlignRightFillContent active={active} onClick={handleClick} />;
@@ -50,20 +50,20 @@ const Toolbar = props => {
 
       const resizeLayout = {};
       switch (alignment) {
-        case "center":
-          resizeLayout.width = "900px";
+        case 'center':
+          resizeLayout.width = '900px';
           break;
-        case "right":
-          resizeLayout.width = "450px";
+        case 'right':
+          resizeLayout.width = '450px';
           break;
-        case "left":
-          resizeLayout.width = "450px";
+        case 'left':
+          resizeLayout.width = '450px';
           break;
-        case "leftFill":
-          resizeLayout.width = "450px";
+        case 'leftFill':
+          resizeLayout.width = '450px';
           break;
-        case "rightFill":
-          resizeLayout.width = "450px";
+        case 'rightFill':
+          resizeLayout.width = '450px';
           break;
       }
 
@@ -71,7 +71,7 @@ const Toolbar = props => {
       // 再点击alignment中的值的话，输入问题，它的width会变成刚刚resize时的值；
       const newContent = contentState.mergeEntityData(entityKey, {
         alignment,
-        resizeLayout
+        resizeLayout,
       });
       const nextState = EditorState.push(editorState, newContent);
       const newState = EditorState.forceSelection(
@@ -90,7 +90,7 @@ const Toolbar = props => {
         const entityState = contentState.getEntity(entity);
         const type = entityState.getType();
         const data = entityState.getData();
-        if (type === "IMAGE") {
+        if (type === 'IMAGE') {
           const { alignment } = data;
           if (alignment) setAlignment(alignment);
         }
@@ -99,7 +99,7 @@ const Toolbar = props => {
   };
 
   useEffect(() => {
-    hooks.toggleImageToolbarVisible.tap("ImageToolbar", (visibility, block) => {
+    hooks.toggleImageToolbarVisible.tap('ImageToolbar', (visibility, block) => {
       if (visibility) {
         blockRef.current = block;
         const { editorState } = getEditor();
@@ -109,13 +109,13 @@ const Toolbar = props => {
         const entityState = contentState.getEntity(entity);
         const type = entityState.getType();
         const data = entityState.getData();
-        if (type === "IMAGE") {
+        if (type === 'IMAGE') {
           const { alignment } = data;
           if (alignment) setAlignment(alignment);
         }
       }
     });
-  }, []);
+  }, [getEditor, hooks.toggleImageToolbarVisible]);
 
   return (
     <div className="image-toolbar" ref={forwardRef}>
@@ -128,17 +128,17 @@ const Toolbar = props => {
           /> */}
           <ImageAlignLeftFillContentButton
             activeKey="leftFill"
-            active={alignment === "leftFill"}
+            active={alignment === 'leftFill'}
             clickHandler={clickHandler}
           />
           <ImageAlignCenterButton
             activeKey="center"
-            active={alignment === "center"}
+            active={alignment === 'center'}
             clickHandler={clickHandler}
           />
           <ImageAlignRightFillContentButton
             activeKey="rightFill"
-            active={alignment === "rightFill"}
+            active={alignment === 'rightFill'}
             clickHandler={clickHandler}
           />
         </div>

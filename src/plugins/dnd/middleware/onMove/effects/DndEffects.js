@@ -16,7 +16,7 @@ export default class DndEffects {
   }
 
   remove(effectsManager) {
-    const id = effectsManager.id;
+    const { id } = effectsManager;
     if (this.children[id]) {
       this.children[id].teardown();
       delete this.children[id];
@@ -24,14 +24,14 @@ export default class DndEffects {
   }
 
   teardown() {
-    for (let id in this.children) {
+    for (const id in this.children) {
       const child = this.children[id];
       child.teardown();
     }
   }
 
   partialTeardown() {
-    for (let id in children) {
+    for (const id in children) {
       const child = children[id];
       if (!child.isHomeContainerEffects) child.teardown();
     }

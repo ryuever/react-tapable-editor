@@ -1,4 +1,4 @@
-import { generateOffsetKey } from "./keyHelper";
+import { generateOffsetKey } from './keyHelper';
 
 export function getNodeByBlockKey(blockKey) {
   const offsetKey = generateOffsetKey(blockKey);

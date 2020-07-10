@@ -1,4 +1,4 @@
-import appendChildBlock from "./appendChildBlock";
+import appendChildBlock from './appendChildBlock';
 
 /**
  * 1. remove childBlock first
@@ -19,8 +19,8 @@ export default (blockMap, parentBlockKey, childBlockKey) => {
       data: block.getData().merge({
         flexRowChild: true,
         flexRowTotalCount: len,
-        flexRowIndex: i
-      })
+        flexRowIndex: i,
+      }),
     });
     newBlockMap = newBlockMap.set(key, newBlock);
   }

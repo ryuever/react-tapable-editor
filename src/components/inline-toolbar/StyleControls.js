@@ -1,24 +1,24 @@
-import React, { useRef } from "react";
+import React, { useRef } from 'react';
 
-import H1 from "../button/H1";
-import H2 from "../button/H2";
-import H3 from "../button/H3";
-import H4 from "../button/H4";
-import Blockquote from "../button/Blockquote";
-import CodeBlock from "../button/CodeBlock";
+import H1 from '../button/H1';
+import H2 from '../button/H2';
+import H3 from '../button/H3';
+import H4 from '../button/H4';
+import Blockquote from '../button/Blockquote';
+import CodeBlock from '../button/CodeBlock';
 
-import Bold from "../button/Bold";
-import Italic from "../button/Italic";
-import StrikeThrough from "../button/StrikeThrough";
-import Underline from "../button/Underline";
-import InlineCode from "../button/InlineCode";
-import Link from "../button/Link";
+import Bold from '../button/Bold';
+import Italic from '../button/Italic';
+import StrikeThrough from '../button/StrikeThrough';
+import Underline from '../button/Underline';
+import InlineCode from '../button/InlineCode';
+import Link from '../button/Link';
 
-import NumberedList from "../button/NumberedList";
-import BulletedList from "../button/BulletedList";
+import NumberedList from '../button/NumberedList';
+import BulletedList from '../button/BulletedList';
 
-import { createLinkSpanAtSelection } from "../../utils/createEntity";
-import Divider from "./Divider";
+import { createLinkSpanAtSelection } from '../../utils/createEntity';
+import Divider from './Divider';
 
 const buildBlockTypeHandler = (getEditor, type) => () => {
   const { hooks, editorState } = getEditor();
@@ -31,49 +31,49 @@ const buildInlineTypeHandler = (getEditor, inlineStyle) => () => {
 };
 
 const H1Button = ({ active, getEditor }) => {
-  const handleClick = useRef(buildBlockTypeHandler(getEditor, "header-one"));
+  const handleClick = useRef(buildBlockTypeHandler(getEditor, 'header-one'));
   return <H1 active={active} onClick={handleClick.current} />;
 };
 const H2Button = ({ active, getEditor }) => {
-  const handleClick = useRef(buildBlockTypeHandler(getEditor, "header-two"));
+  const handleClick = useRef(buildBlockTypeHandler(getEditor, 'header-two'));
   return <H2 active={active} onClick={handleClick.current} />;
 };
 const H3Button = ({ active, getEditor }) => {
-  const handleClick = useRef(buildBlockTypeHandler(getEditor, "header-three"));
+  const handleClick = useRef(buildBlockTypeHandler(getEditor, 'header-three'));
   return <H3 active={active} onClick={handleClick.current} />;
 };
 const H4Button = ({ active, getEditor }) => {
-  const handleClick = useRef(buildBlockTypeHandler(getEditor, "header-four"));
+  const handleClick = useRef(buildBlockTypeHandler(getEditor, 'header-four'));
   return <H4 active={active} onClick={handleClick.current} />;
 };
 const BlockquoteButton = ({ active, getEditor }) => {
-  const handleClick = useRef(buildBlockTypeHandler(getEditor, "blockquote"));
+  const handleClick = useRef(buildBlockTypeHandler(getEditor, 'blockquote'));
   return <Blockquote active={active} onClick={handleClick.current} />;
 };
 const CodeBlockButton = ({ active, getEditor }) => {
-  const handleClick = useRef(buildBlockTypeHandler(getEditor, "code-block"));
+  const handleClick = useRef(buildBlockTypeHandler(getEditor, 'code-block'));
   return <CodeBlock active={active} onClick={handleClick.current} />;
 };
 const BoldButton = ({ active, getEditor }) => {
-  const handleClick = useRef(buildInlineTypeHandler(getEditor, "BOLD"));
+  const handleClick = useRef(buildInlineTypeHandler(getEditor, 'BOLD'));
   return <Bold active={active} onClick={handleClick.current} />;
 };
 const ItalicButton = ({ active, getEditor }) => {
-  const handleClick = useRef(buildInlineTypeHandler(getEditor, "ITALIC"));
+  const handleClick = useRef(buildInlineTypeHandler(getEditor, 'ITALIC'));
   return <Italic active={active} onClick={handleClick.current} />;
 };
 const StrikeThroughButton = ({ active, getEditor }) => {
   const handleClick = useRef(
-    buildInlineTypeHandler(getEditor, "STRIKE-THROUGH")
+    buildInlineTypeHandler(getEditor, 'STRIKE-THROUGH')
   );
   return <StrikeThrough active={active} onClick={handleClick.current} />;
 };
 const UnderlineButton = ({ active, getEditor }) => {
-  const handleClick = useRef(buildInlineTypeHandler(getEditor, "UNDERLINE"));
+  const handleClick = useRef(buildInlineTypeHandler(getEditor, 'UNDERLINE'));
   return <Underline active={active} onClick={handleClick.current} />;
 };
 const InlineCodeButton = ({ active, getEditor }) => {
-  const handleClick = useRef(buildInlineTypeHandler(getEditor, "CODE"));
+  const handleClick = useRef(buildInlineTypeHandler(getEditor, 'CODE'));
   return <InlineCode active={active} onClick={handleClick.current} />;
 };
 const LinkButton = ({ handleClick, getEditor, active }) => {
@@ -88,13 +88,13 @@ const LinkButton = ({ handleClick, getEditor, active }) => {
 };
 const NumberedListButton = ({ active, getEditor }) => {
   const handleClick = useRef(
-    buildBlockTypeHandler(getEditor, "ordered-list-item")
+    buildBlockTypeHandler(getEditor, 'ordered-list-item')
   );
   return <NumberedList active={active} onClick={handleClick.current} />;
 };
 const BulletedListButton = ({ active, getEditor }) => {
   const handleClick = useRef(
-    buildBlockTypeHandler(getEditor, "unordered-list-item")
+    buildBlockTypeHandler(getEditor, 'unordered-list-item')
   );
   return <BulletedList active={active} onClick={handleClick.current} />;
 };
@@ -109,49 +109,49 @@ const StyleControls = ({
   styles,
   getEditor,
   toggleDisplayMode,
-  hasLink
+  hasLink,
 }) => {
   return (
     <div className="inline-toolbar-inner">
       <div className="inline-toolbar-action-group">
         <H1Button
           getEditor={getEditor}
-          active={onlyContains(blockTypes, "header-one")}
+          active={onlyContains(blockTypes, 'header-one')}
         />
         <H2Button
           getEditor={getEditor}
-          active={onlyContains(blockTypes, "header-two")}
+          active={onlyContains(blockTypes, 'header-two')}
         />
         <H3Button
           getEditor={getEditor}
-          active={onlyContains(blockTypes, "header-three")}
+          active={onlyContains(blockTypes, 'header-three')}
         />
         <H4Button
           getEditor={getEditor}
-          active={onlyContains(blockTypes, "header-four")}
+          active={onlyContains(blockTypes, 'header-four')}
         />
         <BlockquoteButton
           getEditor={getEditor}
-          active={onlyContains(blockTypes, "blockquote")}
+          active={onlyContains(blockTypes, 'blockquote')}
         />
         <CodeBlockButton
           getEditor={getEditor}
-          active={onlyContains(blockTypes, "code-block")}
+          active={onlyContains(blockTypes, 'code-block')}
         />
 
         <Divider />
 
-        <BoldButton getEditor={getEditor} active={styles.has("BOLD")} />
-        <ItalicButton getEditor={getEditor} active={styles.has("ITALIC")} />
+        <BoldButton getEditor={getEditor} active={styles.has('BOLD')} />
+        <ItalicButton getEditor={getEditor} active={styles.has('ITALIC')} />
         <StrikeThroughButton
           getEditor={getEditor}
-          active={styles.has("STRIKE-THROUGH")}
+          active={styles.has('STRIKE-THROUGH')}
         />
         <UnderlineButton
           getEditor={getEditor}
-          active={styles.has("UNDERLINE")}
+          active={styles.has('UNDERLINE')}
         />
-        <InlineCodeButton getEditor={getEditor} active={styles.has("CODE")} />
+        <InlineCodeButton getEditor={getEditor} active={styles.has('CODE')} />
 
         <LinkButton
           handleClick={toggleDisplayMode}
@@ -163,11 +163,11 @@ const StyleControls = ({
 
         <NumberedListButton
           getEditor={getEditor}
-          active={onlyContains(blockTypes, "ordered-list-item")}
+          active={onlyContains(blockTypes, 'ordered-list-item')}
         />
         <BulletedListButton
           getEditor={getEditor}
-          active={onlyContains(blockTypes, "unordered-list-item")}
+          active={onlyContains(blockTypes, 'unordered-list-item')}
         />
       </div>
     </div>

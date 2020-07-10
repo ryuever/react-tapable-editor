@@ -1,9 +1,9 @@
-import { RichUtils } from "draft-js";
+import { RichUtils } from 'draft-js';
 
 const createLinkAtSelection = (editorState, url) => {
   const contentState = editorState
     .getCurrentContent()
-    .createEntity("LINK", "MUTABLE", { url });
+    .createEntity('LINK', 'MUTABLE', { url });
   const entityKey = contentState.getLastCreatedEntityKey();
 
   return RichUtils.toggleLink(
@@ -25,7 +25,7 @@ const createLinkSpanAtSelection = editorState => {
 
   const contentState = editorState
     .getCurrentContent()
-    .createEntity("LINK_SPAN", "MUTABLE", { text });
+    .createEntity('LINK_SPAN', 'MUTABLE', { text });
   const entityKey = contentState.getLastCreatedEntityKey();
 
   return RichUtils.toggleLink(

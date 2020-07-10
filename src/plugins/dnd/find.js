@@ -1,4 +1,4 @@
-import closest from "./closest";
+import closest from './closest';
 
 export function findIndex(list, predicate) {
   if (list.findIndex) {
@@ -64,21 +64,21 @@ export const findClosestDropTargetFromEvent = (event, containers) => {
     if (node.matches(dndConfig.draggerSelector)) return container;
     // current node will be resolved if it matches selector...
     // So we should use its parentNode for next processing..
-    else node = container.el.parentNode;
+    node = container.el.parentNode;
   }
 
   return -1;
 };
 
 export const findClosestDraggerElementFromEvent = event => {
-  const target = event.target;
+  const { target } = event;
   const dragger = closest(target, '[data-is-dragger="true"]');
   if (dragger) return dragger;
   return -1;
 };
 
 export const findClosestContainerFromEvent = event => {
-  const target = event.target;
+  const { target } = event;
   const container = closest(target, '[data-is-container="true"]');
   if (container) return container;
   return -1;

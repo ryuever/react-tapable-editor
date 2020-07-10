@@ -1,6 +1,6 @@
-import { bindEvents } from "../../../utils/event/bindEvents";
-import { findClosestDraggerElementFromEvent } from "../find";
-import { hasDraggerHandlerMatched } from "./utils";
+import { bindEvents } from '../../../utils/event/bindEvents';
+import { findClosestDraggerElementFromEvent } from '../find';
+import { hasDraggerHandlerMatched } from './utils';
 
 class Mouse {
   constructor({
@@ -13,7 +13,7 @@ class Mouse {
     configs,
     dndEffects,
     updateImpact,
-    dndConfig
+    dndConfig,
   }) {
     this.moveAPI = moveAPI;
     this.getClone = getClone;
@@ -29,16 +29,16 @@ class Mouse {
 
   start() {
     bindEvents(window, {
-      eventName: "mousedown",
+      eventName: 'mousedown',
       fn: event => {
         const el = findClosestDraggerElementFromEvent(event);
         if (el === -1) return;
-        const target = event.target;
+        const { target } = event;
         if (!hasDraggerHandlerMatched(target, this.configs)) return;
         // https://stackoverflow.com/a/19164149/2006805 In order to prevent text
         // selection when moving cursor
         event.preventDefault();
-        const draggerId = el.getAttribute("data-dragger-id");
+        const draggerId = el.getAttribute('data-dragger-id');
         const dragger = this.getDragger(draggerId);
         const vContainer = dragger.container;
         const liftUpVDraggerIndex = vContainer.children.findIndex(dragger);
@@ -51,7 +51,7 @@ class Mouse {
         const unbind = bindEvents(window, [
           {
             // target should be moved by mousemove event.
-            eventName: "mousemove",
+            eventName: 'mousemove',
             fn: event => {
               const impactPoint = [event.clientX, event.clientY];
               event.preventDefault();
@@ -71,16 +71,16 @@ class Mouse {
                 dragger,
                 clone,
                 isHomeContainer,
-                ...this.moveAPI()
+                ...this.moveAPI(),
               });
 
               const { impact } = result;
               output = result.output;
               if (impact) this.updateImpact(impact);
-            }
+            },
           },
           {
-            eventName: "mouseup",
+            eventName: 'mouseup',
             fn: e => {
               unbind();
 
@@ -90,10 +90,10 @@ class Mouse {
 
               this.dndEffects.teardown();
               document.body.removeChild(clone);
-            }
-          }
+            },
+          },
         ]);
-      }
+      },
     });
   }
 }

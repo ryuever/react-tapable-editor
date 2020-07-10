@@ -1,10 +1,10 @@
-import removeBlock from "./removeBlock";
-import wrapBlock from "./wrapBlock";
-import insertBlockBefore from "./insertBlockBefore";
-import insertBlockAfter from "./insertBlockAfter";
-import createEmptyBlockNode from "./createEmptyBlockNode";
-import appendChild from "./appendChild";
-import { List } from "immutable";
+import { List } from 'immutable';
+import removeBlock from './removeBlock';
+import wrapBlock from './wrapBlock';
+import insertBlockBefore from './insertBlockBefore';
+import insertBlockAfter from './insertBlockAfter';
+import createEmptyBlockNode from './createEmptyBlockNode';
+import appendChild from './appendChild';
 
 const horizontalTransfer = (
   editorState,
@@ -16,26 +16,26 @@ const horizontalTransfer = (
   let blockMap = currentState.getBlockMap();
   const sourceBlock = blockMap.get(sourceBlockKey);
   blockMap = removeBlock(blockMap, sourceBlockKey);
-  blockMap = wrapBlock(blockMap, targetBlockKey, "column");
+  blockMap = wrapBlock(blockMap, targetBlockKey, 'column');
   const parentKey = blockMap.get(targetBlockKey).parent;
-  blockMap = wrapBlock(blockMap, parentKey, "row");
+  blockMap = wrapBlock(blockMap, parentKey, 'row');
 
-  let containerBlock = createEmptyBlockNode().merge({
+  const containerBlock = createEmptyBlockNode().merge({
     data: {
       flexRow: true,
-      "data-wrapper": true,
-      "data-direction": "column"
+      'data-wrapper': true,
+      'data-direction': 'column',
     },
     children: List([]),
-    parent: null
+    parent: null,
   });
 
   let fn;
   switch (direction) {
-    case "left":
+    case 'left':
       fn = insertBlockBefore;
       break;
-    case "right":
+    case 'right':
       fn = insertBlockAfter;
       break;
   }

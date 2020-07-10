@@ -1,6 +1,6 @@
-import blockMutationUtil from "./blockMutationUtil";
-import blockUtil from "./blockUtil";
-import { List } from "immutable";
+import { List } from 'immutable';
+import blockMutationUtil from './blockMutationUtil';
+import blockUtil from './blockUtil';
 
 function insertBlockBefore(blockMap, targetBlock, sourceBlock) {
   const blocksBefore = blockUtil.blocksBefore(blockMap, targetBlock);
@@ -12,7 +12,7 @@ function insertBlockBefore(blockMap, targetBlock, sourceBlock) {
   const newBlockMap = blocksBefore
     .concat([
       [sourceBlockKey, sourceBlock],
-      [targetBlockKey, targetBlock]
+      [targetBlockKey, targetBlock],
     ])
     .concat(blocksAfter)
     .toOrderedMap();
@@ -21,7 +21,7 @@ function insertBlockBefore(blockMap, targetBlock, sourceBlock) {
     blockMutationUtil.transformBlock(sourceBlockKey, blocks, function(block) {
       return block.merge({
         prevSibling: targetBlock.getPrevSiblingKey(),
-        nextSibling: targetBlockKey
+        nextSibling: targetBlockKey,
       });
     });
 
@@ -30,14 +30,14 @@ function insertBlockBefore(blockMap, targetBlock, sourceBlock) {
       blocks,
       function(block) {
         return block.merge({
-          nextSibling: sourceBlockKey
+          nextSibling: sourceBlockKey,
         });
       }
     );
 
     blockMutationUtil.transformBlock(targetBlockKey, blocks, function(block) {
       return block.merge({
-        prevSibling: sourceBlockKey
+        prevSibling: sourceBlockKey,
       });
     });
 
@@ -48,7 +48,7 @@ function insertBlockBefore(blockMap, targetBlock, sourceBlock) {
       newChildrenArray.splice(index, 0, sourceBlockKey);
 
       return block.merge({
-        children: List(newChildrenArray)
+        children: List(newChildrenArray),
       });
     });
   });

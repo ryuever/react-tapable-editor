@@ -1,6 +1,6 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
-import "./styles.css";
+import './styles.css';
 
 class CodeWrapper extends Component {
   constructor(props) {
@@ -8,7 +8,7 @@ class CodeWrapper extends Component {
 
     const { children } = props;
     this.state = {
-      code: children
+      code: children,
     };
   }
 

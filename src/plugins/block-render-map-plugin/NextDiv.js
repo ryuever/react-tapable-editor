@@ -1,6 +1,6 @@
-import React, { useCallback, createRef } from "react";
+import React, { useCallback, createRef } from 'react';
 // import classes from "classnames";
-import "./nextDiv.css";
+import './nextDiv.css';
 // import useFocus from '../../hooks/useFocus'
 
 const NextDiv = props => {

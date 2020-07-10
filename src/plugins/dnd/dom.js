@@ -1,4 +1,4 @@
-import { intersect, within } from "./collision";
+import { intersect, within } from './collision';
 
 // https://stackoverflow.com/questions/384286/how-do-you-check-if-a-javascript-object-is-a-dom-object
 export const isElement = el =>
@@ -43,7 +43,7 @@ export const getViewport = () => {
     top: 0,
     right: innerWidth || clientWidth,
     bottom: innerHeight || clientHeight,
-    left: 0
+    left: 0,
   };
 };
 

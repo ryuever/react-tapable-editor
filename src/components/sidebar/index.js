@@ -1,12 +1,12 @@
-import React, { useRef } from "react";
-import classes from "classnames";
-import Plus from "../button/Plus";
-import Dragger from "../button/Dragger";
-import "./styles.css";
+import React, { useRef } from 'react';
+import classes from 'classnames';
+import Plus from '../button/Plus';
+import Dragger from '../button/Dragger';
+import './styles.css';
 
 const Sidebar = props => {
   const { forwardRef } = props;
-  const containerStyleRef = useRef(classes("container"));
+  const containerStyleRef = useRef(classes('container'));
 
   return (
     <div className={containerStyleRef.current} ref={forwardRef}>

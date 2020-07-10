@@ -1,10 +1,10 @@
-import React from "react";
-import "./styles.css";
+import React from 'react';
+import './styles.css';
 
 const Link = props => {
   const { contentState, entityKey, children } = props;
   const entity = contentState.getEntity(entityKey);
-  const data = entity.get("data");
+  const data = entity.get('data');
   const { url } = data;
 
   return (

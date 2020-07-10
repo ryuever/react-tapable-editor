@@ -11,8 +11,8 @@ export default (a = [], b = []) => {
     const blockKey = a[i];
     if (b.indexOf(blockKey) === -1) {
       result.push({
-        op: "remove",
-        blockKey
+        op: 'remove',
+        blockKey,
       });
     }
   }
@@ -21,8 +21,8 @@ export default (a = [], b = []) => {
     const blockKey = b[i];
     if (a.indexOf(blockKey) === -1) {
       result.push({
-        op: "add",
-        blockKey
+        op: 'add',
+        blockKey,
       });
     }
   }

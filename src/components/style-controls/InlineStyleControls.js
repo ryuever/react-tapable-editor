@@ -1,11 +1,11 @@
-import React, { useCallback } from "react";
-import StyleControlButton from "./StyleControlButton";
+import React, { useCallback } from 'react';
+import StyleControlButton from './StyleControlButton';
 
 const INLINE_STYLES = [
-  { label: "Bold", style: "BOLD" },
-  { label: "Italic", style: "ITALIC" },
-  { label: "Underline", style: "UNDERLINE" },
-  { label: "Monospace", style: "CODE" }
+  { label: 'Bold', style: 'BOLD' },
+  { label: 'Italic', style: 'ITALIC' },
+  { label: 'Underline', style: 'UNDERLINE' },
+  { label: 'Monospace', style: 'CODE' },
 ];
 
 // 1. 当切换到输入中文的时候，如果说这个时候点击`inline style button`的话，
@@ -18,10 +18,13 @@ const InlineStyleControls = ({ getEditor }) => {
   let currentStyle = editorState.getCurrentInlineStyle();
   const contentState = editorState.getCurrentContent();
   const selection = editorState.getSelection();
-  const handleToggle = useCallback(inlineStyle => {
-    const { hooks } = getEditor();
-    hooks.toggleInlineStyle.call(inlineStyle);
-  }, []);
+  const handleToggle = useCallback(
+    inlineStyle => {
+      const { hooks } = getEditor();
+      hooks.toggleInlineStyle.call(inlineStyle);
+    },
+    [getEditor]
+  );
 
   // 主要是为了解决当输入中文的时候，会出现`active inline style`被清空的现象；
   if (!currentStyle.size && selection.isCollapsed()) {

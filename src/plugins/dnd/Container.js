@@ -1,6 +1,6 @@
-import { containerKeyExtractor } from "./key";
-import SortedItems from "./structure/SortedItems";
-import { orientationToAxis, axisMeasure } from "./utils";
+import { containerKeyExtractor } from './key';
+import SortedItems from './structure/SortedItems';
+import { orientationToAxis, axisMeasure } from './utils';
 
 class Container {
   constructor({ el, containers, dndConfig, containerConfig }) {
@@ -8,7 +8,7 @@ class Container {
     this.id = containerKeyExtractor();
     this.containers = containers;
     this.children = new SortedItems({
-      sorter: this.sorter.bind(this)
+      sorter: this.sorter.bind(this),
     });
     this.dndConfig = dndConfig;
     this.containerConfig = containerConfig;

@@ -1,5 +1,5 @@
 // https://github.com/facebook/draft-js/blob/master/src/model/transaction/ContentStateInlineStyle.js#L38 modifyInlineStyle
-import Immutable from "immutable";
+import Immutable from 'immutable';
 
 const { Map } = Immutable;
 

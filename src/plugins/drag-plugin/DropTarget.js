@@ -1,13 +1,13 @@
-import { keyExtractor } from "./keyExtractor";
-import { generateOffsetKey } from "../../utils/keyHelper";
-import { getNodeByOffsetKey } from "../../utils/findNode";
-import { bindEvents } from "../../utils/event/bindEvents";
+import { keyExtractor } from './keyExtractor';
+import { generateOffsetKey } from '../../utils/keyHelper';
+import { getNodeByOffsetKey } from '../../utils/findNode';
+import { bindEvents } from '../../utils/event/bindEvents';
 
 class DropTarget {
   constructor({ blockKey, addDropTarget, removeDropTarget }) {
     this.blockKey = blockKey;
     this.offsetKey = generateOffsetKey(this.blockKey);
-    this.listenerKey = keyExtractor(blockKey, "target");
+    this.listenerKey = keyExtractor(blockKey, 'target');
     this.addDropTarget = addDropTarget;
     this.removeDropTarget = removeDropTarget;
     this.teardown = this.setup();
@@ -38,16 +38,16 @@ class DropTarget {
       node,
       [
         {
-          eventName: "mouseenter",
-          fn: this.mouseEnterHandler
+          eventName: 'mouseenter',
+          fn: this.mouseEnterHandler,
         },
         {
-          eventName: "mouseleave",
-          fn: this.mouseLeaveHandler
-        }
+          eventName: 'mouseleave',
+          fn: this.mouseLeaveHandler,
+        },
       ],
       {
-        capture: true
+        capture: true,
       }
     );
   }

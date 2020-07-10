@@ -1,14 +1,14 @@
-import { CharacterMetadata, EditorState } from "draft-js";
-import { Repeat, OrderedSet, OrderedMap } from "immutable";
-import removeBlock from "../utils/block/removeBlock";
-import flattenBlocks from "../utils/block/flattenBlocks";
+import { CharacterMetadata, EditorState } from 'draft-js';
+import { Repeat, OrderedSet, OrderedMap } from 'immutable';
+import removeBlock from '../utils/block/removeBlock';
+import flattenBlocks from '../utils/block/flattenBlocks';
 
 function StateFilterPlugin() {
   this.apply = getEditor => {
     const { hooks } = getEditor();
 
     hooks.stateFilter.tap(
-      "StateFilterPlugin",
+      'StateFilterPlugin',
       (oldEditorState, editorState, pasteText) => {
         const oldBlockMap = oldEditorState.getCurrentContent().getBlockMap();
         const contentState = editorState.getCurrentContent();
@@ -24,7 +24,7 @@ function StateFilterPlugin() {
         //    然后再插入到contentState中
 
         if (
-          changeType === "insert-fragment" &&
+          changeType === 'insert-fragment' &&
           blockMap.size !== oldBlockMap.size
         ) {
           try {
@@ -32,9 +32,9 @@ function StateFilterPlugin() {
             const oldStartKey = oldSelection.getStartKey();
             const oldStartBlock = oldBlockMap.get(oldStartKey);
 
-            if (oldStartBlock.getType() !== "code-block") return editorState;
+            if (oldStartBlock.getType() !== 'code-block') return editorState;
 
-            const parts = pasteText.split("\n").filter(part => part !== "");
+            const parts = pasteText.split('\n').filter(part => part !== '');
             let index = 0;
             let newBlockMap = blockMap;
 
@@ -66,17 +66,17 @@ function StateFilterPlugin() {
                   if (paddingLength) {
                     const newBlock = block.merge({
                       parent: null,
-                      type: "code-block",
-                      text: " ".repeat(paddingLength) + block.getText(),
+                      type: 'code-block',
+                      text: ' '.repeat(paddingLength) + block.getText(),
                       characterList: Repeat(
                         CharacterMetadata.create({
                           style: OrderedSet(),
-                          entity: null
+                          entity: null,
                         }),
                         paddingLength
                       )
                         .toList()
-                        .concat(block.getCharacterList())
+                        .concat(block.getCharacterList()),
                     });
                     newBlockMap = newBlockMap.set(blockKey, newBlock);
                   }
@@ -84,7 +84,7 @@ function StateFilterPlugin() {
                 } else {
                   const newBlock = block.merge({
                     parent: null,
-                    type: "code-block"
+                    type: 'code-block',
                   });
                   newBlockMap = newBlockMap.set(blockKey, newBlock);
                 }
@@ -99,14 +99,14 @@ function StateFilterPlugin() {
             const next = EditorState.push(
               editorState,
               newContent,
-              "change-block-type"
+              'change-block-type'
             );
             return EditorState.forceSelection(
               next,
               newContent.getSelectionAfter()
             );
           } catch (err) {
-            console.error("stateFilterPlugin : ", err);
+            console.error('stateFilterPlugin : ', err);
           }
         }
 

@@ -1,4 +1,4 @@
-export default (blockMap, blockKey, direction = "forward") => {
+export default (blockMap, blockKey, direction = 'forward') => {
   const block = blockMap
     .toSeq()
     .skipUntil(block => {

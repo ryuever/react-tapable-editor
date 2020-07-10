@@ -4,26 +4,26 @@ const resolveChangeType = ({
   prevSelection,
   isCollapsed,
   hasFocus,
-  selection
+  selection,
 }) => {
-  if (typeof prevIsCollapsed === "undefined") {
-    return "init-change";
+  if (typeof prevIsCollapsed === 'undefined') {
+    return 'init-change';
   }
 
   if (isCollapsed !== prevIsCollapsed) {
-    return "collapsed-change";
+    return 'collapsed-change';
   }
 
   if (hasFocus !== prevHasFocus) {
-    return "focus-change";
+    return 'focus-change';
   }
 
   if (isCollapsed) {
     const prevStartKey = prevSelection.getStartKey();
     const startKey = selection.getStartKey();
 
-    if (prevStartKey === startKey) return "selection-move-inner-block";
-    return "selection-move-outer-block";
+    if (prevStartKey === startKey) return 'selection-move-inner-block';
+    return 'selection-move-outer-block';
   }
   const prevEndKey = prevSelection.getEndKey();
   const prevStartOffset = prevSelection.getStartOffset();
@@ -37,10 +37,10 @@ const resolveChangeType = ({
     prevStartOffset === startOffset &&
     prevEndOffset === endOffset
   ) {
-    return "selection-range-content-change";
+    return 'selection-range-content-change';
   }
 
-  return "selection-range-size-change";
+  return 'selection-range-size-change';
 };
 
 function SelectionChangePlugin() {
@@ -51,7 +51,7 @@ function SelectionChangePlugin() {
   this.apply = getEditor => {
     const { hooks } = getEditor();
 
-    hooks.syncSelectionChange.tap("SelectionChangePlugin", editorState => {
+    hooks.syncSelectionChange.tap('SelectionChangePlugin', editorState => {
       const selection = editorState.getSelection();
       const isCollapsed = selection.isCollapsed();
       const hasFocus = selection.getHasFocus();
@@ -62,13 +62,13 @@ function SelectionChangePlugin() {
         prevSelection,
         isCollapsed,
         hasFocus,
-        selection
+        selection,
       });
 
       const payload = {
         changeType,
         oldValue: { prevIsCollapsed, prevHasFocus, prevSelection },
-        newValue: { isCollapsed, hasFocus, selection }
+        newValue: { isCollapsed, hasFocus, selection },
       };
 
       prevIsCollapsed = isCollapsed;
@@ -76,26 +76,26 @@ function SelectionChangePlugin() {
       prevSelection = selection;
 
       switch (changeType) {
-        case "init-change":
+        case 'init-change':
           hooks.selectionInitChange.call(editorState, payload);
           break;
-        case "collapsed-change":
+        case 'collapsed-change':
           hooks.selectionCollapsedChange.call(editorState, payload);
           break;
-        case "focus-change":
+        case 'focus-change':
           hooks.selectionFocusChange.call(editorState, payload);
           break;
-        case "selection-move-inner-block":
+        case 'selection-move-inner-block':
           hooks.selectionMoveInnerBlock.call(editorState, payload);
           break;
-        case "selection-move-outer-block":
+        case 'selection-move-outer-block':
           hooks.selectionMoveOuterBlock.call(editorState, payload);
           break;
-        case "selection-range-content-change":
+        case 'selection-range-content-change':
           hooks.selectionRangeContentChange.call(editorState, payload);
           hooks.selectionRangeChange.call(editorState, payload);
           break;
-        case "selection-range-size-change":
+        case 'selection-range-size-change':
           hooks.selectionRangeSizeChange.call(editorState, payload);
           hooks.selectionRangeChange.call(editorState, payload);
           break;

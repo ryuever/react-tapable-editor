@@ -3,7 +3,7 @@
 function getOptions(shared, fromBinding) {
   return {
     ...shared,
-    ...fromBinding
+    ...fromBinding,
   };
 }
 

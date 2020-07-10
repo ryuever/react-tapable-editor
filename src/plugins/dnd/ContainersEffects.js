@@ -1,4 +1,4 @@
-import ContainerEffects from "./ContainerEffects";
+import ContainerEffects from './ContainerEffects';
 
 export default class ContainersEffects {
   constructor() {
@@ -18,7 +18,7 @@ export default class ContainersEffects {
   }
 
   remove(containerEffects) {
-    const id = containerEffects.id;
+    const { id } = containerEffects;
     if (this.children[id]) {
       this.children[id].teardown();
       delete this.children[id];
@@ -26,14 +26,14 @@ export default class ContainersEffects {
   }
 
   teardown() {
-    for (let id in children) {
+    for (const id in children) {
       const child = children[id];
       child.teardown();
     }
   }
 
   partialTeardown() {
-    for (let id in children) {
+    for (const id in children) {
       const child = children[id];
       if (!child.isHomeContainerEffects) child.teardown();
     }

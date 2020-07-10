@@ -1,2 +1,7 @@
 node_modules
 .storybook
+*.log
+.DS_Store
+node_modules
+.cache
+dist

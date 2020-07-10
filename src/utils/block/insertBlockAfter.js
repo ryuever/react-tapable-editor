@@ -1,6 +1,6 @@
-import blockUtil from "./blockUtil";
-import blockMutationUtil from "./blockMutationUtil";
-import { List } from "immutable";
+import { List } from 'immutable';
+import blockUtil from './blockUtil';
+import blockMutationUtil from './blockMutationUtil';
 
 /**
  * If target block has children, sourceBlock should be placed after all
@@ -27,7 +27,7 @@ function insertBlockAfter(blockMap, targetBlock, sourceBlock) {
       return block.merge({
         prevSibling: targetBlockKey,
         nextSibling: targetBlock.getNextSiblingKey(),
-        parent: targetBlock.parent
+        parent: targetBlock.parent,
       });
     });
 
@@ -39,13 +39,13 @@ function insertBlockAfter(blockMap, targetBlock, sourceBlock) {
       newChildrenArray.push(sourceBlockKey);
 
       return block.merge({
-        children: List(newChildrenArray)
+        children: List(newChildrenArray),
       });
     });
 
     blockMutationUtil.transformBlock(targetBlockKey, blocks, function(block) {
       return block.merge({
-        nextSibling: sourceBlockKey
+        nextSibling: sourceBlockKey,
       });
     });
   });

@@ -1,4 +1,4 @@
-import report from "../../../reporter";
+import report from '../../../reporter';
 
 const handleLeaveContainer = (
   { isHomeContainer, prevImpact },
@@ -25,9 +25,9 @@ const handleLeaveContainer = (
     report.logLeaveContainer(prevImpactVContainer);
 
     ctx.action = {
-      operation: "onLeave",
+      operation: 'onLeave',
       isHomeContainerFocused: isHomeContainer(prevImpactVContainer),
-      effectsManager: effectsManager
+      effectsManager,
     };
   }
 

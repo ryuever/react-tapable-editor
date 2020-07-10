@@ -1,13 +1,13 @@
 // Append `collisionRect` to dimension property.
 // `getDimension` method should be considered.
 
-import { orientationToAxis, axisMeasure } from "../../utils";
+import { orientationToAxis, axisMeasure } from '../../utils';
 
 export default (_, ctx, actions) => {
   const { draggers, dndConfig } = ctx;
   const { mode, collisionPadding } = dndConfig;
 
-  if (mode !== "nested") {
+  if (mode !== 'nested') {
     actions.next();
     return;
   }
@@ -17,7 +17,7 @@ export default (_, ctx, actions) => {
 
   const nextDraggers = {};
 
-  for (let key in draggers) {
+  for (const key in draggers) {
     const dragger = draggers[key];
     const { container, dimension } = dragger;
     const { rect } = dimension;
@@ -33,7 +33,7 @@ export default (_, ctx, actions) => {
       bottom,
       left,
       [first]: Math.max(rect[first] - collisionPadding, 0),
-      [second]: rect[first]
+      [second]: rect[first],
     };
 
     const secondCollisionRect = {
@@ -42,13 +42,13 @@ export default (_, ctx, actions) => {
       bottom,
       left,
       [first]: rect[second],
-      [second]: rect[second] + collisionPadding
+      [second]: rect[second] + collisionPadding,
     };
 
     dragger.dimension = {
       ...dimension,
       firstCollisionRect,
-      secondCollisionRect
+      secondCollisionRect,
     };
   }
 

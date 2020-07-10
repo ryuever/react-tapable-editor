@@ -1,8 +1,8 @@
 // https://github.com/facebook/draft-js/blob/master/src/model/transaction/splitBlockInContentState.js
 
-import generateRandomKey from "draft-js/lib/generateRandomKey";
-import Immutable from "immutable";
-import { EditorState } from "draft-js";
+import generateRandomKey from 'draft-js/lib/generateRandomKey';
+import Immutable from 'immutable';
+import { EditorState } from 'draft-js';
 
 const { Map, List } = Immutable;
 
@@ -28,28 +28,28 @@ const updateBlockMapLinks = function updateBlockMapLinks(
     newChildrenArray.splice(insertionIndex, 0, parentBlockKey);
 
     const nextOriginalParentBlock = originalParentBlock.merge({
-      children: List(newChildrenArray)
+      children: List(newChildrenArray),
     });
 
     const originalBlockSibling = {
       prevSibling: originalBlock.getPrevSiblingKey(),
-      nextSibling: originalBlock.getNextSiblingKey()
+      nextSibling: originalBlock.getNextSiblingKey(),
     };
 
     const nextNewParentBlock = newParentBlock.merge({
       ...originalBlockSibling,
-      children: List([originalBlockKey, belowBlockKey])
+      children: List([originalBlockKey, belowBlockKey]),
     });
 
     const nextOriginalBlock = originalBlock.merge({
       parent: parentBlockKey,
       prevSibling: null,
-      nextSibling: belowBlockKey
+      nextSibling: belowBlockKey,
     });
     const nextBelowBlock = belowBlock.merge({
       parent: parentBlockKey,
       prevSibling: originalBlockKey,
-      nextSibling: null
+      nextSibling: null,
     });
 
     blocks.set(originalParentBlockKey, nextOriginalParentBlock);
@@ -64,22 +64,22 @@ function CreateNestBlockPlugin() {
     const { hooks } = getState();
 
     hooks.handleKeyCommand.tap(
-      "CreateNestBlockPlugin",
+      'CreateNestBlockPlugin',
       (command, editorState) => {
         const selection = editorState.getSelection();
-        if (command !== "split-block") return "not-handled";
-        if (!selection.isCollapsed()) return "not-handled";
+        if (command !== 'split-block') return 'not-handled';
+        if (!selection.isCollapsed()) return 'not-handled';
 
         const currentContent = editorState.getCurrentContent();
         const endKey = selection.getEndKey();
         const block = currentContent.getBlockForKey(endKey);
         const blockParentKey = block.parent;
-        if (!blockParentKey) return "not-handled";
+        if (!blockParentKey) return 'not-handled';
         const parentBlock = currentContent.getBlockForKey(blockParentKey);
-        if (!parentBlock) return "not-handled";
-        const isFlexRow = parentBlock.getData().get("flexRow");
+        if (!parentBlock) return 'not-handled';
+        const isFlexRow = parentBlock.getData().get('flexRow');
 
-        if (!isFlexRow) return "not-handled";
+        if (!isFlexRow) return 'not-handled';
         const selectionState = editorState.getSelection();
         const contentState = editorState.getCurrentContent();
         const key = selectionState.getAnchorKey();
@@ -89,16 +89,16 @@ function CreateNestBlockPlugin() {
         const newParentKey = generateRandomKey();
         const newParentBlock = blockToSplit.merge({
           key: newParentKey,
-          text: "",
-          data: Map()
+          text: '',
+          data: Map(),
         });
 
         const keyBelow = generateRandomKey();
         const blockBelow = blockToSplit.merge({
           key: keyBelow,
-          text: "",
+          text: '',
           data: Map(),
-          children: List()
+          children: List(),
         });
 
         const blocksBefore = blockMap.toSeq().takeUntil(function(v) {
@@ -117,7 +117,7 @@ function CreateNestBlockPlugin() {
             [
               [newParentKey, newParentBlock],
               [key, blockToSplit],
-              [keyBelow, blockBelow]
+              [keyBelow, blockBelow],
             ],
             blocksAfter
           )
@@ -138,15 +138,15 @@ function CreateNestBlockPlugin() {
             anchorOffset: 0,
             focusKey: keyBelow,
             focusOffset: 0,
-            isBackward: false
-          })
+            isBackward: false,
+          }),
         });
 
         const newState = EditorState.push(editorState, newContentState);
 
         hooks.setState.call(newState);
 
-        return "handled";
+        return 'handled';
       }
     );
   };

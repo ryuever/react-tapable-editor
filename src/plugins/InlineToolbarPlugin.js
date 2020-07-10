@@ -1,7 +1,7 @@
-import { EditorState } from "draft-js";
-import getSelectionRectRelativeToOffsetParent from "../utils/rect/getSelectionRectRelativeToOffsetParent";
-import clamp from "../helpers/clamp";
-import getRootNode from "../utils/rect/getRootNode";
+import { EditorState } from 'draft-js';
+import getSelectionRectRelativeToOffsetParent from '../utils/rect/getSelectionRectRelativeToOffsetParent';
+import clamp from '../helpers/clamp';
+import getRootNode from '../utils/rect/getRootNode';
 
 function InlineToolbar() {
   let isToolbarVisible = false;
@@ -34,27 +34,27 @@ function InlineToolbar() {
         const selection = editorStateAfterClickLinkButton.getSelection();
         const nextState = EditorState.set(editorStateAfterClickLinkButton, {
           selection: selection.merge({
-            hasFocus: false
-          })
+            hasFocus: false,
+          }),
         });
         hooks.setState.call(nextState);
       }
 
       const n =
-        node || inlineToolbarNode || document.querySelector(".inline-toolbar");
-      n.style.display = "none";
-      n.style.visibility = "invisible";
+        node || inlineToolbarNode || document.querySelector('.inline-toolbar');
+      n.style.display = 'none';
+      n.style.visibility = 'invisible';
       isToolbarVisible = false;
-      hooks.inlineBarChange.call(null, "hidden");
+      hooks.inlineBarChange.call(null, 'hidden');
     };
 
     const hiddenHandler = (editorState, inlineToolbarRef) => {
       clearTimeout(timeoutHandler);
       if (!isToolbarVisible) return;
-      inlineToolbarRef.current.style.display = "none";
-      inlineToolbarRef.current.style.visibility = "invisible";
+      inlineToolbarRef.current.style.display = 'none';
+      inlineToolbarRef.current.style.visibility = 'invisible';
       isToolbarVisible = false;
-      hooks.inlineBarChange.call(editorState, "hidden");
+      hooks.inlineBarChange.call(editorState, 'hidden');
     };
 
     const visibleHandler = (editorState, editorRef, inlineToolbarRef) => {
@@ -65,8 +65,8 @@ function InlineToolbar() {
         const rect = getSelectionRectRelativeToOffsetParent(editorRef);
         if (!rect) return;
 
-        inlineToolbarRef.current.style.display = "block";
-        inlineToolbarRef.current.style.visibility = "visible";
+        inlineToolbarRef.current.style.display = 'block';
+        inlineToolbarRef.current.style.visibility = 'visible';
 
         const { top, left, width } = rect;
         const inlineToolbarHeight = inlineToolbarRef.current.offsetHeight;
@@ -87,20 +87,20 @@ function InlineToolbar() {
 
         if (tmpLeft !== nextLeft) {
           // 已经移动到了边界，这个时候不应该再显示三角符号
-          inlineToolbarRef.current.style.overflow = "hidden";
+          inlineToolbarRef.current.style.overflow = 'hidden';
         } else {
-          inlineToolbarRef.current.style.overflow = "visible";
+          inlineToolbarRef.current.style.overflow = 'visible';
         }
         isToolbarVisible = true;
-        hooks.inlineBarChange.call(editorState, "visible");
+        hooks.inlineBarChange.call(editorState, 'visible');
       }, 100);
     };
 
     // TODO clean up `removeEventListener`
-    document.addEventListener("mousedown", e => {
+    document.addEventListener('mousedown', e => {
       inlineToolbarNode =
-        inlineToolbarNode || document.querySelector(".inline-toolbar");
-      const appRoot = document.querySelector("#app");
+        inlineToolbarNode || document.querySelector('.inline-toolbar');
+      const appRoot = document.querySelector('#app');
       let node = e.target;
       if (!inlineToolbarNode) return;
       lastMouseTargetAtInlineBar = false;
@@ -124,16 +124,16 @@ function InlineToolbar() {
       }
     });
 
-    hooks.hideInlineToolbar.tap("inlineToolbarPlugin", collapseSelection => {
+    hooks.hideInlineToolbar.tap('inlineToolbarPlugin', collapseSelection => {
       if (isToolbarVisible)
         nodeHiddenHandler(inlineToolbarNode, collapseSelection);
     });
 
     hooks.selectionCollapsedChange.tap(
-      "InlineToolbar",
+      'InlineToolbar',
       (editorState, selectionChanged) => {
         const {
-          newValue: { isCollapsed }
+          newValue: { isCollapsed },
         } = selectionChanged;
         clearTimeout(timeoutHandler);
         if (isCollapsed && isToolbarVisible) {
@@ -147,17 +147,17 @@ function InlineToolbar() {
     );
 
     hooks.selectionRangeChange.tap(
-      "InlineToolbar",
+      'InlineToolbar',
       (editorState, selectionChanged) => {
         visibleHandler(editorState, editorRef, inlineToolbarRef);
       }
     );
 
     hooks.selectionFocusChange.tap(
-      "InlineToolbar",
+      'InlineToolbar',
       (editorState, selectionChanged) => {
         const {
-          newValue: { hasFocus, isCollapsed }
+          newValue: { hasFocus, isCollapsed },
         } = selectionChanged;
 
         // !hasFocus && isCollapsed当用户选中一个区域以后，这个时候有inlineToolbar, 当点击页面中其它
@@ -173,11 +173,11 @@ function InlineToolbar() {
       }
     );
 
-    hooks.afterClickLinkButton.tap("InlineToolbarPlugin", editorState => {
+    hooks.afterClickLinkButton.tap('InlineToolbarPlugin', editorState => {
       setupEditorState(editorState);
     });
 
-    hooks.cleanUpLinkClickState.tap("InlineToolbarPlugin", () => {
+    hooks.cleanUpLinkClickState.tap('InlineToolbarPlugin', () => {
       clearUpEditorState();
     });
   };

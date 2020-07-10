@@ -1,17 +1,17 @@
 const defaultConfig = {
   // orientation of container, could be `vertical` or `horizontal`
-  orientation: "vertical"
+  orientation: 'vertical',
 };
 
 const reservedKeys = [
-  "orientation",
-  "draggerHandlerSelector",
-  "containerSelector",
-  "draggerSelector",
-  "shouldAcceptDragger",
-  "containerEffect",
-  "draggerEffect",
-  "impactDraggerEffect"
+  'orientation',
+  'draggerHandlerSelector',
+  'containerSelector',
+  'draggerSelector',
+  'shouldAcceptDragger',
+  'containerEffect',
+  'draggerEffect',
+  'impactDraggerEffect',
 ];
 
 export default (configs, globalConfigs) => {
@@ -19,7 +19,7 @@ export default (configs, globalConfigs) => {
     const next = {
       ...globalConfigs,
       ...defaultConfig,
-      ...config
+      ...config,
     };
     const o = {};
 

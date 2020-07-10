@@ -1,16 +1,16 @@
-import closest from "./closest";
+import closest from './closest';
 
 export const draggerSelector = '[data-is-dragger="true"]';
 export const containerSelector = '[data-is-container="true"]';
 
 export const isCloneElement = el => {
-  const attributeValue = el.getAttribute("data-is-clone");
+  const attributeValue = el.getAttribute('data-is-clone');
   return Boolean(attributeValue);
 };
 
 export const setCloneAttributes = el => {
-  el.setAttribute("data-is-clone", "true");
-  const children = el.children;
+  el.setAttribute('data-is-clone', 'true');
+  const { children } = el;
   const len = children.length;
   if (len) {
     for (let i = 0; i < len; i++) {
@@ -21,25 +21,25 @@ export const setCloneAttributes = el => {
 
 export const setContainerAttributes = (container, config) => {
   const { orientation } = config;
-  const id = container.id;
-  const el = container.el;
+  const { id } = container;
+  const { el } = container;
 
-  el.setAttribute("data-is-container", "true");
-  el.setAttribute("data-container-id", id);
-  el.setAttribute("data-orientation", orientation);
+  el.setAttribute('data-is-container', 'true');
+  el.setAttribute('data-container-id', id);
+  el.setAttribute('data-orientation', orientation);
 };
 
 export const setDraggerAttributes = (container, dragger) => {
   const containerId = container.id;
   const draggerId = dragger.id;
-  const el = dragger.el;
-  el.setAttribute("data-is-dragger", "true");
-  el.setAttribute("data-dragger-id", draggerId);
-  el.setAttribute("data-container-context", containerId);
+  const { el } = dragger;
+  el.setAttribute('data-is-dragger', 'true');
+  el.setAttribute('data-dragger-id', draggerId);
+  el.setAttribute('data-container-context', containerId);
 };
 
 export const getVDraggerId = draggerNode => {
-  return draggerNode.getAttribute("data-dragger-id");
+  return draggerNode.getAttribute('data-dragger-id');
 };
 
 export const getVDragger = (draggerNode, vDraggers) => {
@@ -49,7 +49,7 @@ export const getVDragger = (draggerNode, vDraggers) => {
 };
 
 export const getVContainerId = containerNode => {
-  return containerNode.getAttribute("data-container-id");
+  return containerNode.getAttribute('data-container-id');
 };
 
 export const getVContainer = (containerNode, vContainers) => {

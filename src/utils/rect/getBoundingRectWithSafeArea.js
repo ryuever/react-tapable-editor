@@ -1,7 +1,7 @@
 // https://github.com/alexreardon/css-box-model/blob/master/src/index.js
 
-import { getNodeByBlockKey } from "../findNode";
-import { generateOffsetKey } from "../keyHelper";
+import { getNodeByBlockKey } from '../findNode';
+import { generateOffsetKey } from '../keyHelper';
 
 export default function getBoundingRectWithSafeArea(
   editorState,
@@ -34,8 +34,8 @@ export default function getBoundingRectWithSafeArea(
         top,
         right: right - safeArea,
         bottom,
-        left: left - safeArea
-      }
+        left: left - safeArea,
+      },
     });
 
     shiftRight.push({
@@ -45,13 +45,13 @@ export default function getBoundingRectWithSafeArea(
         top,
         right: right + safeArea,
         bottom,
-        left: left + safeArea
-      }
+        left: left + safeArea,
+      },
     });
   });
 
   return {
     shiftLeft: shiftLeft.filter(v => v),
-    shiftRight: shiftRight.filter(v => v)
+    shiftRight: shiftRight.filter(v => v),
   };
 }

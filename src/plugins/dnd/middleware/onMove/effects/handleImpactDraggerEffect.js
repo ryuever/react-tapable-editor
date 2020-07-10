@@ -1,11 +1,11 @@
-import { orientationToMeasure } from "../../../utils";
-import { generateEffectKey } from "./utils";
+import { orientationToMeasure } from '../../../utils';
+import { generateEffectKey } from './utils';
 
 const handleImpactDraggerEffect = ({ liftUpVDragger }, ctx, actions) => {
   const {
     impactRawInfo,
     dndEffects,
-    dndConfig: { withPlaceholder }
+    dndConfig: { withPlaceholder },
   } = ctx;
 
   const { impactVContainer, impactPosition, candidateVDragger } = impactRawInfo;
@@ -16,7 +16,7 @@ const handleImpactDraggerEffect = ({ liftUpVDragger }, ctx, actions) => {
   }
 
   const {
-    containerConfig: { orientation, impactDraggerEffect }
+    containerConfig: { orientation, impactDraggerEffect },
   } = impactVContainer;
 
   const effectsManager = dndEffects.find(impactVContainer.id);
@@ -24,7 +24,7 @@ const handleImpactDraggerEffect = ({ liftUpVDragger }, ctx, actions) => {
   const measure = orientationToMeasure(orientation);
   const positionIndex = measure.indexOf(impactPosition);
 
-  if (typeof impactDraggerEffect === "function") {
+  if (typeof impactDraggerEffect === 'function') {
     const effectKey = generateEffectKey(
       impactVContainer,
       candidateVDragger,
@@ -44,13 +44,13 @@ const handleImpactDraggerEffect = ({ liftUpVDragger }, ctx, actions) => {
         downstream: !positionIndex,
         placedPosition: impactPosition,
         dimension: candidateVDragger.dimension.rect,
-        isHighlight: true
+        isHighlight: true,
       });
 
       effectsManager.impactDraggerEffects.push({
         teardown,
         vDragger: candidateVDragger,
-        key: effectKey
+        key: effectKey,
       });
     }
 
@@ -58,7 +58,7 @@ const handleImpactDraggerEffect = ({ liftUpVDragger }, ctx, actions) => {
       dragger: liftUpVDragger.el,
       candidateDragger: candidateVDragger.el,
       container: impactVContainer.el,
-      placedPosition: impactPosition
+      placedPosition: impactPosition,
     };
   }
 

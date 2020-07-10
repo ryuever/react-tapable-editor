@@ -1,7 +1,7 @@
 const shouldAcceptDragger = (containerConfig, dragger) => {
   const { draggerSelector, shouldAcceptDragger } = containerConfig;
   const { el } = dragger;
-  if (typeof shouldAcceptDragger === "function") {
+  if (typeof shouldAcceptDragger === 'function') {
     return shouldAcceptDragger(el);
   }
 
@@ -14,22 +14,22 @@ const pickClosestContainer = pendingContainers => {
   const isVerified = Object.create(null);
 
   for (let i = 0; i < len; i++) {
-    let container = pendingContainers[i];
+    const container = pendingContainers[i];
     const containerId = container.id;
-    if (typeof isVerified[containerId] !== "undefined") {
+    if (typeof isVerified[containerId] !== 'undefined') {
       break;
     }
 
     isVerified[containerId] = {
       used: true,
-      container
+      container,
     };
 
-    let parentContainer = container.parentContainer;
+    let { parentContainer } = container;
 
     while (parentContainer) {
       const parentContainerId = parentContainer.id;
-      if (typeof isVerified[parentContainerId] !== "undefined") {
+      if (typeof isVerified[parentContainerId] !== 'undefined') {
         parentContainer = null;
       } else {
         parentContainer = parentContainer.parentContainer;
@@ -40,7 +40,7 @@ const pickClosestContainer = pendingContainers => {
 
   const remaining = [];
 
-  for (let [key, value] of Object.entries(isVerified)) {
+  for (const [key, value] of Object.entries(isVerified)) {
     if (value.used) remaining.push(value.container);
   }
 
@@ -70,7 +70,7 @@ const getContainer = ({ event, dragger }, ctx, actions) => {
     const container = containers[key];
     const {
       dimension: { within },
-      containerConfig
+      containerConfig,
     } = container;
     const point = [clientX, clientY];
     if (within(point) && shouldAcceptDragger(containerConfig, dragger)) {
@@ -81,10 +81,10 @@ const getContainer = ({ event, dragger }, ctx, actions) => {
   let nextContainer = pendingContainers;
 
   // in `nested` mode, `horizontal` container is not considered
-  if (mode === "nested") {
+  if (mode === 'nested') {
     nextContainer = pendingContainers.filter(container => {
       const { orientation } = container.containerConfig;
-      return orientation === "vertical";
+      return orientation === 'vertical';
     });
   }
 

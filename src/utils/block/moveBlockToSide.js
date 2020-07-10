@@ -1,12 +1,12 @@
-import appendChildBlock from "./appendChildBlock";
-import appendFlexChildBlock from "./appendFlexChildBlock";
-import addBlockBefore from "./addBlockBefore";
-import addBlockAfter from "./addBlockAfter";
-import moveBlockBefore from "./moveBlockBefore";
-import moveBlockAfter from "./moveBlockAfter";
-import createEmptyBlockNode from "./createEmptyBlockNode";
-import resetSibling from "./resetSibling";
-import findRootNodeSibling from "./findRootNodeSibling";
+import appendChildBlock from './appendChildBlock';
+import appendFlexChildBlock from './appendFlexChildBlock';
+import addBlockBefore from './addBlockBefore';
+import addBlockAfter from './addBlockAfter';
+import moveBlockBefore from './moveBlockBefore';
+import moveBlockAfter from './moveBlockAfter';
+import createEmptyBlockNode from './createEmptyBlockNode';
+import resetSibling from './resetSibling';
+import findRootNodeSibling from './findRootNodeSibling';
 
 // Note: you can only drag a pure block, which means block's children
 // property should be empty list..
@@ -30,12 +30,12 @@ export default (blockMap, sourceBlockKey, targetBlockKey, position) => {
       const flexBlock = emptyBlock.merge({
         data: emptyBlock.getData().merge({
           flexRow: true,
-          getChildKeys: []
-        })
+          getChildKeys: [],
+        }),
       });
       flexBlockKey = flexBlock.getKey();
 
-      if (position === "left") {
+      if (position === 'left') {
         const targetWrapperBlock = createEmptyBlockNode();
         const targetWrapperBlockKey = targetWrapperBlock.getKey();
         newBlockMap = addBlockBefore(
@@ -90,7 +90,7 @@ export default (blockMap, sourceBlockKey, targetBlockKey, position) => {
         // // 找到从flexBlock开始，第一个parent不存在的
         const nextFlexBlock = newBlockMap.get(flexBlockKey);
         const newFlexBlock = nextFlexBlock.merge({
-          nextSibling
+          nextSibling,
         });
 
         newBlockMap = newBlockMap.set(flexBlockKey, newFlexBlock);
@@ -98,7 +98,7 @@ export default (blockMap, sourceBlockKey, targetBlockKey, position) => {
 
       // If place on right, maybe you should hoist target block first...
       // 1. create a target wrapper, in order to press `enter` in subBlock works well.
-      if (position === "right") {
+      if (position === 'right') {
         const targetWrapperBlock = createEmptyBlockNode();
         const targetWrapperBlockKey = targetWrapperBlock.getKey();
         // Place new parent block before processing block
@@ -155,7 +155,7 @@ export default (blockMap, sourceBlockKey, targetBlockKey, position) => {
         // 找到从flexBlock开始，第一个parent不存在的
         const nextFlexBlock = newBlockMap.get(flexBlockKey);
         const newFlexBlock = nextFlexBlock.merge({
-          nextSibling
+          nextSibling,
         });
 
         newBlockMap = newBlockMap.set(flexBlockKey, newFlexBlock);

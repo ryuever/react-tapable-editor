@@ -7,7 +7,7 @@ function decorateComposer(...funcs) {
     return funcs[0];
   }
   return funcs.reduce((a, b) => (...args) => {
-    console.log("args  : ", a);
+    console.log('args  : ', a);
     // return a(b(...args))
     return a(b(args[0].bind(this, 3))).bind(this, 4);
   });

@@ -1,13 +1,13 @@
-import { matchesDragger, matchesContainer } from "./dom";
-import reporter from "./reporter";
+import { matchesDragger, matchesContainer } from './dom';
+import reporter from './reporter';
 
 const DEBUG = false;
 
 export default ctx => mutationList => {
-  const containers = ctx.containers;
-  const configs = ctx.configs;
+  const { containers } = ctx;
+  const { configs } = ctx;
 
-  for (let mutation of mutationList) {
+  for (const mutation of mutationList) {
     const { addedNodes, removedNodes } = mutation;
 
     if (addedNodes.length) {
@@ -34,7 +34,7 @@ export default ctx => mutationList => {
         const matchedContainer = matchesContainer(node, configs);
 
         if (matchedContainer !== -1) {
-          const containerId = node.getAttribute("data-container-id");
+          const containerId = node.getAttribute('data-container-id');
           const container = containers[containerId];
           DEBUG && reporter.removeContainerNode(node);
           if (container) container.cleanup();

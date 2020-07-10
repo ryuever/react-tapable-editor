@@ -1,11 +1,11 @@
-import React, { useRef, useEffect, useCallback } from "react";
-import { EditorState } from "draft-js";
-import Divider from "./Divider";
+import React, { useRef, useEffect, useCallback } from 'react';
+import { EditorState } from 'draft-js';
+import Divider from './Divider';
 
-import Link from "../button/Link";
-import Unlink from "../button/Unlink";
+import Link from '../button/Link';
+import Unlink from '../button/Unlink';
 
-import { createLinkAtSelection } from "../../utils/createEntity";
+import { createLinkAtSelection } from '../../utils/createEntity';
 
 const InputBar = ({ getEditor }) => {
   const inputRef = useRef();
@@ -40,26 +40,29 @@ const InputBar = ({ getEditor }) => {
       newState,
       currentContent.getSelectionAfter().merge({
         anchorOffset: focusOffset,
-        anchorKey: focusKey
+        anchorKey: focusKey,
       })
     );
 
     hooks.setState.call(nextState);
   };
 
-  const onKeyDownHandler = useCallback(e => {
-    const { key } = e;
-    if (key === "Enter") {
-      hooks.cleanUpLinkClickState.call();
-      e.preventDefault();
-      const inputValue = e.target.value;
-      submit(inputValue);
-      hooks.hideInlineToolbar.call();
-    } else if (key === "Escape") {
-      e.preventDefault();
-      hooks.hideInlineToolbar.call();
-    }
-  }, []);
+  const onKeyDownHandler = useCallback(
+    e => {
+      const { key } = e;
+      if (key === 'Enter') {
+        hooks.cleanUpLinkClickState.call();
+        e.preventDefault();
+        const inputValue = e.target.value;
+        submit(inputValue);
+        hooks.hideInlineToolbar.call();
+      } else if (key === 'Escape') {
+        e.preventDefault();
+        hooks.hideInlineToolbar.call();
+      }
+    },
+    [hooks.cleanUpLinkClickState, hooks.hideInlineToolbar, submit]
+  );
 
   return (
     <div className="inline-toolbar-link-inner">

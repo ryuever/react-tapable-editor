@@ -2,9 +2,9 @@
  * Effects is used to update the style of element. However, when its the time to
  * remove effects should be reconsidered.
  */
-import reporter from "../../reporter";
+import reporter from '../../reporter';
 
-const isFunction = fn => typeof fn === "function";
+const isFunction = fn => typeof fn === 'function';
 
 const DEBUG = true;
 
@@ -20,8 +20,8 @@ const diff = (a, b) => {
     const index = copyB.findIndex(({ id }) => item.id === id);
     if (index === -1) {
       actions.push({
-        operation: "remove",
-        item
+        operation: 'remove',
+        item,
       });
     } else {
       remaining.push(item);
@@ -35,15 +35,15 @@ const diff = (a, b) => {
   for (let j = 0; j < lenB; j++) {
     const item = copyB[j];
     actions.push({
-      operation: "add",
-      item
+      operation: 'add',
+      item,
     });
     remaining.push(item);
   }
 
   return {
     actions,
-    remaining
+    remaining,
   };
 };
 
@@ -53,7 +53,7 @@ export default ({ prevEffects, dragger }, ctx, actions) => {
   const {
     downstreamDraggers: nextDownstreamDraggers,
     upstreamDraggers: nextUpstreamDraggers,
-    impactContainer: nextImpactContainer
+    impactContainer: nextImpactContainer,
   } = impact;
 
   const { container: targetContainer } = candidatePositionDragger;
@@ -64,20 +64,20 @@ export default ({ prevEffects, dragger }, ctx, actions) => {
     impactContainer,
     containerEffects,
     upstreamDraggersEffect,
-    downstreamDraggersEffect
+    downstreamDraggersEffect,
   } = prevEffects;
 
   const {
     actions: diffImpactContainer,
-    remaining: remainingImpactContainer
+    remaining: remainingImpactContainer,
   } = diff(impactContainer, nextImpactContainer);
   const {
     actions: diffUpstreamDraggers,
-    remaining: remainingUpstreamDraggers
+    remaining: remainingUpstreamDraggers,
   } = diff(upstreamDraggers, nextUpstreamDraggers);
   const {
     actions: diffDownstreamDraggers,
-    remaining: remainingDownstreamDraggers
+    remaining: remainingDownstreamDraggers,
   } = diff(downstreamDraggers, nextDownstreamDraggers);
 
   const diffImpactContainerLength = diffImpactContainer.length;
@@ -96,7 +96,7 @@ export default ({ prevEffects, dragger }, ctx, actions) => {
     const { operation, item } = action;
     const itemId = item.id;
 
-    if (operation === "remove") {
+    if (operation === 'remove') {
       const index = containerEffects.findIndex(
         ({ container }) => container.id === itemId
       );
@@ -106,7 +106,7 @@ export default ({ prevEffects, dragger }, ctx, actions) => {
         );
     }
 
-    if (operation === "add") {
+    if (operation === 'add') {
       pendingImpactContainerEffect.push(item);
     }
   }
@@ -116,7 +116,7 @@ export default ({ prevEffects, dragger }, ctx, actions) => {
     const { operation, item } = action;
     const itemId = item.id;
 
-    if (operation === "remove") {
+    if (operation === 'remove') {
       const index = upstreamDraggersEffect.findIndex(
         ({ dragger }) => dragger.id === itemId
       );
@@ -126,7 +126,7 @@ export default ({ prevEffects, dragger }, ctx, actions) => {
         );
     }
 
-    if (operation === "add") {
+    if (operation === 'add') {
       pendingUpstreamDraggersEffect.push(item);
     }
   }
@@ -136,7 +136,7 @@ export default ({ prevEffects, dragger }, ctx, actions) => {
     const { operation, item } = action;
     const itemId = item.id;
 
-    if (operation === "remove") {
+    if (operation === 'remove') {
       const index = downstreamDraggersEffect.findIndex(
         ({ dragger }) => dragger.id === itemId
       );
@@ -146,7 +146,7 @@ export default ({ prevEffects, dragger }, ctx, actions) => {
         );
     }
 
-    if (operation === "add") {
+    if (operation === 'add') {
       pendingDownstreamDraggersEffect.push(item);
     }
   }
@@ -166,25 +166,25 @@ export default ({ prevEffects, dragger }, ctx, actions) => {
 
   const newImpactContainerEffect = pendingImpactContainerEffect.map(item => {
     const {
-      containerConfig: { containerEffect }
+      containerConfig: { containerEffect },
     } = targetContainer;
 
     const teardown = containerEffect({
       el: item.el,
-      draggerElement: dragger.el
+      draggerElement: dragger.el,
     });
 
     DEBUG && reporter.logAddEffect(item);
 
     return {
       container: item,
-      teardown
+      teardown,
     };
   });
 
   const newUpstreamDraggersEffect = pendingUpstreamDraggersEffect.map(item => {
     const {
-      containerConfig: { draggerEffect }
+      containerConfig: { draggerEffect },
     } = targetContainer;
 
     const teardown = draggerEffect({
@@ -196,19 +196,19 @@ export default ({ prevEffects, dragger }, ctx, actions) => {
       dimension: item.dimension.rect,
       isHighlightItem: impactDragger.id === item.id,
       tailing,
-      needMove: true
+      needMove: true,
     });
     DEBUG && reporter.logAddEffect(item);
     return {
       dragger: item,
-      teardown
+      teardown,
     };
   });
 
   const newDownstreamDraggersEffect = pendingDownstreamDraggersEffect.map(
     item => {
       const {
-        containerConfig: { draggerEffect }
+        containerConfig: { draggerEffect },
       } = targetContainer;
 
       const teardown = draggerEffect({
@@ -220,12 +220,12 @@ export default ({ prevEffects, dragger }, ctx, actions) => {
         dimension: item.dimension.rect,
         isHighlightItem: impactDragger.id === item.id,
         tailing,
-        needMove: true
+        needMove: true,
       });
       DEBUG && reporter.logAddEffect(item);
       return {
         dragger: item,
-        teardown
+        teardown,
       };
     }
   );
@@ -234,20 +234,20 @@ export default ({ prevEffects, dragger }, ctx, actions) => {
     effects: {
       impactContainerEffects: [
         ...containerEffects,
-        ...newImpactContainerEffect
+        ...newImpactContainerEffect,
       ],
       upstreamDraggersEffect: [
         ...upstreamDraggersEffect,
-        ...newUpstreamDraggersEffect
+        ...newUpstreamDraggersEffect,
       ],
       downstreamDraggersEffect: [
         ...downstreamDraggersEffect,
-        ...newDownstreamDraggersEffect
+        ...newDownstreamDraggersEffect,
       ],
       impactContainer: remainingImpactContainer,
       upstreamDraggers: remainingUpstreamDraggers,
-      downstreamDraggers: remainingDownstreamDraggers
-    }
+      downstreamDraggers: remainingDownstreamDraggers,
+    },
   });
 
   actions.next();

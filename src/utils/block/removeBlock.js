@@ -1,5 +1,5 @@
-import blockUtil from "./blockUtil";
-import blockMutationUtil from "./blockMutationUtil";
+import blockUtil from './blockUtil';
+import blockMutationUtil from './blockMutationUtil';
 
 /**
  *
@@ -13,7 +13,7 @@ function removeBlock(blockMap, block, removeParentIfHasNoChild) {
   let blockToRemove;
   let blockKey;
 
-  if (typeof block === "string") {
+  if (typeof block === 'string') {
     blockToRemove = blockMap.get(block);
     blockKey = block;
   } else {
@@ -25,7 +25,7 @@ function removeBlock(blockMap, block, removeParentIfHasNoChild) {
 
   const blocksBefore = blockUtil.blocksBefore(blockMap, blockToRemove);
   const blocksAfter = blockUtil.blocksAfter(blockMap, blockToRemove);
-  let newBlockMap = blocksBefore.concat(blocksAfter).toOrderedMap();
+  const newBlockMap = blocksBefore.concat(blocksAfter).toOrderedMap();
   const parentKey = blockToRemove.parent;
 
   newBlockMap.withMutations(function(blocks) {
@@ -47,7 +47,7 @@ function removeBlock(blockMap, block, removeParentIfHasNoChild) {
       blocks,
       function(block) {
         return block.merge({
-          nextSibling: blockToRemove.getNextSiblingKey()
+          nextSibling: blockToRemove.getNextSiblingKey(),
         });
       }
     );
@@ -57,7 +57,7 @@ function removeBlock(blockMap, block, removeParentIfHasNoChild) {
       blocks,
       function(block) {
         return block.merge({
-          prevSibling: blockToRemove.getPrevSiblingKey()
+          prevSibling: blockToRemove.getPrevSiblingKey(),
         });
       }
     );

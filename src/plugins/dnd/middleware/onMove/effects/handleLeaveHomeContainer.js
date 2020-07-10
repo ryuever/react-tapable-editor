@@ -1,4 +1,4 @@
-import { orientationToMeasure } from "./../../../utils";
+import { orientationToMeasure } from '../../../utils';
 
 const handleLeaveHomeContainer = (
   { prevImpact, liftUpVDraggerIndex },
@@ -7,10 +7,10 @@ const handleLeaveHomeContainer = (
 ) => {
   const {
     dndConfig: { withPlaceholder },
-    action: { operation, isHomeContainerFocused, effectsManager }
+    action: { operation, isHomeContainerFocused, effectsManager },
   } = ctx;
 
-  if (operation !== "onLeave" || !isHomeContainerFocused) {
+  if (operation !== 'onLeave' || !isHomeContainerFocused) {
     actions.next();
     return;
   }
@@ -25,8 +25,8 @@ const handleLeaveHomeContainer = (
     index,
     impactVContainer: {
       children,
-      containerConfig: { orientation, draggerEffect }
-    }
+      containerConfig: { orientation, draggerEffect },
+    },
   } = prevImpact;
 
   // Don't care prev index, reset all the effects on the items before
@@ -46,12 +46,12 @@ const handleLeaveHomeContainer = (
       placedPosition: measure[0],
       downstream: false,
       dimension: vDragger.dimension.rect,
-      isHighlight: false
+      isHighlight: false,
     });
 
     effectsManager.upstreamDraggersEffects.push({
       teardown,
-      vDragger
+      vDragger,
     });
   }
 

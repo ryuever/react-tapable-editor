@@ -1,9 +1,10 @@
-import { EditorState } from "draft-js";
-import DND from "../dnd";
-import transfer from "../../utils/block/transfer";
+import { EditorState } from 'draft-js';
+import DND from '../dnd';
+import transfer from '../../utils/block/transfer';
 // import transferBlock from "../../utils/block/transferBlock";
-import { extractBlockKeyFromOffsetKey } from "../../utils/keyHelper";
-import BlockUtil from "../../utils/block/blockUtil";
+import { extractBlockKeyFromOffsetKey } from '../../utils/keyHelper';
+import BlockUtil from '../../utils/block/blockUtil';
+
 const { insertNewLineAfterAll } = BlockUtil;
 
 function DNDPlugin() {
@@ -11,9 +12,9 @@ function DNDPlugin() {
   let horizontalIndicator;
 
   const createIndicatorBar = () => {
-    verticalIndicator = document.createElement("div");
+    verticalIndicator = document.createElement('div');
     document.body.appendChild(verticalIndicator);
-    horizontalIndicator = document.createElement("div");
+    horizontalIndicator = document.createElement('div');
     document.body.appendChild(horizontalIndicator);
   };
 
@@ -21,11 +22,11 @@ function DNDPlugin() {
     { dragger, candidateDragger, container, placedPosition },
     getEditor
   ) => {
-    const draggerOffsetKey = dragger.getAttribute("data-offset-key");
+    const draggerOffsetKey = dragger.getAttribute('data-offset-key');
     const candidateDraggerOffsetKey = candidateDragger.getAttribute(
-      "data-offset-key"
+      'data-offset-key'
     );
-    const containerOffsetKey = container.getAttribute("data-offset-key");
+    const containerOffsetKey = container.getAttribute('data-offset-key');
 
     console.log(
       `placed ${draggerOffsetKey} to the ${placedPosition} of ${candidateDraggerOffsetKey}, which is included in ${containerOffsetKey}`
@@ -38,14 +39,14 @@ function DNDPlugin() {
 
     const { editorState } = getEditor();
     const contentState = editorState.getCurrentContent();
-    console.log("block ", contentState.getBlockMap());
+    console.log('block ', contentState.getBlockMap());
 
-    hooks.afterMounted.tap("initDNDPlugin", () => {
+    hooks.afterMounted.tap('initDNDPlugin', () => {
       new DND({
         onDrop: ({ dragger, candidateDragger, placedPosition }) => {
-          const draggerOffsetKey = dragger.getAttribute("data-offset-key");
+          const draggerOffsetKey = dragger.getAttribute('data-offset-key');
           const candidateDraggerOffsetKey = candidateDragger.getAttribute(
-            "data-offset-key"
+            'data-offset-key'
           );
           const sourceBlockKey = extractBlockKeyFromOffsetKey(draggerOffsetKey);
           const targetBlockKey = extractBlockKeyFromOffsetKey(
@@ -60,7 +61,7 @@ function DNDPlugin() {
             placedPosition
           );
 
-          console.log("new content ", newContent.toJS());
+          console.log('new content ', newContent.toJS());
 
           if (!newContent) return;
 
@@ -87,9 +88,9 @@ function DNDPlugin() {
 
           hooks.setState.call(dismissSelection);
         },
-        rootElement: ".DraftEditor-root",
-        mode: "nested",
-        draggerHandlerSelector: ".sidebar-addon-visible",
+        rootElement: '.DraftEditor-root',
+        mode: 'nested',
+        draggerHandlerSelector: '.sidebar-addon-visible',
         withPlaceholder: false,
         configs: [
           {
@@ -100,41 +101,41 @@ function DNDPlugin() {
               const { top, right, left, height } = dimension;
               logger(options, getEditor);
               requestAnimationFrame(() => {
-                if (placedPosition === "top") {
+                if (placedPosition === 'top') {
                   horizontalIndicator.style.top = `${top}px`;
                 } else {
                   horizontalIndicator.style.top = `${top + height}px`;
                 }
 
-                horizontalIndicator.style.position = "absolute";
+                horizontalIndicator.style.position = 'absolute';
                 horizontalIndicator.style.width = `${right - left}px`;
                 horizontalIndicator.style.height = `3px`;
                 horizontalIndicator.style.left = `${left - 10}px`;
-                horizontalIndicator.style.backgroundColor = "#69c0ff";
+                horizontalIndicator.style.backgroundColor = '#69c0ff';
                 horizontalIndicator.style.opacity = 1;
-                horizontalIndicator.style.transition = "opacity 1000ms ease-in";
+                horizontalIndicator.style.transition = 'opacity 1000ms ease-in';
               });
 
               return () => {
-                verticalIndicator.style.removeProperty("transition");
-                horizontalIndicator.style.position = "absolute";
-                horizontalIndicator.style.width = "0px";
+                verticalIndicator.style.removeProperty('transition');
+                horizontalIndicator.style.position = 'absolute';
+                horizontalIndicator.style.width = '0px';
                 horizontalIndicator.style.height = `0px`;
                 horizontalIndicator.style.top = `0px`;
                 horizontalIndicator.style.left = `0px`;
                 horizontalIndicator.style.opacity = 0;
-                horizontalIndicator.style.backgroundColor = "transparent";
+                horizontalIndicator.style.backgroundColor = 'transparent';
               };
-            }
+            },
           },
           {
-            orientation: "horizontal",
+            orientation: 'horizontal',
             containerSelector: '[data-contents="true"] >div.miuffy-paragraph',
-            draggerSelector: ".miuffy-paragraph >div:first-child",
+            draggerSelector: '.miuffy-paragraph >div:first-child',
             shouldAcceptDragger: el => {
               return (
-                el.matches(".miuffy-paragraph") ||
-                el.matches(".miuffy-paragraph >div:first-child")
+                el.matches('.miuffy-paragraph') ||
+                el.matches('.miuffy-paragraph >div:first-child')
               );
             },
             impactDraggerEffect: options => {
@@ -142,42 +143,42 @@ function DNDPlugin() {
               const { top, bottom, left, right } = dimension;
               logger(options, getEditor);
 
-              if (placedPosition === "left") {
+              if (placedPosition === 'left') {
                 verticalIndicator.style.left = `${left - 5}px`;
               } else {
                 verticalIndicator.style.left = `${right + 5}px`;
               }
               requestAnimationFrame(() => {
-                verticalIndicator.style.position = "absolute";
-                verticalIndicator.style.width = "3px";
+                verticalIndicator.style.position = 'absolute';
+                verticalIndicator.style.width = '3px';
                 verticalIndicator.style.height = `${bottom - top}px`;
                 verticalIndicator.style.top = `${top}px`;
-                verticalIndicator.style.backgroundColor = "#69c0ff";
+                verticalIndicator.style.backgroundColor = '#69c0ff';
                 verticalIndicator.style.opacity = 1;
-                verticalIndicator.style.transition = "opacity 250ms ease-in";
+                verticalIndicator.style.transition = 'opacity 250ms ease-in';
               });
 
               return () => {
-                verticalIndicator.style.removeProperty("transition");
-                verticalIndicator.style.position = "absolute";
-                verticalIndicator.style.width = "0px";
+                verticalIndicator.style.removeProperty('transition');
+                verticalIndicator.style.position = 'absolute';
+                verticalIndicator.style.width = '0px';
                 verticalIndicator.style.height = `0px`;
                 verticalIndicator.style.top = `0px`;
                 verticalIndicator.style.left = `0px`;
                 verticalIndicator.style.opacity = 0;
-                verticalIndicator.style.backgroundColor = "transparent";
+                verticalIndicator.style.backgroundColor = 'transparent';
               };
-            }
+            },
           },
           {
-            orientation: "vertical",
+            orientation: 'vertical',
             containerSelector:
-              ".display-flex.miuffy-paragraph >div:first-child >div",
-            draggerSelector: ".miuffy-paragraph",
+              '.display-flex.miuffy-paragraph >div:first-child >div',
+            draggerSelector: '.miuffy-paragraph',
             shouldAcceptDragger: el => {
               return (
-                el.matches(".miuffy-paragraph") ||
-                el.matches(".miuffy-paragraph >div:first-child")
+                el.matches('.miuffy-paragraph') ||
+                el.matches('.miuffy-paragraph >div:first-child')
               );
             },
             impactDraggerEffect: options => {
@@ -185,34 +186,34 @@ function DNDPlugin() {
               const { top, bottom, left, right } = dimension;
               logger(options, getEditor);
 
-              if (placedPosition === "top") {
+              if (placedPosition === 'top') {
                 verticalIndicator.style.top = `${top - 5}px`;
               } else {
                 verticalIndicator.style.top = `${bottom + 5}px`;
               }
               requestAnimationFrame(() => {
-                verticalIndicator.style.position = "absolute";
+                verticalIndicator.style.position = 'absolute';
                 verticalIndicator.style.width = `${right - left}px`;
-                verticalIndicator.style.height = "3px";
+                verticalIndicator.style.height = '3px';
                 verticalIndicator.style.left = `${left}px`;
-                verticalIndicator.style.backgroundColor = "#69c0ff";
+                verticalIndicator.style.backgroundColor = '#69c0ff';
                 verticalIndicator.style.opacity = 1;
-                verticalIndicator.style.transition = "opacity 250ms ease-in";
+                verticalIndicator.style.transition = 'opacity 250ms ease-in';
               });
 
               return () => {
-                verticalIndicator.style.removeProperty("transition");
-                verticalIndicator.style.position = "absolute";
-                verticalIndicator.style.width = "0px";
+                verticalIndicator.style.removeProperty('transition');
+                verticalIndicator.style.position = 'absolute';
+                verticalIndicator.style.width = '0px';
                 verticalIndicator.style.height = `0px`;
                 verticalIndicator.style.top = `0px`;
                 verticalIndicator.style.left = `0px`;
                 verticalIndicator.style.opacity = 0;
-                verticalIndicator.style.backgroundColor = "transparent";
+                verticalIndicator.style.backgroundColor = 'transparent';
               };
-            }
-          }
-        ]
+            },
+          },
+        ],
       });
     });
   };
