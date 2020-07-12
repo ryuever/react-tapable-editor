@@ -1,4 +1,4 @@
-import React, { ComponentType }  from 'react';
+import React, { ComponentType } from 'react';
 import withFillColor from './utils/withFillColor';
 import withAction from './utils/withAction';
 import { ButtonProps } from '../../types';

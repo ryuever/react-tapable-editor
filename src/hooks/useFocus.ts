@@ -1,15 +1,17 @@
 import { useCallback, useRef, useState, useEffect } from 'react';
+// @ts-ignore
 import setSelectionToBlock from '../utils/setSelectionToBlock';
 import './styles/useFocus.css';
+import { HooksProps } from '../types';
 
-const useFocus = ({ nodeRef, props }) => {
+const useFocus = ({ nodeRef, props }: HooksProps) => {
   const { blockProps, block } = props;
   const { getEditor } = blockProps;
   const { hooks } = getEditor();
   const [focused, setFocus] = useState(false);
   const focusedRef = useRef(false);
   const currentBlockKey = block.getKey();
-  const timeoutHandler = useRef();
+  const timeoutHandler = useRef<NodeJS.Timeout | null | undefined>();
   const setState = useCallback(falsy => {
     setFocus(falsy);
     focusedRef.current = falsy;
@@ -19,17 +21,22 @@ const useFocus = ({ nodeRef, props }) => {
   // TODO: tapable could not be clear on unmount...
   useEffect(() => {
     isMounted.current = true;
-    return () => (isMounted.current = false);
+    return () => {
+      isMounted.current = false;
+    };
   }, []);
 
-  const delaySetState = useCallback(falsy => {
-    clearTimeout(timeoutHandler.current);
-    timeoutHandler.current = setTimeout(() => setState(falsy), 50);
-  });
+  const delaySetState = useCallback(
+    falsy => {
+      if (timeoutHandler.current) clearTimeout(timeoutHandler.current);
+      timeoutHandler.current = setTimeout(() => setState(falsy), 50);
+    },
+    [setState]
+  );
 
   // TODO: pending on fix clear up...
   useEffect(() => {
-    hooks.selectionCollapsedChange.tap('Focus', (editorState, payload) => {
+    hooks.selectionCollapsedChange.tap('Focus', (_, payload) => {
       if (!isMounted.current) return;
       const {
         newValue: { isCollapsed, selection },
@@ -44,7 +51,7 @@ const useFocus = ({ nodeRef, props }) => {
       }
     });
 
-    hooks.selectionMoveOuterBlock.tap('Focus', (editorState, payload) => {
+    hooks.selectionMoveOuterBlock.tap('Focus', (_, payload) => {
       if (!isMounted.current) return;
       const {
         newValue: { selection },
@@ -76,20 +83,20 @@ const useFocus = ({ nodeRef, props }) => {
   }, [block, getEditor, hooks.setState]);
 
   useEffect(() => {
-    nodeRef.current.addEventListener('click', handleClick);
+    nodeRef.current!.addEventListener('click', handleClick);
     return () => {
-      nodeRef.current.removeEventListener('click', handleClick);
+      nodeRef.current!.removeEventListener('click', handleClick);
     };
   }, [handleClick, nodeRef]);
 
   // update className after all
   useEffect(() => {
     if (focused) {
-      nodeRef.current.classList.remove('focused_atomic');
-      nodeRef.current.classList.add('focused_atomic_active');
+      nodeRef.current!.classList.remove('focused_atomic');
+      nodeRef.current!.classList.add('focused_atomic_active');
     } else {
-      nodeRef.current.classList.remove('focused_atomic_active');
-      nodeRef.current.classList.add('focused_atomic');
+      nodeRef.current!.classList.remove('focused_atomic_active');
+      nodeRef.current!.classList.add('focused_atomic');
     }
   }, [focused, nodeRef]);
 };

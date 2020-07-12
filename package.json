@@ -38,15 +38,17 @@
   "author": "youchao liu",
   "module": "dist/react-tapable-editor.esm.js",
   "dependencies": {
+    "@types/classnames": "^2.2.10",
     "@types/draft-js": "^0.10.43",
     "@types/immutable": "^3.8.7",
+    "@types/invariant": "^2.2.33",
     "@types/prismjs": "^1.16.1",
     "classnames": "^2.2.6",
     "draft-js": "^0.11.0",
     "immutable": "^4.0.0-rc.12",
     "invariant": "^2.2.4",
     "prismjs": "^1.19.0",
-    "sabar": "^0.3.2"
+    "sabar": "^0.5.1"
   },
   "devDependencies": {
     "eslint": "^6.8.0",

@@ -1,3 +1,5 @@
+import { RefObject } from 'react';
+
 // import { ReactChild } from 'react'
 
 export interface Props {
@@ -10,3 +12,5 @@ export interface Props {
   // blockRenderMap,
   // customStyleMap,
 }
+
+export type EditorRef = RefObject<HTMLDivElement>;

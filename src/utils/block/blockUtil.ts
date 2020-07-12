@@ -1,7 +1,8 @@
 import Immutable from 'immutable';
+// @ts-ignore
 import generateRandomKey from 'draft-js/lib/generateRandomKey';
-import { findLastBlockWithNullParent } from './updateBlockMapLinks';
 import { ContentState } from 'draft-js';
+import { findLastBlockWithNullParent } from './updateBlockMapLinks';
 import { ContentBlockNode, BlockNodeMap } from '../../types';
 
 const { List, Map } = Immutable;
@@ -84,7 +85,11 @@ const BlockUtil = {
 
   // moveBlockInContentState
   // removeRangeFromContentState.js
-  transformBlock: function transformBlock(key: string | undefined, blockMap: BlockNodeMap, func: Function) {
+  transformBlock: function transformBlock(
+    key: string | undefined,
+    blockMap: BlockNodeMap,
+    func: Function
+  ) {
     if (!key) {
       return;
     }
@@ -107,7 +112,9 @@ const BlockUtil = {
     return parentChildrenList.delete(parentChildrenList.indexOf(blockKey));
   },
 
-  getChildrenSize: function getChildrenSize(parentBlock: ContentBlockNode) {
+  getChildrenSize: function getChildrenSize(
+    parentBlock: ContentBlockNode | undefined
+  ) {
     if (!parentBlock) return;
     const parentChildrenList = parentBlock.getChildKeys();
     return parentChildrenList.size;
@@ -119,13 +126,14 @@ const BlockUtil = {
       .skipUntil(v => v === block)
       .skip(1)
       .takeUntil(function(v: ContentBlockNode) {
-        let parent = v.getParentKey()
+        let parent = v.getParentKey();
 
         while (parent) {
           if (parent === block.getKey()) return false;
-          parent !== block.getKey();
-          const next = blockMap.get(parent as any)
-          if (next) parent = next.getParentKey()
+          // TODO----
+          parent = block.getKey();
+          const next = blockMap.get(parent as any);
+          if (next) parent = next.getParentKey();
         }
 
         return true;

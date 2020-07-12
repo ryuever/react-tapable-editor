@@ -1,6 +1,15 @@
-import { ContentBlock, CharacterMetadata, DraftBlockType, DraftInlineStyle } from 'draft-js';
+import {
+  ContentBlock,
+  CharacterMetadata,
+  DraftBlockType,
+  DraftInlineStyle,
+  DraftEntityType,
+  DraftEntityMutability,
+  EntityInstance,
+  SelectionState,
+} from 'draft-js';
 // import * as Immutable from 'immutable';
-import Immutable from 'immutable'
+import Immutable from 'immutable';
 
 // const Record = Immutable.Record.Class
 
@@ -10,7 +19,7 @@ export interface DraftDecoratorType {
    */
   getDecorations(
     block: ContentBlock,
-    contentState: ContentState
+    contentState: ContentNodeState
   ): Immutable.List<string>;
 
   /**
@@ -43,33 +52,22 @@ export interface DraftDecoratorType {
 //   getNextSiblingKey(): string | null;
 // }
 
-export type BlockNodeMap = Immutable.OrderedMap<string, ContentBlockNode>
-
-// const instance = Immutable.Record({
-//   parent: null,
-//   characterList: Immutable.List(),
-//   data: Immutable.Map(),
-//   depth: 0,
-//   key: '',
-//   text: '',
-//   type: 'unstyled',
-//   children: Immutable.List(),
-//   prevSibling: null,
-//   nextSibling: null,
-// })
-
-export interface ContentBlockNode extends Immutable.Record<{
-  parent: null,
-  characterList: Immutable.List<CharacterMetadata>;
-  data: { [key: string]: any };
-  depth: number;
-  key: string;
-  text: string;
-  type: string;
-  children: Immutable.List<string>,
-  prevSibling: null,
-  nextSibling: null,
-}> {
+/**
+ * The default `ContentBlock` not works on `merge` function...
+ */
+export interface ContentBlockNode
+  extends Immutable.Record<{
+    parent: null;
+    characterList: Immutable.List<CharacterMetadata>;
+    data: { [key: string]: any };
+    depth: number;
+    key: string;
+    text: string;
+    type: string;
+    children: Immutable.List<string>;
+    prevSibling: null;
+    nextSibling: null;
+  }> {
   getChildKeys(): Immutable.List<string>;
   getParentKey(): string;
   getPrevSiblingKey(): string | null;
@@ -91,44 +89,70 @@ export interface ContentBlockNode extends Immutable.Record<{
    * Execute a callback for every contiguous range of styles within the block.
    */
   findStyleRanges(
-      filterFn: (value: CharacterMetadata) => boolean,
-      callback: (start: number, end: number) => void,
+    filterFn: (value: CharacterMetadata) => boolean,
+    callback: (start: number, end: number) => void
   ): void;
 
   /**
    * Execute a callback for every contiguous range of entities within the block.
    */
   findEntityRanges(
-      filterFn: (value: CharacterMetadata) => boolean,
-      callback: (start: number, end: number) => void,
+    filterFn: (value: CharacterMetadata) => boolean,
+    callback: (start: number, end: number) => void
   ): void;
 }
 
-// export class ContentState extends Immutable.Record.Class {
-//   static createFromBlockArray(blocks: Array<ContentBlock>, entityMap?: any): ContentState;
-//   static createFromText(text: string, delimiter?: string): ContentState;
+export type BlockNodeMap = Immutable.OrderedMap<string, ContentBlockNode>;
 
-//   createEntity(type: DraftEntityType, mutability: DraftEntityMutability, data?: Object): ContentState;
-//   getEntity(key: string): EntityInstance;
-//   getEntityMap(): any;
-//   getLastCreatedEntityKey(): string;
-//   mergeEntityData(key: string, toMerge: { [key: string]: any }): ContentState;
-//   replaceEntityData(key: string, toMerge: { [key: string]: any }): ContentState;
-//   addEntity(instance: DraftEntityInstance): ContentState;
+export interface ContentNodeState extends Immutable.Record<{}> {
+  // static createFromBlockArray(blocks: Array<ContentBlock>, entityMap?: any): ContentState;
+  // static createFromText(text: string, delimiter?: string): ContentState;
 
-//   getBlockMap(): BlockMap;
-//   getSelectionBefore(): SelectionState;
-//   getSelectionAfter(): SelectionState;
-//   getBlockForKey(key: string): ContentBlock;
+  createEntity(
+    type: DraftEntityType,
+    mutability: DraftEntityMutability,
+    data?: Object
+  ): ContentNodeState;
+  getEntity(key: string): EntityInstance;
+  getEntityMap(): any;
+  getLastCreatedEntityKey(): string;
+  mergeEntityData(
+    key: string,
+    toMerge: { [key: string]: any }
+  ): ContentNodeState;
+  replaceEntityData(
+    key: string,
+    toMerge: { [key: string]: any }
+  ): ContentNodeState;
+  addEntity(instance: EntityInstance): ContentNodeState;
 
-//   getKeyBefore(key: string): string;
-//   getKeyAfter(key: string): string;
-//   getBlockAfter(key: string): ContentBlock;
-//   getBlockBefore(key: string): ContentBlock;
+  getBlockMap(): BlockNodeMap;
+  getSelectionBefore(): SelectionState;
+  getSelectionAfter(): SelectionState;
+  getBlockForKey(key: string): ContentBlockNode;
 
-//   getBlocksAsArray(): Array<ContentBlock>;
-//   getFirstBlock(): ContentBlock;
-//   getLastBlock(): ContentBlock;
-//   getPlainText(delimiter?: string): string;
-//   hasText(): boolean;
-// }
+  getKeyBefore(key: string): string;
+  getKeyAfter(key: string): string;
+  getBlockAfter(key: string): ContentBlockNode;
+  getBlockBefore(key: string): ContentBlockNode;
+
+  getBlocksAsArray(): Array<ContentBlockNode>;
+  getFirstBlock(): ContentBlockNode;
+  getLastBlock(): ContentBlockNode;
+  getPlainText(delimiter?: string): string;
+  hasText(): boolean;
+}
+
+export interface DraftNodeDecorator {
+  strategy: DraftNodeDecoratorStrategy;
+  component: Function;
+  props?: object;
+}
+
+export interface DraftNodeDecoratorStrategy {
+  (
+    block: ContentBlock,
+    callback: (start: number, end: number) => void,
+    contentState: ContentNodeState
+  ): void;
+}

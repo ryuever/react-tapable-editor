@@ -1,10 +1,17 @@
-import { BlockMap } from 'draft-js'
-import { ContentBlockNode } from '../../types'
+import {
+  BlockNodeMap,
+  ContentBlockNode,
+  TransformBlockCallback,
+} from '../../types';
 
 const BlockMutationUtil = {
   // moveBlockInContentState
   // removeRangeFromContentState.js
-  transformBlock: function transformBlock(key: string | undefined, blockMap: BlockMap, func: Function) {
+  transformBlock: function transformBlock(
+    key: string | null,
+    blockMap: BlockNodeMap,
+    func: TransformBlockCallback
+  ) {
     if (!key) {
       return;
     }

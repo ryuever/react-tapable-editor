@@ -1,4 +1,4 @@
-import React, { PureComponent, createRef, Ref } from 'react';
+import React, { PureComponent, createRef, RefObject } from 'react';
 import { SyncHook, SyncBailHook, SyncWaterfallHook } from 'tapable';
 import { RichUtils, EditorState, CompositeDecorator } from 'draft-js';
 import Context from './Context';
@@ -32,19 +32,50 @@ import Editor from './Editor';
 // import decorateComposer from "./decoratorComposer";
 const { Provider } = Context;
 
+// const defaultPlugins = [
+//   // new PlaceholderPlugin(),
+//   new BlockStyleFnPlugin(),
+//   new SelectionChangePlugin(),
+//   new CustomStyleMapPlugin(),
+//   new BlockRenderMapPlugin(),
+//   // new StyleControlPlugin(),
+
+//   new AddImagePlugin(),
+//   new HandleDroppedFilesPlugin(),
+
+//   // 对于keyCommand的一个兜底行为
+//   new DefaultHandleKeyCommandPlugin(),
+
+//   new InlineToolbarPlugin(),
+
+//   new LinkSpanDecoratorPlugin(),
+//   new LinkDecoratorPlugin(),
+
+//   new StateFilterPlugin(),
+
+//   // new CreateNestBlockPlugin(),
+
+//   // new DragPlugin(),
+
+//   // TODO: will cause text missing...
+//   new SidebarPlugin(),
+
+//   new DNDPlugin(),
+// ];
+
 // https://fettblog.eu/typescript-react/components/: TypeScript and React: Components
 class PluginEditor extends PureComponent<PluginEditorProps, PluginEditorState> {
   private plugins: any[];
 
   private hooks: Hooks;
 
-  private editorRef: Ref<null>;
+  private editorRef: RefObject<HTMLDivElement>;
 
-  private inlineToolbarRef: Ref<null>;
+  private inlineToolbarRef: RefObject<HTMLDivElement>;
 
-  private imageToolbarRef: Ref<null>;
+  private imageToolbarRef: RefObject<HTMLDivElement>;
 
-  private sidebarRef: Ref<null>;
+  private sidebarRef: RefObject<HTMLDivElement>;
 
   private blockRenderMap: Function;
 
@@ -142,10 +173,10 @@ class PluginEditor extends PureComponent<PluginEditorProps, PluginEditorState> {
       teardownDragDrop: new SyncHook(),
       afterMounted: new SyncHook(),
     };
-    this.editorRef = createRef();
-    this.inlineToolbarRef = createRef();
-    this.imageToolbarRef = createRef();
-    this.sidebarRef = createRef();
+    this.editorRef = createRef<HTMLDivElement>();
+    this.inlineToolbarRef = createRef<HTMLDivElement>();
+    this.imageToolbarRef = createRef<HTMLDivElement>();
+    this.sidebarRef = createRef<HTMLDivElement>();
 
     // const rawState = dndHelperData;
     // const newContentState = convertFromRaw(rawState);

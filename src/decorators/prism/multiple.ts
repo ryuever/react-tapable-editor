@@ -1,6 +1,6 @@
 import Immutable, { List } from 'immutable';
 import { ContentBlock, ContentState } from 'draft-js';
-import { DraftDecoratorType } from '../../types'
+import { DraftDecoratorType } from '../../types';
 
 const KEY_SEPARATOR = '-';
 
