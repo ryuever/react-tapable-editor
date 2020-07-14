@@ -2,7 +2,12 @@ import { containerKeyExtractor } from './key';
 import SortedItems from './structure/SortedItems';
 import { orientationToAxis, axisMeasure } from './utils';
 import Dragger from './Dragger';
-import { GlobalConfig, Config, Containers, Dimension } from '../../types';
+import {
+  GlobalConfig,
+  Config,
+  Containers,
+  ContainerDimension,
+} from '../../types';
 
 class Container {
   public id: string;
@@ -11,7 +16,8 @@ class Container {
   public children: SortedItems<Dragger>;
   public dndConfig: GlobalConfig;
   public containerConfig: Config;
-  public dimension: Dimension;
+  public dimension: ContainerDimension;
+  public parentContainer: Container | null;
 
   constructor({
     el,
@@ -34,7 +40,8 @@ class Container {
     this.containerConfig = containerConfig;
 
     this.containers[this.id] = this;
-    this.dimension = {};
+    this.dimension = {} as any;
+    this.parentContainer = null;
   }
 
   sorter(a: Dragger, b: Dragger): number {

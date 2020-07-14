@@ -48,7 +48,7 @@
     "immutable": "^4.0.0-rc.12",
     "invariant": "^2.2.4",
     "prismjs": "^1.19.0",
-    "sabar": "^0.5.1"
+    "sabar": "^0.5.4"
   },
   "devDependencies": {
     "eslint": "^6.8.0",

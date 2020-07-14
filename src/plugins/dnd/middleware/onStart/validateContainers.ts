@@ -1,4 +1,6 @@
 import { intersect, coincide, contains } from '../../collision';
+import { Action } from 'sabar';
+import { OnStartHandlerContext } from 'types';
 
 /**
  * 1. Container should be enclosed by other container entirely.
@@ -6,18 +8,17 @@ import { intersect, coincide, contains } from '../../collision';
  * 3. The intersection of containers is not allowed.
  */
 
-export default (_, ctx, actions) => {
-  const { containers } = ctx;
+export default (ctx: object, actions: Action) => {
+  const context = ctx as OnStartHandlerContext;
+  const { vContainers } = context;
 
-  const keys = Object.keys(containers);
+  const keys = Object.keys(vContainers);
   const len = keys.length;
 
-  console.log('contaienr ', containers);
-
   for (let i = 0; i < len; i++) {
-    const containerA = containers[keys[i]];
+    const containerA = vContainers[keys[i]];
     for (let j = i + 1; j < len; j++) {
-      const containerB = containers[keys[j]];
+      const containerB = vContainers[keys[j]];
       const a = containerA.dimension.rect;
       const b = containerB.dimension.rect;
 

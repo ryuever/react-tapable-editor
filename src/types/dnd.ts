@@ -10,6 +10,7 @@ export enum Orientation {
 export enum Mode {
   Fluid = 'fluid',
   Snap = 'snap',
+  Nested = 'nested',
 }
 
 export interface Config {
@@ -17,7 +18,7 @@ export interface Config {
   draggerHandlerSelector: string;
   containerSelector: string;
   draggerSelector: string;
-  shouldAcceptDragger: { (): boolean };
+  shouldAcceptDragger: { (e: HTMLElement): boolean };
   containerEffect: { (): void | Function };
   draggerEffect: { (): void | Function };
   impactDraggerEffect: { (): void | Function };
@@ -44,7 +45,15 @@ export interface RectObject {
   left: number;
 }
 
-export interface Dimension {
+export interface ContainerDimension {
+  rect: RectObject;
+  subject: {
+    isVisible: boolean;
+  };
+  within: (point: Point) => boolean;
+}
+
+export interface DraggerDimension {
   rect: RectObject;
 }
 
@@ -109,4 +118,33 @@ export interface MoveHandlerOutput {}
 export interface MoveHandlerResult {
   impact: Impact;
   output: MoveHandlerOutput;
+}
+
+export interface Extra {
+  clone: HTMLElement;
+}
+
+export interface VContainer {
+  [key: string]: Container;
+}
+
+export interface VDragger {
+  [key: string]: Dragger;
+}
+
+export interface OnStartHandlerContext {
+  vContainers: VContainer;
+  vDraggers: VDragger;
+  extra: Extra;
+  dndConfig: GlobalConfig;
+  targetContainer: Container;
+  impact: {
+    impactContainer: Container;
+  };
+}
+
+export interface OnMoveHandleContext {
+  vContainers: VContainer;
+  vDraggers: VDragger;
+  dndConfig: GlobalConfig;
 }

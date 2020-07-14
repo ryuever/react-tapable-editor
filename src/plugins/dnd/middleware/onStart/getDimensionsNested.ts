@@ -2,9 +2,12 @@
 // `getDimension` method should be considered.
 
 import { orientationToAxis, axisMeasure } from '../../utils';
+import { OnStartHandlerContext } from '../../../../types';
+import { Action } from 'sabar';
 
-export default (_, ctx, actions) => {
-  const { draggers, dndConfig } = ctx;
+export default (ctx: object, actions: Action) => {
+  const context = ctx as OnStartHandlerContext;
+  const { vDraggers, dndConfig } = context;
   const { mode, collisionPadding } = dndConfig;
 
   if (mode !== 'nested') {
@@ -14,11 +17,8 @@ export default (_, ctx, actions) => {
 
   // Only if under `nested` mode, `dimension` should be appended with
   // `collisionRect` property.
-
-  const nextDraggers = {};
-
-  for (const key in draggers) {
-    const dragger = draggers[key];
+  for (const key in vDraggers) {
+    const dragger = vDraggers[key];
     const { container, dimension } = dragger;
     const { rect } = dimension;
     const { top, right, bottom, left } = rect;
