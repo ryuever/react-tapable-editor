@@ -119,11 +119,14 @@ export const containerElementFromPoint = (point: Point) => {
   return closest(candidate, containerSelector);
 };
 
-export const closestDraggerElementFromElement = el => {
+export const closestDraggerElementFromElement = (el: HTMLElement) => {
   return closest(el, draggerSelector);
 };
 
-export const closestExclusiveContainerNodeFromElement = el => {
-  const parent = el.parentNode;
+export const closestExclusiveContainerNodeFromElement = (
+  el: HTMLElement
+): HTMLElement | null => {
+  const parent = el.parentNode as HTMLElement;
   if (parent) return closest(parent, containerSelector);
+  return null;
 };

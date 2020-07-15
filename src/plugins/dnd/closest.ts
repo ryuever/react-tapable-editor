@@ -46,9 +46,10 @@ export const exclusiveClosest = (
 };
 
 export default function closest(
-  el: HTMLElement,
+  el: HTMLElement | null,
   selector: string
 ): HTMLElement | null {
+  if (!el) return null;
   // Using native closest for maximum speed where we can
   if (el.closest) {
     return el.closest(selector);

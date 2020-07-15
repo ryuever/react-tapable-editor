@@ -1,6 +1,7 @@
 import { SyncHook } from 'tapable';
 import Container from '../plugins/dnd/Container';
 import Dragger from '../plugins/dnd/Dragger';
+import { Position } from './util';
 
 export enum Orientation {
   Vertical = 'vertical',
@@ -141,10 +142,19 @@ export interface OnStartHandlerContext {
   impact: {
     impactContainer: Container;
   };
+  impactRawInfo: RawInfo;
 }
 
 export interface OnMoveHandleContext {
   vContainers: VContainer;
   vDraggers: VDragger;
   dndConfig: GlobalConfig;
+  action: object;
+}
+
+export interface RawInfo {
+  candidateVDragger: Dragger | null;
+  candidateVDraggerIndex: number | null;
+  impactPosition: Position | null;
+  impactVContainer: Container | null;
 }

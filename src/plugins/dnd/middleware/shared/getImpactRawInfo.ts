@@ -4,8 +4,19 @@ import {
   closestExclusiveContainerNodeFromElement,
 } from '../../setAttributes';
 import { within, pointInRectWithOrientation } from '../../collision';
+import Container from '../../Container';
+import Dragger from '../../Dragger';
+import {
+  Point,
+  DraggersMap,
+  RawInfo,
+  ContainersMap,
+  Position,
+  OnStartHandlerContext,
+} from 'types';
+import { Action } from 'sabar';
 
-const shouldAccept = (vContainer, vDragger) => {
+const shouldAccept = (vContainer: Container, vDragger: Dragger) => {
   const { containerConfig } = vContainer;
   const { el } = vDragger;
   const { draggerSelector, shouldAcceptDragger } = containerConfig;
@@ -25,13 +36,22 @@ const getRawInfo = ({
   vContainers,
   liftUpVDragger,
   isNested,
-}) => {
+}: {
+  impactPoint: Point;
+  candidateContainerElement: HTMLElement;
+  vDraggers: DraggersMap;
+  vContainers: ContainersMap;
+  liftUpVDragger: Dragger;
+  isNested: boolean;
+}): RawInfo | null => {
   // console.log('candidateContainerElement ', candidateContainerElement)
   const vContainer = getVContainer(candidateContainerElement, vContainers);
 
+  if (!vContainer) return null;
+
   // If dragger move on to itself or its children's node container.
   // then return...
-  if (liftUpVDragger.el.contains(vContainer.el)) return;
+  if (liftUpVDragger.el.contains(vContainer.el)) return null;
 
   const {
     containerConfig: { orientation },
@@ -50,7 +70,7 @@ const getRawInfo = ({
           return {
             candidateVDragger: vDragger,
             candidateVDraggerIndex: i,
-            impactPosition: 'left',
+            impactPosition: Position.Left,
             impactVContainer: vContainer,
           };
         }
@@ -60,7 +80,7 @@ const getRawInfo = ({
           return {
             candidateVDragger: vDragger,
             candidateVDraggerIndex: i,
-            impactPosition: 'right',
+            impactPosition: Position.Right,
             impactVContainer: vContainer,
           };
         }
@@ -77,7 +97,7 @@ const getRawInfo = ({
           return {
             candidateVDragger: vDragger,
             candidateVDraggerIndex: i,
-            impactPosition: position,
+            impactPosition: position as Position,
             impactVContainer: vContainer,
           };
         }
@@ -98,7 +118,6 @@ const getRawInfo = ({
     vDraggers,
     vContainers,
     liftUpVDragger,
-    isFirst: false,
     isNested,
   });
 };
@@ -116,8 +135,19 @@ const getRawInfo = ({
  * Why it's called `getImpactRawInfo` ? Because `impactContainer` may be
  * update when checking the side padding on `nested` mode.
  */
-const getImpactRawInfo = ({ impactPoint, liftUpVDragger }, ctx, actions) => {
-  const { vContainers, vDraggers, dndConfig } = ctx;
+const getImpactRawInfo = (
+  {
+    impactPoint,
+    liftUpVDragger,
+  }: {
+    impactPoint: Point;
+    liftUpVDragger: Dragger;
+  },
+  ctx: object,
+  actions: Action
+) => {
+  const context = ctx as OnStartHandlerContext;
+  const { vContainers, vDraggers, dndConfig } = context;
   const { isNested } = dndConfig;
 
   // Find the most inner container include point
@@ -131,24 +161,21 @@ const getImpactRawInfo = ({ impactPoint, liftUpVDragger }, ctx, actions) => {
     impactVContainer: null,
     impactPosition: null,
     candidateVDraggerIndex: null,
-  };
+  } as RawInfo;
 
   if (candidateContainerElement) {
-    impactRawInfo =
-      getRawInfo({
-        impactPoint,
-        candidateContainerElement,
-        vDraggers,
-        vContainers,
-        liftUpVDragger,
-        isFirst: true,
-        isNested,
-      }) || {};
+    const value = getRawInfo({
+      impactPoint,
+      candidateContainerElement,
+      vDraggers,
+      vContainers,
+      liftUpVDragger,
+      isNested,
+    });
+    if (value) impactRawInfo = value;
   }
 
-  // console.log('impact raw ', impactRawInfo)
-  ctx.impactRawInfo = impactRawInfo;
-  // console.log("impact raw ", ctx.impactRawInfo);
+  context.impactRawInfo = impactRawInfo;
 
   actions.next();
 };
