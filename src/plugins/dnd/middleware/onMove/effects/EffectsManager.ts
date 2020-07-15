@@ -1,16 +1,20 @@
 import { isFunction } from '../../../utils';
 import Dragger from '../../../Dragger';
 import Container from '../../../Container';
-import { Effect } from '../../../../../types';
+import {
+  ImpactDraggerEffect,
+  DraggerEffect,
+  ContainerEffect,
+} from '../../../../../types';
 
 export default class EffectsManager {
   private dragger: Dragger;
   private impactContainer: Container;
   public id: string;
-  public impactDraggerEffects: Effect[];
-  public impactContainerEffects: Effect[];
-  public upstreamDraggersEffects: Effect[];
-  public downstreamDraggersEffects: Effect[];
+  public impactDraggerEffects: ImpactDraggerEffect[];
+  public impactContainerEffects: ContainerEffect[];
+  public upstreamDraggersEffects: DraggerEffect[];
+  public downstreamDraggersEffects: DraggerEffect[];
 
   constructor({
     dragger,
@@ -34,7 +38,7 @@ export default class EffectsManager {
     return container.id === this.impactContainer.id;
   }
 
-  assertRun(fn) {
+  assertRun(fn: any) {
     if (isFunction(fn)) fn();
   }
 

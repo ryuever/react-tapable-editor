@@ -1,10 +1,24 @@
 import { orientationToMeasure } from '../../../utils';
+import {
+  Impact,
+  OnMoveHandleContext,
+  Position,
+  DraggerEffect,
+} from '../../../../../types';
+import { Action } from 'sabar';
+import Container from '../../../Container';
+import Dragger from '../../../Dragger';
 
-const handleEnterHomeContainer = ({ liftUpVDraggerIndex }, ctx, actions) => {
+const handleEnterHomeContainer = (
+  { liftUpVDraggerIndex }: { liftUpVDraggerIndex: number },
+  ctx: object,
+  actions: Action
+) => {
+  const context = ctx as OnMoveHandleContext;
   const {
     impactRawInfo,
     action: { operation, isHomeContainerFocused, effectsManager },
-  } = ctx;
+  } = context;
 
   if (operation !== 'onEnter' || !isHomeContainerFocused) {
     actions.next();
@@ -21,18 +35,18 @@ const handleEnterHomeContainer = ({ liftUpVDraggerIndex }, ctx, actions) => {
   const {
     containerConfig: { containerEffect, draggerEffect, orientation },
     children,
-  } = impactVContainer;
+  } = impactVContainer as Container;
 
   const measure = orientationToMeasure(orientation);
-  const positionIndex = measure.indexOf(impactPosition);
+  const positionIndex = measure.indexOf(impactPosition as Position);
 
   if (typeof containerEffect === 'function') {
     const teardown = containerEffect({
-      el: impactVContainer.el,
+      el: (impactVContainer as Container).el,
     });
     effectsManager.impactContainerEffects.push({
       teardown,
-      vContainer: impactVContainer,
+      vContainer: impactVContainer as Container,
     });
   }
 
@@ -42,17 +56,19 @@ const handleEnterHomeContainer = ({ liftUpVDraggerIndex }, ctx, actions) => {
   }
 
   const impact = {
-    impactVContainer,
-    index: positionIndex ? candidateVDraggerIndex + 1 : candidateVDraggerIndex,
+    impactVContainer: impactVContainer as Container,
+    index: positionIndex
+      ? (candidateVDraggerIndex as number) + 1
+      : (candidateVDraggerIndex as number),
   };
 
   if (candidateVDraggerIndex === liftUpVDraggerIndex) {
     if (!positionIndex) effectsManager.clearUpstreamEffects();
     else {
-      const remainingEffects = [];
+      const remainingEffects = [] as DraggerEffect[];
       effectsManager.upstreamDraggersEffects.forEach(
-        ({ vDragger, teardown }) => {
-          if (vDragger.id !== candidateVDragger.id) teardown();
+        ({ vDragger, teardown }: { vDragger: Dragger; teardown: any }) => {
+          if (vDragger.id !== (candidateVDragger as Dragger).id) teardown();
           else remainingEffects.push({ vDragger, teardown });
         }
       );
@@ -61,9 +77,9 @@ const handleEnterHomeContainer = ({ liftUpVDraggerIndex }, ctx, actions) => {
     }
   }
 
-  if (candidateVDraggerIndex < liftUpVDraggerIndex) {
+  if ((candidateVDraggerIndex as number) < liftUpVDraggerIndex) {
     effectsManager.clearUpstreamEffects();
-    const initialValue = candidateVDraggerIndex;
+    const initialValue = candidateVDraggerIndex as number;
     for (let i = initialValue; i < liftUpVDraggerIndex; i++) {
       const vDragger = children.getItem(i);
       const isHighlight = initialValue === i;
@@ -72,7 +88,7 @@ const handleEnterHomeContainer = ({ liftUpVDraggerIndex }, ctx, actions) => {
         el: vDragger.el,
         shouldMove: !isHighlight || !positionIndex,
         downstream: !isHighlight || !positionIndex,
-        placedPosition: isHighlight ? impactPosition : measure[0],
+        placedPosition: (isHighlight ? impactPosition : measure[0]) as Position,
         dimension: vDragger.dimension.rect,
         isHighlight,
       });
@@ -80,12 +96,12 @@ const handleEnterHomeContainer = ({ liftUpVDraggerIndex }, ctx, actions) => {
     }
   }
 
-  if (candidateVDraggerIndex > liftUpVDraggerIndex) {
+  if (candidateVDraggerIndex && candidateVDraggerIndex > liftUpVDraggerIndex) {
     const initialValue = liftUpVDraggerIndex + 1;
     let endValue = candidateVDraggerIndex;
     if (positionIndex) endValue += 1;
-    const reserved = [];
-    const reservedEffects = [];
+    const reserved = [] as Dragger[];
+    const reservedEffects = [] as DraggerEffect[];
     for (let i = initialValue; i < endValue; i++) {
       const vDragger = children.getItem(i);
       reserved.push(vDragger);
@@ -96,13 +112,13 @@ const handleEnterHomeContainer = ({ liftUpVDraggerIndex }, ctx, actions) => {
       const index = reserved.findIndex(vDragger => vDragger.id === id);
       if (index !== -1) {
         reservedEffects.push({ teardown, vDragger });
-      } else teardown();
+      } else if (teardown) teardown();
     });
 
     effectsManager.upstreamDraggersEffects = reservedEffects;
   }
 
-  ctx.impact = impact;
+  context.impact = impact;
 
   actions.next();
 };

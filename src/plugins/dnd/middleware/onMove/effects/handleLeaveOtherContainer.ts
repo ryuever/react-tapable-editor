@@ -1,7 +1,11 @@
-const handleLeaveOtherContainer = (ctx, actions) => {
+import { Action } from 'sabar';
+import { OnMoveHandleContext } from 'types';
+
+const handleLeaveOtherContainer = (ctx: object, actions: Action) => {
+  const context = ctx as OnMoveHandleContext;
   const {
     action: { operation, isHomeContainerFocused, effectsManager },
-  } = ctx;
+  } = context;
   if (operation !== 'onLeave' || isHomeContainerFocused) {
     actions.next();
     return;

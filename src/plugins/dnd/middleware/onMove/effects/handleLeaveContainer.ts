@@ -1,11 +1,21 @@
 import report from '../../../reporter';
+import Container from '../../../Container';
+import { Impact, OnMoveHandleContext } from '../../../../../types';
+import { Action } from 'sabar';
 
 const handleLeaveContainer = (
-  { isHomeContainer, prevImpact },
-  ctx,
-  actions
+  {
+    isHomeContainer,
+    prevImpact,
+  }: {
+    isHomeContainer: (container: Container) => boolean;
+    prevImpact: Impact;
+  },
+  ctx: object,
+  actions: Action
 ) => {
-  const { impactRawInfo, dndEffects } = ctx;
+  const context = ctx as OnMoveHandleContext;
+  const { impactRawInfo, dndEffects } = context;
 
   const prevImpactVContainer = prevImpact.impactVContainer;
   const currentImpactVContainer = impactRawInfo.impactVContainer;
@@ -24,7 +34,7 @@ const handleLeaveContainer = (
     const effectsManager = dndEffects.find(prevImpactVContainer.id);
     report.logLeaveContainer(prevImpactVContainer);
 
-    ctx.action = {
+    context.action = {
       operation: 'onLeave',
       isHomeContainerFocused: isHomeContainer(prevImpactVContainer),
       effectsManager,

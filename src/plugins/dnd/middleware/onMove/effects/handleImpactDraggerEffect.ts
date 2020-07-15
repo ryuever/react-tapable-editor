@@ -1,12 +1,24 @@
 import { orientationToMeasure } from '../../../utils';
 import { generateEffectKey } from './utils';
+import Dragger from '../../../Dragger';
+import { Action } from 'sabar';
+import { OnMoveHandleContext } from 'types';
 
-const handleImpactDraggerEffect = ({ liftUpVDragger }, ctx, actions) => {
+const handleImpactDraggerEffect = (
+  {
+    liftUpVDragger,
+  }: {
+    liftUpVDragger: Dragger;
+  },
+  ctx: object,
+  actions: Action
+) => {
+  const context = ctx as OnMoveHandleContext;
   const {
     impactRawInfo,
     dndEffects,
     dndConfig: { withPlaceholder },
-  } = ctx;
+  } = context;
 
   const { impactVContainer, impactPosition, candidateVDragger } = impactRawInfo;
 
@@ -22,13 +34,13 @@ const handleImpactDraggerEffect = ({ liftUpVDragger }, ctx, actions) => {
   const effectsManager = dndEffects.find(impactVContainer.id);
 
   const measure = orientationToMeasure(orientation);
-  const positionIndex = measure.indexOf(impactPosition);
+  const positionIndex = measure.indexOf(impactPosition as string);
 
   if (typeof impactDraggerEffect === 'function') {
     const effectKey = generateEffectKey(
       impactVContainer,
-      candidateVDragger,
-      impactPosition
+      candidateVDragger as Dragger,
+      impactPosition as any
     );
     const index = effectsManager.impactDraggerEffects.findIndex(
       ({ key }) => key === effectKey
@@ -39,26 +51,26 @@ const handleImpactDraggerEffect = ({ liftUpVDragger }, ctx, actions) => {
       const teardown = impactDraggerEffect({
         dragger: liftUpVDragger.el,
         container: impactVContainer.el,
-        candidateDragger: candidateVDragger.el,
+        candidateDragger: (candidateVDragger as Dragger).el,
         shouldMove: !positionIndex,
         downstream: !positionIndex,
-        placedPosition: impactPosition,
-        dimension: candidateVDragger.dimension.rect,
+        placedPosition: impactPosition as any,
+        dimension: (candidateVDragger as Dragger).dimension.rect,
         isHighlight: true,
       });
 
       effectsManager.impactDraggerEffects.push({
         teardown,
-        vDragger: candidateVDragger,
+        vDragger: candidateVDragger as Dragger,
         key: effectKey,
       });
     }
 
-    ctx.output = {
+    context.output = {
       dragger: liftUpVDragger.el,
-      candidateDragger: candidateVDragger.el,
+      candidateDragger: (candidateVDragger as Dragger).el,
       container: impactVContainer.el,
-      placedPosition: impactPosition,
+      placedPosition: impactPosition as any,
     };
   }
 

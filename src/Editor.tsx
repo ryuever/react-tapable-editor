@@ -1,11 +1,5 @@
 import React, { useCallback, useRef, useEffect } from 'react';
-import {
-  Editor,
-  EditorState,
-  convertToRaw,
-  convertFromRaw,
-  RichUtils,
-} from 'draft-js';
+import { Editor } from 'draft-js';
 import Title from './components/title';
 
 // `ImageToolbar`, `InlineToolbar` and `Sidebar` only has one instance.
@@ -19,13 +13,7 @@ import './style.css';
 // https://draftjs.org/docs/advanced-topics-issues-and-pitfalls.html#missing-draftcss
 import 'draft-js/dist/Draft.css';
 
-import { withEditor } from './index';
-
-const { insertSoftNewline } = RichUtils;
-
-window.__DRAFT_GKX = {
-  draft_tree_data_support: true,
-};
+import withEditor from './withEditor';
 
 const NewEditor = props => {
   const {
@@ -95,9 +83,9 @@ const NewEditor = props => {
       );
 
       const newContentState = nextState.getCurrentContent();
-      const blockMap = newContentState.getBlockMap();
+      // const blockMap = newContentState.getBlockMap();
       const lastBlock = newContentState.getLastBlock();
-      const lastBlockText = lastBlock.getText();
+      // const lastBlockText = lastBlock.getText();
 
       // should invoke `DraftTreeInvariants`来验证是否是`validTree`然后才能够存储
       // console.log('on change hooks', convertToRaw(newContentState))
@@ -113,12 +101,17 @@ const NewEditor = props => {
     [hooks.handleKeyCommand]
   );
 
-  const getBlockStyle = useCallback(block => hooks.blockStyleFn.call(block));
+  const getBlockStyle = useCallback(block => hooks.blockStyleFn.call(block), [
+    hooks.blockStyleFn,
+  ]);
 
-  const handleBlockRender = useCallback(contentBlock => {
-    const { editorState } = getEditor();
-    return hooks.blockRendererFn.call(contentBlock, editorState);
-  });
+  const handleBlockRender = useCallback(
+    contentBlock => {
+      const { editorState } = getEditor();
+      return hooks.blockRendererFn.call(contentBlock, editorState);
+    },
+    [getEditor, hooks.blockRendererFn]
+  );
 
   const handleDroppedFiles = useCallback(
     (dropSelection, files) => {
@@ -127,9 +120,9 @@ const NewEditor = props => {
     [editorState, hooks.handleDroppedFiles]
   );
 
-  const handlePastedText = (text, html, es) => {
-    pasteText.current = text;
-  };
+  // const handlePastedText = (text, html, es) => {
+  //   pasteText.current = text;
+  // };
 
   return (
     <div className="miuffy-editor-root">
@@ -146,7 +139,7 @@ const NewEditor = props => {
           handleDroppedFiles={handleDroppedFiles}
           ref={forwardRef}
           preserveSelectionOnBlur
-          handlePastedText={handlePastedText}
+          // handlePastedText={handlePastedText}
         />
       </div>
 

@@ -1,13 +1,18 @@
 import { orientationToMeasure } from '../../../utils';
+import { Action } from 'sabar';
+import { OnMoveHandleContext, Impact } from '../../../../../types';
+import Container from '../../../Container';
+import Dragger from '../../../Dragger';
 
 const handleReorderOnHomeContainer = (
-  { liftUpVDraggerIndex },
-  ctx,
-  actions
+  { liftUpVDraggerIndex }: { liftUpVDraggerIndex: number },
+  ctx: object,
+  actions: Action
 ) => {
+  const context = ctx as OnMoveHandleContext;
   const {
     action: { operation, isHomeContainerFocused, effectsManager },
-  } = ctx;
+  } = context;
 
   if (operation !== 'reorder' || !isHomeContainerFocused) {
     actions.next();
@@ -22,10 +27,10 @@ const handleReorderOnHomeContainer = (
       candidateVDraggerIndex,
     },
     impact: { index: currentIndex },
-  } = ctx;
+  } = context;
   const {
     containerConfig: { orientation, draggerEffect },
-  } = impactVContainer;
+  } = impactVContainer as Container;
 
   const measure = orientationToMeasure(orientation);
 
@@ -40,79 +45,79 @@ const handleReorderOnHomeContainer = (
   };
 
   // move down
-  if (currentIndex < candidateVDraggerIndex) {
+  if (currentIndex < (candidateVDraggerIndex as number)) {
     if (impactPosition === measure[0]) {
       actions.next();
       return;
     }
 
-    if (candidateVDraggerIndex <= liftUpVDraggerIndex) {
+    if ((candidateVDraggerIndex as number) <= liftUpVDraggerIndex) {
       const index = effectsManager.downstreamDraggersEffects.findIndex(
         ({ vDragger }) => {
-          return vDragger.id === candidateVDragger.id;
+          return vDragger.id === (candidateVDragger as Dragger).id;
         }
       );
       if (index !== -1) {
         const { teardown } = effectsManager.downstreamDraggersEffects[index];
         effectsManager.downstreamDraggersEffects.splice(index, 1);
-        teardown();
+        if (typeof teardown === 'function') teardown();
       }
     }
 
-    if (candidateVDraggerIndex > liftUpVDraggerIndex) {
+    if ((candidateVDraggerIndex as number) > liftUpVDraggerIndex) {
       const teardown = draggerEffect({
-        el: candidateVDragger.el,
+        el: (candidateVDragger as Dragger).el,
         shouldMove: true,
         placedPosition: measure[1],
         downstream: false,
-        dimension: candidateVDragger.dimension.rect,
+        dimension: (candidateVDragger as Dragger).dimension.rect,
         isHighlight: true,
       });
       effectsManager.upstreamDraggersEffects.push({
-        vDragger: candidateVDragger,
+        vDragger: candidateVDragger as Dragger,
         teardown,
       });
     }
   }
 
   // move up
-  if (currentIndex > candidateVDraggerIndex) {
+  if (currentIndex > (candidateVDraggerIndex as number)) {
     if (impactPosition === measure[1]) {
       actions.next();
       return;
     }
 
-    if (candidateVDraggerIndex < liftUpVDraggerIndex) {
+    if ((candidateVDraggerIndex as number) < liftUpVDraggerIndex) {
       const teardown = draggerEffect({
-        el: candidateVDragger.el,
+        el: (candidateVDragger as Dragger).el,
         shouldMove: true,
         placedPosition: measure[0],
         downstream: true,
-        dimension: candidateVDragger.dimension.rect,
+        dimension: (candidateVDragger as Dragger).dimension.rect,
         isHighlight: true,
       });
       effectsManager.downstreamDraggersEffects.push({
-        vDragger: candidateVDragger,
+        vDragger: candidateVDragger as Dragger,
         teardown,
       });
     }
 
-    if (candidateVDraggerIndex >= liftUpVDraggerIndex) {
+    if ((candidateVDraggerIndex as number) >= liftUpVDraggerIndex) {
       const index = effectsManager.upstreamDraggersEffects.findIndex(
         ({ vDragger }) => {
-          return vDragger.id === candidateVDragger.id;
+          return vDragger.id === (candidateVDragger as Dragger).id;
         }
       );
 
       if (index !== -1) {
         const { teardown } = effectsManager.upstreamDraggersEffects[index];
         effectsManager.upstreamDraggersEffects.splice(index, 1);
-        teardown();
+        if (typeof teardown === 'function') teardown();
       }
     }
   }
 
-  ctx.impact = impact;
+  context.impact = impact as Impact;
   actions.next();
 };
 

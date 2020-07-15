@@ -10,3 +10,4 @@ export * from './rect';
 export * from './components';
 export * from './hooks';
 export * from './dnd';
+export * from './inlineToolBar';

@@ -2,6 +2,9 @@ import { SyncHook } from 'tapable';
 import Container from '../plugins/dnd/Container';
 import Dragger from '../plugins/dnd/Dragger';
 import { Position } from './util';
+import DndEffects from 'plugins/dnd/middleware/onMove/effects/DndEffects';
+import EffectsManager from 'plugins/dnd/middleware/onMove/effects/EffectsManager';
+import { RectObject } from './';
 
 export enum Orientation {
   Vertical = 'vertical',
@@ -20,9 +23,9 @@ export interface Config {
   containerSelector: string;
   draggerSelector: string;
   shouldAcceptDragger: { (e: HTMLElement): boolean };
-  containerEffect: { (): void | Function };
-  draggerEffect: { (): void | Function };
-  impactDraggerEffect: { (): void | Function };
+  containerEffect: { ({ el }: { el: HTMLElement }): void | Function };
+  draggerEffect: DraggerEffectHandler;
+  impactDraggerEffect: ImpactDraggerEffectHandler;
   [key: string]: any;
 }
 
@@ -38,14 +41,6 @@ export type GlobalConfig = Partial<Config> & {
 export interface Containers {
   [key: string]: Container;
 }
-
-export interface RectObject {
-  top: number;
-  right: number;
-  bottom: number;
-  left: number;
-}
-
 export interface ContainerDimension {
   rect: RectObject;
   subject: {
@@ -93,19 +88,38 @@ export type Point = [number, number];
 export type Triangle = [[number, number], [number, number], [number, number]];
 
 export interface Effect {
-  teardown: () => {};
+  teardown: Function | null | void;
+  vContainer: Container;
 }
 
-export interface Hooks {
+export interface DraggerEffect {
+  teardown: Function | null | void;
+  vDragger: Dragger;
+}
+export interface ContainerEffect {
+  teardown: Function | null | void;
+  vContainer: Container;
+}
+
+export interface ImpactDraggerEffect {
+  teardown: Function | null | void;
+  vDragger: Dragger;
+  key: string;
+}
+
+export interface DndHooks {
   syncEffects: SyncHook;
   cleanupEffects: SyncHook;
 }
 
-export interface Impact {}
+export interface Impact {
+  impactVContainer: Container;
+  index: number;
+}
 
 export interface MoveAPI {
   (): {
-    hooks: Hooks;
+    hooks: DndHooks;
     prevImpact: Impact;
   };
 }
@@ -133,6 +147,12 @@ export interface VDragger {
   [key: string]: Dragger;
 }
 
+export interface OnMoveAction {
+  operation: string;
+  isHomeContainerFocused: boolean;
+  effectsManager: EffectsManager;
+}
+
 export interface OnStartHandlerContext {
   vContainers: VContainer;
   vDraggers: VDragger;
@@ -149,7 +169,19 @@ export interface OnMoveHandleContext {
   vContainers: VContainer;
   vDraggers: VDragger;
   dndConfig: GlobalConfig;
-  action: object;
+  action: OnMoveAction;
+  impactRawInfo: RawInfo;
+  dndEffects: DndEffects;
+  impact: {
+    impactVContainer: Container;
+    index: number;
+  };
+  output: {
+    dragger: HTMLElement;
+    candidateDragger: HTMLElement;
+    container: HTMLElement;
+    placedPosition: Position;
+  };
 }
 
 export interface RawInfo {
@@ -157,4 +189,44 @@ export interface RawInfo {
   candidateVDraggerIndex: number | null;
   impactPosition: Position | null;
   impactVContainer: Container | null;
+}
+
+export interface DraggerEffectHandler {
+  ({
+    el,
+    shouldMove,
+    downstream,
+    placedPosition,
+    dimension,
+    isHighlight,
+  }: {
+    el: HTMLElement;
+    shouldMove: boolean;
+    downstream: boolean;
+    placedPosition: string;
+    dimension: RectObject;
+    isHighlight: boolean;
+  }): Function | undefined;
+}
+
+export interface ImpactDraggerEffectHandler {
+  ({
+    dragger,
+    container,
+    candidateDragger,
+    shouldMove,
+    downstream,
+    placedPosition,
+    dimension,
+    isHighlight,
+  }: {
+    dragger: HTMLElement;
+    container: HTMLElement;
+    candidateDragger: HTMLElement;
+    shouldMove: boolean;
+    downstream: boolean;
+    placedPosition: Position;
+    dimension: RectObject;
+    isHighlight: boolean;
+  }): Function | undefined;
 }

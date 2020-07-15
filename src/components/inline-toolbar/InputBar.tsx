@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useCallback } from 'react';
+import React, { useRef, useEffect, useCallback, FC, RefObject } from 'react';
 import { EditorState } from 'draft-js';
 import Divider from './Divider';
 
@@ -6,16 +6,17 @@ import Link from '../button/Link';
 import Unlink from '../button/Unlink';
 
 import { createLinkAtSelection } from '../../utils/createEntity';
+import { InputBarProps } from '../../types';
 
-const InputBar = ({ getEditor }) => {
-  const inputRef = useRef();
+const InputBar: FC<InputBarProps> = ({ getEditor }) => {
+  const inputRef = useRef() as RefObject<HTMLDivElement>;
   const { hooks } = getEditor();
 
   useEffect(() => {
-    inputRef.current.focus();
-  }, []);
+    if (inputRef.current) inputRef.current.focus();
+  }, [inputRef]);
 
-  const submit = value => {
+  const submit = (value: string) => {
     const { editorState, hooks } = getEditor();
     const newState = createLinkAtSelection(editorState, value);
     const currentContent = newState.getCurrentContent();

@@ -1,21 +1,22 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback, FC } from 'react';
 import Immutable from 'immutable';
-import { withEditor } from '../../index';
+import withEditor from '../../withEditor';
 import './styles.css';
 import StyleControls from './StyleControls';
 import InputBar from './InputBar';
 
 import getSelectionBlockTypes from '../../utils/getSelectionBlockTypes';
 import getInlineToolbarInlineInfo from '../../utils/getInlineToolbarInlineInfo';
+import { InlineToolbarProps, InlineToolbarStateValues } from '../../types';
 
-const InlineToolbar = props => {
+const InlineToolbar: FC<InlineToolbarProps> = props => {
   const { forwardRef, getEditor } = props;
   const [value, setValue] = useState({
-    styles: new Immutable.OrderedSet(),
+    styles: Immutable.OrderedSet(),
     blockTypes: [],
     inDisplayMode: true,
     hasLink: false,
-  });
+  } as InlineToolbarStateValues);
   const inDisplayModeRef = useRef(true);
 
   useEffect(() => {
@@ -24,7 +25,7 @@ const InlineToolbar = props => {
       const nextValue = {
         inDisplayMode:
           visibility === 'hidden' ? true : inDisplayModeRef.current,
-      };
+      } as InlineToolbarStateValues;
 
       if (editorState) {
         const { styles, hasLink } = getInlineToolbarInlineInfo(editorState);
@@ -32,7 +33,7 @@ const InlineToolbar = props => {
         nextValue.hasLink = hasLink;
         nextValue.blockTypes = getSelectionBlockTypes(editorState);
       } else {
-        nextValue.styles = new Immutable.OrderedSet();
+        nextValue.styles = Immutable.OrderedSet();
         nextValue.blockTypes = [];
         nextValue.hasLink = false;
       }
@@ -43,6 +44,8 @@ const InlineToolbar = props => {
     });
   }, [getEditor]);
 
+  const { styles, blockTypes, inDisplayMode, hasLink } = value;
+
   const toggleDisplayMode = useCallback(() => {
     setValue({
       ...value,
@@ -50,8 +53,6 @@ const InlineToolbar = props => {
     });
     inDisplayModeRef.current = !inDisplayMode;
   }, [inDisplayMode, value]);
-
-  const { styles, blockTypes, inDisplayMode, hasLink } = value;
 
   return (
     <div className="inline-toolbar" ref={forwardRef}>

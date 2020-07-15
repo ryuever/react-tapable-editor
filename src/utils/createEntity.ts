@@ -1,6 +1,6 @@
-import { RichUtils } from 'draft-js';
+import { RichUtils, EditorState } from 'draft-js';
 
-const createLinkAtSelection = (editorState, url) => {
+const createLinkAtSelection = (editorState: EditorState, url: string) => {
   const contentState = editorState
     .getCurrentContent()
     .createEntity('LINK', 'MUTABLE', { url });
@@ -13,7 +13,7 @@ const createLinkAtSelection = (editorState, url) => {
   );
 };
 
-const createLinkSpanAtSelection = editorState => {
+const createLinkSpanAtSelection = (editorState: EditorState) => {
   const selection = editorState.getSelection();
   const startKey = selection.getStartKey();
   const startOffset = selection.getStartOffset();

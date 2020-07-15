@@ -1,14 +1,20 @@
 import { orientationToMeasure } from '../../../utils';
+import { Impact, OnMoveHandleContext } from '../../../../../types';
+import { Action } from 'sabar';
 
 const handleLeaveHomeContainer = (
-  { prevImpact, liftUpVDraggerIndex },
-  ctx,
-  actions
+  {
+    prevImpact,
+    liftUpVDraggerIndex,
+  }: { liftUpVDraggerIndex: number; prevImpact: Impact },
+  ctx: object,
+  actions: Action
 ) => {
+  const context = ctx as OnMoveHandleContext;
   const {
     dndConfig: { withPlaceholder },
     action: { operation, isHomeContainerFocused, effectsManager },
-  } = ctx;
+  } = context;
 
   if (operation !== 'onLeave' || !isHomeContainerFocused) {
     actions.next();

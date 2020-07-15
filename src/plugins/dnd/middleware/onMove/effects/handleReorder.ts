@@ -1,8 +1,23 @@
-const handleReorder = ({ prevImpact, isHomeContainer }, ctx, actions) => {
+import Container from '../../../Container';
+import { Impact, OnMoveHandleContext } from '../../../../../types';
+import { Action } from 'sabar';
+
+const handleReorder = (
+  {
+    prevImpact,
+    isHomeContainer,
+  }: {
+    isHomeContainer: (container: Container) => boolean;
+    prevImpact: Impact;
+  },
+  ctx: object,
+  actions: Action
+) => {
+  const context = ctx as OnMoveHandleContext;
   const {
     impactRawInfo: { impactVContainer: currentImpactVContainer },
     dndEffects,
-  } = ctx;
+  } = context;
   const { impactVContainer: prevImpactVContainer } = prevImpact;
 
   if (
@@ -12,7 +27,7 @@ const handleReorder = ({ prevImpact, isHomeContainer }, ctx, actions) => {
   ) {
     const effectsManager = dndEffects.find(currentImpactVContainer.id);
 
-    ctx.action = {
+    context.action = {
       operation: 'reorder',
       isHomeContainerFocused: isHomeContainer(currentImpactVContainer),
       effectsManager,
