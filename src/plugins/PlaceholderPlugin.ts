@@ -1,7 +1,8 @@
 import { EditorState, Modifier, SelectionState } from 'draft-js';
+//@ts-ignore
 import DraftOffsetKey from 'draft-js/lib/DraftOffsetKey';
 import { hasText } from '../utils/contentBlock';
-import { moveSelectionForward } from '../utils/editorState';
+import { GetEditor } from '../types';
 
 // 解决的场景问题：新打开的文档尚未输入问题，这个时候如果我们触发了style
 // 的变化（block和inline）也应该应用到`placeholder`
@@ -13,7 +14,7 @@ function PlaceholderPlugin() {
   this.placeholderNode = null;
   this.selection = null;
 
-  this.apply = getEditor => {
+  this.apply = (getEditor: GetEditor) => {
     const { hooks, editorRef } = getEditor();
 
     hooks.handleKeyCommand.tap('PlaceholderPlugin', (command, editorState) => {

@@ -1,13 +1,13 @@
 import React, { useState, useRef, useEffect, useCallback, FC } from 'react';
 import Immutable from 'immutable';
 import withEditor from '../../withEditor';
-import './styles.css';
 import StyleControls from './StyleControls';
 import InputBar from './InputBar';
-
 import getSelectionBlockTypes from '../../utils/getSelectionBlockTypes';
 import getInlineToolbarInlineInfo from '../../utils/getInlineToolbarInlineInfo';
 import { InlineToolbarProps, InlineToolbarStateValues } from '../../types';
+
+// import './styles.css';
 
 const InlineToolbar: FC<InlineToolbarProps> = props => {
   const { forwardRef, getEditor } = props;

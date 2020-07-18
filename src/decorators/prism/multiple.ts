@@ -1,6 +1,6 @@
 import Immutable, { List } from 'immutable';
-import { ContentBlock, ContentState } from 'draft-js';
-import { DraftDecoratorType } from '../../types';
+import { ContentBlock } from 'draft-js';
+import { DraftDecoratorType, ContentNodeState } from '../../types';
 
 const KEY_SEPARATOR = '-';
 
@@ -24,7 +24,7 @@ function MultiDecorator(
 */
 MultiDecorator.prototype.getDecorations = function(
   block: ContentBlock,
-  contentState: ContentState
+  contentState: ContentNodeState
 ) {
   const decorations = Array(block.getText().length).fill(null);
 

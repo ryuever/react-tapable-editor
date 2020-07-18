@@ -1,4 +1,7 @@
-const isBlockFocused = (editorState, content) => {
+import { EditorState } from 'draft-js';
+import { ContentBlockNode } from '../types';
+
+const isBlockFocused = (editorState: EditorState, block: ContentBlockNode) => {
   const selection = editorState.getSelection();
   // 首先判断当前selection是否是focused
   if (!selection.getHasFocus()) return false;
@@ -7,7 +10,7 @@ const isBlockFocused = (editorState, content) => {
   // 话，直接返回false 不再处理
   if (!selection.isCollapsed()) return false;
 
-  const blockKey = content.getKey();
+  const blockKey = block.getKey();
   const startKey = selection.getStartKey();
 
   return blockKey === startKey;

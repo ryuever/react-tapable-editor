@@ -12,3 +12,7 @@ export interface ButtonProps {
   children?: ReactChild;
   fill: string;
 }
+
+export type IWithActionProps<T> = {
+  [P in keyof T]: T[P];
+};

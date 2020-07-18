@@ -3,7 +3,6 @@ import withEditor from '../../withEditor';
 import ImageAlignCenter from '../button/ImageAlignCenter';
 import ImageAlignLeftFillContent from '../button/ImageAlignLeftFillContent';
 import ImageAlignRightFillContent from '../button/ImageAlignRightFillContent';
-import './styles.css';
 import { EditorState } from 'draft-js';
 
 import {
@@ -13,6 +12,8 @@ import {
   ContentBlockNode,
   ResizeLayout,
 } from '../../types';
+
+// import './styles.css';
 
 const ImageAlignCenterButton: FC<ImageAlignmentButtonFC> = ({
   activeKey,
@@ -78,7 +79,11 @@ const ImageToolbar: FC<ImageToolbarProps> = props => {
         alignment,
         resizeLayout,
       });
-      const nextState = EditorState.push(editorState, newContent);
+      const nextState = EditorState.push(
+        editorState,
+        newContent,
+        'insert-fragment'
+      );
       const newState = EditorState.forceSelection(
         nextState,
         nextState.getSelection()
@@ -116,6 +121,7 @@ const ImageToolbar: FC<ImageToolbarProps> = props => {
           if (alignment) setAlignment(alignment);
         }
       }
+      return null;
     });
   }, [getEditor, hooks.toggleImageToolbarVisible]);
 

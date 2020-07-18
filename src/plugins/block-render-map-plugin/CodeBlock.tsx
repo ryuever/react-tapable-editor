@@ -1,22 +1,10 @@
-import React, { Component, ReactChild } from 'react';
-
+import React, { ReactChild, FC } from 'react';
 import './styles.css';
 
-class CodeWrapper extends Component<{ children: ReactChild }> {
-  constructor(props: { children: ReactChild }) {
-    super(props);
+const CodeWrapper: FC<{ children?: ReactChild }> = props => {
+  const { children } = props;
 
-    // const { children } = props;
-    // this.state = {
-    //   code: children,
-    // };
-  }
-
-  render() {
-    const { children } = this.props;
-
-    return <div className="code-mirror">{children}</div>;
-  }
-}
+  return <div className="code-mirror">{children}</div>;
+};
 
 export default CodeWrapper;

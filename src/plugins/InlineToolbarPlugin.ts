@@ -129,7 +129,7 @@ function InlineToolbar() {
         }
         // ts-hint: https://stackoverflow.com/questions/45454573/angular-property-parentnode-does-not-exist-on-type-eventtarget
         // ts-hint: https://stackoverflow.com/questions/28900077/why-is-event-target-not-element-in-typescript
-        node = (<HTMLElement>node).parentNode;
+        node = (node as HTMLElement).parentNode;
       }
 
       if (node === document.body && isToolbarVisible) {

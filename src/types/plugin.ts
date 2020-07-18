@@ -1,6 +1,6 @@
 import { RefObject } from 'react';
 import { SyncHook, SyncWaterfallHook, SyncBailHook } from 'tapable';
-import { EditorState } from 'draft-js';
+import { EditorState, Editor } from 'draft-js';
 
 export interface Hooks {
   setState: SyncHook;
@@ -61,26 +61,12 @@ export interface GetEditor {
   (): {
     hooks: Hooks;
     editorState: EditorState;
-    editorRef: RefObject<HTMLDivElement>;
+    editorRef: RefObject<Editor>;
     inlineToolbarRef: RefObject<HTMLDivElement>;
     imageToolbarRef: RefObject<HTMLDivElement>;
     sidebarRef: RefObject<HTMLDivElement>;
   };
-  // editorState: this.state.editorState,
-  // editorRef: this.editorRef,
-  // inlineToolbarRef: this.inlineToolbarRef,
-  // imageToolbarRef: this.imageToolbarRef,
-  // sidebarRef: this.sidebarRef,
 }
-
-// export function GetEditor(): {
-//   hooks: Hooks;
-//   editorState: EditorState;
-//   editorRef: RefObject<HTMLDivElement>;
-//   inlineToolbarRef: RefObject<HTMLDivElement>;
-//   imageToolbarRef: RefObject<HTMLDivElement>;
-//   sidebarRef: RefObject<HTMLDivElement>;
-// }
 
 // https://stackoverflow.com/questions/50604272/typescript-property-foreach-does-not-exist-on-type-filelist
 // https://stackoverflow.com/questions/46349147/property-foreach-does-not-exist-on-type-nodelistof

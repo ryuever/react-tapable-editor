@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useCallback, FC, RefObject } from 'react';
+import React, { createRef, useEffect, useCallback, FC } from 'react';
 import { EditorState } from 'draft-js';
 import Divider from './Divider';
 
@@ -9,7 +9,7 @@ import { createLinkAtSelection } from '../../utils/createEntity';
 import { InputBarProps } from '../../types';
 
 const InputBar: FC<InputBarProps> = ({ getEditor }) => {
-  const inputRef = useRef() as RefObject<HTMLDivElement>;
+  const inputRef = createRef<HTMLInputElement>();
   const { hooks } = getEditor();
 
   useEffect(() => {
@@ -75,8 +75,8 @@ const InputBar: FC<InputBarProps> = ({ getEditor }) => {
       />
       <Divider />
       <div className="link-action-group">
-        <Link active={false} />
-        <Unlink active={false} />
+        <Link active={false} onClick={() => {}} />
+        <Unlink active={false} onClick={() => {}} />
       </div>
     </div>
   );

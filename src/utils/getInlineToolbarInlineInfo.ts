@@ -1,14 +1,15 @@
 // https://github.com/facebook/draft-js/blob/master/src/model/transaction/ContentStateInlineStyle.js#L38 modifyInlineStyle
 import Immutable from 'immutable';
 import { EditorState } from 'draft-js';
+import { BlockNodeMap, ContentBlockNode } from 'types';
 
 const { Map } = Immutable;
 
-function getSelectionInlineStyle(editorState: EditorState) {
+function getInlineToolbarInlineInfo(editorState: EditorState) {
   const contentState = editorState.getCurrentContent();
   const selectionState = editorState.getSelection();
 
-  const blockMap = contentState.getBlockMap();
+  const blockMap = contentState.getBlockMap() as BlockNodeMap;
   const startKey = selectionState.getStartKey();
   const startOffset = selectionState.getStartOffset();
   const endKey = selectionState.getEndKey();
@@ -36,10 +37,13 @@ function getSelectionInlineStyle(editorState: EditorState) {
         sliceEnd = endOffset;
       } else {
         sliceStart = blockKey === startKey ? startOffset : 0;
-        sliceEnd = blockKey === endKey ? endOffset : block.getLength();
+        sliceEnd =
+          blockKey === endKey
+            ? endOffset
+            : (block as ContentBlockNode).getLength();
       }
 
-      const chars = block.getCharacterList();
+      const chars = (block as ContentBlockNode).getCharacterList();
       let current;
 
       while (sliceStart < sliceEnd) {
@@ -48,9 +52,9 @@ function getSelectionInlineStyle(editorState: EditorState) {
         }
 
         const char = chars.get(sliceStart);
-        current = char.getStyle();
+        current = char!.getStyle();
 
-        const entityKey = char.getEntity();
+        const entityKey = char!.getEntity();
         if (entityKey) {
           const entityType = contentState.getEntity(entityKey).getType();
           hasLink = entityType === 'LINK';
@@ -85,4 +89,4 @@ function getSelectionInlineStyle(editorState: EditorState) {
   };
 }
 
-export default getSelectionInlineStyle;
+export default getInlineToolbarInlineInfo;

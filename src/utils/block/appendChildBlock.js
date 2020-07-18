@@ -1,4 +1,4 @@
-import { List, OrderedMap } from 'immutable';
+import { List } from 'immutable';
 import removeBlock from './removeBlock';
 import resetSibling from './resetSibling';
 import contains from './contains';

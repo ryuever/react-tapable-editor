@@ -3,7 +3,7 @@ import classes from 'classnames';
 import Plus from '../button/Plus';
 import Dragger from '../button/Dragger';
 import { SidebarProps } from '../../types';
-import './styles.css';
+// import './styles.css';
 
 const Sidebar = (props: SidebarProps) => {
   const { forwardRef } = props;
