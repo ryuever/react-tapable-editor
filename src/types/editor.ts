@@ -15,7 +15,6 @@ export interface EditorPropsBefore {
 // ts-hint: interface extends interface...
 export type EditorProps = {
   forwardRef: Ref<Editor>;
-  // forwardRef: any;
 } & EditorPropsBefore & {
     getEditor: GetEditor;
   };

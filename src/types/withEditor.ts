@@ -1,21 +1,14 @@
 import { ReactNode } from 'react';
-
-// export type UnknownProps<T> = {
-//   [P in keyof T]: T[P];
-// } & {
-//   children?: ReactChild;
-//   getEditor: object;
-// };
-
-// export interface ReturnProps<T> {
-//   children?: ReactChild;
-//   getEditor: object;
-//   (key: keyof T): T[keyof T];
-// }
+import { GetEditor } from './';
 
 export type ReturnProps<T> = {
+  // ts-hint: https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-1.html#mapped-types
+  // ts-hint: https://www.typescriptlang.org/docs/handbook/advanced-types.html keyof....
   [P in keyof T]: T[P];
 } & {
   children?: ReactNode;
-  // getEditor: object;
+};
+
+export type IWrappedComponent<T> = ReturnProps<T> & {
+  getEditor: GetEditor;
 };

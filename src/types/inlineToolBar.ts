@@ -3,6 +3,8 @@ import { GetEditor } from './';
 import Immutable from 'immutable';
 import { DraftBlockType } from 'draft-js';
 
+// ts-hint: InlineToolbarProps should be split into two parts,
+// or it will error in Editor.ts file
 export type InlineToolbarProps = {
   forwardRef: Ref<HTMLDivElement>;
 } & {

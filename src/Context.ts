@@ -1,9 +1,4 @@
 import { createContext } from 'react';
-// import invariant from 'invariant';
+import { GetEditor } from './types';
 
-// const defaultValue = () => {
-//   invariant(false, 'Context Component should be child of `EditorProvider`');
-// };
-
-export default createContext({});
-// export default createContext(defaultValue)
+export default createContext<GetEditor | null>(null);

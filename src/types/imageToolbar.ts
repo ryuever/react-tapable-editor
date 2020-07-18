@@ -15,6 +15,8 @@ export enum Alignment {
   RightFill = 'rightFill',
 }
 
+// ts-hint: ImageToolbarProps should be split into two parts,
+// or it will error in Editor.ts file
 export type ImageToolbarProps = {
   forwardRef: RefObject<HTMLDivElement>;
 } & {

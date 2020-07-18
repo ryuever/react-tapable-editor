@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useEffect, FC, RefObject } from 'react';
+import React, { useCallback, useRef, useEffect, FC } from 'react';
 import { Editor } from 'draft-js';
 import Title from './components/title';
 
@@ -117,12 +117,12 @@ const NewEditor: FC<EditorProps> = props => {
     [getEditor, hooks.blockRendererFn]
   );
 
-  const handleDroppedFiles = useCallback(
-    (dropSelection, files) => {
-      hooks.handleDroppedFiles.call(editorState, dropSelection, files);
-    },
-    [editorState, hooks.handleDroppedFiles]
-  );
+  // const handleDroppedFiles = useCallback(
+  //   (dropSelection, files) => {
+  //     hooks.handleDroppedFiles.call(editorState, dropSelection, files);
+  //   },
+  //   [editorState, hooks.handleDroppedFiles]
+  // );
 
   return (
     <div className="miuffy-editor-root">
@@ -138,7 +138,6 @@ const NewEditor: FC<EditorProps> = props => {
           handleKeyCommand={handleKeyCommand}
           // handleDroppedFiles={handleDroppedFiles}
           ref={forwardRef}
-          // preserveSelectionOnBlur
         />
       </div>
 

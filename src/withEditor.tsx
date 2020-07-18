@@ -1,13 +1,9 @@
 import React, { useContext, ComponentType, FC } from 'react';
 import Context from './Context';
-import { ReturnProps, GetEditor } from './types';
+import { ReturnProps, GetEditor, IWrappedComponent } from './types';
 
 function getDisplayName<T>(
-  WrappedComponent: ComponentType<
-    ReturnProps<T> & {
-      getEditor: GetEditor;
-    }
-  >
+  WrappedComponent: ComponentType<IWrappedComponent<T>>
 ) {
   return (
     WrappedComponent.displayName ||
@@ -16,40 +12,20 @@ function getDisplayName<T>(
   );
 }
 
-// interface Props {
-//   children?: ReactChild;
-// }
-
+// ts-hint: refer to https://medium.com/@jrwebdev/react-higher-order-component-patterns-in-typescript-42278f7590fb
+// and take note on `Subtract` method...
 function withEditor<T>(
-  WrappedComponent: ComponentType<
-    ReturnProps<T> & {
-      getEditor: GetEditor;
-    }
-  >
+  // ts-hint: according to WrappedComponent type. it will implicate the generic type
+  // of `T` which exclude `getEditor` props
+  WrappedComponent: ComponentType<IWrappedComponent<T>>
 ): FC<ReturnProps<T>> {
   return (props: T) => {
     WrappedComponent.displayName = `WrappedComponent(${getDisplayName(
       WrappedComponent
-    )})`; // eslint-disable-line
-
-    const getEditor = useContext(Context) as GetEditor;
-
+    )})`;
+    const getEditor = useContext<GetEditor | null>(Context) as GetEditor;
     return <WrappedComponent {...props} getEditor={getEditor} />;
   };
 }
 
 export default withEditor;
-
-// export default (WrappedComponent: ComponentType<ReturnProps>) => {
-//   const Next: FC<ReturnProps> = (props: Props) => {
-//     WrappedComponent.displayName = `WrappedComponent(${getDisplayName(
-//       WrappedComponent
-//     )})`; // eslint-disable-line
-
-//     const getEditor = useContext(Context);
-
-//     return <WrappedComponent {...props} getEditor={getEditor} />;
-//   };
-
-//   return Next
-// }
