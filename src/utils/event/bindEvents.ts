@@ -13,7 +13,7 @@ function getOptions(
 }
 
 export function bindEvents(
-  el: HTMLElement | Window,
+  el: HTMLElement | Window | Document,
   bindings: Binding[] | Binding,
   sharedOptions?: AddEventListenerOptions
 ) {
@@ -37,7 +37,7 @@ export function bindEvents(
 // once event triggered. it will be teardown first...
 export function bindEventsOnce(
   el: HTMLElement,
-  bindings: Binding[],
+  bindings: Binding[] | Binding,
   sharedOptions?: AddEventListenerOptions
 ) {
   const empty = [] as Binding[];

@@ -1,15 +1,9 @@
 import { orientationToMeasure } from '../../../utils';
-import { Impact, OnMoveHandleContext } from '../../../../../types';
+import { OnMoveArgs, OnMoveHandleContext } from '../../../../../types';
 import { Action } from 'sabar';
 
-const handleLeaveHomeContainer = (
-  {
-    prevImpact,
-    liftUpVDraggerIndex,
-  }: { liftUpVDraggerIndex: number; prevImpact: Impact },
-  ctx: object,
-  actions: Action
-) => {
+const handleLeaveHomeContainer = (args: any, ctx: object, actions: Action) => {
+  const { prevImpact, liftUpVDraggerIndex } = args as OnMoveArgs;
   const context = ctx as OnMoveHandleContext;
   const {
     dndConfig: { withPlaceholder },

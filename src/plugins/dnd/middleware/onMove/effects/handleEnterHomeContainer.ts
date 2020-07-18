@@ -1,19 +1,16 @@
 import { orientationToMeasure } from '../../../utils';
 import {
-  Impact,
   OnMoveHandleContext,
   Position,
   DraggerEffect,
+  OnMoveArgs,
 } from '../../../../../types';
 import { Action } from 'sabar';
 import Container from '../../../Container';
 import Dragger from '../../../Dragger';
 
-const handleEnterHomeContainer = (
-  { liftUpVDraggerIndex }: { liftUpVDraggerIndex: number },
-  ctx: object,
-  actions: Action
-) => {
+const handleEnterHomeContainer = (args: any, ctx: object, actions: Action) => {
+  const { liftUpVDraggerIndex } = args as OnMoveArgs;
   const context = ctx as OnMoveHandleContext;
   const {
     impactRawInfo,

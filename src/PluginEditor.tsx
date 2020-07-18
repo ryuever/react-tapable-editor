@@ -1,6 +1,13 @@
 import React, { PureComponent, createRef, RefObject } from 'react';
 import { SyncHook, SyncBailHook, SyncWaterfallHook } from 'tapable';
-import { RichUtils, EditorState, CompositeDecorator } from 'draft-js';
+import {
+  RichUtils,
+  EditorState,
+  CompositeDecorator,
+  DraftBlockRenderMap,
+  DraftStyleMap,
+  Editor as EditorType,
+} from 'draft-js';
 import Context from './Context';
 import { Hooks, PluginEditorState, PluginEditorProps } from './types';
 
@@ -69,7 +76,7 @@ class PluginEditor extends PureComponent<PluginEditorProps, PluginEditorState> {
 
   private hooks: Hooks;
 
-  private editorRef: RefObject<HTMLDivElement>;
+  private editorRef: RefObject<EditorType>;
 
   private inlineToolbarRef: RefObject<HTMLDivElement>;
 
@@ -77,16 +84,16 @@ class PluginEditor extends PureComponent<PluginEditorProps, PluginEditorState> {
 
   private sidebarRef: RefObject<HTMLDivElement>;
 
-  private blockRenderMap: Function;
+  private blockRenderMap: DraftBlockRenderMap | null;
 
-  private customStyleMap: Function;
+  private customStyleMap: DraftStyleMap | null;
 
   constructor(props: PluginEditorProps) {
     super(props);
     const { plugins } = props;
     this.plugins = plugins;
-    this.customStyleMap = () => {};
-    this.blockRenderMap = () => {};
+    this.customStyleMap = null;
+    this.blockRenderMap = null;
 
     this.hooks = {
       setState: new SyncHook(['editorState', 'callback']),
@@ -173,7 +180,7 @@ class PluginEditor extends PureComponent<PluginEditorProps, PluginEditorState> {
       teardownDragDrop: new SyncHook(),
       afterMounted: new SyncHook(),
     };
-    this.editorRef = createRef<HTMLDivElement>();
+    this.editorRef = createRef<EditorType>();
     this.inlineToolbarRef = createRef<HTMLDivElement>();
     this.imageToolbarRef = createRef<HTMLDivElement>();
     this.sidebarRef = createRef<HTMLDivElement>();
@@ -315,12 +322,13 @@ class PluginEditor extends PureComponent<PluginEditorProps, PluginEditorState> {
       <Provider value={this.getEditor}>
         <Editor
           {...rest}
-          customStyleMap={this.customStyleMap}
-          blockRenderMap={this.blockRenderMap}
           ref={this.editorRef}
           imageRef={this.imageToolbarRef}
           inlineRef={this.inlineToolbarRef}
           sidebarRef={this.sidebarRef}
+          customStyleMap={this.customStyleMap!}
+          blockRenderMap={this.blockRenderMap!}
+          placeholder=""
         />
       </Provider>
     );

@@ -113,8 +113,8 @@ export interface DndHooks {
 }
 
 export interface Impact {
-  impactVContainer: Container;
-  index: number;
+  impactVContainer?: Container;
+  index?: number;
 }
 
 export interface MoveAPI {
@@ -125,7 +125,7 @@ export interface MoveAPI {
 }
 
 export interface GetClone {
-  (): HTMLElement | null;
+  (): HTMLElement | undefined;
 }
 
 export interface MoveHandlerOutput {}
@@ -136,7 +136,7 @@ export interface MoveHandlerResult {
 }
 
 export interface Extra {
-  clone: HTMLElement;
+  clone?: HTMLElement;
 }
 
 export interface VContainer {
@@ -182,6 +182,16 @@ export interface OnMoveHandleContext {
     container: HTMLElement;
     placedPosition: Position;
   };
+}
+
+export interface OnMoveArgs {
+  impactPoint: Point;
+  clone: HTMLElement;
+  liftUpVDragger: Dragger;
+  isHomeContainer: (container: Container) => boolean;
+  prevImpact: Impact;
+  liftUpVDraggerIndex: number;
+  lifeUpDragger: Dragger;
 }
 
 export interface RawInfo {

@@ -71,7 +71,7 @@ const InlineToolbar: FC<InlineToolbarProps> = props => {
   );
 };
 
-const MemoToolbar = React.memo(
+const MemoToolbar = React.memo<InlineToolbarProps>(
   props => {
     return <InlineToolbar {...props} />;
   },

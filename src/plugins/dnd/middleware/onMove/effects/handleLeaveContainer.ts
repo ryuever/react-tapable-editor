@@ -1,19 +1,9 @@
 import report from '../../../reporter';
-import Container from '../../../Container';
-import { Impact, OnMoveHandleContext } from '../../../../../types';
+import { OnMoveHandleContext, OnMoveArgs } from '../../../../../types';
 import { Action } from 'sabar';
 
-const handleLeaveContainer = (
-  {
-    isHomeContainer,
-    prevImpact,
-  }: {
-    isHomeContainer: (container: Container) => boolean;
-    prevImpact: Impact;
-  },
-  ctx: object,
-  actions: Action
-) => {
+const handleLeaveContainer = (args: any, ctx: object, actions: Action) => {
+  const { isHomeContainer, prevImpact } = args as OnMoveArgs;
   const context = ctx as OnMoveHandleContext;
   const { impactRawInfo, dndEffects } = context;
 

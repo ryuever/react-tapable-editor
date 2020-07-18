@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useEffect } from 'react';
+import React, { useCallback, useRef, useEffect, FC, RefObject } from 'react';
 import { Editor } from 'draft-js';
 import Title from './components/title';
 
@@ -15,7 +15,9 @@ import 'draft-js/dist/Draft.css';
 
 import withEditor from './withEditor';
 
-const NewEditor = props => {
+import { EditorProps, EditorPropsBefore } from './types';
+
+const NewEditor: FC<EditorProps> = props => {
   const {
     getEditor,
     forwardRef,
@@ -27,16 +29,18 @@ const NewEditor = props => {
     customStyleMap,
   } = props;
   const { hooks, editorState } = getEditor();
-  const didUpdate = useRef(false);
+  const didUpdate = useRef<boolean>(false);
   const pasteText = useRef();
-  const lastBlockMapKeys = useRef([]);
-  const isInCompositionModeRef = useRef(false);
+  // ts-hint: useRef([]) as RefObject<string[]> is not right. please refer to
+  // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/31065
+  const lastBlockMapKeys = useRef<string[]>([]);
+  const isInCompositionModeRef = useRef<boolean>(false);
 
   useEffect(() => {
     const currentContent = editorState.getCurrentContent();
     const currentBlockMap = currentContent.getBlockMap();
     const currentBlockMapKeys = currentBlockMap.keySeq().toArray();
-    const diff = compareArray(lastBlockMapKeys.current, currentBlockMapKeys);
+    const diff = compareArray(lastBlockMapKeys.current!, currentBlockMapKeys);
     const isInCompositionMode = editorState.isInCompositionMode();
 
     const force =
@@ -63,7 +67,7 @@ const NewEditor = props => {
     const currentContent = editorState.getCurrentContent();
     const currentBlockMap = currentContent.getBlockMap();
     const currentBlockMapKeys = currentBlockMap.keySeq().toArray();
-    const diff = compareArray(lastBlockMapKeys.current, currentBlockMapKeys);
+    const diff = compareArray(lastBlockMapKeys.current!, currentBlockMapKeys);
 
     if (diff.length) {
       hooks.updateDragSubscription.call(diff);
@@ -82,9 +86,9 @@ const NewEditor = props => {
         pasteText.current
       );
 
-      const newContentState = nextState.getCurrentContent();
+      // const newContentState = nextState.getCurrentContent();
       // const blockMap = newContentState.getBlockMap();
-      const lastBlock = newContentState.getLastBlock();
+      // const lastBlock = newContentState.getLastBlock();
       // const lastBlockText = lastBlock.getText();
 
       // should invoke `DraftTreeInvariants`来验证是否是`validTree`然后才能够存储
@@ -120,10 +124,6 @@ const NewEditor = props => {
     [editorState, hooks.handleDroppedFiles]
   );
 
-  // const handlePastedText = (text, html, es) => {
-  //   pasteText.current = text;
-  // };
-
   return (
     <div className="miuffy-editor-root">
       <div className="miuffy-editor">
@@ -136,10 +136,9 @@ const NewEditor = props => {
           blockRendererFn={handleBlockRender}
           onChange={onChange}
           handleKeyCommand={handleKeyCommand}
-          handleDroppedFiles={handleDroppedFiles}
+          // handleDroppedFiles={handleDroppedFiles}
           ref={forwardRef}
-          preserveSelectionOnBlur
-          // handlePastedText={handlePastedText}
+          // preserveSelectionOnBlur
         />
       </div>
 
@@ -152,6 +151,8 @@ const NewEditor = props => {
 
 const WrappedEditor = withEditor(NewEditor);
 
-export default React.forwardRef((props, ref) => (
+// ts-hint: https://medium.com/@jrwebdev/react-higher-order-component-patterns-in-typescript-42278f7590fb
+// ts-hint: https://medium.com/@martin_hotell/react-refs-with-typescript-a32d56c4d315
+export default React.forwardRef<Editor, EditorPropsBefore>((props, ref) => (
   <WrappedEditor {...props} forwardRef={ref} />
 ));

@@ -3,10 +3,11 @@ import { GetEditor } from './';
 import Immutable from 'immutable';
 import { DraftBlockType } from 'draft-js';
 
-export interface InlineToolbarProps {
-  forwardRef: Ref<HTMLElement>;
+export type InlineToolbarProps = {
+  forwardRef: Ref<HTMLDivElement>;
+} & {
   getEditor: GetEditor;
-}
+};
 
 export interface InlineToolbarStateValues {
   styles: Immutable.OrderedSet<any>;

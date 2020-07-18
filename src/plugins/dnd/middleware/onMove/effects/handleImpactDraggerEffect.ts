@@ -2,17 +2,10 @@ import { orientationToMeasure } from '../../../utils';
 import { generateEffectKey } from './utils';
 import Dragger from '../../../Dragger';
 import { Action } from 'sabar';
-import { OnMoveHandleContext } from 'types';
+import { OnMoveHandleContext, OnMoveArgs } from 'types';
 
-const handleImpactDraggerEffect = (
-  {
-    liftUpVDragger,
-  }: {
-    liftUpVDragger: Dragger;
-  },
-  ctx: object,
-  actions: Action
-) => {
+const handleImpactDraggerEffect = (args: any, ctx: object, actions: Action) => {
+  const { liftUpVDragger } = args as OnMoveArgs;
   const context = ctx as OnMoveHandleContext;
   const {
     impactRawInfo,

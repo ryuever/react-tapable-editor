@@ -6,12 +6,14 @@ export interface HooksProps {
   props: HooksComponentProps;
 }
 
+export interface ResizeLayout {
+  width: string;
+}
+
 export interface HooksComponentProps {
   blockProps: {
     getEditor: GetEditor;
-    resizeLayout: {
-      width: string;
-    };
+    resizeLayout: ResizeLayout;
   };
   block: ContentBlockNode;
 }

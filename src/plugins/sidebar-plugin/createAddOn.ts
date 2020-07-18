@@ -1,6 +1,6 @@
 const svgNS = 'http://www.w3.org/2000/svg';
 
-const createAddOn = nodeKey => {
+const createAddOn = (nodeKey: string) => {
   const wrapper = document.createElement('div');
   wrapper.classList.add('sidebar-addon');
   wrapper.setAttribute('data-id', nodeKey);

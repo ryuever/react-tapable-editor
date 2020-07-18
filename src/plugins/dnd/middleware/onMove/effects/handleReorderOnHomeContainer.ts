@@ -1,14 +1,15 @@
 import { orientationToMeasure } from '../../../utils';
 import { Action } from 'sabar';
-import { OnMoveHandleContext, Impact } from '../../../../../types';
+import { OnMoveHandleContext, Impact, OnMoveArgs } from '../../../../../types';
 import Container from '../../../Container';
 import Dragger from '../../../Dragger';
 
 const handleReorderOnHomeContainer = (
-  { liftUpVDraggerIndex }: { liftUpVDraggerIndex: number },
+  args: any,
   ctx: object,
   actions: Action
 ) => {
+  const { liftUpVDraggerIndex } = args as OnMoveArgs;
   const context = ctx as OnMoveHandleContext;
   const {
     action: { operation, isHomeContainerFocused, effectsManager },

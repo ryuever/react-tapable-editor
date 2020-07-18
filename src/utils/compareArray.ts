@@ -1,6 +1,6 @@
 // https://stackoverflow.com/questions/3115982/how-to-check-if-two-arrays-are-equal-with-javascript
 
-export default (a = [], b = []) => {
+export default (a: string[] = [], b: string[] = []) => {
   if (a === b) return [];
 
   const result = [];

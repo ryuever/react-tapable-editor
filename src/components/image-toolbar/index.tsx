@@ -3,11 +3,16 @@ import withEditor from '../../withEditor';
 import ImageAlignCenter from '../button/ImageAlignCenter';
 import ImageAlignLeftFillContent from '../button/ImageAlignLeftFillContent';
 import ImageAlignRightFillContent from '../button/ImageAlignRightFillContent';
-// import ImageAlignLeft from '../button/ImageAlignLeft';
 import './styles.css';
 import { EditorState } from 'draft-js';
 
-import { ImageAlignmentButtonFC } from '../../types';
+import {
+  ImageAlignmentButtonFC,
+  Alignment,
+  ImageToolbarProps,
+  ContentBlockNode,
+  ResizeLayout,
+} from '../../types';
 
 const ImageAlignCenterButton: FC<ImageAlignmentButtonFC> = ({
   activeKey,
@@ -17,11 +22,6 @@ const ImageAlignCenterButton: FC<ImageAlignmentButtonFC> = ({
   const handleClick = () => clickHandler(activeKey);
   return <ImageAlignCenter active={active} onClick={handleClick} />;
 };
-
-// const ImageAlignLeftButton = ({ activeKey, clickHandler, active }) => {
-//   const handleClick = () => clickHandler(activeKey);
-//   return <ImageAlignLeft active={active} onClick={handleClick} />;
-// };
 
 const ImageAlignLeftFillContentButton: FC<ImageAlignmentButtonFC> = ({
   activeKey,
@@ -41,33 +41,33 @@ const ImageAlignRightFillContentButton: FC<ImageAlignmentButtonFC> = ({
   return <ImageAlignRightFillContent active={active} onClick={handleClick} />;
 };
 
-const Toolbar = props => {
+const ImageToolbar: FC<ImageToolbarProps> = props => {
   const { forwardRef, getEditor } = props;
   const { hooks } = getEditor();
   const [alignment, setAlignment] = useState();
-  const blockRef = useRef();
+  const blockRef = useRef<ContentBlockNode>();
 
-  const clickHandler = alignment => {
-    const entityKey = blockRef.current.getEntityAt(0);
+  const clickHandler = (alignment: Alignment) => {
+    const entityKey = blockRef.current!.getEntityAt(0);
     if (entityKey) {
       const { editorState } = getEditor();
       const contentState = editorState.getCurrentContent();
 
-      const resizeLayout = {};
+      const resizeLayout = {} as ResizeLayout;
       switch (alignment) {
-        case 'center':
+        case Alignment.Center:
           resizeLayout.width = '900px';
           break;
-        case 'right':
+        case Alignment.Right:
           resizeLayout.width = '450px';
           break;
-        case 'left':
+        case Alignment.Left:
           resizeLayout.width = '450px';
           break;
-        case 'leftFill':
+        case Alignment.LeftFill:
           resizeLayout.width = '450px';
           break;
-        case 'rightFill':
+        case Alignment.RightFill:
           resizeLayout.width = '450px';
           break;
       }
@@ -83,14 +83,10 @@ const Toolbar = props => {
         nextState,
         nextState.getSelection()
       );
-      const newContentState = newState.getCurrentContent();
-      const blockMap = newContentState.getBlockMap();
-      const lastBlock = newContentState.getLastBlock();
-      const lastBlockText = lastBlock.getText();
 
-      hooks.setState.call(newState, editorState => {
+      hooks.setState.call(newState, (editorState: EditorState) => {
         const contentState = editorState.getCurrentContent();
-        const entity = blockRef.current.getEntityAt(0);
+        const entity = blockRef.current!.getEntityAt(0);
         if (!entity) return null;
         const entityState = contentState.getEntity(entity);
         const type = entityState.getType();
@@ -99,6 +95,7 @@ const Toolbar = props => {
           const { alignment } = data;
           if (alignment) setAlignment(alignment);
         }
+        return null;
       });
     }
   };
@@ -109,7 +106,7 @@ const Toolbar = props => {
         blockRef.current = block;
         const { editorState } = getEditor();
         const contentState = editorState.getCurrentContent();
-        const entity = blockRef.current.getEntityAt(0);
+        const entity = blockRef.current!.getEntityAt(0);
         if (!entity) return null;
         const entityState = contentState.getEntity(entity);
         const type = entityState.getType();
@@ -153,4 +150,4 @@ const Toolbar = props => {
   );
 };
 
-export default withEditor(Toolbar);
+export default withEditor(ImageToolbar);

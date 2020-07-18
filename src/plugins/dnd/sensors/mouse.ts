@@ -23,7 +23,7 @@ class Mouse {
   private getDragger: (id: string) => Dragger;
   private configs: Config[];
   private dndEffects: DndEffects;
-  private updateImpact: (impact: Impact) => {};
+  private updateImpact: (impact: Impact) => void;
   private dndConfig: GlobalConfig;
 
   constructor({
@@ -44,7 +44,7 @@ class Mouse {
     getDragger: (id: string) => Dragger;
     configs: Config[];
     dndEffects: DndEffects;
-    updateImpact: (impact: Impact) => {};
+    updateImpact: (impact: Impact) => void;
     dndConfig: GlobalConfig;
   }) {
     this.moveAPI = moveAPI;

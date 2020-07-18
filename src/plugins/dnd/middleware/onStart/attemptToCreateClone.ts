@@ -9,11 +9,8 @@ import { OnStartHandlerContext } from '../../../../types';
 
 // https://stackoverflow.com/questions/1848445/duplicating-an-element-and-its-style-with-javascript
 // cloneNode will not preserve node style. It requires to set clone element with fixed style
-export default (
-  { dragger }: { dragger: Dragger },
-  ctx: object,
-  actions: Action
-) => {
+export default (args: any, ctx: object, actions: Action) => {
+  const { dragger }: { dragger: Dragger } = args;
   const context = ctx as OnStartHandlerContext;
   const { el } = dragger;
   context.extra.clone = el.cloneNode(true) as HTMLElement;

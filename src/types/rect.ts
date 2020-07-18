@@ -1,5 +1,6 @@
 export interface CoordinateMapItem {
   rect: RectObject;
+  offsetKey: string;
 }
 
 export interface RectObject {

@@ -1,17 +1,8 @@
-import { Point, OnMoveHandleContext } from '../../../../types';
+import { OnMoveArgs } from '../../../../types';
 import { Action } from 'sabar';
 
-export default (
-  {
-    impactPoint,
-    clone,
-  }: {
-    impactPoint: Point;
-    clone: HTMLElement;
-  },
-  _: object,
-  actions: Action
-) => {
+export default (args: any, _: object, actions: Action) => {
+  const { impactPoint, clone } = args as OnMoveArgs;
   const [clientX, clientY] = impactPoint;
   clone.style.position = 'fixed';
   clone.style.top = `${clientY}px`;

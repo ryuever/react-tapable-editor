@@ -27,11 +27,12 @@ import { extractBlockKeyFromOffsetKey } from '../../utils/keyHelper';
 import './styles.css';
 import createAddOn from './createAddOn';
 import { bindEventsOnce, bindEvents } from '../../utils/event/bindEvents';
+import { GetEditor, CurrentSidebar } from '../../types';
 
 function SidebarPlugin() {
-  let current = null;
+  let current: CurrentSidebar | null = null;
 
-  this.apply = getEditor => {
+  this.apply = (getEditor: GetEditor) => {
     const removeNode = () => {
       try {
         if (!current) return;
@@ -46,11 +47,11 @@ function SidebarPlugin() {
 
     let isDragging = false;
 
-    const mouseMoveHandler = e => {
+    const mouseMoveHandler = (e: MouseEvent) => {
       try {
         const { editorState } = getEditor();
         const coordinateMap = getBoundingRectWithSafeArea(editorState);
-        const { shiftLeft, shiftRight } = coordinateMap;
+        const { shiftLeft } = coordinateMap;
 
         if (!shiftLeft) return;
 
@@ -60,16 +61,18 @@ function SidebarPlugin() {
         const nodeInfo = findBlockContainsPoint(shiftLeft, { x, y });
         if (!nodeInfo) return;
         const { offsetKey } = nodeInfo;
-        const node = getNodeByOffsetKey(offsetKey);
+        const node = getNodeByOffsetKey(offsetKey) as HTMLElement;
         if (current && current.node === node) return;
         if (current && current.node !== node) removeNode();
 
         const child = createAddOn(offsetKey);
-        node.appendChild(child);
+        if (node) node.appendChild(child);
 
-        const selectableNode = getSelectableNodeByOffsetKey(offsetKey);
-        const enterHandler = e => {
-          const node = getNodeByOffsetKey(offsetKey);
+        const selectableNode = getSelectableNodeByOffsetKey(
+          offsetKey
+        ) as HTMLElement;
+        const enterHandler = () => {
+          const node = getNodeByOffsetKey(offsetKey) as HTMLElement;
           const { hooks } = getEditor();
           const blockKey = extractBlockKeyFromOffsetKey(offsetKey);
           hooks.prepareDragStart.call(blockKey);
@@ -88,7 +91,7 @@ function SidebarPlugin() {
             },
           });
         };
-        const leaveHandler = e => {
+        const leaveHandler = (e: MouseEvent) => {
           e.preventDefault();
           const { hooks } = getEditor();
 
@@ -99,8 +102,8 @@ function SidebarPlugin() {
 
         const teardown = bindEventsOnce(selectableNode, {
           eventName: 'mouseenter',
-          fn: e => {
-            enterHandler(e);
+          fn: () => {
+            enterHandler();
             bindEventsOnce(selectableNode, {
               eventName: 'mouseleave',
               fn: leaveHandler,

@@ -11,3 +11,4 @@ export * from './components';
 export * from './hooks';
 export * from './dnd';
 export * from './inlineToolBar';
+export * from './sidebar';

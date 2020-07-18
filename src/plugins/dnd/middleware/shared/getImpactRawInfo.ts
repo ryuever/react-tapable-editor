@@ -13,6 +13,7 @@ import {
   ContainersMap,
   Position,
   OnStartHandlerContext,
+  OnMoveArgs,
 } from 'types';
 import { Action } from 'sabar';
 
@@ -135,17 +136,8 @@ const getRawInfo = ({
  * Why it's called `getImpactRawInfo` ? Because `impactContainer` may be
  * update when checking the side padding on `nested` mode.
  */
-const getImpactRawInfo = (
-  {
-    impactPoint,
-    liftUpVDragger,
-  }: {
-    impactPoint: Point;
-    liftUpVDragger: Dragger;
-  },
-  ctx: object,
-  actions: Action
-) => {
+const getImpactRawInfo = (args: any, ctx: object, actions: Action) => {
+  const { impactPoint, liftUpVDragger } = args as OnMoveArgs;
   const context = ctx as OnStartHandlerContext;
   const { vContainers, vDraggers, dndConfig } = context;
   const { isNested } = dndConfig;

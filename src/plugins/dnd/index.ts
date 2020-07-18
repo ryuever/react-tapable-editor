@@ -32,11 +32,46 @@ import getImpactRawInfo from './middleware/shared/getImpactRawInfo';
 import closest from './closest';
 
 import MouseSensor from './sensors/mouse';
-import reporter from './reporter';
 import DndEffects from './middleware/onMove/effects/DndEffects';
+import {
+  Config,
+  GlobalConfig,
+  ContainersMap,
+  DraggersMap,
+  DndHooks,
+  Impact,
+  Extra,
+} from '../../types';
 
 class DND {
-  constructor({ configs = [], rootElement, ...rest }) {
+  public onStartHandler: Sabar;
+  public onMoveHandler: Sabar;
+  public containers: ContainersMap;
+  public draggers: DraggersMap;
+  public dndEffects: DndEffects;
+  public extra: Extra;
+  public hooks: DndHooks;
+  public rootElement: HTMLElement | string;
+  public impact: Impact;
+  public configs: Config[];
+  public dndConfig: GlobalConfig;
+  public sensor: MouseSensor | null;
+
+  constructor({
+    configs = [],
+    rootElement,
+    ...rest
+  }: {
+    configs: Config[];
+    containers: ContainersMap;
+    draggers: DraggersMap;
+    extra: Extra;
+    hooks: DndHooks;
+    rootElement: HTMLElement | string;
+    impact: Impact;
+    dndConfig: GlobalConfig;
+    sensor: MouseSensor;
+  }) {
     this.containers = {};
     this.draggers = {};
     this.extra = {};
@@ -55,6 +90,7 @@ class DND {
     };
     this.rootElement = rootElement;
     this.impact = {};
+    this.sensor = null;
 
     this.startObserve();
     this.setUp();
@@ -68,7 +104,7 @@ class DND {
         extra: this.extra,
         hooks: this.hooks,
         dndConfig: this.dndConfig,
-        containersEffects: this.containersEffects,
+        // containersEffects: this.containersEffects,
         prevImpact: {},
         dndEffects: new DndEffects(),
       },
@@ -80,10 +116,10 @@ class DND {
         draggers: this.draggers,
         vDraggers: this.draggers,
         vContainers: this.containers,
-        effects: this.effects,
+        // effects: this.effects,
         hooks: this.hooks,
         dndConfig: this.dndConfig,
-        containersEffects: this.containersEffects,
+        // containersEffects: this.containersEffects,
         dndEffects: this.dndEffects,
         prevImpact: {},
       },
@@ -111,7 +147,7 @@ class DND {
       handleReorderOnOtherContainer,
       handleImpactDraggerEffect,
       removeIntermediateCtxValue,
-      (_, ctx) => {
+      (_: any, ctx: object) => {
         // console.log("ctx ", ctx);
       }
     );
@@ -121,17 +157,16 @@ class DND {
 
   moveAPI = () => {
     return {
-      prevEffects: this.effects,
       hooks: this.hooks,
       prevImpact: this.impact,
     };
   };
 
-  updateImpact = impact => {
+  updateImpact = (impact: Impact) => {
     this.impact = impact;
   };
 
-  getClone = () => {
+  getClone = (): HTMLElement | undefined => {
     return this.extra.clone;
   };
 
@@ -142,7 +177,6 @@ class DND {
       onStartHandler: this.onStartHandler,
       onMoveHandler: this.onMoveHandler,
       getDragger: this.getDragger,
-      getContainer: this.getContainer,
       configs: this.configs,
       dndEffects: this.dndEffects,
       updateImpact: this.updateImpact,
@@ -151,11 +185,11 @@ class DND {
     this.sensor.start();
   }
 
-  getDragger = draggerId => {
+  public getDragger = (draggerId: string): Dragger => {
     return this.draggers[draggerId];
   };
 
-  getContainer = containerId => {
+  public getContainer = (containerId: string): Container => {
     return this.containers[containerId];
   };
 
@@ -163,13 +197,13 @@ class DND {
     let { rootElement } = this;
 
     if (!isElement(rootElement)) {
-      const el = document.querySelector(this.rootElement);
-      if (el) rootElement = el;
+      const el = document.querySelector(this.rootElement as string);
+      if (el) rootElement = el as HTMLElement;
     }
 
     const observer = new MutationObserver(mutationHandler(this));
 
-    observer.observe(rootElement, {
+    observer.observe(rootElement as HTMLElement, {
       childList: true,
       subtree: true,
     });
@@ -190,12 +224,12 @@ class DND {
       if (!elements) return;
 
       elements.forEach(el =>
-        this.handleContainerElement(el, config, this.configs)
+        this.handleContainerElement(el as HTMLElement, config, this.configs)
       );
     });
   }
 
-  handleContainerElement(el, config, dndConfig) {
+  handleContainerElement(el: HTMLElement, config: Config, dndConfig: Config) {
     const container = new Container({
       el,
       containers: this.containers,
@@ -205,8 +239,10 @@ class DND {
     const parentContainerNode = closest(el, '[data-is-container="true"]');
     if (parentContainerNode) {
       const containerId = parentContainerNode.getAttribute('data-container-id');
-      const parentContainer = this.containers[containerId];
-      container.parentContainer = parentContainer;
+      if (containerId) {
+        const parentContainer = this.containers[containerId];
+        container.parentContainer = parentContainer;
+      }
     }
     setContainerAttributes(container, config);
   }
@@ -218,10 +254,13 @@ class DND {
     });
   }
 
-  handleDraggerInContainer(containerNode, draggerSelector) {
+  handleDraggerInContainer(
+    containerNode: HTMLElement | Document,
+    draggerSelector: string
+  ) {
     const elements = containerNode.querySelectorAll(draggerSelector);
     if (!elements) return;
-    elements.forEach(el => this.handleDraggerElement(el));
+    elements.forEach(el => this.handleDraggerElement(el as HTMLElement));
   }
 
   /**
@@ -232,7 +271,7 @@ class DND {
    * 3. set dragger element's attributes.
    *
    */
-  handleDraggerElement(el) {
+  handleDraggerElement(el: HTMLElement) {
     const container = findClosestContainer(this.containers, el, true);
     if (container === -1) return;
     const dragger = new Dragger({ el, container });

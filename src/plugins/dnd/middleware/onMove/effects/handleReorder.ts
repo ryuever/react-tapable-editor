@@ -1,18 +1,8 @@
-import Container from '../../../Container';
-import { Impact, OnMoveHandleContext } from '../../../../../types';
+import { OnMoveHandleContext, OnMoveArgs } from '../../../../../types';
 import { Action } from 'sabar';
 
-const handleReorder = (
-  {
-    prevImpact,
-    isHomeContainer,
-  }: {
-    isHomeContainer: (container: Container) => boolean;
-    prevImpact: Impact;
-  },
-  ctx: object,
-  actions: Action
-) => {
+const handleReorder = (args: any, ctx: object, actions: Action) => {
+  const { prevImpact, isHomeContainer } = args as OnMoveArgs;
   const context = ctx as OnMoveHandleContext;
   const {
     impactRawInfo: { impactVContainer: currentImpactVContainer },

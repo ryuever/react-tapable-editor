@@ -1,23 +1,11 @@
 import EffectsManager from './EffectsManager';
 import report from '../../../reporter';
-import Dragger from '../../../Dragger';
 import Container from '../../../Container';
-import { Impact, OnMoveHandleContext } from '../../../../../types';
+import { OnMoveHandleContext, OnMoveArgs } from '../../../../../types';
 import { Action } from 'sabar';
 
-const handleEnterContainer = (
-  {
-    lifeUpDragger,
-    isHomeContainer,
-    prevImpact,
-  }: {
-    lifeUpDragger: Dragger;
-    isHomeContainer: (container: Container) => boolean;
-    prevImpact: Impact;
-  },
-  ctx: object,
-  actions: Action
-) => {
+const handleEnterContainer = (args: any, ctx: object, actions: Action) => {
+  const { lifeUpDragger, isHomeContainer, prevImpact } = args as OnMoveArgs;
   const context = ctx as OnMoveHandleContext;
   const { impactRawInfo, dndEffects } = context;
 
