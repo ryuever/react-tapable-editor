@@ -76,7 +76,6 @@ class DND {
     this.draggers = {};
     this.extra = {};
 
-    // this.containersEffects = new ContainersEffects();
     this.dndEffects = new DndEffects();
 
     this.configs = resolveConfig(configs, rest);

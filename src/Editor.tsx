@@ -9,9 +9,9 @@ import Sidebar from './components/sidebar';
 
 import compareArray from './utils/compareArray';
 
-// import './style.css';
+import './style.css';
 // // https://draftjs.org/docs/advanced-topics-issues-and-pitfalls.html#missing-draftcss
-// import 'draft-js/dist/Draft.css';
+import 'draft-js/dist/Draft.css';
 
 import withEditor from './withEditor';
 

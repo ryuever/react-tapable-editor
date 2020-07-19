@@ -1,6 +1,7 @@
-import { RefObject } from 'react';
+import { RefObject, ReactNode } from 'react';
 import { SyncHook, SyncWaterfallHook, SyncBailHook } from 'tapable';
 import { EditorState, Editor } from 'draft-js';
+import { DraftNodeDecoratorStrategy } from './draft-js';
 
 export interface Hooks {
   setState: SyncHook;
@@ -50,7 +51,7 @@ export interface PluginState {
 }
 
 export interface PluginEditorProps {
-  plugins: [];
+  plugins: any[];
 }
 
 export interface PluginEditorState {
@@ -82,4 +83,9 @@ export interface TimeoutHandler {
     ms: number,
     ...args: any[]
   ): NodeJS.Timeout;
+}
+
+export interface DecoratorPair {
+  strategy: DraftNodeDecoratorStrategy;
+  component: ReactNode;
 }

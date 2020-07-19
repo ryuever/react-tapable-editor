@@ -1,3 +1,6 @@
+import { GetEditor } from 'types';
+import { SelectionState } from 'draft-js';
+
 const resolveChangeType = ({
   prevIsCollapsed,
   prevHasFocus,
@@ -5,6 +8,13 @@ const resolveChangeType = ({
   isCollapsed,
   hasFocus,
   selection,
+}: {
+  prevIsCollapsed: boolean;
+  prevHasFocus: boolean;
+  prevSelection: SelectionState;
+  isCollapsed: boolean;
+  hasFocus: boolean;
+  selection: SelectionState;
 }) => {
   if (typeof prevIsCollapsed === 'undefined') {
     return 'init-change';
@@ -44,11 +54,11 @@ const resolveChangeType = ({
 };
 
 function SelectionChangePlugin() {
-  let prevIsCollapsed;
-  let prevSelection;
-  let prevHasFocus;
+  let prevIsCollapsed: boolean;
+  let prevSelection: SelectionState;
+  let prevHasFocus: boolean;
 
-  this.apply = getEditor => {
+  this.apply = (getEditor: GetEditor) => {
     const { hooks } = getEditor();
 
     hooks.syncSelectionChange.tap('SelectionChangePlugin', editorState => {

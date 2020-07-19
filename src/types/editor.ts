@@ -19,4 +19,4 @@ export type EditorProps = {
     getEditor: GetEditor;
   };
 
-export type EditorRef = RefObject<HTMLDivElement>;
+export type EditorRef = RefObject<Editor>;

@@ -1,12 +1,13 @@
-import React, { useRef } from 'react';
+import React, { createRef, FC } from 'react';
 import './styles/index.css';
 import useFocus from '../../hooks/useFocus';
 import useResize from '../../hooks/useResize';
 import useAlignment from '../../hooks/useAlignment';
+import { ImageProps } from '../../types';
 
-const Image = props => {
+const Image: FC<ImageProps> = props => {
   // createRef does not work. it will create a new instance on every function revoked.
-  const ref = useRef();
+  const ref = createRef<HTMLDivElement>();
 
   const { block, contentState } = props;
   useFocus({ nodeRef: ref, props });

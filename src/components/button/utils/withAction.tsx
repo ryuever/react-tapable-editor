@@ -1,6 +1,6 @@
 import React, { useCallback, ComponentType } from 'react';
 import { WithActionProps, ButtonProps } from '../../../types';
-import './action.css';
+// import './action.css';
 
 export default <Props extends WithActionProps & ButtonProps>(
   WrappedComponent: ComponentType<Omit<Props, 'onClick'>>

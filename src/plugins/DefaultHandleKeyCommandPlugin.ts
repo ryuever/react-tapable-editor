@@ -13,15 +13,13 @@ function DefaultHandleKeyCommandPlugin() {
     const { hooks } = getEditor();
     hooks.handleKeyCommand.tap(
       'HandleBackspaceOnStartOfBlockPlugin',
-      (
-        command: DraftEditorCommand,
-        editorState: EditorState
-      ): string | undefined => {
+      (command: DraftEditorCommand, editorState: EditorState) => {
         const newState = RichUtils.handleKeyCommand(editorState, command);
         if (newState) {
           hooks.setState.call(newState);
           return 'handled';
         }
+        return;
       }
     );
   };

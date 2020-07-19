@@ -12,26 +12,27 @@ import Context from './Context';
 import { Hooks, PluginEditorState, PluginEditorProps } from './types';
 
 // import PlaceholderPlugin from "./plugins/PlaceholderPlugin";
-// import BlockStyleFnPlugin from "./plugins/BlockStyleFnPlugin";
-// import SelectionChangePlugin from "./plugins/SelectionChangePlugin";
-// import CustomStyleMapPlugin from "./plugins/CustomStyleMapPlugin";
-// import BlockRenderMapPlugin from "./plugins/block-render-map-plugin";
+import BlockStyleFnPlugin from './plugins/BlockStyleFnPlugin';
+import SelectionChangePlugin from './plugins/SelectionChangePlugin';
+import CustomStyleMapPlugin from './plugins/CustomStyleMapPlugin';
+import BlockRenderMapPlugin from './plugins/block-render-map-plugin';
 // import StyleControlPlugin from "./plugins/StyleControlPlugin";
-// import DefaultHandleKeyCommandPlugin from "./plugins/DefaultHandleKeyCommandPlugin";
 // import HandleDroppedFilesPlugin from "./plugins/HandleDroppedFilesPlugin";
-// import AddImagePlugin from "./plugins/AddImagePlugin";
-// import InlineToolbarPlugin from "./plugins/InlineToolbarPlugin";
+import AddImagePlugin from './plugins/AddImagePlugin';
+import DefaultHandleKeyCommandPlugin from './plugins/DefaultHandleKeyCommandPlugin';
+
+import InlineToolbarPlugin from './plugins/InlineToolbarPlugin';
+import LinkSpanDecoratorPlugin from './plugins/LinkSpanDecoratorPlugin';
+import LinkDecoratorPlugin from './plugins/LinkDecorator';
+// import SidebarPlugin from './plugins/sidebar-plugin';
+
 // import StateFilterPlugin from "./plugins/StateFilterPlugin";
 // import DragPlugin from "./plugins/drag-plugin";
-// import SidebarPlugin from "./plugins/sidebar-plugin";
-
-// import LinkSpanDecoratorPlugin from "./plugins/LinkSpanDecoratorPlugin";
-// import LinkDecoratorPlugin from "./plugins/LinkDecorator";
 
 // import DNDPlugin from "./plugins/dnd-plugin/configNest";
 
 // import "./decorators/prism/theme/prism.css";
-// import "./decorators/prism/theme/editor.css";
+import './decorators/prism/theme/editor.css';
 import PrismDecorator from './decorators/prism';
 import MultiDecorator from './decorators/prism/multiple';
 
@@ -39,36 +40,46 @@ import Editor from './Editor';
 // import decorateComposer from "./decoratorComposer";
 const { Provider } = Context;
 
-// const defaultPlugins = [
-//   // new PlaceholderPlugin(),
-//   new BlockStyleFnPlugin(),
-//   new SelectionChangePlugin(),
-//   new CustomStyleMapPlugin(),
-//   new BlockRenderMapPlugin(),
-//   // new StyleControlPlugin(),
+const defaultPlugins = [
+  // new PlaceholderPlugin(),
 
-//   new AddImagePlugin(),
-//   new HandleDroppedFilesPlugin(),
+  // @ts-ignore
+  new BlockStyleFnPlugin(),
+  // @ts-ignore
+  new SelectionChangePlugin(),
+  // @ts-ignore
+  new CustomStyleMapPlugin(),
+  // @ts-ignore
+  new BlockRenderMapPlugin(),
+  // // new StyleControlPlugin(),
 
-//   // 对于keyCommand的一个兜底行为
-//   new DefaultHandleKeyCommandPlugin(),
+  // @ts-ignore
+  new AddImagePlugin(),
+  // new HandleDroppedFilesPlugin(),
 
-//   new InlineToolbarPlugin(),
+  // 对于keyCommand的一个兜底行为
+  // @ts-ignore
+  new DefaultHandleKeyCommandPlugin(),
 
-//   new LinkSpanDecoratorPlugin(),
-//   new LinkDecoratorPlugin(),
+  // @ts-ignore
+  new InlineToolbarPlugin(),
+  // @ts-ignore
+  new LinkSpanDecoratorPlugin(),
+  // @ts-ignore
+  new LinkDecoratorPlugin(),
+  // @ts-ignore
+  // new SidebarPlugin(),
 
-//   new StateFilterPlugin(),
+  // new StateFilterPlugin(),
 
-//   // new CreateNestBlockPlugin(),
+  // // new CreateNestBlockPlugin(),
 
-//   // new DragPlugin(),
+  // // new DragPlugin(),
 
-//   // TODO: will cause text missing...
-//   new SidebarPlugin(),
+  // // TODO: will cause text missing...
 
-//   new DNDPlugin(),
-// ];
+  // new DNDPlugin(),
+];
 
 // https://fettblog.eu/typescript-react/components/: TypeScript and React: Components
 class PluginEditor extends PureComponent<PluginEditorProps, PluginEditorState> {
@@ -90,8 +101,8 @@ class PluginEditor extends PureComponent<PluginEditorProps, PluginEditorState> {
 
   constructor(props: PluginEditorProps) {
     super(props);
-    const { plugins } = props;
-    this.plugins = plugins;
+    const { plugins = [] } = props;
+    this.plugins = plugins.concat(defaultPlugins);
     this.customStyleMap = null;
     this.blockRenderMap = null;
 
@@ -193,6 +204,9 @@ class PluginEditor extends PureComponent<PluginEditorProps, PluginEditorState> {
       // editorState: EditorState.createWithContent(newContentState)
     };
 
+    /**
+     * Call instance's apply method to initial plugins.
+     */
     this.plugins.forEach(plugin => {
       plugin.apply(this.getEditor);
     });

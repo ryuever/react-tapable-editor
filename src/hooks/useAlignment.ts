@@ -31,28 +31,22 @@ const useAlignment = ({ nodeRef, props }: HooksProps) => {
   // teardown on un-mount
   useEffect(() => () => teardown(), [teardown]);
 
-  const onMouseEnterHandler = useCallback(
-    (e: Event) => {
-      attemptToClearTimeoutHandler();
+  const onMouseEnterHandler = (e: Event) => {
+    attemptToClearTimeoutHandler();
 
-      e.stopPropagation();
-      const rootNode = getRootNode(editorRef);
+    e.stopPropagation();
+    const rootNode = getRootNode(editorRef);
 
-      if (!rootNode) return;
-      if (isToolbarVisibleRef.current) return;
-      showToolbar();
-    },
-    [attemptToClearTimeoutHandler, editorRef, showToolbar]
-  );
+    if (!rootNode) return;
+    if (isToolbarVisibleRef.current) return;
+    showToolbar();
+  }
 
-  const onMouseLeaveHandler = useCallback(
-    (e: Event) => {
-      e.stopPropagation();
-      if (!isToolbarVisibleRef.current) return;
-      hideToolbar();
-    },
-    [hideToolbar]
-  );
+  const onMouseLeaveHandler = (e: Event) => {
+    e.stopPropagation();
+    if (!isToolbarVisibleRef.current) return;
+    hideToolbar();
+  }
 
   const showToolbar = useCallback(() => {
     const rootNode = getRootNode(editorRef) as HTMLElement;

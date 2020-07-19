@@ -3,7 +3,7 @@ import { RefObject } from 'react';
 import getSelectionRectRelativeToOffsetParent from '../utils/rect/getSelectionRectRelativeToOffsetParent';
 import clamp from '../helpers/clamp';
 import getRootNode from '../utils/rect/getRootNode';
-import { GetEditor } from '../types';
+import { GetEditor, EditorRef } from '../types';
 
 function InlineToolbar() {
   let isToolbarVisible = false;
@@ -64,7 +64,8 @@ function InlineToolbar() {
 
     const visibleHandler = (
       editorState: EditorState,
-      editorRef: RefObject<HTMLDivElement>,
+      // editorRef: RefObject<HTMLDivElement>,
+      editorRef: EditorRef,
       inlineToolbarRef: RefObject<HTMLDivElement>
     ) => {
       clearTimeout(timeoutHandler);

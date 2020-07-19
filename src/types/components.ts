@@ -1,5 +1,6 @@
 import { ReactChild, RefObject } from 'react';
-import { ContentNodeState } from '.';
+import { ContentNodeState, BlockProps } from '.';
+import { ContentBlockNode } from './draft-js';
 
 export interface LinkProps {
   entityKey: string;
@@ -29,4 +30,10 @@ export interface StyleControlButtonProps {
   active: boolean;
   onToggle: Function;
   style: object;
+}
+
+export interface ImageProps {
+  block: ContentBlockNode;
+  contentState: ContentNodeState;
+  blockProps: BlockProps;
 }
