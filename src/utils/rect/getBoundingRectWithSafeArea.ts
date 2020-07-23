@@ -18,38 +18,38 @@ export default function getBoundingRectWithSafeArea(
   const shiftRight = [] as SafeArea[];
 
   blockMap.toArray().forEach(block => {
-    // const blockKey = block.getKey();
-    // const offsetKey = generateOffsetKey(blockKey);
-    // const node = getNodeByBlockKey(blockKey);
-    // const childrenSize = block.children.size;
+    const blockKey = block.getKey();
+    const offsetKey = generateOffsetKey(blockKey);
+    const node = getNodeByBlockKey(blockKey);
+    const childrenSize = block.children.size;
 
-    // // node with children should be omitted.
-    // if (!node || childrenSize) return;
+    // node with children should be omitted.
+    if (!node || childrenSize) return;
 
-    // const { top, right, bottom, left } = node.getBoundingClientRect();
-    // // right and left both should minus `safeArea`
+    const { top, right, bottom, left } = node.getBoundingClientRect();
+    // right and left both should minus `safeArea`
 
-    // shiftLeft.push({
-    //   blockKey,
-    //   offsetKey,
-    //   rect: {
-    //     top,
-    //     right: right - safeArea,
-    //     bottom,
-    //     left: left - safeArea,
-    //   },
-    // });
+    shiftLeft.push({
+      blockKey,
+      offsetKey,
+      rect: {
+        top,
+        right: right - safeArea,
+        bottom,
+        left: left - safeArea,
+      },
+    });
 
-    // shiftRight.push({
-    //   blockKey,
-    //   offsetKey,
-    //   rect: {
-    //     top,
-    //     right: right + safeArea,
-    //     bottom,
-    //     left: left + safeArea,
-    //   },
-    // });
+    shiftRight.push({
+      blockKey,
+      offsetKey,
+      rect: {
+        top,
+        right: right + safeArea,
+        bottom,
+        left: left + safeArea,
+      },
+    });
   });
 
   return {

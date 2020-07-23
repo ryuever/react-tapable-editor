@@ -95,6 +95,8 @@ const NewEditor: FC<EditorProps> = props => {
       // console.log('on change hooks', convertToRaw(newContentState))
       // const rawState = convertToRaw(newContentState)
 
+      console.log('next ', nextState);
+
       hooks.onChange.call(nextState);
     },
     [getEditor, hooks.onChange, hooks.stateFilter]
@@ -117,13 +119,6 @@ const NewEditor: FC<EditorProps> = props => {
     [getEditor, hooks.blockRendererFn]
   );
 
-  // const handleDroppedFiles = useCallback(
-  //   (dropSelection, files) => {
-  //     hooks.handleDroppedFiles.call(editorState, dropSelection, files);
-  //   },
-  //   [editorState, hooks.handleDroppedFiles]
-  // );
-
   return (
     <div className="miuffy-editor-root">
       <div className="miuffy-editor">
@@ -136,7 +131,6 @@ const NewEditor: FC<EditorProps> = props => {
           blockRendererFn={handleBlockRender}
           onChange={onChange}
           handleKeyCommand={handleKeyCommand}
-          // handleDroppedFiles={handleDroppedFiles}
           ref={forwardRef}
         />
       </div>

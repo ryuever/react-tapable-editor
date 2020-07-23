@@ -31,7 +31,7 @@ const useAlignment = ({ nodeRef, props }: HooksProps) => {
   // teardown on un-mount
   useEffect(() => () => teardown(), [teardown]);
 
-  const onMouseEnterHandler = (e: Event) => {
+  const onMouseEnterHandler = useCallback((e: Event) => {
     attemptToClearTimeoutHandler();
 
     e.stopPropagation();
@@ -40,13 +40,13 @@ const useAlignment = ({ nodeRef, props }: HooksProps) => {
     if (!rootNode) return;
     if (isToolbarVisibleRef.current) return;
     showToolbar();
-  }
+  });
 
-  const onMouseLeaveHandler = (e: Event) => {
+  const onMouseLeaveHandler = useCallback((e: Event) => {
     e.stopPropagation();
     if (!isToolbarVisibleRef.current) return;
     hideToolbar();
-  }
+  });
 
   const showToolbar = useCallback(() => {
     const rootNode = getRootNode(editorRef) as HTMLElement;

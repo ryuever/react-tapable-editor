@@ -11,7 +11,6 @@ import {
 import Context from './Context';
 import { Hooks, PluginEditorState, PluginEditorProps } from './types';
 
-// import PlaceholderPlugin from "./plugins/PlaceholderPlugin";
 import BlockStyleFnPlugin from './plugins/BlockStyleFnPlugin';
 import SelectionChangePlugin from './plugins/SelectionChangePlugin';
 import CustomStyleMapPlugin from './plugins/CustomStyleMapPlugin';
@@ -26,7 +25,7 @@ import LinkSpanDecoratorPlugin from './plugins/LinkSpanDecoratorPlugin';
 import LinkDecoratorPlugin from './plugins/LinkDecorator';
 // import SidebarPlugin from './plugins/sidebar-plugin';
 
-// import StateFilterPlugin from "./plugins/StateFilterPlugin";
+import StateFilterPlugin from './plugins/StateFilterPlugin';
 // import DragPlugin from "./plugins/drag-plugin";
 
 // import DNDPlugin from "./plugins/dnd-plugin/configNest";
@@ -41,8 +40,6 @@ import Editor from './Editor';
 const { Provider } = Context;
 
 const defaultPlugins = [
-  // new PlaceholderPlugin(),
-
   // @ts-ignore
   new BlockStyleFnPlugin(),
   // @ts-ignore
@@ -51,7 +48,6 @@ const defaultPlugins = [
   new CustomStyleMapPlugin(),
   // @ts-ignore
   new BlockRenderMapPlugin(),
-  // // new StyleControlPlugin(),
 
   // @ts-ignore
   new AddImagePlugin(),
@@ -70,13 +66,7 @@ const defaultPlugins = [
   // @ts-ignore
   // new SidebarPlugin(),
 
-  // new StateFilterPlugin(),
-
-  // // new CreateNestBlockPlugin(),
-
-  // // new DragPlugin(),
-
-  // // TODO: will cause text missing...
+  new StateFilterPlugin(),
 
   // new DNDPlugin(),
 ];
@@ -220,6 +210,7 @@ class PluginEditor extends PureComponent<PluginEditorProps, PluginEditorState> {
     this.hooks.afterMounted.call();
 
     this.hooks.onChange.tap('onChange', (editorState: EditorState) => {
+      console.log('state ', editorState);
       this.setState({ editorState });
     });
 

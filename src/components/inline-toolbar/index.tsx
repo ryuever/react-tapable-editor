@@ -7,7 +7,7 @@ import getSelectionBlockTypes from '../../utils/getSelectionBlockTypes';
 import getInlineToolbarInlineInfo from '../../utils/getInlineToolbarInlineInfo';
 import { InlineToolbarProps, InlineToolbarStateValues } from '../../types';
 
-// import './styles.css';
+import './styles.css';
 
 const InlineToolbar: FC<InlineToolbarProps> = props => {
   const { forwardRef, getEditor } = props;

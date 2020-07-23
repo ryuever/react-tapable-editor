@@ -13,7 +13,7 @@ import {
   ResizeLayout,
 } from '../../types';
 
-// import './styles.css';
+import './styles.css';
 
 const ImageAlignCenterButton: FC<ImageAlignmentButtonFC> = ({
   activeKey,
