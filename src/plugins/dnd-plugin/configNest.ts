@@ -1,15 +1,12 @@
 import { EditorState } from 'draft-js';
 import DND from '../dnd';
 import transfer from '../../utils/block/transfer';
-// import transferBlock from "../../utils/block/transferBlock";
 import { extractBlockKeyFromOffsetKey } from '../../utils/keyHelper';
-import BlockUtil from '../../utils/block/blockUtil';
-
-const { insertNewLineAfterAll } = BlockUtil;
+import { Orientation, GetEditor, Position } from 'types';
 
 function DNDPlugin() {
-  let verticalIndicator;
-  let horizontalIndicator;
+  let verticalIndicator: HTMLDivElement;
+  let horizontalIndicator: HTMLDivElement;
 
   const createIndicatorBar = () => {
     verticalIndicator = document.createElement('div');
@@ -18,10 +15,17 @@ function DNDPlugin() {
     document.body.appendChild(horizontalIndicator);
   };
 
-  const logger = (
-    { dragger, candidateDragger, container, placedPosition },
-    getEditor
-  ) => {
+  const logger = ({
+    dragger,
+    candidateDragger,
+    container,
+    placedPosition,
+  }: {
+    dragger: HTMLDivElement;
+    candidateDragger: HTMLDivElement;
+    container: HTMLDivElement;
+    placedPosition: Position;
+  }) => {
     const draggerOffsetKey = dragger.getAttribute('data-offset-key');
     const candidateDraggerOffsetKey = candidateDragger.getAttribute(
       'data-offset-key'
@@ -33,7 +37,7 @@ function DNDPlugin() {
     );
   };
 
-  this.apply = getEditor => {
+  this.apply = (getEditor: GetEditor) => {
     createIndicatorBar();
     const { hooks } = getEditor();
 
@@ -43,11 +47,19 @@ function DNDPlugin() {
 
     hooks.afterMounted.tap('initDNDPlugin', () => {
       new DND({
-        onDrop: ({ dragger, candidateDragger, placedPosition }) => {
-          const draggerOffsetKey = dragger.getAttribute('data-offset-key');
-          const candidateDraggerOffsetKey = candidateDragger.getAttribute(
-            'data-offset-key'
-          );
+        onDrop: ({
+          dragger,
+          candidateDragger,
+          placedPosition,
+        }: {
+          dragger: HTMLDivElement;
+          candidateDragger: HTMLDivElement;
+          placedPosition: Position;
+        }) => {
+          const draggerOffsetKey =
+            dragger.getAttribute('data-offset-key') || '';
+          const candidateDraggerOffsetKey =
+            candidateDragger.getAttribute('data-offset-key') || '';
           const sourceBlockKey = extractBlockKeyFromOffsetKey(draggerOffsetKey);
           const targetBlockKey = extractBlockKeyFromOffsetKey(
             candidateDraggerOffsetKey
@@ -61,29 +73,12 @@ function DNDPlugin() {
             placedPosition
           );
 
-          console.log('new content ', newContent.toJS());
-
           if (!newContent) return;
 
-          // const nextNewContent = insertNewLineAfterAll(newContent);
-          // const selection = editorState.getSelection();
-          // console.log("new content ", newContent);
-
-          // if (DEBUG) {
-          //   infoLog(
-          //     "block map after insert new line ",
-          //     nextNewContent.getBlockMap()
-          //   );
-          // }
           const dismissSelection = EditorState.push(
             editorState,
-            newContent
-            // nextNewContent.merge({
-            //   selectionBefore: selection,
-            //   selectionAfter: nextNewContent
-            //     .getSelectionAfter()
-            //     .set("hasFocus", false)
-            // })
+            newContent,
+            'insert-characters'
           );
 
           hooks.setState.call(dismissSelection);
@@ -94,12 +89,12 @@ function DNDPlugin() {
         withPlaceholder: false,
         configs: [
           {
-            containerSelector: '[data-contents="true"] ',
+            containerSelector: '[data-contents="true"]',
             draggerSelector: '[data-contents="true"]  .miuffy-paragraph',
             impactDraggerEffect: options => {
               const { dimension, placedPosition } = options;
               const { top, right, left, height } = dimension;
-              logger(options, getEditor);
+              logger(options);
               requestAnimationFrame(() => {
                 if (placedPosition === 'top') {
                   horizontalIndicator.style.top = `${top}px`;
@@ -112,7 +107,7 @@ function DNDPlugin() {
                 horizontalIndicator.style.height = `3px`;
                 horizontalIndicator.style.left = `${left - 10}px`;
                 horizontalIndicator.style.backgroundColor = '#69c0ff';
-                horizontalIndicator.style.opacity = 1;
+                horizontalIndicator.style.opacity = '1';
                 horizontalIndicator.style.transition = 'opacity 1000ms ease-in';
               });
 
@@ -123,13 +118,13 @@ function DNDPlugin() {
                 horizontalIndicator.style.height = `0px`;
                 horizontalIndicator.style.top = `0px`;
                 horizontalIndicator.style.left = `0px`;
-                horizontalIndicator.style.opacity = 0;
+                horizontalIndicator.style.opacity = '0';
                 horizontalIndicator.style.backgroundColor = 'transparent';
               };
             },
           },
           {
-            orientation: 'horizontal',
+            orientation: Orientation.Horizontal,
             containerSelector: '[data-contents="true"] >div.miuffy-paragraph',
             draggerSelector: '.miuffy-paragraph >div:first-child',
             shouldAcceptDragger: el => {
@@ -141,7 +136,7 @@ function DNDPlugin() {
             impactDraggerEffect: options => {
               const { dimension, placedPosition } = options;
               const { top, bottom, left, right } = dimension;
-              logger(options, getEditor);
+              logger(options);
 
               if (placedPosition === 'left') {
                 verticalIndicator.style.left = `${left - 5}px`;
@@ -154,7 +149,7 @@ function DNDPlugin() {
                 verticalIndicator.style.height = `${bottom - top}px`;
                 verticalIndicator.style.top = `${top}px`;
                 verticalIndicator.style.backgroundColor = '#69c0ff';
-                verticalIndicator.style.opacity = 1;
+                verticalIndicator.style.opacity = '1';
                 verticalIndicator.style.transition = 'opacity 250ms ease-in';
               });
 
@@ -165,13 +160,13 @@ function DNDPlugin() {
                 verticalIndicator.style.height = `0px`;
                 verticalIndicator.style.top = `0px`;
                 verticalIndicator.style.left = `0px`;
-                verticalIndicator.style.opacity = 0;
+                verticalIndicator.style.opacity = '0';
                 verticalIndicator.style.backgroundColor = 'transparent';
               };
             },
           },
           {
-            orientation: 'vertical',
+            orientation: Orientation.Vertical,
             containerSelector:
               '.display-flex.miuffy-paragraph >div:first-child >div',
             draggerSelector: '.miuffy-paragraph',
@@ -184,7 +179,7 @@ function DNDPlugin() {
             impactDraggerEffect: options => {
               const { dimension, placedPosition } = options;
               const { top, bottom, left, right } = dimension;
-              logger(options, getEditor);
+              logger(options);
 
               if (placedPosition === 'top') {
                 verticalIndicator.style.top = `${top - 5}px`;
@@ -197,7 +192,7 @@ function DNDPlugin() {
                 verticalIndicator.style.height = '3px';
                 verticalIndicator.style.left = `${left}px`;
                 verticalIndicator.style.backgroundColor = '#69c0ff';
-                verticalIndicator.style.opacity = 1;
+                verticalIndicator.style.opacity = '1';
                 verticalIndicator.style.transition = 'opacity 250ms ease-in';
               });
 
@@ -208,7 +203,7 @@ function DNDPlugin() {
                 verticalIndicator.style.height = `0px`;
                 verticalIndicator.style.top = `0px`;
                 verticalIndicator.style.left = `0px`;
-                verticalIndicator.style.opacity = 0;
+                verticalIndicator.style.opacity = '0';
                 verticalIndicator.style.backgroundColor = 'transparent';
               };
             },

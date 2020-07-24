@@ -7,7 +7,7 @@ import {
   Config,
   Impact,
   MoveHandlerOutput,
-  GlobalConfig,
+  ResultDNDConfig,
   MoveHandlerResult,
 } from '../../../types';
 import Dragger from '../Dragger';
@@ -24,7 +24,7 @@ class Mouse {
   private configs: Config[];
   private dndEffects: DndEffects;
   private updateImpact: (impact: Impact) => void;
-  private dndConfig: GlobalConfig;
+  private dndConfig: ResultDNDConfig;
 
   constructor({
     moveAPI,
@@ -45,7 +45,7 @@ class Mouse {
     configs: Config[];
     dndEffects: DndEffects;
     updateImpact: (impact: Impact) => void;
-    dndConfig: GlobalConfig;
+    dndConfig: ResultDNDConfig;
   }) {
     this.moveAPI = moveAPI;
     this.getClone = getClone;

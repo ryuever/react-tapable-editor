@@ -1,4 +1,4 @@
-import { Mode, GlobalConfig } from '../../../types';
+import { Mode, DNDConfig } from '../../../types';
 
 const defaultDndConfig = {
   mode: Mode.Fluid,
@@ -16,12 +16,12 @@ const reservedKeys = [
   'onDrop',
 ];
 
-export default (dndConfig: GlobalConfig) => {
+export default (props: DNDConfig) => {
   const next = {
     ...defaultDndConfig,
-    ...dndConfig,
-  } as GlobalConfig;
-  const o = {} as GlobalConfig;
+    ...props,
+  } as DNDConfig;
+  const o = {} as DNDConfig;
 
   for (const key in next) {
     if (reservedKeys.indexOf(key) !== -1) {

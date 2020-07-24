@@ -28,7 +28,7 @@ import LinkDecoratorPlugin from './plugins/LinkDecorator';
 import StateFilterPlugin from './plugins/StateFilterPlugin';
 // import DragPlugin from "./plugins/drag-plugin";
 
-// import DNDPlugin from "./plugins/dnd-plugin/configNest";
+import DNDPlugin from './plugins/dnd-plugin/configNest';
 
 // import "./decorators/prism/theme/prism.css";
 import './decorators/prism/theme/editor.css';
@@ -68,7 +68,7 @@ const defaultPlugins = [
 
   new StateFilterPlugin(),
 
-  // new DNDPlugin(),
+  new DNDPlugin(),
 ];
 
 // https://fettblog.eu/typescript-react/components/: TypeScript and React: Components
@@ -210,7 +210,6 @@ class PluginEditor extends PureComponent<PluginEditorProps, PluginEditorState> {
     this.hooks.afterMounted.call();
 
     this.hooks.onChange.tap('onChange', (editorState: EditorState) => {
-      console.log('state ', editorState);
       this.setState({ editorState });
     });
 

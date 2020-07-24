@@ -3,7 +3,7 @@ import SortedItems from './structure/SortedItems';
 import { orientationToAxis, axisMeasure } from './utils';
 import Dragger from './Dragger';
 import {
-  GlobalConfig,
+  ResultDNDConfig,
   Config,
   Containers,
   ContainerDimension,
@@ -14,7 +14,7 @@ class Container {
   public el: HTMLElement;
   public containers: Containers;
   public children: SortedItems<Dragger>;
-  public dndConfig: GlobalConfig;
+  public dndConfig: ResultDNDConfig;
   public containerConfig: Config;
   public dimension: ContainerDimension;
   public parentContainer: Container | null;
@@ -27,7 +27,7 @@ class Container {
   }: {
     el: HTMLElement;
     containers: Containers;
-    dndConfig: GlobalConfig;
+    dndConfig: ResultDNDConfig;
     containerConfig: Config;
   }) {
     this.el = el;

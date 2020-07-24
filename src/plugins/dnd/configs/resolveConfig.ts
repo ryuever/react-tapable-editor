@@ -1,4 +1,4 @@
-import { Config, GlobalConfig } from '../../../types';
+import { Config, DNDConfig } from '../../../types';
 
 const defaultConfig = {
   // orientation of container, could be `vertical` or `horizontal`
@@ -16,13 +16,13 @@ const reservedKeys = [
   'impactDraggerEffect',
 ];
 
-export default (configs: Config[], globalConfigs: GlobalConfig) => {
+export default (configs: Config[], props: DNDConfig) => {
   return configs.map(config => {
     const next = {
-      ...globalConfigs,
+      ...props,
       ...defaultConfig,
       ...config,
-    } as GlobalConfig;
+    } as DNDConfig;
     const o = {} as Config;
 
     for (const key in next) {

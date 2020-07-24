@@ -1,6 +1,6 @@
 import { SyncHook } from 'tapable';
 import Container from '../plugins/dnd/Container';
-import Dragger from '../plugins/dnd/Dragger';
+import { default as IDragger } from '../plugins/dnd/Dragger';
 import { Position } from './util';
 import DndEffects from 'plugins/dnd/middleware/onMove/effects/DndEffects';
 import EffectsManager from 'plugins/dnd/middleware/onMove/effects/EffectsManager';
@@ -17,25 +17,38 @@ export enum Mode {
   Nested = 'nested',
 }
 
+export type Dragger = IDragger;
+
 export interface Config {
-  orientation: Orientation;
-  draggerHandlerSelector: string;
+  orientation?: Orientation;
+  draggerHandlerSelector?: string;
   containerSelector: string;
   draggerSelector: string;
-  shouldAcceptDragger: { (e: HTMLElement): boolean };
-  containerEffect: { ({ el }: { el: HTMLElement }): void | Function };
-  draggerEffect: DraggerEffectHandler;
+  shouldAcceptDragger?: { (e: HTMLElement): boolean };
+  containerEffect?: { ({ el }: { el: HTMLElement }): void | Function };
+  draggerEffect?: DraggerEffectHandler;
   impactDraggerEffect: ImpactDraggerEffectHandler;
   [key: string]: any;
 }
 
-export type GlobalConfig = Partial<Config> & {
+export type DNDConfig = Config & {
   mode: Mode;
   collisionPadding: number;
   withPlaceholder: boolean;
   isNest: boolean;
   onDrop: { (output: MoveHandlerOutput): {} };
-  [key: string]: any;
+};
+
+/**
+ * orientation should be required.
+ */
+export type ResultDNDConfig = DNDConfig & {
+  orientation: Orientation;
+};
+
+export type GlobalConfig = DNDConfig & {
+  rootElement: string;
+  configs: Config[];
 };
 
 export interface Containers {

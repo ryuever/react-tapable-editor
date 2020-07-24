@@ -86,17 +86,6 @@ const NewEditor: FC<EditorProps> = props => {
         pasteText.current
       );
 
-      // const newContentState = nextState.getCurrentContent();
-      // const blockMap = newContentState.getBlockMap();
-      // const lastBlock = newContentState.getLastBlock();
-      // const lastBlockText = lastBlock.getText();
-
-      // should invoke `DraftTreeInvariants`来验证是否是`validTree`然后才能够存储
-      // console.log('on change hooks', convertToRaw(newContentState))
-      // const rawState = convertToRaw(newContentState)
-
-      console.log('next ', nextState);
-
       hooks.onChange.call(nextState);
     },
     [getEditor, hooks.onChange, hooks.stateFilter]

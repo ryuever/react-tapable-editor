@@ -35,12 +35,13 @@ import MouseSensor from './sensors/mouse';
 import DndEffects from './middleware/onMove/effects/DndEffects';
 import {
   Config,
-  GlobalConfig,
   ContainersMap,
   DraggersMap,
   DndHooks,
   Impact,
   Extra,
+  GlobalConfig,
+  ResultDNDConfig,
 } from '../../types';
 
 class DND {
@@ -54,24 +55,14 @@ class DND {
   public rootElement: HTMLElement | string;
   public impact: Impact;
   public configs: Config[];
-  public dndConfig: GlobalConfig;
+  public dndConfig: ResultDNDConfig;
   public sensor: MouseSensor | null;
 
   constructor({
-    configs = [],
+    configs = [] as Config[],
     rootElement,
     ...rest
-  }: {
-    configs: Config[];
-    containers: ContainersMap;
-    draggers: DraggersMap;
-    extra: Extra;
-    hooks: DndHooks;
-    rootElement: HTMLElement | string;
-    impact: Impact;
-    dndConfig: GlobalConfig;
-    sensor: MouseSensor;
-  }) {
+  }: GlobalConfig) {
     this.containers = {};
     this.draggers = {};
     this.extra = {};
@@ -223,12 +214,16 @@ class DND {
       if (!elements) return;
 
       elements.forEach(el =>
-        this.handleContainerElement(el as HTMLElement, config, this.configs)
+        this.handleContainerElement(el as HTMLElement, config, this.dndConfig)
       );
     });
   }
 
-  handleContainerElement(el: HTMLElement, config: Config, dndConfig: Config) {
+  handleContainerElement(
+    el: HTMLElement,
+    config: Config,
+    dndConfig: ResultDNDConfig
+  ) {
     const container = new Container({
       el,
       containers: this.containers,
