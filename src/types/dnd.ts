@@ -22,29 +22,36 @@ export type Dragger = IDragger;
 export interface Config {
   orientation?: Orientation;
   draggerHandlerSelector?: string;
-  containerSelector: string;
-  draggerSelector: string;
+  containerSelector?: string;
+  draggerSelector?: string;
   shouldAcceptDragger?: { (e: HTMLElement): boolean };
   containerEffect?: { ({ el }: { el: HTMLElement }): void | Function };
   draggerEffect?: DraggerEffectHandler;
-  impactDraggerEffect: ImpactDraggerEffectHandler;
+  impactDraggerEffect?: ImpactDraggerEffectHandler;
   [key: string]: any;
 }
 
 export type DNDConfig = Config & {
-  mode: Mode;
-  collisionPadding: number;
+  mode?: Mode;
+  collisionPadding?: number;
   withPlaceholder: boolean;
-  isNest: boolean;
-  onDrop: { (output: MoveHandlerOutput): {} };
+  onDrop: { (output: MoveHandlerOutput): void };
 };
 
 /**
  * orientation should be required.
  */
 export type ResultDNDConfig = DNDConfig & {
-  orientation: Orientation;
+  mode: Mode;
+  collisionPadding: number;
 };
+
+export type DefaultConfig = {
+  orientation: Orientation;
+  containerSelector: string;
+  draggerSelector: string;
+};
+export type ResultConfig = Config & DefaultConfig;
 
 export type GlobalConfig = DNDConfig & {
   rootElement: string;
@@ -141,7 +148,11 @@ export interface GetClone {
   (): HTMLElement | undefined;
 }
 
-export interface MoveHandlerOutput {}
+export interface MoveHandlerOutput {
+  dragger: HTMLElement;
+  candidateDragger: HTMLElement;
+  placedPosition: Position;
+}
 
 export interface MoveHandlerResult {
   impact: Impact;

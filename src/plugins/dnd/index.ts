@@ -42,6 +42,7 @@ import {
   Extra,
   GlobalConfig,
   ResultDNDConfig,
+  ResultConfig,
 } from '../../types';
 
 class DND {
@@ -54,7 +55,7 @@ class DND {
   public hooks: DndHooks;
   public rootElement: HTMLElement | string;
   public impact: Impact;
-  public configs: Config[];
+  public configs: ResultConfig[];
   public dndConfig: ResultDNDConfig;
   public sensor: MouseSensor | null;
 
@@ -221,7 +222,7 @@ class DND {
 
   handleContainerElement(
     el: HTMLElement,
-    config: Config,
+    config: ResultConfig,
     dndConfig: ResultDNDConfig
   ) {
     const container = new Container({

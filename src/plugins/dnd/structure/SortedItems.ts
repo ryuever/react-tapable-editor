@@ -32,8 +32,12 @@ class SortedItems<T> {
     return this.items[index];
   }
 
-  slice(...args) {
+  slice(...args: [number?, number?]) {
     return [].slice.apply(this.items, args);
+  }
+
+  splice(...args: [number, number?]) {
+    return [].splice.apply(this.items, args as any);
   }
 }
 

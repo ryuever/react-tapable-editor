@@ -68,6 +68,7 @@ const defaultPlugins = [
 
   new StateFilterPlugin(),
 
+  // @ts-ignore
   new DNDPlugin(),
 ];
 

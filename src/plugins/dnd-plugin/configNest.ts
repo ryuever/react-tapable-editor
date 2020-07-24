@@ -2,7 +2,7 @@ import { EditorState } from 'draft-js';
 import DND from '../dnd';
 import transfer from '../../utils/block/transfer';
 import { extractBlockKeyFromOffsetKey } from '../../utils/keyHelper';
-import { Orientation, GetEditor, Position } from 'types';
+import { Orientation, GetEditor, Position, Mode } from '../../types';
 
 function DNDPlugin() {
   let verticalIndicator: HTMLDivElement;
@@ -52,8 +52,8 @@ function DNDPlugin() {
           candidateDragger,
           placedPosition,
         }: {
-          dragger: HTMLDivElement;
-          candidateDragger: HTMLDivElement;
+          dragger: HTMLElement;
+          candidateDragger: HTMLElement;
           placedPosition: Position;
         }) => {
           const draggerOffsetKey =
@@ -84,7 +84,7 @@ function DNDPlugin() {
           hooks.setState.call(dismissSelection);
         },
         rootElement: '.DraftEditor-root',
-        mode: 'nested',
+        mode: Mode.Nested,
         draggerHandlerSelector: '.sidebar-addon-visible',
         withPlaceholder: false,
         configs: [

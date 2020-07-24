@@ -14,7 +14,7 @@ import {
   Position,
   OnStartHandlerContext,
   OnMoveArgs,
-} from 'types';
+} from '../../../../types';
 import { Action } from 'sabar';
 
 const shouldAccept = (vContainer: Container, vDragger: Dragger) => {

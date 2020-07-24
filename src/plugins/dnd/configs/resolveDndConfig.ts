@@ -1,4 +1,4 @@
-import { Mode, DNDConfig } from '../../../types';
+import { Mode, DNDConfig, ResultDNDConfig } from '../../../types';
 
 const defaultDndConfig = {
   mode: Mode.Fluid,
@@ -16,12 +16,12 @@ const reservedKeys = [
   'onDrop',
 ];
 
-export default (props: DNDConfig) => {
-  const next = {
+export default (props: DNDConfig): ResultDNDConfig => {
+  const next: ResultDNDConfig = {
     ...defaultDndConfig,
     ...props,
-  } as DNDConfig;
-  const o = {} as DNDConfig;
+  };
+  const o = {} as ResultDNDConfig;
 
   for (const key in next) {
     if (reservedKeys.indexOf(key) !== -1) {

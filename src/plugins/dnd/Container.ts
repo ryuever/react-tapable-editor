@@ -4,7 +4,7 @@ import { orientationToAxis, axisMeasure } from './utils';
 import Dragger from './Dragger';
 import {
   ResultDNDConfig,
-  Config,
+  ResultConfig,
   Containers,
   ContainerDimension,
 } from '../../types';
@@ -15,7 +15,7 @@ class Container {
   public containers: Containers;
   public children: SortedItems<Dragger>;
   public dndConfig: ResultDNDConfig;
-  public containerConfig: Config;
+  public containerConfig: ResultConfig;
   public dimension: ContainerDimension;
   public parentContainer: Container | null;
 
@@ -28,7 +28,7 @@ class Container {
     el: HTMLElement;
     containers: Containers;
     dndConfig: ResultDNDConfig;
-    containerConfig: Config;
+    containerConfig: ResultConfig;
   }) {
     this.el = el;
     this.id = containerKeyExtractor();
@@ -56,7 +56,7 @@ class Container {
     this.children.add(dragger);
     dragger.container = this;
     dragger._teardown = () => {
-      const index = this.children.findIndex(child => child === dragger);
+      const index = this.children.findIndex(dragger);
       if (index !== -1) this.children.splice(index, 1);
     };
   }
