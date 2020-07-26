@@ -1,11 +1,11 @@
 import { intersect, within } from './collision';
-import { Config, Point } from '../../types';
+import { ResultConfig, Point } from '../../types';
 
 // https://stackoverflow.com/questions/384286/how-do-you-check-if-a-javascript-object-is-a-dom-object
 export const isElement = (el: any): boolean =>
   el instanceof Element || el instanceof HTMLDocument;
 
-export const matchesDragger = (el: any, configs: Config[]) => {
+export const matchesDragger = (el: any, configs: ResultConfig[]) => {
   if (!isElement(el)) return -1;
 
   const len = configs.length;
@@ -21,7 +21,7 @@ export const matchesDragger = (el: any, configs: Config[]) => {
   return -1;
 };
 
-export const matchesContainer = (el: any, configs: Config[]) => {
+export const matchesContainer = (el: any, configs: ResultConfig[]) => {
   if (!isElement(el)) return -1;
 
   const len = configs.length;

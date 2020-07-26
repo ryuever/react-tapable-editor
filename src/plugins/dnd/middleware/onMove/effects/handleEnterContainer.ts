@@ -1,7 +1,11 @@
 import EffectsManager from './EffectsManager';
 import report from '../../../reporter';
 import Container from '../../../Container';
-import { OnMoveHandleContext, OnMoveArgs } from '../../../../../types';
+import {
+  OnMoveHandleContext,
+  OnMoveArgs,
+  OnMoveOperation,
+} from '../../../../../types';
 import { Action } from 'sabar';
 
 const handleEnterContainer = (args: any, ctx: object, actions: Action) => {
@@ -33,12 +37,13 @@ const handleEnterContainer = (args: any, ctx: object, actions: Action) => {
     report.logEnterContainer(currentImpactVContainer);
 
     context.action = {
-      operation: 'onEnter',
+      operation: OnMoveOperation.OnEnter,
       isHomeContainerFocused: isHomeContainer(currentImpactVContainer),
       effectsManager,
     };
     context.impact = {
       impactVContainer: currentImpactVContainer,
+      index: null,
     };
   }
 

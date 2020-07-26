@@ -82,21 +82,28 @@ const useFocus = ({ nodeRef, props }: HooksProps) => {
     hooks.setState.call(newEditorState);
   }, [block, getEditor, hooks.setState]);
 
+  // https://github.com/facebook/react/issues/14387
+  // if ref.current is used in useEffect return function. it may have potential error..
+  // Because ref.current may have change before return function is called.
+  // In this condition. you'd better use a copy value...
+  const nodeRefCopy = nodeRef.current;
   useEffect(() => {
-    nodeRef.current!.addEventListener('click', handleClick);
+    nodeRefCopy!.addEventListener('click', handleClick);
     return () => {
-      nodeRef.current!.removeEventListener('click', handleClick);
+      nodeRefCopy!.removeEventListener('click', handleClick);
     };
-  }, [handleClick, nodeRef]);
+  }, [handleClick, nodeRefCopy]);
 
   // update className after all
   useEffect(() => {
-    if (focused) {
-      nodeRef.current!.classList.remove('focused_atomic');
-      nodeRef.current!.classList.add('focused_atomic_active');
-    } else {
-      nodeRef.current!.classList.remove('focused_atomic_active');
-      nodeRef.current!.classList.add('focused_atomic');
+    if (nodeRef.current) {
+      if (focused) {
+        nodeRef.current.classList.remove('focused_atomic');
+        nodeRef.current.classList.add('focused_atomic_active');
+      } else {
+        nodeRef.current.classList.remove('focused_atomic_active');
+        nodeRef.current.classList.add('focused_atomic');
+      }
     }
   }, [focused, nodeRef]);
 };

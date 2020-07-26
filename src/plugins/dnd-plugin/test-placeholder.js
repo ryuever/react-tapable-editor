@@ -16,7 +16,6 @@ function DNDPlugin() {
     createIndicatorBar();
     const { hooks } = getEditor();
     hooks.afterMounted.tap('initDNDPlugin', () => {
-      const { editorRef } = getEditor();
       new DND({
         rootElement: '.DraftEditor-root',
         mode: 'nested',
@@ -30,7 +29,7 @@ function DNDPlugin() {
             draggerEffect: options => {
               const { isHighlight, dimension, placedPosition } = options;
               console.log('options ', options);
-              const { top, right, left, bottom, height } = dimension;
+              const { top, right, left, height } = dimension;
 
               console.log('is hight ', isHighlight);
 

@@ -34,6 +34,7 @@ const transferBlock = (
         targetBlockKey,
         'right'
       );
+      break;
     default:
     // ...
   }

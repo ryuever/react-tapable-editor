@@ -50,7 +50,7 @@ const pickClosestContainer = (pendingContainers: Container[]) => {
 
   const remaining = [];
 
-  for (const [_, value] of Object.entries(isVerified)) {
+  for (const [, value] of Object.entries(isVerified)) {
     if (value.used) remaining.push(value.container);
   }
 

@@ -14,7 +14,6 @@ function DNDPlugin() {
     createIndicatorBar();
     const { hooks } = getEditor();
     hooks.afterMounted.tap('initDNDPlugin', () => {
-      const { editorRef } = getEditor();
       new DND({
         rootElement: '.DraftEditor-root',
         mode: 'nested',

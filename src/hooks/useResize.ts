@@ -79,15 +79,17 @@ const useResize = ({ nodeRef, props }: HooksProps) => {
     rightBarRef.current!.classList.remove('bar-visible');
   }, []);
 
+  const nodeRefCopy = nodeRef.current;
+
   useEffect(() => {
-    nodeRef.current!.addEventListener('mouseenter', onMouseEnterContainer);
-    nodeRef.current!.addEventListener('mouseleave', onMouseLeaveContainer);
+    nodeRefCopy!.addEventListener('mouseenter', onMouseEnterContainer);
+    nodeRefCopy!.addEventListener('mouseleave', onMouseLeaveContainer);
 
     return () => {
-      nodeRef.current!.removeEventListener('mouseenter', onMouseEnterContainer);
-      nodeRef.current!.removeEventListener('mouseleave', onMouseLeaveContainer);
+      nodeRefCopy!.removeEventListener('mouseenter', onMouseEnterContainer);
+      nodeRefCopy!.removeEventListener('mouseleave', onMouseLeaveContainer);
     };
-  }, [nodeRef, onMouseEnterContainer, onMouseLeaveContainer]);
+  }, [nodeRefCopy, onMouseEnterContainer, onMouseLeaveContainer]);
 
   const resolveAlignment = useCallback(() => {
     return 'center';

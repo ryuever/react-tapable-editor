@@ -48,10 +48,12 @@ export type ResultDNDConfig = DNDConfig & {
 
 export type DefaultConfig = {
   orientation: Orientation;
-  containerSelector: string;
-  draggerSelector: string;
 };
-export type ResultConfig = Config & DefaultConfig;
+export type ResultConfig = Config &
+  DefaultConfig & {
+    containerSelector: string;
+    draggerSelector: string;
+  };
 
 export type GlobalConfig = DNDConfig & {
   rootElement: string;
@@ -71,6 +73,8 @@ export interface ContainerDimension {
 
 export interface DraggerDimension {
   rect: RectObject;
+  top?: number;
+  left?: number;
 }
 
 export interface Sorter<T> {
@@ -78,9 +82,9 @@ export interface Sorter<T> {
 }
 
 export interface AxisMeasure {
-  y: string[];
-  x: string[];
-  [key: string]: string[];
+  x: ['left', 'right'];
+  y: ['top', 'bottom'];
+  [key: string]: ['top' | 'left', 'right' | 'bottom'];
 }
 
 export interface OrientationToAxis {
@@ -133,8 +137,8 @@ export interface DndHooks {
 }
 
 export interface Impact {
-  impactVContainer?: Container;
-  index?: number;
+  impactVContainer: Container | null;
+  index: number | null;
 }
 
 export interface MoveAPI {
@@ -171,10 +175,17 @@ export interface VDragger {
   [key: string]: Dragger;
 }
 
+export enum OnMoveOperation {
+  OnStart = 'onStart',
+  OnEnter = 'onEnter',
+  OnLeave = 'onLeave',
+  ReOrder = 'reOrder',
+}
+
 export interface OnMoveAction {
-  operation: string;
+  operation: OnMoveOperation;
   isHomeContainerFocused: boolean;
-  effectsManager: EffectsManager;
+  effectsManager: null | EffectsManager;
 }
 
 export interface OnStartHandlerContext {
@@ -197,8 +208,8 @@ export interface OnMoveHandleContext {
   impactRawInfo: RawInfo;
   dndEffects: DndEffects;
   impact: {
-    impactVContainer: Container;
-    index: number;
+    impactVContainer: Container | null;
+    index: number | null;
   };
   output: {
     dragger: HTMLElement;

@@ -1,14 +1,14 @@
 import closest from '../closest';
-import { Config } from '../../../types';
+import { ResultConfig } from '../../../types';
 
 export const hasDraggerHandlerMatched = (
   el: HTMLElement,
-  configs: Config[]
+  configs: ResultConfig[]
 ) => {
   const len = configs.length;
   for (let i = 0; i < len; i++) {
     const { draggerHandlerSelector } = configs[i];
-    if (closest(el, draggerHandlerSelector)) return true;
+    if (closest(el, draggerHandlerSelector!)) return true;
   }
 
   return false;

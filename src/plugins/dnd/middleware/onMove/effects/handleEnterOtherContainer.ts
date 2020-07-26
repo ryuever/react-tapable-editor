@@ -33,7 +33,7 @@ const handleEnterOtherContainer = (ctx: object, actions: Action) => {
     const teardown = containerEffect({
       el: impactVContainer!.el,
     });
-    effectsManager.impactContainerEffects.push({
+    effectsManager!.impactContainerEffects.push({
       teardown,
       vContainer: impactVContainer as Container,
     });
@@ -68,7 +68,7 @@ const handleEnterOtherContainer = (ctx: object, actions: Action) => {
       dimension: vDragger.dimension.rect,
       isHighlight,
     });
-    effectsManager.downstreamDraggersEffects.push({ teardown, vDragger });
+    effectsManager!.downstreamDraggersEffects.push({ teardown, vDragger });
   }
 
   context.impact = impact;

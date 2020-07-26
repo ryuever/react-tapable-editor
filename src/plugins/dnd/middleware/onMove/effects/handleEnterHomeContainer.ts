@@ -41,7 +41,7 @@ const handleEnterHomeContainer = (args: any, ctx: object, actions: Action) => {
     const teardown = containerEffect({
       el: (impactVContainer as Container).el,
     });
-    effectsManager.impactContainerEffects.push({
+    effectsManager!.impactContainerEffects.push({
       teardown,
       vContainer: impactVContainer as Container,
     });
@@ -60,22 +60,22 @@ const handleEnterHomeContainer = (args: any, ctx: object, actions: Action) => {
   };
 
   if (candidateVDraggerIndex === liftUpVDraggerIndex) {
-    if (!positionIndex) effectsManager.clearUpstreamEffects();
+    if (!positionIndex) effectsManager!.clearUpstreamEffects();
     else {
       const remainingEffects = [] as DraggerEffect[];
-      effectsManager.upstreamDraggersEffects.forEach(
+      effectsManager!.upstreamDraggersEffects.forEach(
         ({ vDragger, teardown }: { vDragger: Dragger; teardown: any }) => {
           if (vDragger.id !== (candidateVDragger as Dragger).id) teardown();
           else remainingEffects.push({ vDragger, teardown });
         }
       );
 
-      effectsManager.upstreamDraggersEffects = remainingEffects;
+      effectsManager!.upstreamDraggersEffects = remainingEffects;
     }
   }
 
   if ((candidateVDraggerIndex as number) < liftUpVDraggerIndex) {
-    effectsManager.clearUpstreamEffects();
+    effectsManager!.clearUpstreamEffects();
     const initialValue = candidateVDraggerIndex as number;
     for (let i = initialValue; i < liftUpVDraggerIndex; i++) {
       const vDragger = children.getItem(i);
@@ -89,7 +89,7 @@ const handleEnterHomeContainer = (args: any, ctx: object, actions: Action) => {
         dimension: vDragger.dimension.rect,
         isHighlight,
       });
-      effectsManager.downstreamDraggersEffects.push({ teardown, vDragger });
+      effectsManager!.downstreamDraggersEffects.push({ teardown, vDragger });
     }
   }
 
@@ -104,15 +104,17 @@ const handleEnterHomeContainer = (args: any, ctx: object, actions: Action) => {
       reserved.push(vDragger);
     }
 
-    effectsManager.upstreamDraggersEffects.forEach(({ teardown, vDragger }) => {
-      const { id } = vDragger;
-      const index = reserved.findIndex(vDragger => vDragger.id === id);
-      if (index !== -1) {
-        reservedEffects.push({ teardown, vDragger });
-      } else if (teardown) teardown();
-    });
+    effectsManager!.upstreamDraggersEffects.forEach(
+      ({ teardown, vDragger }) => {
+        const { id } = vDragger;
+        const index = reserved.findIndex(vDragger => vDragger.id === id);
+        if (index !== -1) {
+          reservedEffects.push({ teardown, vDragger });
+        } else if (teardown) teardown();
+      }
+    );
 
-    effectsManager.upstreamDraggersEffects = reservedEffects;
+    effectsManager!.upstreamDraggersEffects = reservedEffects;
   }
 
   context.impact = impact;

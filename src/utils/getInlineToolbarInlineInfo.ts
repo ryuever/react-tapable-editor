@@ -15,7 +15,7 @@ function getInlineToolbarInlineInfo(editorState: EditorState) {
   const endKey = selectionState.getEndKey();
   const endOffset = selectionState.getEndOffset();
 
-  let styles = Immutable.OrderedSet();
+  let values;
   let hasChanceToInit = true;
   let intersectionIsEmpty = false;
   let hasLink = false;
@@ -24,10 +24,12 @@ function getInlineToolbarInlineInfo(editorState: EditorState) {
     .skipUntil((_, k) => k === startKey)
     .takeUntil((_, k) => k === endKey)
     .concat(Map([[endKey, blockMap.get(endKey)]]))
-    .map(function(block, blockKey) {
+    .forEach(function(block, blockKey) {
       if (hasLink && intersectionIsEmpty) {
         return;
       }
+
+      let styles = Immutable.OrderedSet();
 
       let sliceStart;
       let sliceEnd;
@@ -70,7 +72,7 @@ function getInlineToolbarInlineInfo(editorState: EditorState) {
               if (!hasChanceToInit) {
                 intersectionIsEmpty = true;
               } else {
-                current.map(style => (styles = styles.add(style)));
+                current.forEach(style => styles.add(style)); // eslint-disable-line
                 hasChanceToInit = false;
               }
             } else {
@@ -81,10 +83,12 @@ function getInlineToolbarInlineInfo(editorState: EditorState) {
 
         sliceStart++;
       }
+
+      values = styles;
     });
 
   return {
-    styles,
+    styles: values,
     hasLink,
   };
 }

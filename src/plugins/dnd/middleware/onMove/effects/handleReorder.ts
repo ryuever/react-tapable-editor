@@ -1,4 +1,8 @@
-import { OnMoveHandleContext, OnMoveArgs } from '../../../../../types';
+import {
+  OnMoveHandleContext,
+  OnMoveArgs,
+  OnMoveOperation,
+} from '../../../../../types';
 import { Action } from 'sabar';
 
 const handleReorder = (args: any, ctx: object, actions: Action) => {
@@ -18,7 +22,7 @@ const handleReorder = (args: any, ctx: object, actions: Action) => {
     const effectsManager = dndEffects.find(currentImpactVContainer.id);
 
     context.action = {
-      operation: 'reorder',
+      operation: OnMoveOperation.ReOrder,
       isHomeContainerFocused: isHomeContainer(currentImpactVContainer),
       effectsManager,
     };

@@ -40,7 +40,10 @@ export const findClosestContainer = (
   if (!el) return -1;
   const node = strictMode ? el.parentNode : el;
 
-  const directParent = closest(node, '[data-is-container="true"]');
+  const directParent = closest(
+    node as HTMLElement,
+    '[data-is-container="true"]'
+  );
   const containerKeys = Object.keys(containers);
   const len = containerKeys.length;
 
@@ -84,14 +87,17 @@ export const findClosestDropTargetFromEvent = (
 
 export const findClosestDraggerElementFromEvent = (event: Event) => {
   const { target } = event;
-  const dragger = closest(target, '[data-is-dragger="true"]');
+  const dragger = closest(target as HTMLElement, '[data-is-dragger="true"]');
   if (dragger) return dragger;
   return -1;
 };
 
 export const findClosestContainerFromEvent = (event: Event) => {
   const { target } = event;
-  const container = closest(target, '[data-is-container="true"]');
+  const container = closest(
+    target as HTMLElement,
+    '[data-is-container="true"]'
+  );
   if (container) return container;
   return -1;
 };

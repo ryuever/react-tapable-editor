@@ -19,7 +19,7 @@ const Image: FC<ImageProps> = props => {
 
   return (
     <div className="image-wrapper" ref={ref}>
-      <img src={src} className="image" />
+      <img src={src} className="image" alt="wrapper" />
     </div>
   );
 };

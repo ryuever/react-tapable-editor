@@ -1,5 +1,9 @@
 import report from '../../../reporter';
-import { OnMoveHandleContext, OnMoveArgs } from '../../../../../types';
+import {
+  OnMoveHandleContext,
+  OnMoveArgs,
+  OnMoveOperation,
+} from '../../../../../types';
 import { Action } from 'sabar';
 
 const handleLeaveContainer = (args: any, ctx: object, actions: Action) => {
@@ -25,7 +29,7 @@ const handleLeaveContainer = (args: any, ctx: object, actions: Action) => {
     report.logLeaveContainer(prevImpactVContainer);
 
     context.action = {
-      operation: 'onLeave',
+      operation: OnMoveOperation.OnLeave,
       isHomeContainerFocused: isHomeContainer(prevImpactVContainer),
       effectsManager,
     };

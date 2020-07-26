@@ -1,6 +1,10 @@
 import { orientationToMeasure } from '../../../utils';
 import { Action } from 'sabar';
-import { OnMoveHandleContext, Impact } from '../../../../../types';
+import {
+  OnMoveHandleContext,
+  Impact,
+  OnMoveOperation,
+} from '../../../../../types';
 import Container from '../../../Container';
 import Dragger from '../../../Dragger';
 
@@ -10,7 +14,7 @@ const handleReorderOnHomeContainer = (ctx: object, actions: Action) => {
     action: { operation, isHomeContainerFocused, effectsManager },
   } = context;
 
-  if (operation !== 'reorder' || isHomeContainerFocused) {
+  if (operation !== OnMoveOperation.ReOrder || isHomeContainerFocused) {
     actions.next();
     return;
   }
@@ -22,11 +26,11 @@ const handleReorderOnHomeContainer = (ctx: object, actions: Action) => {
       impactPosition,
       candidateVDraggerIndex,
     },
-    impact: { index: currentIndex },
   } = context;
   const {
     containerConfig: { orientation, draggerEffect },
   } = impactVContainer as Container;
+  const currentIndex = context.impact.index || 0;
 
   const measure = orientationToMeasure(orientation);
 
@@ -47,15 +51,15 @@ const handleReorderOnHomeContainer = (ctx: object, actions: Action) => {
       return;
     }
 
-    const index = effectsManager.downstreamDraggersEffects.findIndex(
+    const index = effectsManager!.downstreamDraggersEffects.findIndex(
       ({ vDragger }) => {
         return vDragger.id === (candidateVDragger as Dragger).id;
       }
     );
 
     if (index !== -1) {
-      const { teardown } = effectsManager.downstreamDraggersEffects[index];
-      effectsManager.downstreamDraggersEffects.splice(index, 1);
+      const { teardown } = effectsManager!.downstreamDraggersEffects[index];
+      effectsManager!.downstreamDraggersEffects.splice(index, 1);
       if (typeof teardown === 'function') teardown();
     }
   }
@@ -76,7 +80,7 @@ const handleReorderOnHomeContainer = (ctx: object, actions: Action) => {
       isHighlight: true,
     });
 
-    effectsManager.downstreamDraggersEffects.push({
+    effectsManager!.downstreamDraggersEffects.push({
       vDragger: candidateVDragger as Dragger,
       teardown,
     });

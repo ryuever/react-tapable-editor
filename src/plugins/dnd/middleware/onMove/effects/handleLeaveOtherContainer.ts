@@ -11,7 +11,7 @@ const handleLeaveOtherContainer = (ctx: object, actions: Action) => {
     return;
   }
 
-  effectsManager.teardown();
+  effectsManager!.teardown();
 
   actions.next();
 };

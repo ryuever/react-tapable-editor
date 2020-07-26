@@ -9,7 +9,7 @@ const Link: FC<LinkProps> = (props: LinkProps) => {
   const { url } = data;
 
   return (
-    <a className="decorator_link" href={url} target="_blank">
+    <a className="decorator_link" href={url} target="_blank" rel="noreferrer">
       {children}
     </a>
   );

@@ -33,7 +33,7 @@ export default class EffectsManager {
     this.downstreamDraggersEffects = [];
   }
 
-  get isHomeContainerEffects() {
+  isHomeContainerEffects() {
     const { container } = this.dragger;
     return container.id === this.impactContainer.id;
   }

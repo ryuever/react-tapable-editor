@@ -1,4 +1,4 @@
-import { Config, DraggersMap, ContainersMap, Point } from '../../types';
+import { ResultConfig, DraggersMap, ContainersMap, Point } from '../../types';
 import Container from './Container';
 import Dragger from './Dragger';
 import closest from './closest';
@@ -17,14 +17,14 @@ export const setCloneAttributes = (el: HTMLElement) => {
   const len = children.length;
   if (len) {
     for (let i = 0; i < len; i++) {
-      setCloneAttributes(children[i]);
+      setCloneAttributes(children[i] as HTMLElement);
     }
   }
 };
 
 export const setContainerAttributes = (
   container: Container,
-  config: Config
+  config: ResultConfig
 ) => {
   const { orientation } = config;
   const { id } = container;

@@ -31,7 +31,7 @@ const useAlignment = ({ nodeRef, props }: HooksProps) => {
   // teardown on un-mount
   useEffect(() => () => teardown(), [teardown]);
 
-  const onMouseEnterHandler = useCallback((e: Event) => {
+  const onMouseEnterHandler = useRef((e: Event) => {
     attemptToClearTimeoutHandler();
 
     e.stopPropagation();
@@ -39,13 +39,13 @@ const useAlignment = ({ nodeRef, props }: HooksProps) => {
 
     if (!rootNode) return;
     if (isToolbarVisibleRef.current) return;
-    showToolbar();
+    if (typeof showToolbar === 'function') showToolbar();
   });
 
-  const onMouseLeaveHandler = useCallback((e: Event) => {
+  const onMouseLeaveHandler = useRef((e: Event) => {
     e.stopPropagation();
     if (!isToolbarVisibleRef.current) return;
-    hideToolbar();
+    if (typeof hideToolbar === 'function') hideToolbar();
   });
 
   const showToolbar = useCallback(() => {
@@ -87,21 +87,21 @@ const useAlignment = ({ nodeRef, props }: HooksProps) => {
 
     alignmentBarRef.current!.addEventListener(
       'mouseenter',
-      onMouseEnterHandler
+      onMouseEnterHandler.current
     );
     alignmentBarRef.current!.addEventListener(
       'mouseleave',
-      onMouseLeaveHandler
+      onMouseLeaveHandler.current
     );
 
     alignmentBarEventRemoverRef.current = () => {
       alignmentBarRef.current!.removeEventListener(
         'mouseenter',
-        onMouseEnterHandler
+        onMouseEnterHandler.current
       );
       alignmentBarRef.current!.removeEventListener(
         'mouseleave',
-        onMouseLeaveHandler
+        onMouseLeaveHandler.current
       );
     };
   }, [
@@ -125,14 +125,26 @@ const useAlignment = ({ nodeRef, props }: HooksProps) => {
 
   // To make nodeRef react to `mouseenter` and `mouseleave` event.
   useEffect((): { (): void } => {
-    nodeRef.current!.addEventListener('mouseenter', onMouseEnterHandler);
+    nodeRef.current!.addEventListener(
+      'mouseenter',
+      onMouseEnterHandler.current
+    );
     // TODO: should fix...when resize component...mouseleave may not trigger...
-    nodeRef.current!.addEventListener('mouseleave', onMouseLeaveHandler);
+    nodeRef.current!.addEventListener(
+      'mouseleave',
+      onMouseLeaveHandler.current
+    );
 
     if (mouseEnterRemoverRef.current) mouseEnterRemoverRef.current();
     mouseEnterRemoverRef.current = () => {
-      nodeRef.current!.removeEventListener('mouseenter', onMouseEnterHandler);
-      nodeRef.current!.removeEventListener('mouseleave', onMouseLeaveHandler);
+      nodeRef.current!.removeEventListener(
+        'mouseenter',
+        onMouseEnterHandler.current
+      );
+      nodeRef.current!.removeEventListener(
+        'mouseleave',
+        onMouseLeaveHandler.current
+      );
       mouseEnterRemoverRef.current = null;
     };
     return mouseEnterRemoverRef.current;

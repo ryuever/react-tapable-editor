@@ -16,43 +16,46 @@ const handleLeaveHomeContainer = (args: any, ctx: object, actions: Action) => {
   }
 
   if (!withPlaceholder) {
-    effectsManager.teardown();
+    effectsManager!.teardown();
     actions.next();
     return;
   }
 
-  const {
-    index,
-    impactVContainer: {
-      children,
-      containerConfig: { orientation, draggerEffect },
-    },
-  } = prevImpact;
+  const { index, impactVContainer } = prevImpact;
 
+  if (!index || !impactVContainer) {
+    actions.next();
+  }
+
+  const {
+    children,
+    containerConfig: { orientation, draggerEffect },
+  } = impactVContainer!;
   // Don't care prev index, reset all the effects on the items before
   // `liftUpVDraggerIndex`
-  effectsManager.clearDownstreamEffects();
-  effectsManager.clearImpactContainerEffects();
+  effectsManager!.clearDownstreamEffects();
+  effectsManager!.clearImpactContainerEffects();
+  if (typeof draggerEffect === 'function') {
+    const upstreamStartIndex = Math.max(liftUpVDraggerIndex + 1, index!);
+    const len = children.getSize();
 
-  const upstreamStartIndex = Math.max(liftUpVDraggerIndex + 1, index);
-  const len = children.getSize();
+    for (let i = upstreamStartIndex; i < len; i++) {
+      const vDragger = children.getItem(i);
+      const measure = orientationToMeasure(orientation);
+      const teardown = draggerEffect({
+        el: vDragger.el,
+        shouldMove: true,
+        placedPosition: measure[0],
+        downstream: false,
+        dimension: vDragger.dimension.rect,
+        isHighlight: false,
+      });
 
-  for (let i = upstreamStartIndex; i < len; i++) {
-    const vDragger = children.getItem(i);
-    const measure = orientationToMeasure(orientation);
-    const teardown = draggerEffect({
-      el: vDragger.el,
-      shouldMove: true,
-      placedPosition: measure[0],
-      downstream: false,
-      dimension: vDragger.dimension.rect,
-      isHighlight: false,
-    });
-
-    effectsManager.upstreamDraggersEffects.push({
-      teardown,
-      vDragger,
-    });
+      effectsManager!.upstreamDraggersEffects.push({
+        teardown,
+        vDragger,
+      });
+    }
   }
 
   actions.next();

@@ -39,7 +39,7 @@ export default class DndEffects {
   partialTeardown() {
     for (const id in this.children) {
       const child = this.children[id];
-      if (!child.isHomeContainerEffects) child.teardown();
+      if (!child.isHomeContainerEffects()) child.teardown();
     }
   }
 }

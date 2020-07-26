@@ -80,7 +80,7 @@ class DND {
       cleanupEffects: new SyncHook(),
     };
     this.rootElement = rootElement;
-    this.impact = {};
+    this.impact = {} as any;
     this.sensor = null;
 
     this.startObserve();
@@ -209,27 +209,23 @@ class DND {
   }
 
   handleContainers(node = document) {
-    this.configs.map(config => {
+    this.configs.forEach(config => {
       const { containerSelector } = config;
       const elements = node.querySelectorAll(containerSelector);
       if (!elements) return;
 
       elements.forEach(el =>
-        this.handleContainerElement(el as HTMLElement, config, this.dndConfig)
+        this.handleContainerElement(el as HTMLElement, config)
       );
     });
   }
 
-  handleContainerElement(
-    el: HTMLElement,
-    config: ResultConfig,
-    dndConfig: ResultDNDConfig
-  ) {
+  handleContainerElement(el: HTMLElement, config: ResultConfig) {
     const container = new Container({
       el,
       containers: this.containers,
       containerConfig: config,
-      dndConfig,
+      dndConfig: this.dndConfig,
     });
     const parentContainerNode = closest(el, '[data-is-container="true"]');
     if (parentContainerNode) {
@@ -242,7 +238,7 @@ class DND {
     setContainerAttributes(container, config);
   }
 
-  handleDraggers(containerNode = document) {
+  handleDraggers(containerNode: HTMLElement | Document = document) {
     this.configs.forEach(config => {
       const { draggerSelector } = config;
       this.handleDraggerInContainer(containerNode, draggerSelector);

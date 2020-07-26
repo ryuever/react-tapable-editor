@@ -3,9 +3,5 @@ import { LinkSpanProps } from '../../types';
 import './styles.css';
 
 export default (props: LinkSpanProps) => {
-  return (
-    <a className="link_span" target="blank">
-      {props.children}
-    </a>
-  );
+  return <span className="link_span">{props.children}</span>;
 };

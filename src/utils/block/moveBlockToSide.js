@@ -1,29 +1,23 @@
 import appendChildBlock from './appendChildBlock';
 import appendFlexChildBlock from './appendFlexChildBlock';
 import addBlockBefore from './addBlockBefore';
-import addBlockAfter from './addBlockAfter';
 import moveBlockBefore from './moveBlockBefore';
 import moveBlockAfter from './moveBlockAfter';
 import createEmptyBlockNode from './createEmptyBlockNode';
-import resetSibling from './resetSibling';
 import findRootNodeSibling from './findRootNodeSibling';
 
 // Note: you can only drag a pure block, which means block's children
 // property should be empty list..
 export default (blockMap, sourceBlockKey, targetBlockKey, position) => {
   try {
-    const sourceBlock = blockMap.get(sourceBlockKey);
     const targetBlock = blockMap.get(targetBlockKey);
     const parentKey = targetBlock.parent;
     const parentBlock = blockMap.get(parentKey);
-
-    const sourceNextSibling = sourceBlock.getNextSiblingKey();
 
     // 首先查看parentNode是否包含`isFlexRow` data
     // const isFlexRow = parentBlock.getData().get('flexRow')
     let newBlockMap = blockMap;
     let flexBlockKey;
-    const nextKey = sourceBlock.getNextSiblingKey();
 
     if (!parentBlock) {
       const emptyBlock = createEmptyBlockNode();
