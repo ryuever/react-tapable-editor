@@ -1,7 +1,7 @@
-import { List, OrderedMap } from "immutable";
-import removeBlock from "./removeBlock";
-import resetSibling from "./resetSibling";
-import contains from "./contains";
+import { List } from 'immutable';
+import removeBlock from './removeBlock';
+import resetSibling from './resetSibling';
+import contains from './contains';
 
 export default (blockMap, parentBlockKey, childBlockKey) => {
   const childBlock = blockMap.get(childBlockKey);
@@ -63,7 +63,7 @@ export default (blockMap, parentBlockKey, childBlockKey) => {
 
   childKeysArray.push(childBlockKey);
   const newParentBlock = parentBlock.merge({
-    children: List(childKeysArray)
+    children: List(childKeysArray),
   });
 
   newBlockMap = newBlockMap.set(parentBlockKey, newParentBlock);
@@ -71,21 +71,21 @@ export default (blockMap, parentBlockKey, childBlockKey) => {
   if (lastChildBlockKey) {
     const lastChildBlock = newBlockMap.get(lastChildBlockKey);
     const newLastChildBlock = lastChildBlock.merge({
-      nextSibling: childBlockKey
+      nextSibling: childBlockKey,
     });
     newBlockMap = newBlockMap.set(lastChildBlockKey, newLastChildBlock);
 
     const newChildBlock = childBlockAfterRemove.merge({
       prevSibling: lastChildBlockKey,
       parent: parentBlockKey,
-      nextSibling: null
+      nextSibling: null,
     });
     newBlockMap = newBlockMap.set(childBlockKey, newChildBlock);
   } else {
     const newChildBlock = childBlockAfterRemove.merge({
       prevSibling: null,
       parent: parentBlockKey,
-      nextSibling: null
+      nextSibling: null,
     });
     newBlockMap = newBlockMap.set(childBlockKey, newChildBlock);
   }
@@ -105,14 +105,14 @@ export default (blockMap, parentBlockKey, childBlockKey) => {
       const prevSiblingKey = childFirstBlock.getPrevSiblingKey();
       if (prevSiblingKey) {
         const prevSiblingBlock = newBlockMap.get(prevSiblingKey).merge({
-          nextSibling: null
+          nextSibling: null,
         });
         newBlockMap = newBlockMap.set(prevSiblingKey, prevSiblingBlock);
 
         newBlockMap = newBlockMap.set(
           childFirstBlockKey,
           childFirstBlock.merge({
-            prevSibling: null
+            prevSibling: null,
           })
         );
       }
@@ -122,14 +122,14 @@ export default (blockMap, parentBlockKey, childBlockKey) => {
       const nextSiblingKey = childFirstBlock.getNextSiblingKey();
       if (nextSiblingKey) {
         const nextSiblingBlock = newBlockMap.get(nextSiblingKey).merge({
-          prevSibling: null
+          prevSibling: null,
         });
         newBlockMap = newBlockMap.set(nextSiblingKey, nextSiblingBlock);
 
         newBlockMap = newBlockMap.set(
           childLastBlockKey,
           childLastBlock.merge({
-            nextSibling: null
+            nextSibling: null,
           })
         );
       }

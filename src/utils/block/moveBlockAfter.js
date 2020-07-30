@@ -1,6 +1,6 @@
-import { List } from "immutable";
-import removeBlock from "./removeBlock";
-import resetSibling from "./resetSibling";
+import { List } from 'immutable';
+import removeBlock from './removeBlock';
+import resetSibling from './resetSibling';
 
 export default (blockMap, sourceBlockKey, targetBlockKey) => {
   const sourceBlock = blockMap.get(sourceBlockKey);
@@ -29,7 +29,7 @@ export default (blockMap, sourceBlockKey, targetBlockKey) => {
     .concat(
       [
         [targetBlockKey, targetBlock],
-        [sourceBlockKey, sourceBlockAfterRemove]
+        [sourceBlockKey, sourceBlockAfterRemove],
       ],
       blocksAfter
     )
@@ -46,7 +46,7 @@ export default (blockMap, sourceBlockKey, targetBlockKey) => {
     childKeysArray.splice(insertionIndex, 0, sourceBlockKey);
 
     const newParentBlock = parentBlock.merge({
-      children: List(childKeysArray)
+      children: List(childKeysArray),
     });
 
     newBlockMap = newBlockMap.set(parentKey, newParentBlock);
@@ -57,7 +57,7 @@ export default (blockMap, sourceBlockKey, targetBlockKey) => {
   if (nextSiblingKey) {
     const nextSiblingBlock = newBlockMap.get(nextSiblingKey);
     const newNextSiblingBlock = nextSiblingBlock.merge({
-      prevSibling: sourceBlockKey
+      prevSibling: sourceBlockKey,
     });
     newBlockMap = newBlockMap.set(nextSiblingKey, newNextSiblingBlock);
   }
@@ -65,14 +65,14 @@ export default (blockMap, sourceBlockKey, targetBlockKey) => {
   {
     const newSourceBlock = sourceBlockAfterRemove.merge({
       prevSibling: targetBlockKey,
-      nextSibling: nextSiblingKey
+      nextSibling: nextSiblingKey,
     });
     newBlockMap = newBlockMap.set(sourceBlockKey, newSourceBlock);
   }
 
   {
     const newTargetBlock = targetBlock.merge({
-      nextSibling: sourceBlockKey
+      nextSibling: sourceBlockKey,
     });
     newBlockMap = newBlockMap.set(targetBlockKey, newTargetBlock);
   }

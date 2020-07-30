@@ -1,8 +1,9 @@
-import { EditorState } from "draft-js";
-import DragDropManager from "./DragDropManager";
-import transferBlock from "../../utils/block/transferBlock";
-import BlockUtil from "../../utils/block/blockUtil";
-import infoLog from "../../utils/infoLog";
+import { EditorState } from 'draft-js';
+import DragDropManager from './DragDropManager';
+import transferBlock from '../../utils/block/transferBlock';
+import BlockUtil from '../../utils/block/blockUtil';
+import infoLog from '../../utils/infoLog';
+
 const { insertNewLineAfterAll } = BlockUtil;
 
 const DEBUG = true;
@@ -19,24 +20,24 @@ function DragPlugin() {
 
         if (DEBUG) {
           infoLog(`place ${sourceBlockKey} after ${targetBlockKey}`);
-          infoLog("block map ", editorState.getCurrentContent().getBlockMap());
+          infoLog('block map ', editorState.getCurrentContent().getBlockMap());
         }
 
         const newContent = transferBlock(
           editorState,
           sourceBlockKey,
           targetBlockKey,
-          "right"
+          'right'
         );
 
         if (DEBUG) {
-          infoLog("block map after transform ", newContent.getBlockMap());
+          infoLog('block map after transform ', newContent.getBlockMap());
         }
         const nextNewContent = insertNewLineAfterAll(newContent);
 
         if (DEBUG) {
           infoLog(
-            "block map after insert new line ",
+            'block map after insert new line ',
             nextNewContent.getBlockMap()
           );
         }
@@ -46,19 +47,19 @@ function DragPlugin() {
             selectionBefore: selection,
             selectionAfter: nextNewContent
               .getSelectionAfter()
-              .set("hasFocus", false)
+              .set('hasFocus', false),
           })
         );
 
         hooks.setState.call(dismissSelection);
-      }
+      },
     });
 
-    hooks.prepareDragStart.tap("DragPlugin", sourceBlockKey => {
+    hooks.prepareDragStart.tap('DragPlugin', sourceBlockKey => {
       manager.prepare(sourceBlockKey);
     });
 
-    hooks.teardownDragDrop.tap("DragPlugin", () => {
+    hooks.teardownDragDrop.tap('DragPlugin', () => {
       manager.teardown();
     });
   };

@@ -1,8 +1,8 @@
-import { keyExtractor, blockKeyExtractor } from "./keyExtractor";
-import DropTarget from "./DropTarget";
-import { getNodeByOffsetKey } from "../../utils/findNode";
-import { generateOffsetKey } from "../../utils/keyHelper";
-import { bindEventsOnce } from "../../utils/event/bindEvents";
+import { keyExtractor, blockKeyExtractor } from './keyExtractor';
+import DropTarget from './DropTarget';
+import { getNodeByOffsetKey } from '../../utils/findNode';
+import { generateOffsetKey } from '../../utils/keyHelper';
+import { bindEventsOnce } from '../../utils/event/bindEvents';
 
 class DragDropManager {
   constructor({ getEditor, onUpdate }) {
@@ -28,21 +28,21 @@ class DragDropManager {
   };
 
   prepareCandidateSourceHandler(blockKey) {
-    const listenerId = keyExtractor(blockKey, "source");
+    const listenerId = keyExtractor(blockKey, 'source');
     const offsetKey = generateOffsetKey(blockKey);
     const node = getNodeByOffsetKey(offsetKey);
 
     const teardown = bindEventsOnce(node, {
-      eventName: "mousedown",
+      eventName: 'mousedown',
       fn: e => {
         this.mousedownHandler(e, listenerId);
 
         // `mouseup` event handler should be bound after user's interaction..
         bindEventsOnce(window, {
-          eventName: "mouseup",
-          fn: this.globalMouseupHandler
+          eventName: 'mouseup',
+          fn: this.globalMouseupHandler,
         });
-      }
+      },
     });
     this.dragSourceListeners.push(teardown);
   }
@@ -57,7 +57,7 @@ class DragDropManager {
 
     this.onUpdate({
       targetBlockKey,
-      sourceBlockKey
+      sourceBlockKey,
     });
 
     this.committedDropTargetIds = new Set();
@@ -108,7 +108,7 @@ class DragDropManager {
     const targetListener = new DropTarget({
       blockKey,
       addDropTarget: this.addDropTarget,
-      removeDropTarget: this.removeDropTarget
+      removeDropTarget: this.removeDropTarget,
     });
     this.dropTargetListeners.push(targetListener);
   }

@@ -1,11 +1,11 @@
-import moveBlockBefore from "./moveBlockBefore";
-import moveBlockToSide from "./moveBlockToSide";
+import moveBlockBefore from './moveBlockBefore';
+import moveBlockToSide from './moveBlockToSide';
 
 const transferBlock = (
   editorState,
   sourceBlockKey,
   targetBlockKey,
-  position = "top"
+  position = 'top'
 ) => {
   const currentContent = editorState.getCurrentContent();
   const blockMap = currentContent.getBlockMap();
@@ -16,30 +16,31 @@ const transferBlock = (
   let newBlockMap;
 
   switch (position) {
-    case "top":
+    case 'top':
       newBlockMap = moveBlockBefore(blockMap, sourceBlockKey, targetBlockKey);
       break;
-    case "left":
+    case 'left':
       newBlockMap = moveBlockToSide(
         blockMap,
         sourceBlockKey,
         targetBlockKey,
-        "left"
+        'left'
       );
       break;
-    case "right":
+    case 'right':
       newBlockMap = moveBlockToSide(
         blockMap,
         sourceBlockKey,
         targetBlockKey,
-        "right"
+        'right'
       );
+      break;
     default:
     // ...
   }
 
   return currentContent.merge({
-    blockMap: newBlockMap
+    blockMap: newBlockMap,
   });
 };
 

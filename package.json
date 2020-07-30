@@ -1,43 +1,68 @@
 {
-  "name": "react-tapable-editor",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "medium like react tapable editor",
-  "main": "index.js",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=10"
+  },
   "scripts": {
-    "examples:basic": "DIR=basic EXT=js webpack-dev-server",
-    "lint": "./node_modules/.bin/eslint ./src/**/*.js",
-    "lint-fix": "./node_modules/.bin/eslint --fix ./src/**/*.js"
+    "start": "tsdx watch",
+    "build": "rimraf dist/ && tsdx build --name react-tapable-editor --format esm,cjs,umd",
+    "test": "tsdx test --passWithNoTests",
+    "lint": "tsdx lint --fix",
+    "prepare": "tsdx build",
+    "storybook": "start-storybook -p 6006 --debug-webpack",
+    "build-storybook": "build-storybook",
+    "examples:basic": "DIR=basic EXT=js webpack-dev-server"
+  },
+  "peerDependencies": {
+    "react": ">=16"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "pretty-quick --staged"
+      "pre-commit": "tsdx lint"
     }
   },
-  "author": "liuyouchao111@gmail.com",
-  "license": "ISC",
+  "prettier": {
+    "printWidth": 80,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
+  "name": "react-tapable-editor",
+  "author": "youchao liu",
+  "module": "dist/react-tapable-editor.esm.js",
   "dependencies": {
-    "@babel/core": "^7.5.5",
-    "@babel/plugin-proposal-class-properties": "^7.7.4",
-    "@babel/preset-env": "^7.5.5",
-    "@babel/preset-react": "^7.0.0",
-    "babel-loader": "^8.0.6",
+    "@types/classnames": "^2.2.10",
+    "@types/draft-js": "^0.10.43",
+    "@types/immutable": "^3.8.7",
+    "@types/invariant": "^2.2.33",
+    "@types/prismjs": "^1.16.1",
     "classnames": "^2.2.6",
     "draft-js": "^0.11.0",
-    "html-webpack-plugin": "^3.2.0",
     "immutable": "^4.0.0-rc.12",
     "invariant": "^2.2.4",
-    "jest": "^24.9.0",
     "prismjs": "^1.19.0",
-    "react": "^16.10.2",
-    "react-dom": "^16.10.2",
-    "sabar": "^0.3.2",
-    "ts-loader": "^6.0.4",
-    "webpack": "^4.39.3",
-    "webpack-cli": "^3.3.7",
-    "webpack-dev-server": "^3.8.0"
+    "sabar": "^0.5.4"
   },
   "devDependencies": {
-    "css-loader": "^3.4.1",
+    "@babel/core": "^7.10.4",
+    "@storybook/addon-actions": "^5.3.19",
+    "@storybook/addon-docs": "^5.3.19",
+    "@storybook/addon-info": "^5.3.19",
+    "@storybook/addon-links": "^5.3.19",
+    "@storybook/addons": "^5.3.19",
+    "@storybook/react": "^5.3.19",
+    "@types/react": "^16.9.42",
+    "@types/react-dom": "^16.9.8",
+    "babel-loader": "^8.1.0",
+    "css-loader": "^3.6.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb": "^18.0.1",
     "eslint-config-prettier": "^6.10.0",
@@ -46,9 +71,17 @@
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-react": "^7.18.3",
     "eslint-plugin-react-hooks": "^1.7.0",
-    "husky": "^4.2.3",
-    "prettier": "^1.19.1",
-    "pretty-quick": "^2.0.1",
-    "style-loader": "^1.1.2"
+    "husky": "^4.2.5",
+    "postcss-loader": "^3.0.0",
+    "react": "^16.13.1",
+    "react-docgen-typescript-loader": "^3.7.2",
+    "react-dom": "^16.13.1",
+    "react-is": "^16.13.1",
+    "rollup-plugin-postcss": "^3.1.3",
+    "style-loader": "^1.2.1",
+    "ts-loader": "^8.0.0",
+    "tsdx": "^0.13.2",
+    "tslib": "^2.0.0",
+    "typescript": "^3.9.6"
   }
 }
