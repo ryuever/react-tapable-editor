@@ -41,7 +41,7 @@ The original idea is to build an easy used rich text editor. `react-tapable-edit
 
 ```bash
 $ npm install
-$ npm run examples:basic
+$ npm run storybook
 ```
 
 ## FAQ

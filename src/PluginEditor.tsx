@@ -23,7 +23,7 @@ import DefaultHandleKeyCommandPlugin from './plugins/DefaultHandleKeyCommandPlug
 import InlineToolbarPlugin from './plugins/InlineToolbarPlugin';
 import LinkSpanDecoratorPlugin from './plugins/LinkSpanDecoratorPlugin';
 import LinkDecoratorPlugin from './plugins/LinkDecorator';
-// import SidebarPlugin from './plugins/sidebar-plugin';
+import SidebarPlugin from './plugins/sidebar-plugin';
 
 import StateFilterPlugin from './plugins/StateFilterPlugin';
 // import DragPlugin from "./plugins/drag-plugin";
@@ -64,7 +64,7 @@ const defaultPlugins = [
   // @ts-ignore
   new LinkDecoratorPlugin(),
   // @ts-ignore
-  // new SidebarPlugin(),
+  new SidebarPlugin(),
 
   new StateFilterPlugin(),
 
