@@ -82,13 +82,16 @@ const useResize = ({ nodeRef, props }: HooksProps) => {
   const nodeRefCopy = nodeRef.current;
 
   useEffect(() => {
-    nodeRefCopy!.addEventListener('mouseenter', onMouseEnterContainer);
-    nodeRefCopy!.addEventListener('mouseleave', onMouseLeaveContainer);
+    if (nodeRefCopy) {
+      nodeRefCopy.addEventListener('mouseenter', onMouseEnterContainer);
+      nodeRefCopy.addEventListener('mouseleave', onMouseLeaveContainer);
 
-    return () => {
-      nodeRefCopy!.removeEventListener('mouseenter', onMouseEnterContainer);
-      nodeRefCopy!.removeEventListener('mouseleave', onMouseLeaveContainer);
-    };
+      return () => {
+        nodeRefCopy!.removeEventListener('mouseenter', onMouseEnterContainer);
+        nodeRefCopy!.removeEventListener('mouseleave', onMouseLeaveContainer);
+      };
+    }
+    return () => {};
   }, [nodeRefCopy, onMouseEnterContainer, onMouseLeaveContainer]);
 
   const resolveAlignment = useCallback(() => {
@@ -119,6 +122,7 @@ const useResize = ({ nodeRef, props }: HooksProps) => {
           nextWidth.current = `${layout.current.width + deltaX}px`;
         }
       }
+
       if (nextWidth.current) nodeRef.current!.style.width = nextWidth.current;
     },
     [nodeRef, resolveAlignment]

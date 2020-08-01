@@ -2,8 +2,7 @@ import BlockStyleFnPlugin from '../plugins/BlockStyleFnPlugin';
 import SelectionChangePlugin from '../plugins/SelectionChangePlugin';
 import CustomStyleMapPlugin from '../plugins/CustomStyleMapPlugin';
 import BlockRenderMapPlugin from '../plugins/block-render-map-plugin';
-// import StyleControlPlugin from "../plugins/StyleControlPlugin";
-// import HandleDroppedFilesPlugin from "../plugins/HandleDroppedFilesPlugin";
+import HandleDroppedFilesPlugin from '../plugins/HandleDroppedFilesPlugin';
 import AddImagePlugin from '../plugins/AddImagePlugin';
 import DefaultHandleKeyCommandPlugin from '../plugins/DefaultHandleKeyCommandPlugin';
 
@@ -29,8 +28,9 @@ const defaultPlugins = [
   new BlockRenderMapPlugin(),
 
   // @ts-ignore
+  new HandleDroppedFilesPlugin(),
+  // @ts-ignore
   new AddImagePlugin(),
-  // new HandleDroppedFilesPlugin(),
 
   // 对于keyCommand的一个兜底行为
   // @ts-ignore

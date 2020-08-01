@@ -42,8 +42,6 @@ const createEditor: any = (defaultPlugins: any[]) =>
     constructor(props: PluginEditorProps) {
       super(props);
       const { plugins = [] } = props;
-      console.log('plugisn ', defaultPlugins);
-
       this.plugins = plugins.concat(defaultPlugins);
       this.customStyleMap = null;
       this.blockRenderMap = null;

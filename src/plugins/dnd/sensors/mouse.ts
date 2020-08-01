@@ -72,6 +72,7 @@ class Mouse {
         event.preventDefault();
         const draggerId = el.getAttribute('data-dragger-id');
         const dragger = this.getDragger(draggerId as string);
+        if (!dragger) return;
         const vContainer = dragger.container;
         const liftUpVDraggerIndex = vContainer.children.findIndex(dragger);
 
