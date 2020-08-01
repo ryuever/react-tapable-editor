@@ -3,25 +3,26 @@
 import { EditorState } from 'draft-js';
 import { getNodeByBlockKey } from '../findNode';
 import { generateOffsetKey } from '../keyHelper';
-import { SafeArea } from '../../types';
+import { SafeArea, BlockNodeMap } from '../../types';
 
 export default function getBoundingRectWithSafeArea(
   editorState: EditorState,
   safeArea = 100
 ) {
   const currentState = editorState.getCurrentContent();
-  const blockMap = currentState.getBlockMap();
+  const blockMap = currentState.getBlockMap() as BlockNodeMap;
 
   // mainly, used to display sidebar
   const shiftLeft = [] as SafeArea[];
   // mainly, used to display drop direction bar..
   const shiftRight = [] as SafeArea[];
 
-  blockMap.toArray().forEach(block => {
+  blockMap.toArray().forEach(arr => {
+    const block = arr[1];
     const blockKey = block.getKey();
     const offsetKey = generateOffsetKey(blockKey);
     const node = getNodeByBlockKey(blockKey);
-    const childrenSize = block.children.size;
+    const childrenSize = block.getChildKeys().size;
 
     // node with children should be omitted.
     if (!node || childrenSize) return;

@@ -1,4 +1,4 @@
-import { List } from 'immutable';
+import { List, Map } from 'immutable';
 import createEmptyBlockNode from './createEmptyBlockNode';
 import blockMutationUtil from './blockMutationUtil';
 import blockUtil from './blockUtil';
@@ -23,12 +23,12 @@ const wrapBlock = (
   const parentBlockKey = targetBlock.getParentKey();
   const parentBlock = blockMap.get(parentBlockKey);
 
-  let parentData: WrapperProps;
+  let parentData: WrapperProps = Map<undefined, undefined>();
   if (parentBlock) {
     parentData = parentBlock.getData();
   }
 
-  if (!parentData || !parentData.flexRow) {
+  if (!parentData || !parentData.get('flexRow')) {
     const containerBlock = createEmptyBlockNode().merge({
       data: {
         flexRow: true,
@@ -52,7 +52,7 @@ const wrapBlock = (
 
       blockMap = blockMap.set(
         parentKey,
-        block.merge({
+        parentBlock.merge({
           children: List(newChildrenArray),
         })
       );

@@ -75,6 +75,18 @@ export interface DraggerDimension {
   rect: RectObject;
   top?: number;
   left?: number;
+  firstCollisionRect?: {
+    top: number;
+    right: number;
+    bottom: number;
+    left: number;
+  };
+  secondCollisionRect?: {
+    top: number;
+    right: number;
+    bottom: number;
+    left: number;
+  };
 }
 
 export interface Sorter<T> {
@@ -153,8 +165,8 @@ export interface GetClone {
 }
 
 export interface MoveHandlerOutput {
-  dragger: HTMLDivElement;
-  candidateDragger: HTMLDivElement;
+  dragger: HTMLElement;
+  candidateDragger: HTMLElement;
   placedPosition: Position;
 }
 

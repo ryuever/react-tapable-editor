@@ -5,8 +5,8 @@ import { extractBlockKeyFromOffsetKey } from '../../utils/keyHelper';
 import { Orientation, GetEditor, Position, Mode } from '../../types';
 
 function DNDPlugin() {
-  let verticalIndicator: HTMLDivElement;
-  let horizontalIndicator: HTMLDivElement;
+  let verticalIndicator: HTMLElement;
+  let horizontalIndicator: HTMLElement;
 
   const createIndicatorBar = () => {
     verticalIndicator = document.createElement('div');
@@ -21,9 +21,9 @@ function DNDPlugin() {
     container,
     placedPosition,
   }: {
-    dragger: HTMLDivElement;
-    candidateDragger: HTMLDivElement;
-    container: HTMLDivElement;
+    dragger: HTMLElement;
+    candidateDragger: HTMLElement;
+    container: HTMLElement;
     placedPosition: Position;
   }) => {
     const draggerOffsetKey = dragger.getAttribute('data-offset-key');
@@ -52,7 +52,7 @@ function DNDPlugin() {
           candidateDragger,
           placedPosition,
         }: {
-          dragger: HTMLDivElement;
+          dragger: HTMLElement;
           candidateDragger: HTMLElement;
           placedPosition: Position;
         }) => {
@@ -93,7 +93,7 @@ function DNDPlugin() {
             draggerSelector: '[data-contents="true"]  .miuffy-paragraph',
             impactDraggerEffect: options => {
               const { dimension, placedPosition } = options;
-              const { top, right, left, height } = dimension;
+              const { top, right, left, height = 0 } = dimension;
               logger(options);
               requestAnimationFrame(() => {
                 if (placedPosition === 'top') {

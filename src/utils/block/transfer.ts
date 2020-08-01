@@ -1,7 +1,7 @@
 import { EditorState } from 'draft-js';
 import horizontalTransfer from './horizontalTransfer';
 import verticalTransfer from './verticalTransfer';
-import { Position } from '../../types';
+import { Position, ContentNodeState } from '../../types';
 
 const requiredError = (prop: EditorState | string | Position) => {
   throw new Error(`${prop} is required in transfer function`);
@@ -17,7 +17,7 @@ const transfer = (
   if (!sourceBlockKey) requiredError('sourceBlockKey');
   if (!targetBlockKey) requiredError('targetBlockKey');
   if (!position) requiredError('position');
-  const currentState = editorState.getCurrentContent();
+  const currentState = editorState.getCurrentContent() as ContentNodeState;
 
   let blockMap;
   switch (position) {

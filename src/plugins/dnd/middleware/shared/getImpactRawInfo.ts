@@ -66,7 +66,7 @@ const getRawInfo = ({
       if (isNested && orientation === 'horizontal') {
         // console.log('vDragger.dimension ', vDragger.dimension, impactPoint)
         const { firstCollisionRect, secondCollisionRect } = vDragger.dimension;
-        if (within(firstCollisionRect, impactPoint)) {
+        if (within(firstCollisionRect!, impactPoint)) {
           DEBUG && console.log('hit before ', vContainer.id);
           return {
             candidateVDragger: vDragger,
@@ -76,7 +76,7 @@ const getRawInfo = ({
           };
         }
 
-        if (within(secondCollisionRect, impactPoint)) {
+        if (within(secondCollisionRect!, impactPoint)) {
           DEBUG && console.log('hit after ', vContainer.id);
           return {
             candidateVDragger: vDragger,

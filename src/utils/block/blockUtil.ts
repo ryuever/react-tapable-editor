@@ -47,7 +47,7 @@ const BlockUtil = {
 
     const lastBlockWithNullParent = findLastBlockWithNullParent(currentState);
     if (lastBlockWithNullParent) {
-      let blockToUpdate = lastBlockWithNullParent.last();
+      let blockToUpdate = lastBlockWithNullParent.last<ContentBlockNode>();
       const blockToUpdateKey = blockToUpdate.getKey();
       blockBelow = blockBelow.merge({
         prevSibling: blockToUpdateKey,

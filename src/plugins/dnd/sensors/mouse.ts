@@ -4,7 +4,7 @@ import { hasDraggerHandlerMatched } from './utils';
 import {
   MoveAPI,
   GetClone,
-  Config,
+  ResultConfig,
   Impact,
   MoveHandlerOutput,
   ResultDNDConfig,
@@ -21,7 +21,7 @@ class Mouse {
   private onStartHandler: Sabar;
   private onMoveHandler: Sabar;
   private getDragger: (id: string) => Dragger;
-  private configs: Config[];
+  private configs: ResultConfig[];
   private dndEffects: DndEffects;
   private updateImpact: (impact: Impact) => void;
   private dndConfig: ResultDNDConfig;
@@ -42,7 +42,7 @@ class Mouse {
     onStartHandler: Sabar;
     onMoveHandler: Sabar;
     getDragger: (id: string) => Dragger;
-    configs: Config[];
+    configs: ResultConfig[];
     dndEffects: DndEffects;
     updateImpact: (impact: Impact) => void;
     dndConfig: ResultDNDConfig;

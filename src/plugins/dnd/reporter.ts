@@ -23,7 +23,9 @@ function reporter() {
     );
   };
 
-  const manipulateNode = (action: string, name: string) => node => {
+  const manipulateNode = (action: string, name: string) => (
+    node: HTMLElement
+  ) => {
     console.log(`${capitalize(action)} ${name} node`, node);
   };
 
