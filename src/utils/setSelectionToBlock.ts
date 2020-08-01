@@ -1,8 +1,10 @@
 import { SelectionState, EditorState } from 'draft-js';
+// @ts-ignore
 import DraftOffsetKey from 'draft-js/lib/DraftOffsetKey';
+import { ContentBlockNode } from '../types';
 
 // Set selection of editor to next/previous block
-export default (editorState, contentBlock) => {
+export default (editorState: EditorState, contentBlock: ContentBlockNode) => {
   const blockKey = contentBlock.getKey();
   // TODO verify that always a key-0-0 exists
   const offsetKey = DraftOffsetKey.encode(blockKey, 0, 0);
@@ -13,12 +15,12 @@ export default (editorState, contentBlock) => {
   const range = document.createRange();
   range.setStart(node, 0);
   range.setEnd(node, 0);
-  selection.removeAllRanges();
-  selection.addRange(range);
+  selection!.removeAllRanges();
+  selection!.addRange(range);
 
   return EditorState.forceSelection(
     editorState,
-    new SelectionState({
+    new SelectionState().merge({
       anchorKey: blockKey,
       anchorOffset: 0,
       focusKey: blockKey,
