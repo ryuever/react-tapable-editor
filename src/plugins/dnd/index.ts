@@ -137,10 +137,8 @@ class DND {
       handleReorderOnHomeContainer,
       handleReorderOnOtherContainer,
       handleImpactDraggerEffect,
-      removeIntermediateCtxValue
-      // (_: any, ctx: object) => {
-      //   console.log("ctx ", ctx);
-      // }
+      removeIntermediateCtxValue,
+      () => {}
     );
 
     this.initSensor();

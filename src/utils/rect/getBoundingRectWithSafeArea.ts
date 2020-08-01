@@ -17,8 +17,7 @@ export default function getBoundingRectWithSafeArea(
   // mainly, used to display drop direction bar..
   const shiftRight = [] as SafeArea[];
 
-  blockMap.toArray().forEach(arr => {
-    const block = arr[1];
+  blockMap.forEach(block => {
     const blockKey = block.getKey();
     const offsetKey = generateOffsetKey(blockKey);
     const node = getNodeByBlockKey(blockKey);
