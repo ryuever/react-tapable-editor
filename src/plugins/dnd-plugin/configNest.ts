@@ -52,7 +52,7 @@ function DNDPlugin() {
           candidateDragger,
           placedPosition,
         }: {
-          dragger: HTMLElement;
+          dragger: HTMLDivElement;
           candidateDragger: HTMLElement;
           placedPosition: Position;
         }) => {

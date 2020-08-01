@@ -153,8 +153,8 @@ export interface GetClone {
 }
 
 export interface MoveHandlerOutput {
-  dragger: HTMLElement;
-  candidateDragger: HTMLElement;
+  dragger: HTMLDivElement;
+  candidateDragger: HTMLDivElement;
   placedPosition: Position;
 }
 
