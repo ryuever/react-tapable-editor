@@ -15,6 +15,8 @@ function insertBlockBefore(
   const sourceBlockKey = sourceBlock.getKey();
   const targetBlockKey = targetBlock.getKey();
   const targetParentKey = targetBlock.getParentKey();
+  const targetOriginPrevSibling = targetBlock.getPrevSiblingKey();
+  const targetOriginNextSibling = targetBlock.getNextSiblingKey();
 
   const newBlockMap = blocksBefore
     .concat([
@@ -27,7 +29,7 @@ function insertBlockBefore(
   return newBlockMap.withMutations(function(blocks) {
     blockMutationUtil.transformBlock(sourceBlockKey, blocks, function(block) {
       return block.merge({
-        prevSibling: targetBlock.getPrevSiblingKey(),
+        prevSibling: targetOriginPrevSibling,
         nextSibling: targetBlockKey,
       });
     });
@@ -45,6 +47,7 @@ function insertBlockBefore(
     blockMutationUtil.transformBlock(targetBlockKey, blocks, function(block) {
       return block.merge({
         prevSibling: sourceBlockKey,
+        nextSibling: targetOriginNextSibling,
       });
     });
 

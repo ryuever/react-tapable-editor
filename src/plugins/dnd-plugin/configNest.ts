@@ -41,10 +41,6 @@ function DNDPlugin() {
     createIndicatorBar();
     const { hooks } = getEditor();
 
-    const { editorState } = getEditor();
-    const contentState = editorState.getCurrentContent();
-    console.log('block ', contentState.getBlockMap());
-
     hooks.afterMounted.tap('initDNDPlugin', () => {
       new DND({
         onDrop: ({
@@ -112,7 +108,7 @@ function DNDPlugin() {
                 horizontalIndicator.style.width = `${right - left}px`;
                 horizontalIndicator.style.height = `3px`;
                 horizontalIndicator.style.left = `${left - 10}px`;
-                horizontalIndicator.style.backgroundColor = '#69c0ff';
+                horizontalIndicator.style.backgroundColor = '#722ed1';
                 horizontalIndicator.style.opacity = '1';
                 horizontalIndicator.style.transition = 'opacity 1000ms ease-in';
               });
