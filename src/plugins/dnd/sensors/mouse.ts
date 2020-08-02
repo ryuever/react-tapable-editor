@@ -86,39 +86,44 @@ class Mouse {
             // target should be moved by mousemove event.
             eventName: 'mousemove',
             fn: (event: MouseEvent) => {
-              // ts-hint: https://stackoverflow.com/questions/41110144/property-clientx-does-not-exist-on-type-event-angular2-directive
-              const impactPoint = [event.clientX, event.clientY];
-              event.preventDefault();
-              event.stopPropagation();
-              const isHomeContainer = (vContainer: Container) => {
-                return vContainer
-                  ? vContainer.id === dragger.container.id
-                  : false;
-              };
+              try {
+                // ts-hint: https://stackoverflow.com/questions/41110144/property-clientx-does-not-exist-on-type-event-angular2-directive
+                const impactPoint = [event.clientX, event.clientY];
+                event.preventDefault();
+                event.stopPropagation();
+                const isHomeContainer = (vContainer: Container) => {
+                  return vContainer
+                    ? vContainer.id === dragger.container.id
+                    : false;
+                };
 
-              const result = this.onMoveHandler.start({
-                // event,
-                impactPoint,
-                impactVDragger: dragger,
-                liftUpVDragger: dragger,
-                liftUpVDraggerIndex,
-                dragger,
-                clone,
-                isHomeContainer,
-                ...this.moveAPI(),
-              }) as MoveHandlerResult;
+                const result = this.onMoveHandler.start({
+                  // event,
+                  impactPoint,
+                  impactVDragger: dragger,
+                  liftUpVDragger: dragger,
+                  liftUpVDraggerIndex,
+                  dragger,
+                  clone,
+                  isHomeContainer,
+                  ...this.moveAPI(),
+                }) as MoveHandlerResult;
 
-              const { impact } = result;
-              output = result.output;
-              if (impact) this.updateImpact(impact);
+                const { impact } = result;
+                output = result.output;
+                if (impact) this.updateImpact(impact);
+              } catch (err) {
+                console.log('err', err);
+              }
             },
           },
           {
             eventName: 'mouseup',
             fn: () => {
               unbind();
+              const { dragger } = output || {};
 
-              if (this.dndConfig.onDrop) {
+              if (this.dndConfig.onDrop && dragger) {
                 this.dndConfig.onDrop(output);
               }
 

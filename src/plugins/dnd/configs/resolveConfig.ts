@@ -19,6 +19,7 @@ const reservedKeys = [
   'containerEffect',
   'draggerEffect',
   'impactDraggerEffect',
+  'impactContainerEffect',
 ];
 
 export default (configs: Config[], props: DNDConfig): ResultConfig[] => {

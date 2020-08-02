@@ -34,7 +34,6 @@ const handleLeaveHomeContainer = (args: any, ctx: object, actions: Action) => {
   // Don't care prev index, reset all the effects on the items before
   // `liftUpVDraggerIndex`
   effectsManager!.clearDownstreamEffects();
-  effectsManager!.clearImpactContainerEffects();
   if (typeof draggerEffect === 'function') {
     const upstreamStartIndex = Math.max(liftUpVDraggerIndex + 1, index!);
     const len = children.getSize();
