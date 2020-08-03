@@ -29,7 +29,9 @@ const InlineToolbar: FC<InlineToolbarProps> = props => {
 
       if (editorState) {
         const { styles, hasLink } = getInlineToolbarInlineInfo(editorState);
-        nextValue.styles = styles;
+        if (styles) {
+          nextValue.styles = styles as any;
+        }
         nextValue.hasLink = hasLink;
         nextValue.blockTypes = getSelectionBlockTypes(editorState);
       } else {

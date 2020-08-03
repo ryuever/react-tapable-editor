@@ -6,7 +6,7 @@ import insertBlockBefore from './insertBlockBefore';
 import insertBlockAfter from './insertBlockAfter';
 import createEmptyBlockNode from './createEmptyBlockNode';
 import appendChild from './appendChild';
-import { Position } from '../../types';
+import { Position, BlockNodeMap, Direction } from '../../types';
 
 const horizontalTransfer = (
   editorState: EditorState,
@@ -15,12 +15,12 @@ const horizontalTransfer = (
   direction: Position
 ) => {
   const currentState = editorState.getCurrentContent();
-  let blockMap = currentState.getBlockMap();
+  let blockMap = currentState.getBlockMap() as BlockNodeMap;
   const sourceBlock = blockMap.get(sourceBlockKey);
   blockMap = removeBlock(blockMap, sourceBlockKey);
-  blockMap = wrapBlock(blockMap, targetBlockKey, 'column');
-  const parentKey = blockMap.get(targetBlockKey).parent;
-  blockMap = wrapBlock(blockMap, parentKey, 'row');
+  blockMap = wrapBlock(blockMap, targetBlockKey, Direction.Column);
+  const parentKey = blockMap!.get(targetBlockKey)!.getParentKey();
+  blockMap = wrapBlock(blockMap, parentKey, Direction.Row);
 
   const containerBlock = createEmptyBlockNode().merge({
     data: {
@@ -42,13 +42,13 @@ const horizontalTransfer = (
       break;
   }
 
-  blockMap = fn.call(null, blockMap, blockMap.get(parentKey), containerBlock);
+  if (typeof fn === 'function')
+    blockMap = fn.call(null, blockMap, blockMap.get(parentKey), containerBlock);
+  const parentBlock = blockMap.get(containerBlock.getKey());
 
-  blockMap = appendChild(
-    blockMap,
-    blockMap.get(containerBlock.getKey()),
-    sourceBlock
-  );
+  if (parentBlock && sourceBlock) {
+    blockMap = appendChild(blockMap, parentBlock, sourceBlock);
+  }
 
   return blockMap;
 };

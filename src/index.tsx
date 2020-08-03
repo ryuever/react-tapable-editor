@@ -1,3 +1,3 @@
-import PluginEditor from './PluginEditor';
+import ModernEditor from './editor/ModernEditor';
 
-export default PluginEditor;
+export default ModernEditor;

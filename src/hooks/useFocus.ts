@@ -5,6 +5,16 @@ import './styles/useFocus.css';
 import { HooksProps } from '../types';
 
 const useFocus = ({ nodeRef, props }: HooksProps) => {
+  const isMounted = useRef(false);
+
+  // TODO: tapable could not be clear on unmount...
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+
   const { blockProps, block } = props;
   const { getEditor } = blockProps;
   const { hooks } = getEditor();
@@ -15,15 +25,6 @@ const useFocus = ({ nodeRef, props }: HooksProps) => {
   const setState = useCallback(falsy => {
     setFocus(falsy);
     focusedRef.current = falsy;
-  }, []);
-  const isMounted = useRef(false);
-
-  // TODO: tapable could not be clear on unmount...
-  useEffect(() => {
-    isMounted.current = true;
-    return () => {
-      isMounted.current = false;
-    };
   }, []);
 
   const delaySetState = useCallback(
@@ -88,10 +89,13 @@ const useFocus = ({ nodeRef, props }: HooksProps) => {
   // In this condition. you'd better use a copy value...
   const nodeRefCopy = nodeRef.current;
   useEffect(() => {
-    nodeRefCopy!.addEventListener('click', handleClick);
-    return () => {
-      nodeRefCopy!.removeEventListener('click', handleClick);
-    };
+    if (nodeRefCopy) {
+      nodeRefCopy!.addEventListener('click', handleClick);
+      return () => {
+        nodeRefCopy!.removeEventListener('click', handleClick);
+      };
+    }
+    return () => {};
   }, [handleClick, nodeRefCopy]);
 
   // update className after all

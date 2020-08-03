@@ -63,6 +63,9 @@ function SidebarPlugin() {
         const { offsetKey } = nodeInfo;
         const node = getNodeByOffsetKey(offsetKey) as HTMLElement;
         if (current && current.node === node) return;
+
+        // Compare the current node with existing node. if it is not the same, it means
+        // cursor moves to other block. So we should removeNode...
         if (current && current.node !== node) removeNode();
 
         const child = createAddOn(offsetKey);

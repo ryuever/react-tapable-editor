@@ -18,7 +18,9 @@ function appendChild(
 
   const childrenBlocks = blockUtil.getChildrenBlocks(blockMap, parentBlock);
 
-  const lastBlock = childrenBlocks.size ? childrenBlocks.last() : parentBlock;
+  const lastBlock = childrenBlocks.size
+    ? childrenBlocks.last<ContentBlockNode>()
+    : parentBlock;
   const blocksAfter = blockUtil.blocksAfter(blockMap, lastBlock);
 
   const newBlockMap = blocksBefore

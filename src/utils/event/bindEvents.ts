@@ -21,10 +21,19 @@ export function bindEvents(
   const nextBindings = empty.concat(bindings);
   const unBindings = nextBindings.map(binding => {
     const options = getOptions(sharedOptions, binding.options);
-    el.addEventListener(binding.eventName, binding.fn, options);
+    // ts-hint: https://github.com/microsoft/TypeScript/issues/28357#issuecomment-436484705
+    el.addEventListener(
+      binding.eventName,
+      binding.fn as EventListener,
+      options
+    );
 
     return function unbind() {
-      el.removeEventListener(binding.eventName, binding.fn, options);
+      el.removeEventListener(
+        binding.eventName,
+        binding.fn as EventListener,
+        options
+      );
     };
   });
 
@@ -46,15 +55,19 @@ export function bindEventsOnce(
     const options = getOptions(sharedOptions, binding.options);
     let unbind = () => {};
 
-    const wrappedFn = (e: Event) => {
+    const wrappedFn = (e: MouseEvent) => {
       binding.fn.call(null, e);
       unbind();
     };
 
-    el.addEventListener(binding.eventName, wrappedFn, options);
+    el.addEventListener(binding.eventName, wrappedFn as EventListener, options);
 
     unbind = () =>
-      el.removeEventListener(binding.eventName, wrappedFn, options);
+      el.removeEventListener(
+        binding.eventName,
+        wrappedFn as EventListener,
+        options
+      );
 
     return unbind;
   });

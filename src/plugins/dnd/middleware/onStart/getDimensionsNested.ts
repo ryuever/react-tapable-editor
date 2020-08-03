@@ -8,7 +8,7 @@ import { Action } from 'sabar';
 export default (ctx: object, actions: Action) => {
   const context = ctx as OnStartHandlerContext;
   const { vDraggers, dndConfig } = context;
-  const { mode, collisionPadding } = dndConfig;
+  const { mode, collisionPadding = 0 } = dndConfig;
 
   if (mode !== 'nested') {
     actions.next();

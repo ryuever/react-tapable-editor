@@ -1,8 +1,6 @@
 import { EditorState } from 'draft-js';
 import { RefObject } from 'react';
 import getSelectionRectRelativeToOffsetParent from '../utils/rect/getSelectionRectRelativeToOffsetParent';
-import clamp from '../helpers/clamp';
-import getRootNode from '../utils/rect/getRootNode';
 import { GetEditor, EditorRef } from '../types';
 
 function InlineToolbar() {
@@ -82,17 +80,10 @@ function InlineToolbar() {
         const inlineToolbarHeight = inlineToolbarRef.current.offsetHeight;
         const inlineToolbarWidth = inlineToolbarRef.current.offsetWidth;
         const nextTop = top - inlineToolbarHeight - 15;
-        const rootNode = getRootNode(editorRef);
 
-        // TODO
-        const { offsetLeft } = rootNode as HTMLElement;
-
-        // 考虑到left的最小和最大值的边界
-        const minLeft = 0;
-        const maxLeft = offsetLeft - inlineToolbarRef.current.offsetWidth;
         const tmpLeft = left - inlineToolbarWidth / 2 + width / 2;
 
-        const nextLeft = clamp(tmpLeft, minLeft, maxLeft);
+        const nextLeft = Math.max(tmpLeft, 0);
 
         inlineToolbarRef.current.style.top = `${nextTop}px`;
         inlineToolbarRef.current.style.left = `${nextLeft}px`;

@@ -13,7 +13,7 @@ function BlockStyleFnPlugin() {
       const isDataWrapper = blockData.get('data-wrapper');
       const dataDirection = blockData.get('data-direction');
 
-      if (block.children.size && isDataWrapper) {
+      if (block.getChildKeys().size && isDataWrapper) {
         cls.push(`data-wrapper-${dataDirection}`);
       }
 

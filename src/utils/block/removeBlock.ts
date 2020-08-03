@@ -38,7 +38,7 @@ function removeBlock(
 
   newBlockMap.withMutations(function(blocks) {
     blockMutationUtil.transformBlock(parentKey, blocks, function(block) {
-      blockMutationUtil.deleteFromChildrenList(block, blockKey);
+      return blockMutationUtil.deleteFromChildrenList(block, blockKey);
     });
   });
 
@@ -51,21 +51,21 @@ function removeBlock(
 
   return newBlockMap.withMutations(function(blocks) {
     blockMutationUtil.transformBlock(
-      blockToRemove.getPrevSiblingKey(),
+      blockToRemove!.getPrevSiblingKey(),
       blocks,
       function(block) {
         return block.merge({
-          nextSibling: blockToRemove.getNextSiblingKey(),
+          nextSibling: blockToRemove!.getNextSiblingKey(),
         });
       }
     );
 
     blockMutationUtil.transformBlock(
-      blockToRemove.getNextSiblingKey(),
+      blockToRemove!.getNextSiblingKey(),
       blocks,
       function(block) {
         return block.merge({
-          prevSibling: blockToRemove.getPrevSiblingKey(),
+          prevSibling: blockToRemove!.getPrevSiblingKey(),
         });
       }
     );

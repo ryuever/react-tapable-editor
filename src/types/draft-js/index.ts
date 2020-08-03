@@ -57,7 +57,7 @@ export interface DraftDecoratorType {
  */
 export interface ContentBlockNode
   extends Immutable.Record<{
-    parent: null;
+    parent: null | string;
     characterList: Immutable.List<CharacterMetadata>;
     data: { [key: string]: any };
     depth: number;
@@ -65,8 +65,8 @@ export interface ContentBlockNode
     text: string;
     type: string;
     children: Immutable.List<string>;
-    prevSibling: null;
-    nextSibling: null;
+    prevSibling: string | null;
+    nextSibling: string | null;
   }> {
   getChildKeys(): Immutable.List<string>;
   getParentKey(): string;

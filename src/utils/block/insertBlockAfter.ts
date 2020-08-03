@@ -19,7 +19,9 @@ function insertBlockAfter(
   const targetBlockKey = targetBlock.getKey();
 
   const childrenBlocks = blockUtil.getChildrenBlocks(blockMap, targetBlock);
-  const lastBlock = childrenBlocks.size ? childrenBlocks.last() : targetBlock;
+  const lastBlock = childrenBlocks.size
+    ? childrenBlocks.last<ContentBlockNode>()
+    : targetBlock;
   const blocksAfter = blockUtil.blocksAfter(blockMap, lastBlock);
 
   const newBlockMap = blocksBefore

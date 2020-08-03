@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react';
 import getRootNode from '../utils/rect/getRootNode';
-import clamp from '../helpers/clamp';
 import { HooksProps } from '../types';
 
 const useAlignment = ({ nodeRef, props }: HooksProps) => {
@@ -50,7 +49,9 @@ const useAlignment = ({ nodeRef, props }: HooksProps) => {
 
   const showToolbar = useCallback(() => {
     const rootNode = getRootNode(editorRef) as HTMLElement;
-    const nodeRect = nodeRef.current!.getBoundingClientRect();
+    if (!nodeRef.current) return;
+
+    const nodeRect = nodeRef.current.getBoundingClientRect();
 
     const rootOffsetTop = rootNode.offsetTop;
     const rootOffsetLeft = rootNode.offsetLeft;
@@ -68,16 +69,10 @@ const useAlignment = ({ nodeRef, props }: HooksProps) => {
     const alignmentToolbarWidth = alignmentBarRef.current!.offsetWidth;
     const nextTop = top - alignmentToolbarHeight - 15;
 
-    // TODO ------
-    const { offsetLeft } = rootNode;
-    // const { offsetRight } = rootNode;
-
     // 考虑到left的最小和最大值的边界
-    const minLeft = 0;
-    const maxLeft = offsetLeft - alignmentBarRef.current!.offsetWidth;
     const tmpLeft = left - alignmentToolbarWidth / 2 + width / 2;
 
-    const nextLeft = clamp(tmpLeft, minLeft, maxLeft);
+    const nextLeft = Math.max(0, tmpLeft);
 
     alignmentBarRef.current!.style.top = `${nextTop}px`;
     alignmentBarRef.current!.style.left = `${nextLeft}px`;
@@ -104,14 +99,7 @@ const useAlignment = ({ nodeRef, props }: HooksProps) => {
         onMouseLeaveHandler.current
       );
     };
-  }, [
-    block,
-    editorRef,
-    hooks.toggleImageToolbarVisible,
-    nodeRef,
-    onMouseEnterHandler,
-    onMouseLeaveHandler,
-  ]);
+  }, [block, editorRef, hooks.toggleImageToolbarVisible, nodeRef]);
 
   const hideToolbar = useCallback(() => {
     hideBarTimeoutHandler.current = setTimeout(() => {
@@ -125,29 +113,34 @@ const useAlignment = ({ nodeRef, props }: HooksProps) => {
 
   // To make nodeRef react to `mouseenter` and `mouseleave` event.
   useEffect((): { (): void } => {
-    nodeRef.current!.addEventListener(
-      'mouseenter',
-      onMouseEnterHandler.current
-    );
-    // TODO: should fix...when resize component...mouseleave may not trigger...
-    nodeRef.current!.addEventListener(
-      'mouseleave',
-      onMouseLeaveHandler.current
-    );
-
-    if (mouseEnterRemoverRef.current) mouseEnterRemoverRef.current();
-    mouseEnterRemoverRef.current = () => {
-      nodeRef.current!.removeEventListener(
+    if (nodeRef.current) {
+      nodeRef.current.addEventListener(
         'mouseenter',
         onMouseEnterHandler.current
       );
-      nodeRef.current!.removeEventListener(
+      // TODO: should fix...when resize component...mouseleave may not trigger...
+      nodeRef.current.addEventListener(
         'mouseleave',
         onMouseLeaveHandler.current
       );
-      mouseEnterRemoverRef.current = null;
-    };
-    return mouseEnterRemoverRef.current;
+
+      mouseEnterRemoverRef.current = () => {
+        if (nodeRef.current) {
+          nodeRef.current.removeEventListener(
+            'mouseenter',
+            onMouseEnterHandler.current
+          );
+          nodeRef.current.removeEventListener(
+            'mouseleave',
+            onMouseLeaveHandler.current
+          );
+        }
+        mouseEnterRemoverRef.current = null;
+      };
+      return mouseEnterRemoverRef.current;
+    }
+
+    return () => {};
   }, [nodeRef, onMouseEnterHandler, onMouseLeaveHandler]);
 };
 

@@ -1,5 +1,5 @@
 import { orientationToMeasure } from '../../../utils';
-import { generateEffectKey } from './utils';
+import { generateDraggerEffectKey } from './utils';
 import Dragger from '../../../Dragger';
 import { Action } from 'sabar';
 import { OnMoveHandleContext, OnMoveArgs } from 'types';
@@ -30,7 +30,7 @@ const handleImpactDraggerEffect = (args: any, ctx: object, actions: Action) => {
   const positionIndex = measure.indexOf(impactPosition as string);
 
   if (typeof impactDraggerEffect === 'function') {
-    const effectKey = generateEffectKey(
+    const effectKey = generateDraggerEffectKey(
       impactVContainer,
       candidateVDragger as Dragger,
       impactPosition as any

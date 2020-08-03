@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useEffect, FC } from 'react';
-import { Editor } from 'draft-js';
+import { Editor, DraftHandleValue } from 'draft-js';
 import Title from './components/title';
 
 // `ImageToolbar`, `InlineToolbar` and `Sidebar` only has one instance.
@@ -108,6 +108,17 @@ const NewEditor: FC<EditorProps> = props => {
     [getEditor, hooks.blockRendererFn]
   );
 
+  /**
+   * To trigger `addImage`
+   */
+  const handleDroppedFiles = useCallback(
+    (dropSelection, files): DraftHandleValue => {
+      hooks.handleDroppedFiles.call(editorState, dropSelection, files);
+      return 'handled';
+    },
+    [editorState, hooks.handleDroppedFiles]
+  );
+
   return (
     <div className="miuffy-editor-root">
       <div className="miuffy-editor">
@@ -120,6 +131,7 @@ const NewEditor: FC<EditorProps> = props => {
           blockRendererFn={handleBlockRender}
           onChange={onChange}
           handleKeyCommand={handleKeyCommand}
+          handleDroppedFiles={handleDroppedFiles}
           ref={forwardRef}
         />
       </div>

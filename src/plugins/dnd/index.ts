@@ -27,6 +27,7 @@ import handleReorder from './middleware/onMove/effects/handleReorder';
 import handleReorderOnHomeContainer from './middleware/onMove/effects/handleReorderOnHomeContainer';
 import handleReorderOnOtherContainer from './middleware/onMove/effects/handleReorderOnOtherContainer';
 import handleImpactDraggerEffect from './middleware/onMove/effects/handleImpactDraggerEffect';
+import handleImpactContainerEffect from './middleware/onMove/effects/handleImpactContainerEffect';
 
 import getImpactRawInfo from './middleware/shared/getImpactRawInfo';
 import closest from './closest';
@@ -137,10 +138,9 @@ class DND {
       handleReorderOnHomeContainer,
       handleReorderOnOtherContainer,
       handleImpactDraggerEffect,
+      handleImpactContainerEffect,
       removeIntermediateCtxValue,
-      (_: any, ctx: object) => {
-        // console.log("ctx ", ctx);
-      }
+      () => {}
     );
 
     this.initSensor();

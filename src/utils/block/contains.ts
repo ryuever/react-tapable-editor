@@ -1,4 +1,6 @@
-const contains = (blockMap, key1, key2) => {
+import { BlockNodeMap } from '../../types';
+
+const contains = (blockMap: BlockNodeMap, key1: string, key2: string) => {
   if (key1 === key2) return true;
 
   const block1 = blockMap.get(key1);

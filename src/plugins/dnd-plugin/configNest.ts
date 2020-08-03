@@ -5,8 +5,8 @@ import { extractBlockKeyFromOffsetKey } from '../../utils/keyHelper';
 import { Orientation, GetEditor, Position, Mode } from '../../types';
 
 function DNDPlugin() {
-  let verticalIndicator: HTMLDivElement;
-  let horizontalIndicator: HTMLDivElement;
+  let verticalIndicator: HTMLElement;
+  let horizontalIndicator: HTMLElement;
 
   const createIndicatorBar = () => {
     verticalIndicator = document.createElement('div');
@@ -21,9 +21,9 @@ function DNDPlugin() {
     container,
     placedPosition,
   }: {
-    dragger: HTMLDivElement;
-    candidateDragger: HTMLDivElement;
-    container: HTMLDivElement;
+    dragger: HTMLElement;
+    candidateDragger: HTMLElement;
+    container: HTMLElement;
     placedPosition: Position;
   }) => {
     const draggerOffsetKey = dragger.getAttribute('data-offset-key');
@@ -56,32 +56,38 @@ function DNDPlugin() {
           candidateDragger: HTMLElement;
           placedPosition: Position;
         }) => {
-          const draggerOffsetKey =
-            dragger.getAttribute('data-offset-key') || '';
-          const candidateDraggerOffsetKey =
-            candidateDragger.getAttribute('data-offset-key') || '';
-          const sourceBlockKey = extractBlockKeyFromOffsetKey(draggerOffsetKey);
-          const targetBlockKey = extractBlockKeyFromOffsetKey(
-            candidateDraggerOffsetKey
-          );
-          const { editorState, hooks } = getEditor();
+          try {
+            const draggerOffsetKey =
+              dragger.getAttribute('data-offset-key') || '';
+            const candidateDraggerOffsetKey =
+              candidateDragger.getAttribute('data-offset-key') || '';
+            const sourceBlockKey = extractBlockKeyFromOffsetKey(
+              draggerOffsetKey
+            );
+            const targetBlockKey = extractBlockKeyFromOffsetKey(
+              candidateDraggerOffsetKey
+            );
+            const { editorState, hooks } = getEditor();
 
-          const newContent = transfer(
-            editorState,
-            sourceBlockKey,
-            targetBlockKey,
-            placedPosition
-          );
+            const newContent = transfer(
+              editorState,
+              sourceBlockKey,
+              targetBlockKey,
+              placedPosition
+            );
 
-          if (!newContent) return;
+            if (!newContent) return;
 
-          const dismissSelection = EditorState.push(
-            editorState,
-            newContent,
-            'insert-characters'
-          );
+            const dismissSelection = EditorState.push(
+              editorState,
+              newContent,
+              'insert-characters'
+            );
 
-          hooks.setState.call(dismissSelection);
+            hooks.setState.call(dismissSelection);
+          } catch (err) {
+            console.log('handle error ', err);
+          }
         },
         rootElement: '.DraftEditor-root',
         mode: Mode.Nested,
@@ -93,7 +99,7 @@ function DNDPlugin() {
             draggerSelector: '[data-contents="true"]  .miuffy-paragraph',
             impactDraggerEffect: options => {
               const { dimension, placedPosition } = options;
-              const { top, right, left, height } = dimension;
+              const { top, right, left, height = 0 } = dimension;
               logger(options);
               requestAnimationFrame(() => {
                 if (placedPosition === 'top') {
@@ -164,6 +170,14 @@ function DNDPlugin() {
                 verticalIndicator.style.backgroundColor = 'transparent';
               };
             },
+            impactContainerEffect: options => {
+              const { container } = options;
+              container.style.background = '#fa8c16';
+
+              return () => {
+                container.style.background = '#fff';
+              };
+            },
           },
           {
             orientation: Orientation.Vertical,
@@ -205,6 +219,14 @@ function DNDPlugin() {
                 verticalIndicator.style.left = `0px`;
                 verticalIndicator.style.opacity = '0';
                 verticalIndicator.style.backgroundColor = 'transparent';
+              };
+            },
+            impactContainerEffect: options => {
+              const { container } = options;
+              container.style.background = '#ff4d4f';
+
+              return () => {
+                container.style.background = '#fff';
               };
             },
           },

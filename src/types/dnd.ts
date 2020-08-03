@@ -28,6 +28,12 @@ export interface Config {
   containerEffect?: { ({ el }: { el: HTMLElement }): void | Function };
   draggerEffect?: DraggerEffectHandler;
   impactDraggerEffect?: ImpactDraggerEffectHandler;
+
+  /**
+   * It's called when enter a container, handler should return with a function
+   * to make effect cleanup...
+   */
+  impactContainerEffect?: ImpactContainerEffectHandler;
   [key: string]: any;
 }
 
@@ -75,6 +81,18 @@ export interface DraggerDimension {
   rect: RectObject;
   top?: number;
   left?: number;
+  firstCollisionRect?: {
+    top: number;
+    right: number;
+    bottom: number;
+    left: number;
+  };
+  secondCollisionRect?: {
+    top: number;
+    right: number;
+    bottom: number;
+    left: number;
+  };
 }
 
 export interface Sorter<T> {
@@ -123,6 +141,7 @@ export interface DraggerEffect {
 export interface ContainerEffect {
   teardown: Function | null | void;
   vContainer: Container;
+  key: string;
 }
 
 export interface ImpactDraggerEffect {
@@ -272,6 +291,16 @@ export interface ImpactDraggerEffectHandler {
     downstream: boolean;
     placedPosition: Position;
     dimension: RectObject;
+    isHighlight: boolean;
+  }): Function | undefined;
+}
+
+export interface ImpactContainerEffectHandler {
+  ({
+    container,
+    isHighlight,
+  }: {
+    container: HTMLElement;
     isHighlight: boolean;
   }): Function | undefined;
 }

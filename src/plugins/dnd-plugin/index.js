@@ -28,7 +28,6 @@ function DNDPlugin() {
             draggerSelector: '.miuffy-paragraph',
             impactDraggerEffect: options => {
               const { dimension, placedPosition } = options;
-              console.log('trigger- --');
               const { top, right, left, height } = dimension;
               requestAnimationFrame(() => {
                 if (placedPosition === 'top') {
