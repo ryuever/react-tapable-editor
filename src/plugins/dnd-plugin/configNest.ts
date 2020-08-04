@@ -80,6 +80,8 @@ function DNDPlugin() {
               'insert-characters'
             );
 
+            console.log('value ', newContent.getBlockMap().toJS());
+
             hooks.setState.call(dismissSelection);
           } catch (err) {
             console.log('handle error ', err);
@@ -104,6 +106,7 @@ function DNDPlugin() {
                   horizontalIndicator.style.top = `${top + height}px`;
                 }
 
+                console.log('width ', right - left);
                 horizontalIndicator.style.position = 'absolute';
                 horizontalIndicator.style.width = `${right - left}px`;
                 horizontalIndicator.style.height = `3px`;
@@ -168,10 +171,12 @@ function DNDPlugin() {
             },
             impactContainerEffect: options => {
               const { container } = options;
-              container.style.background = '#fa8c16';
+              container.style.backgroundColor = '#fa8c16';
+              // container.style.boxShadow = '#fa8c16';
 
               return () => {
-                container.style.background = '#fff';
+                // container.style.boxShadow = 'none'
+                container.style.backgroundColor = 'transparent';
               };
             },
           },

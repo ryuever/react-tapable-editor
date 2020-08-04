@@ -19,7 +19,7 @@ const handleImpactContainerEffect = (
     const { impactVContainer } = prevImpact;
     const effectsManager = dndEffects.find(impactVContainer!.id);
     effectsManager.clearImpactContainerEffects();
-    return;
+    // return;
   }
 
   const { impactVContainer } = impactRawInfo;
@@ -40,6 +40,8 @@ const handleImpactContainerEffect = (
       const index = effectsManager.impactContainerEffects.findIndex(
         ({ key }) => key === effectKey
       );
+
+      console.log('index ', index);
 
       if (index === -1) {
         const teardown = impactContainerEffect({

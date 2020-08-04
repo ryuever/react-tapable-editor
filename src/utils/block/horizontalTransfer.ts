@@ -1,4 +1,4 @@
-import { List } from 'immutable';
+import { List, Map } from 'immutable';
 import { EditorState } from 'draft-js';
 import removeBlock from './removeBlock';
 import wrapBlock from './wrapBlock';
@@ -14,14 +14,6 @@ const horizontalTransfer = (
   targetBlockKey: string,
   direction: Position
 ) => {
-  const currentState = editorState.getCurrentContent();
-  let blockMap = currentState.getBlockMap() as BlockNodeMap;
-  const sourceBlock = blockMap.get(sourceBlockKey);
-  blockMap = removeBlock(blockMap, sourceBlockKey);
-  blockMap = wrapBlock(blockMap, targetBlockKey, Direction.Column);
-  const parentKey = blockMap!.get(targetBlockKey)!.getParentKey();
-  blockMap = wrapBlock(blockMap, parentKey, Direction.Row);
-
   const containerBlock = createEmptyBlockNode().merge({
     data: {
       flexRow: true,
@@ -31,6 +23,43 @@ const horizontalTransfer = (
     children: List([]),
     parent: null,
   });
+
+  const currentState = editorState.getCurrentContent();
+  let blockMap = currentState.getBlockMap() as BlockNodeMap;
+  const sourceBlock = blockMap.get(sourceBlockKey);
+  blockMap = removeBlock(blockMap, sourceBlockKey);
+
+  const targetBlock = blockMap.get(targetBlockKey);
+  const targetBlockParentKey = targetBlock?.getParentKey();
+
+  let parentBlockData = Map();
+
+  if (targetBlockParentKey) {
+    const targetParentBlock = blockMap.get(targetBlockParentKey);
+    parentBlockData = targetParentBlock!.getData();
+  }
+
+  if (parentBlockData.get('data-direction') === 'row') {
+  }
+
+  if (
+    !targetBlockParentKey ||
+    parentBlockData.get('data-direction') !== 'column'
+  ) {
+    blockMap = wrapBlock(blockMap, targetBlockKey, Direction.Column);
+  }
+
+  const parentKey = blockMap!.get(targetBlockKey)!.getParentKey();
+
+  if (parentKey) {
+    const grandParentBlock = blockMap.get(parentKey);
+    const data = grandParentBlock?.getData() || Map();
+    console.log('data ', data, data.get('data-direction'));
+    if (data.get('data-direction') !== 'row') {
+      console.log('wrap ');
+      blockMap = wrapBlock(blockMap, parentKey, Direction.Row);
+    }
+  }
 
   let fn;
   switch (direction) {

@@ -34,9 +34,19 @@ function appendChild(
     blockMutationUtil.transformBlock(childBlockKey, blocks, function(block) {
       return block.merge({
         parent: parentBlockKey,
-        prevSibling: childrenBlocks.size ? lastBlock.getNextSiblingKey() : null,
+        prevSibling: childrenBlocks.size ? lastBlock.getKey() : null,
       });
     });
+
+    if (childrenBlocks.size) {
+      blockMutationUtil.transformBlock(lastBlock.getKey(), blocks, function(
+        block
+      ) {
+        return block.merge({
+          nextSibling: childBlockKey,
+        });
+      });
+    }
 
     blockMutationUtil.transformBlock(parentBlockKey, blocks, function(block) {
       const parentChildrenList = block.getChildKeys();
