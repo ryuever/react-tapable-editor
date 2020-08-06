@@ -41,10 +41,6 @@ function DNDPlugin() {
     createIndicatorBar();
     const { hooks } = getEditor();
 
-    const { editorState } = getEditor();
-    const contentState = editorState.getCurrentContent();
-    console.log('block ', contentState.getBlockMap());
-
     hooks.afterMounted.tap('initDNDPlugin', () => {
       new DND({
         onDrop: ({
@@ -84,6 +80,8 @@ function DNDPlugin() {
               'insert-characters'
             );
 
+            console.log('value ', newContent.getBlockMap().toJS());
+
             hooks.setState.call(dismissSelection);
           } catch (err) {
             console.log('handle error ', err);
@@ -108,11 +106,12 @@ function DNDPlugin() {
                   horizontalIndicator.style.top = `${top + height}px`;
                 }
 
+                console.log('width ', right - left);
                 horizontalIndicator.style.position = 'absolute';
                 horizontalIndicator.style.width = `${right - left}px`;
                 horizontalIndicator.style.height = `3px`;
                 horizontalIndicator.style.left = `${left - 10}px`;
-                horizontalIndicator.style.backgroundColor = '#69c0ff';
+                horizontalIndicator.style.backgroundColor = '#722ed1';
                 horizontalIndicator.style.opacity = '1';
                 horizontalIndicator.style.transition = 'opacity 1000ms ease-in';
               });
@@ -172,10 +171,12 @@ function DNDPlugin() {
             },
             impactContainerEffect: options => {
               const { container } = options;
-              container.style.background = '#fa8c16';
+              container.style.backgroundColor = '#fa8c16';
+              // container.style.boxShadow = '#fa8c16';
 
               return () => {
-                container.style.background = '#fff';
+                // container.style.boxShadow = 'none'
+                container.style.backgroundColor = 'transparent';
               };
             },
           },
