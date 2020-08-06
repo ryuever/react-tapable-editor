@@ -23,16 +23,10 @@ const wrapBlock = (
   const parentBlockKey = targetBlock.getParentKey();
   const parentBlock = blockMap.get(parentBlockKey);
 
-  console.log('original block map ', originalBlockMap.toJS());
-
   let parentData: WrapperProps = Map<undefined, undefined>();
   if (parentBlock) {
     parentData = parentBlock.getData();
   }
-
-  console.log('parent block ', parentBlockKey, parentBlock);
-
-  console.log('parent ', parentData);
 
   if (!parentData || !parentData.get('flexRow')) {
     const containerBlock = createEmptyBlockNode().merge({

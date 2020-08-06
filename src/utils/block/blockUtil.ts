@@ -120,18 +120,16 @@ const BlockUtil = {
     return parentChildrenList.size;
   },
 
-  getChildrenBlocks(blockMap: BlockNodeMap, block: ContentBlockNode) {
+  getChildrenBlocks(blockMap: BlockNodeMap, parentBlock: ContentBlockNode) {
+    const parentKey = parentBlock.getKey();
     return blockMap
       .toSeq()
-      .skipUntil(v => v === block)
+      .skipUntil(v => v === parentBlock)
       .skip(1)
       .takeUntil(function(v: ContentBlockNode) {
         let parent = v.getParentKey();
-
         while (parent) {
-          if (parent === block.getKey()) return false;
-          // TODO----
-          parent = block.getKey();
+          if (parent === parentKey) return false;
           const next = blockMap.get(parent as any);
           if (next) parent = next.getParentKey();
         }
