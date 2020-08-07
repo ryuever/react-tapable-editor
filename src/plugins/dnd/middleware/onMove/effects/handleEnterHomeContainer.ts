@@ -38,13 +38,13 @@ const handleEnterHomeContainer = (args: any, ctx: object, actions: Action) => {
   const positionIndex = measure.indexOf(impactPosition as Position);
 
   if (typeof containerEffect === 'function') {
-    const teardown = containerEffect({
-      el: (impactVContainer as Container).el,
-    });
-    effectsManager!.impactContainerEffects.push({
-      teardown,
-      vContainer: impactVContainer as Container,
-    });
+    // const teardown = containerEffect({
+    //   el: (impactVContainer as Container).el,
+    // });
+    // effectsManager!.impactContainerEffects.push({
+    //   teardown,
+    //   vContainer: impactVContainer as Container,
+    // });
   }
 
   if (typeof draggerEffect !== 'function') {

@@ -30,13 +30,13 @@ const handleEnterOtherContainer = (ctx: object, actions: Action) => {
   const positionIndex = measure.indexOf(impactPosition as string);
 
   if (typeof containerEffect === 'function') {
-    const teardown = containerEffect({
-      el: impactVContainer!.el,
-    });
-    effectsManager!.impactContainerEffects.push({
-      teardown,
-      vContainer: impactVContainer as Container,
-    });
+    // const teardown = containerEffect({
+    //   el: impactVContainer!.el,
+    // });
+    // effectsManager!.impactContainerEffects.push({
+    //   teardown,
+    //   vContainer: impactVContainer as Container,
+    // });
   }
 
   if (typeof draggerEffect !== 'function') {
