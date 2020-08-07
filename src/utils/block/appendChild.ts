@@ -12,55 +12,51 @@ function appendChild(
   parentBlock: ContentBlockNode,
   childBlock: ContentBlockNode
 ) {
-  try {
-    const blocksBefore = blockUtil.blocksBefore(blockMap, parentBlock);
-    const childBlockKey = childBlock.getKey();
-    const parentBlockKey = parentBlock.getKey();
-    const childrenBlocks = blockUtil.getChildrenBlocks(blockMap, parentBlock);
+  const blocksBefore = blockUtil.blocksBefore(blockMap, parentBlock);
+  const childBlockKey = childBlock.getKey();
+  const parentBlockKey = parentBlock.getKey();
+  const childrenBlocks = blockUtil.getChildrenBlocks(blockMap, parentBlock);
 
-    const lastBlock = childrenBlocks.size
-      ? childrenBlocks.last<ContentBlockNode>()
-      : parentBlock;
-    const blocksAfter = blockUtil.blocksAfter(blockMap, lastBlock);
+  const lastBlock = childrenBlocks.size
+    ? childrenBlocks.last<ContentBlockNode>()
+    : parentBlock;
+  const blocksAfter = blockUtil.blocksAfter(blockMap, lastBlock);
 
-    const newBlockMap = blocksBefore
-      .concat([[parentBlock.getKey(), parentBlock]])
-      .concat(childrenBlocks.size ? childrenBlocks.toSeq() : [])
-      .concat([[childBlock.getKey(), childBlock]])
-      .concat(blocksAfter)
-      .toOrderedMap();
+  const newBlockMap = blocksBefore
+    .concat([[parentBlock.getKey(), parentBlock]])
+    .concat(childrenBlocks.size ? childrenBlocks.toSeq() : [])
+    .concat([[childBlock.getKey(), childBlock]])
+    .concat(blocksAfter)
+    .toOrderedMap();
 
-    return newBlockMap.withMutations(function(blocks) {
-      blockMutationUtil.transformBlock(childBlockKey, blocks, function(block) {
-        return block.merge({
-          parent: parentBlockKey,
-          prevSibling: childrenBlocks.size ? lastBlock.getKey() : null,
-        });
-      });
-
-      if (childrenBlocks.size) {
-        blockMutationUtil.transformBlock(lastBlock.getKey(), blocks, function(
-          block
-        ) {
-          return block.merge({
-            nextSibling: childBlockKey,
-          });
-        });
-      }
-
-      blockMutationUtil.transformBlock(parentBlockKey, blocks, function(block) {
-        const parentChildrenList = block.getChildKeys();
-        const newChildrenArray = parentChildrenList.toArray();
-        newChildrenArray.push(childBlockKey);
-
-        return block.merge({
-          children: List(newChildrenArray),
-        });
+  return newBlockMap.withMutations(function(blocks) {
+    blockMutationUtil.transformBlock(childBlockKey, blocks, function(block) {
+      return block.merge({
+        parent: parentBlockKey,
+        prevSibling: childrenBlocks.size ? lastBlock.getKey() : null,
       });
     });
-  } catch (err) {
-    console.log('err', err);
-  }
+
+    if (childrenBlocks.size) {
+      blockMutationUtil.transformBlock(lastBlock.getKey(), blocks, function(
+        block
+      ) {
+        return block.merge({
+          nextSibling: childBlockKey,
+        });
+      });
+    }
+
+    blockMutationUtil.transformBlock(parentBlockKey, blocks, function(block) {
+      const parentChildrenList = block.getChildKeys();
+      const newChildrenArray = parentChildrenList.toArray();
+      newChildrenArray.push(childBlockKey);
+
+      return block.merge({
+        children: List(newChildrenArray),
+      });
+    });
+  });
 }
 
 export default appendChild;

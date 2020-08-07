@@ -56,7 +56,7 @@ const horizontalTransfer = (
       blockMap,
       blockMap.get(containerBlockKey)!,
       sourceBlock!
-    );
+    )!;
   } else {
     blockMap = wrapBlock(blockMap, targetBlockKey, Direction.Column);
     const parentKey = blockMap!.get(targetBlockKey)!.getParentKey();
@@ -65,8 +65,8 @@ const horizontalTransfer = (
 
     blockMap = insertChildBlock({
       blockMap,
-      parentBlock: blockMap.get(grandParentKey!),
-      indexBlock: blockMap.get(parentKey),
+      parentBlock: blockMap.get(grandParentKey!)!,
+      indexBlock: blockMap.get(parentKey)!,
       childBlock: containerBlock,
       direction:
         direction === 'left'
@@ -77,7 +77,7 @@ const horizontalTransfer = (
     const parentBlock = blockMap.get(containerBlock.getKey());
 
     if (parentBlock && sourceBlock) {
-      blockMap = appendChild(blockMap, parentBlock, sourceBlock);
+      blockMap = appendChild(blockMap, parentBlock, sourceBlock)!;
     }
   }
 
