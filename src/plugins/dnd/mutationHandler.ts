@@ -10,9 +10,21 @@ export default (ctx: DND) => (mutationList: MutationRecord[]) => {
 
   for (const mutation of mutationList) {
     const { addedNodes, removedNodes } = mutation;
-
     if (addedNodes.length) {
+      let merged = [] as Node[];
+
       addedNodes.forEach(node => {
+        if (node) {
+          merged.push(node);
+          // If dom is wrapped with a new div container, Only the new parent
+          // div will be remarked.
+          // https://stackoverflow.com/questions/8321874/how-to-get-all-childnodes-in-js-including-all-the-grandchildren
+          const elements = (node as any).getElementsByTagName('div');
+          merged = [...merged, ...elements];
+        }
+      });
+
+      merged.forEach(node => {
         const containerConfig = matchesContainer(node, configs);
         if (containerConfig !== -1) {
           ctx.handleContainerElement(node as HTMLElement, containerConfig);

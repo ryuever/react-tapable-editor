@@ -19,12 +19,9 @@ const handleImpactContainerEffect = (
     const { impactVContainer } = prevImpact;
     const effectsManager = dndEffects.find(impactVContainer!.id);
     effectsManager.clearImpactContainerEffects();
-    // return;
   }
 
   const { impactVContainer } = impactRawInfo;
-
-  // console.log('operation ', operation, isHomeContainerFocused, effectsManager, impactVContainer)
 
   if (
     operation === 'onEnter' &&
@@ -40,8 +37,6 @@ const handleImpactContainerEffect = (
       const index = effectsManager.impactContainerEffects.findIndex(
         ({ key }) => key === effectKey
       );
-
-      console.log('index ', index);
 
       if (index === -1) {
         const teardown = impactContainerEffect({

@@ -50,6 +50,7 @@ function SidebarPlugin() {
     const mouseMoveHandler = (e: MouseEvent) => {
       try {
         const { editorState } = getEditor();
+        // console.log('editor state ', editorState)
         const coordinateMap = getBoundingRectWithSafeArea(editorState);
         const { shiftLeft } = coordinateMap;
 

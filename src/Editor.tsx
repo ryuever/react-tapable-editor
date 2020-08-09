@@ -80,15 +80,17 @@ const NewEditor: FC<EditorProps> = props => {
     newEditorState => {
       const { editorState } = getEditor();
 
-      const nextState = hooks.stateFilter.call(
+      let nextState = hooks.stateFilter.call(
         editorState,
         newEditorState,
         pasteText.current
       );
 
+      nextState = hooks.finalNewLine.call(nextState);
+
       hooks.onChange.call(nextState);
     },
-    [getEditor, hooks.onChange, hooks.stateFilter]
+    [getEditor, hooks.finalNewLine, hooks.onChange, hooks.stateFilter]
   );
 
   const handleKeyCommand = useCallback(
