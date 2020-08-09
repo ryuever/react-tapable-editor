@@ -12,6 +12,18 @@ export const intersect = (a: RectObject, b: RectObject) => {
   );
 };
 
+export const overlapOnVerticalEdge = (a: RectObject, b: RectObject) => {
+  return Math.abs(b.right - a.left) === a.right - a.left + b.right - b.left;
+};
+
+export const overlapOnHorizontalEdge = (a: RectObject, b: RectObject) => {
+  return Math.abs(b.bottom - a.top) === a.bottom - a.top + b.bottom - b.top;
+};
+
+export const overlapOnEdge = (a: RectObject, b: RectObject) => {
+  return overlapOnHorizontalEdge(a, b) || overlapOnVerticalEdge(a, b);
+};
+
 export const clamped = (value: number, min: number, max: number) =>
   value >= min && value <= max;
 

@@ -131,6 +131,7 @@ const createEditor: any = (defaultPlugins: any[]) =>
         teardownDragDrop: new SyncHook(),
         afterMounted: new SyncHook(),
         finalNewLine: new SyncBailHook(['editorState']),
+        updateBlockDepthData: new SyncBailHook(['editorState']),
       };
       this.editorRef = createRef<EditorType>();
       this.inlineToolbarRef = createRef<HTMLDivElement>();
@@ -157,22 +158,29 @@ const createEditor: any = (defaultPlugins: any[]) =>
       this.init();
     }
 
+    setFinalState(editorState: EditorState, callback?: Function) {
+      let nextState = this.hooks.finalNewLine.call(editorState);
+      nextState = this.hooks.updateBlockDepthData.call(nextState);
+
+      this.setState({ editorState: nextState }, () => {
+        const newState = this.state.editorState;
+        if (typeof callback === 'function') {
+          callback(newState);
+        }
+      });
+    }
+
     componentDidMount() {
       this.hooks.afterMounted.call();
 
       this.hooks.onChange.tap('onChange', (editorState: EditorState) => {
-        this.setState({ editorState });
+        this.setFinalState(editorState);
       });
 
       this.hooks.setState.tap(
         'setState',
         (editorState: EditorState, callback: Function) => {
-          this.setState({ editorState }, () => {
-            const newState = this.state.editorState;
-            if (typeof callback === 'function') {
-              callback(newState);
-            }
-          });
+          this.setFinalState(editorState, callback);
         }
       );
 

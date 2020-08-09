@@ -51,9 +51,7 @@ div[data-contents="true"] {
   margin: 0;
   letter-spacing: 0.05em;
   position: relative;
-  padding: 10px;
-  /* padding-left: 10px;
-  padding-right: 10px; */
+  /* padding: 10px; */
 }
 
 .miuffy-blockquote {
@@ -70,12 +68,16 @@ div[data-contents="true"] {
 }
 
 * {
-  /* box-sizing: border-box; */
   box-sizing: content-box;
 }
 
-/* for dnd */
+.block-level-0.miuffy-paragraph {
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
 
-div[data-contents="true"] > div > div {
-  padding: 10px;
+.block-level-1.miuffy-paragraph {
+  padding-right: 10px;
 }
