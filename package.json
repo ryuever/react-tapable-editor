@@ -48,7 +48,7 @@
     "draft-js": "^0.11.0",
     "immutable": "^4.0.0-rc.12",
     "invariant": "^2.2.4",
-    "prismjs": "^1.19.0",
+    "prismjs": "^1.21.0",
     "sabar": "^0.5.4"
   },
   "devDependencies": {
