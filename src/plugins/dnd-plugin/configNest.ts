@@ -94,7 +94,7 @@ function DNDPlugin() {
         configs: [
           {
             containerSelector: '[data-contents="true"]',
-            draggerSelector: '[data-contents="true"]  .miuffy-paragraph',
+            draggerSelector: '[data-contents="true"] >.miuffy-paragraph',
             impactDraggerEffect: options => {
               const { dimension, placedPosition } = options;
               const { top, right, left, height = 0 } = dimension;
@@ -156,6 +156,7 @@ function DNDPlugin() {
                 verticalIndicator.style.backgroundColor = '#69c0ff';
                 verticalIndicator.style.opacity = '1';
                 verticalIndicator.style.transition = 'opacity 250ms ease-in';
+                verticalIndicator.style.zIndex = '1';
               });
 
               return () => {
@@ -172,18 +173,15 @@ function DNDPlugin() {
             impactContainerEffect: options => {
               const { container } = options;
               container.style.backgroundColor = '#fa8c16';
-              // container.style.boxShadow = '#fa8c16';
 
               return () => {
-                // container.style.boxShadow = 'none'
                 container.style.backgroundColor = 'transparent';
               };
             },
           },
           {
             orientation: Orientation.Vertical,
-            containerSelector:
-              '.display-flex.miuffy-paragraph >div:first-child >div',
+            containerSelector: '.data-wrapper-column >div',
             draggerSelector: '.miuffy-paragraph',
             shouldAcceptDragger: el => {
               return (

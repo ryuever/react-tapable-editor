@@ -197,6 +197,7 @@ class DND {
     observer.observe(rootElement as HTMLElement, {
       childList: true,
       subtree: true,
+      // attributes: true,
     });
   }
 
@@ -221,6 +222,13 @@ class DND {
   }
 
   handleContainerElement(el: HTMLElement, config: ResultConfig) {
+    const keys = Object.keys(this.containers);
+    for (let i = 0; i < keys.length; i++) {
+      const key = keys[i];
+      const containerInstance = this.containers[key];
+      if (containerInstance.el === el) return;
+    }
+
     const container = new Container({
       el,
       containers: this.containers,
@@ -265,6 +273,15 @@ class DND {
   handleDraggerElement(el: HTMLElement) {
     const container = findClosestContainer(this.containers, el, true);
     if (container === -1) return;
+
+    // Maybe it's not required on initial...
+    const keys = Object.keys(this.draggers);
+    for (let i = 0; i < keys.length; i++) {
+      const key = keys[i];
+      const draggerInstance = this.draggers[key];
+      if (draggerInstance.el === el) return;
+    }
+
     const dragger = new Dragger({ el, container });
     container.addDirectChild(dragger);
     const draggerId = dragger.id;

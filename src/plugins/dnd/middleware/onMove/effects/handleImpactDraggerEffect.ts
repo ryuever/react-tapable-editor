@@ -41,6 +41,9 @@ const handleImpactDraggerEffect = (args: any, ctx: object, actions: Action) => {
 
     if (index === -1) {
       effectsManager.clearImpactDraggerEffects();
+
+      console.log('add dragger effects ', effectKey);
+
       const teardown = impactDraggerEffect({
         dragger: liftUpVDragger.el,
         container: impactVContainer.el,
