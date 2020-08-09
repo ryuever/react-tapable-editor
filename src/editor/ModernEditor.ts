@@ -15,6 +15,8 @@ import StateFilterPlugin from '../plugins/StateFilterPlugin';
 
 import DNDPlugin from '../plugins/dnd-plugin/configNest';
 
+import FinalNewLinePlugin from '../plugins/FinalNewLinePlugin';
+
 import createEditor from '../createEditor';
 
 const defaultPlugins = [
@@ -50,6 +52,9 @@ const defaultPlugins = [
 
   // @ts-ignore
   new DNDPlugin(),
+
+  // @ts-ignore
+  new FinalNewLinePlugin(),
 ];
 
 const ModernEditor = createEditor(defaultPlugins);

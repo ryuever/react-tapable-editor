@@ -130,6 +130,7 @@ const createEditor: any = (defaultPlugins: any[]) =>
         prepareDragStart: new SyncHook(['sourceBlockKey']),
         teardownDragDrop: new SyncHook(),
         afterMounted: new SyncHook(),
+        finalNewLine: new SyncBailHook(['editorState']),
       };
       this.editorRef = createRef<EditorType>();
       this.inlineToolbarRef = createRef<HTMLDivElement>();

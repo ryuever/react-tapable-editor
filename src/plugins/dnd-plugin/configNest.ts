@@ -4,6 +4,8 @@ import transfer from '../../utils/block/transfer';
 import { extractBlockKeyFromOffsetKey } from '../../utils/keyHelper';
 import { Orientation, GetEditor, Position, Mode } from '../../types';
 
+const DEBUG = false;
+
 function DNDPlugin() {
   let verticalIndicator: HTMLElement;
   let horizontalIndicator: HTMLElement;
@@ -32,9 +34,10 @@ function DNDPlugin() {
     );
     const containerOffsetKey = container.getAttribute('data-offset-key');
 
-    console.log(
-      `placed ${draggerOffsetKey} to the ${placedPosition} of ${candidateDraggerOffsetKey}, which is included in ${containerOffsetKey}`
-    );
+    DEBUG &&
+      console.log(
+        `placed ${draggerOffsetKey} to the ${placedPosition} of ${candidateDraggerOffsetKey}, which is included in ${containerOffsetKey}`
+      );
   };
 
   this.apply = (getEditor: GetEditor) => {
@@ -80,8 +83,6 @@ function DNDPlugin() {
               'insert-characters'
             );
 
-            console.log('value ', newContent.getBlockMap().toJS());
-
             hooks.setState.call(dismissSelection);
           } catch (err) {
             console.log('handle error ', err);
@@ -106,7 +107,6 @@ function DNDPlugin() {
                   horizontalIndicator.style.top = `${top + height}px`;
                 }
 
-                console.log('width ', right - left);
                 horizontalIndicator.style.position = 'absolute';
                 horizontalIndicator.style.width = `${right - left}px`;
                 horizontalIndicator.style.height = `3px`;

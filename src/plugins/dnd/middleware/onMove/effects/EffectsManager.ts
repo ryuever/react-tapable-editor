@@ -50,10 +50,6 @@ export default class EffectsManager {
   }
 
   clearImpactDraggerEffects() {
-    console.log(
-      'clear ',
-      this.impactDraggerEffects.map(({ key }) => key).join(', ')
-    );
     this.impactDraggerEffects.forEach(({ teardown }) =>
       this.assertRun(teardown)
     );

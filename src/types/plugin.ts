@@ -44,6 +44,7 @@ export interface Hooks {
   prepareDragStart: SyncHook;
   teardownDragDrop: SyncHook;
   afterMounted: SyncHook;
+  finalNewLine: SyncBailHook;
 }
 
 export interface PluginState {

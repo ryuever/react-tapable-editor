@@ -38,8 +38,6 @@ const handleImpactContainerEffect = (
         ({ key }) => key === effectKey
       );
 
-      console.log('index ', index);
-
       if (index === -1) {
         const teardown = impactContainerEffect({
           container: impactVContainer.el,
