@@ -9,6 +9,7 @@ function BlockStyleFnPlugin() {
       const block = props[0];
       const cls = [];
       const blockData = block.getData();
+      const depth = blockData.get('depth') || 0;
 
       const isDataWrapper = blockData.get('data-wrapper');
       const dataDirection = blockData.get('data-direction');
@@ -16,6 +17,8 @@ function BlockStyleFnPlugin() {
       if (block.getChildKeys().size && isDataWrapper) {
         cls.push(`data-wrapper-${dataDirection}`);
       }
+
+      cls.push(`block-level-${depth}`);
 
       switch (block.getType()) {
         // 控制比如说，最后渲染出来的引用，它的class是

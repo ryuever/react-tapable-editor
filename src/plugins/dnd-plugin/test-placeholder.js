@@ -28,10 +28,7 @@ function DNDPlugin() {
             draggerSelector: '.miuffy-paragraph',
             draggerEffect: options => {
               const { isHighlight, dimension, placedPosition } = options;
-              console.log('options ', options);
               const { top, right, left, height } = dimension;
-
-              console.log('is hight ', isHighlight);
 
               if (isHighlight) {
                 if (placedPosition === 'top') {
@@ -49,7 +46,6 @@ function DNDPlugin() {
                   'background-color 250ms ease-in';
 
                 return () => {
-                  console.log('clean up ', options);
                   horizontalIndicator.style.position = 'absolute';
                   horizontalIndicator.style.width = '0px';
                   horizontalIndicator.style.height = `0px`;

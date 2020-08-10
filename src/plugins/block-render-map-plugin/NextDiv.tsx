@@ -5,18 +5,8 @@ import './nextDiv.css';
 
 const NextDiv: FC<{ children?: ReactChild }> = props => {
   const { children } = props;
-  // const ref = createRef();
-  // useFocus(ref)
-  // const cls = classes("next-div");
-  // const mouseEnterHandler = useCallback(() => {}, []);
-  return <>{children}</>;
 
-  // will cause drag and drop block not work...
-  // return (
-  //   <div ref={ref}>
-  //     {children}
-  //   </div>
-  // );
+  return <>{children}</>;
 };
 
 export default NextDiv;

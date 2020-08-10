@@ -9,6 +9,7 @@ export default function getBoundingRectWithSafeArea(
   editorState: EditorState,
   safeArea = 100
 ) {
+  if (!editorState) return;
   const currentState = editorState.getCurrentContent();
   const blockMap = currentState.getBlockMap() as BlockNodeMap;
 

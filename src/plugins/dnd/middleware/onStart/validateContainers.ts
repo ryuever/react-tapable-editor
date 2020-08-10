@@ -1,4 +1,4 @@
-import { intersect, coincide, contains } from '../../collision';
+import { intersect, coincide, contains, overlapOnEdge } from '../../collision';
 import { Action } from 'sabar';
 import { OnStartHandlerContext } from 'types';
 
@@ -23,7 +23,12 @@ export default (ctx: object, actions: Action) => {
       const b = containerB.dimension.rect;
 
       // To ensure there are spaces between containers.
-      if (intersect(a, b) && !coincide(a, b) && !contains(a, b)) {
+      if (
+        intersect(a, b) &&
+        !coincide(a, b) &&
+        !contains(a, b) &&
+        !overlapOnEdge(a, b)
+      ) {
         throw new Error(
           '=======================================\n' +
             'The interaction of containers is forbidden\n' +

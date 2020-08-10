@@ -31,7 +31,6 @@ function DNDPlugin() {
               };
             },
             draggerEffect: options => {
-              console.log('options in vertical ', options);
               const { el, draggerElement } = options;
               el.style.backgroundColor = 'yellow';
               const draggerRect = draggerElement.getBoundingClientRect();
@@ -64,7 +63,6 @@ function DNDPlugin() {
             targetDraggerEffect: () => {},
 
             draggerEffect: options => {
-              console.log('options : ', options);
               const { el, draggerElement } = options;
               const draggerRect = draggerElement.getBoundingClientRect();
               const targetRect = el.getBoundingClientRect();

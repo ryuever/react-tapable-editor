@@ -16,6 +16,10 @@ import StateFilterPlugin from '../plugins/StateFilterPlugin';
 
 import DNDPlugin from '../plugins/dnd-plugin/configNest';
 
+import FinalNewLinePlugin from '../plugins/FinalNewLinePlugin';
+
+import UpdateBlockDepthData from '../plugins/UpdateBlockDepthData';
+
 import createEditor from '../createEditor';
 
 const defaultPlugins = [
@@ -53,6 +57,12 @@ const defaultPlugins = [
 
   // @ts-ignore
   new DNDPlugin(),
+
+  // @ts-ignore
+  new FinalNewLinePlugin(),
+
+  // @ts-ignore
+  new UpdateBlockDepthData(),
 ];
 
 const DocEditor = createEditor(defaultPlugins);

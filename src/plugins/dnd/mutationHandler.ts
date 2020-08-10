@@ -1,4 +1,4 @@
-import { matchesDragger, matchesContainer } from './dom';
+import { matchesDragger, matchesContainer, isElement } from './dom';
 import DND from './index';
 import reporter from './reporter';
 
@@ -14,13 +14,17 @@ export default (ctx: DND) => (mutationList: MutationRecord[]) => {
       let merged = [] as Node[];
 
       addedNodes.forEach(node => {
-        if (node) {
-          merged.push(node);
-          // If dom is wrapped with a new div container, Only the new parent
-          // div will be remarked.
-          // https://stackoverflow.com/questions/8321874/how-to-get-all-childnodes-in-js-including-all-the-grandchildren
-          const elements = (node as any).getElementsByTagName('div');
-          merged = [...merged, ...elements];
+        if (node && isElement(node)) {
+          try {
+            merged.push(node);
+            // If dom is wrapped with a new div container, Only the new parent
+            // div will be remarked.
+            // https://stackoverflow.com/questions/8321874/how-to-get-all-childnodes-in-js-including-all-the-grandchildren
+            const elements = (node as any).getElementsByTagName('div');
+            merged = [...merged, ...elements];
+          } catch (err) {
+            console.log('err ', err);
+          }
         }
       });
 
