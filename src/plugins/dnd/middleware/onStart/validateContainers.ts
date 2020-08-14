@@ -29,7 +29,7 @@ export default (ctx: object, actions: Action) => {
         !contains(a, b) &&
         !overlapOnEdge(a, b)
       ) {
-        throw new Error(
+        console.warn(
           '=======================================\n' +
             'The interaction of containers is forbidden\n' +
             `  containerA's id: ${containerA.id}\n` +

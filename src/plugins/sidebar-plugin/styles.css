@@ -9,13 +9,13 @@
   align-items: center;
   opacity: 0;
   padding-right: 5px;
-  padding-top: 10px;
+  /* padding-top: 10px; */
 }
 
 .sidebar-addon-visible {
   opacity: 1;
   transition: opacity 0.3s ease-in-out;
-  margin-top: 10px;
+  margin-top: 5px;
 }
 
 .sidebar-addon .plus {
