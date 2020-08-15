@@ -33,10 +33,10 @@ function removeBlock(
 
   const blocksBefore = blockUtil.blocksBefore(blockMap, blockToRemove);
   const blocksAfter = blockUtil.blocksAfter(blockMap, blockToRemove);
-  const newBlockMap = blocksBefore.concat(blocksAfter).toOrderedMap();
+  let newBlockMap = blocksBefore.concat(blocksAfter).toOrderedMap();
   const parentKey = blockToRemove.getParentKey();
 
-  newBlockMap.withMutations(function(blocks) {
+  newBlockMap = newBlockMap.withMutations(function(blocks) {
     blockMutationUtil.transformBlock(parentKey, blocks, function(block) {
       return blockMutationUtil.deleteFromChildrenList(block, blockKey);
     });
