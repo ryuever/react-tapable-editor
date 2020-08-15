@@ -1,6 +1,7 @@
 import { List, Map } from 'immutable';
 import { EditorState } from 'draft-js';
-import removeBlock from './removeBlock';
+// import removeBlock from './removeBlock';
+import removeBlockWithClear from './removeBlockWithClear';
 import wrapBlock from './wrapBlock';
 import createEmptyBlockNode from './createEmptyBlockNode';
 import appendChild from './appendChild';
@@ -28,7 +29,11 @@ const horizontalTransfer = (
   const currentState = editorState.getCurrentContent();
   let blockMap = currentState.getBlockMap() as BlockNodeMap;
   const sourceBlock = blockMap.get(sourceBlockKey);
-  blockMap = removeBlock(blockMap, sourceBlockKey);
+  blockMap = removeBlockWithClear(blockMap, sourceBlockKey);
+  const sourceBlockWithSibling = sourceBlock?.merge({
+    prevSibling: null,
+    nextSibling: null,
+  });
 
   const targetBlock = blockMap.get(targetBlockKey);
   const targetBlockParentKey = targetBlock?.getParentKey();
@@ -55,7 +60,7 @@ const horizontalTransfer = (
     blockMap = appendChild(
       blockMap,
       blockMap.get(containerBlockKey)!,
-      sourceBlock!
+      sourceBlockWithSibling!
     )!;
   } else {
     blockMap = wrapBlock(blockMap, targetBlockKey, Direction.Column);
@@ -77,7 +82,7 @@ const horizontalTransfer = (
     const parentBlock = blockMap.get(containerBlock.getKey());
 
     if (parentBlock && sourceBlock) {
-      blockMap = appendChild(blockMap, parentBlock, sourceBlock)!;
+      blockMap = appendChild(blockMap, parentBlock, sourceBlockWithSibling!);
     }
   }
 

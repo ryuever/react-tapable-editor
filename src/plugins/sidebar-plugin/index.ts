@@ -50,16 +50,18 @@ function SidebarPlugin() {
     const mouseMoveHandler = (e: MouseEvent) => {
       try {
         const { editorState } = getEditor();
-        // console.log('editor state ', editorState)
         const coordinateMap = getBoundingRectWithSafeArea(editorState);
         const { shiftLeft } = coordinateMap || {};
 
         if (!shiftLeft) return;
 
-        const x = e.pageX;
-        const y = e.pageY;
+        // get mouse event point related to viewport
+        // https://stackoverflow.com/questions/14717617/how-to-get-the-mouse-position-relative-to-the-window-viewport-in-javascript
+        const x = e.clientX;
+        const y = e.clientY;
 
         const nodeInfo = findBlockContainsPoint(shiftLeft, { x, y });
+
         if (!nodeInfo) return;
         const { offsetKey } = nodeInfo;
         const node = getNodeByOffsetKey(offsetKey) as HTMLElement;

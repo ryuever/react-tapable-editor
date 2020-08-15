@@ -1,7 +1,7 @@
 import { EditorState } from 'draft-js';
 import insertBlockBefore from './insertBlockBefore';
 import insertBlockAfter from './insertBlockAfter';
-import removeBlock from './removeBlock';
+import removeBlockWithClear from './removeBlockWithClear';
 import { Position, BlockNodeMap } from '../../types';
 
 const verticalTransfer = (
@@ -13,9 +13,9 @@ const verticalTransfer = (
   const currentState = editorState.getCurrentContent();
   let blockMap = currentState.getBlockMap() as BlockNodeMap;
   const sourceBlock = blockMap.get(sourceBlockKey);
-  blockMap = removeBlock(blockMap, sourceBlockKey);
-  // Note: targetBlock should be placed after `removeBlock`, because
-  // its sibling has changed after `removeBlock`; `hooks.setState` may
+  blockMap = removeBlockWithClear(blockMap, sourceBlockKey);
+  // Note: targetBlock should be placed after `removeBlockWithClear`, because
+  // its sibling has changed after `removeBlockWithClear`; `hooks.setState` may
   // cause loop due to the same `prevSibling` and `nextSibling`..
   const targetBlock = blockMap.get(targetBlockKey);
 
