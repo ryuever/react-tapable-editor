@@ -1,5 +1,5 @@
 {
-  "version": "0.1.0",
+  "version": "0.2.24",
   "description": "medium like react tapable editor",
   "license": "MIT",
   "main": "dist/index.js",
@@ -21,7 +21,13 @@
     "build-storybook": "build-storybook",
     "examples:basic": "DIR=basic EXT=js webpack-dev-server"
   },
-  "publishConfig": { "registry": "https://npm.pkg.github.com/" },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/@ryuever"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ryuever/react-tapable-editor"
+  },
   "peerDependencies": {
     "react": ">=16"
   },
