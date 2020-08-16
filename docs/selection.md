@@ -12,7 +12,6 @@
 
 ```js
 const newState = Modifier.split(editorState, selection)
-console.log("new selection : ", newState.getSelection())
 ```
 
 ## how to forceSelection

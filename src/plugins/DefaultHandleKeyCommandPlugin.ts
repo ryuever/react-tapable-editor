@@ -8,18 +8,25 @@
 import { RichUtils, EditorState, DraftEditorCommand } from 'draft-js';
 import { GetEditor } from '../types';
 
+// @ts-ignore
+import NestedRichTextEditorUtil from 'draft-js/lib/NestedRichTextEditorUtil'
+
 function DefaultHandleKeyCommandPlugin() {
   this.apply = (getEditor: GetEditor) => {
     const { hooks } = getEditor();
     hooks.handleKeyCommand.tap(
       'HandleBackspaceOnStartOfBlockPlugin',
       (command: DraftEditorCommand, editorState: EditorState) => {
-        const newState = RichUtils.handleKeyCommand(editorState, command);
+        console.log('handle ', editorState.getCurrentContent().getBlockMap().toJS(), command)
+
+        // https://github.com/facebook/draft-js/blob/master/examples/draft-0-10-0/playground/src/DraftJsRichEditorExample.js#L26
+        const newState = NestedRichTextEditorUtil.handleKeyCommand(editorState, command);
         if (newState) {
+          console.log('state -----', editorState.getSelection().toJS())
           hooks.setState.call(newState);
           return 'handled';
         }
-        return;
+        return ;
       }
     );
   };

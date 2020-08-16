@@ -43,7 +43,7 @@ function AddImagePlugin() {
 
     // 函数触发的时机，是否可以将alignment属性设置到props
     hooks.blockRendererFn.tap('AddImagePlugin', (contentBlock, editorState) => {
-      if (contentBlock.getType() === 'atomic') {
+      if (contentBlock && contentBlock.getType() === 'atomic') {
         const contentState = editorState.getCurrentContent();
         const entity = contentBlock.getEntityAt(0);
         if (!entity) return null;
