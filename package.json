@@ -1,5 +1,5 @@
 {
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "medium like react tapable editor",
   "license": "MIT",
   "main": "dist/index.js",
