@@ -21,9 +21,6 @@
     "build-storybook": "build-storybook",
     "examples:basic": "DIR=basic EXT=js webpack-dev-server"
   },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/ryuever/react-tapable-editor"
