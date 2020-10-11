@@ -86,9 +86,11 @@ function onKeyCommand(command, editorState, e) {
 }
 
 function decorateKeyCommandHandler(editorState, command) {
-  if (NestedRichTextEditorUtil.handleKeyCommand(editorState, command)) {
-    return;
-  }
+  const newState = NestedRichTextEditorUtil.handleKeyCommand(
+    editorState,
+    command
+  );
+  if (newState) return newState;
 
   return onKeyCommand(command, editorState);
 }

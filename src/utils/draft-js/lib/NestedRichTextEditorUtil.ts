@@ -112,8 +112,6 @@ var NestedRichTextEditorUtil = {
    * a nested parent we add its text to the neareast previous leaf node
    */
   onBackspace: function onBackspace(editorState) {
-    console.log('handle backspace');
-
     var selection = editorState.getSelection();
     var content = editorState.getCurrentContent();
     var currentBlock = content.getBlockForKey(selection.getStartKey());
