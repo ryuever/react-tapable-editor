@@ -171,7 +171,8 @@ var updateBlockMapLinks = function updateBlockMapLinks(
 
     transformBlock(startBlock.getNextSiblingKey(), blocks, function(block) {
       return block.merge({
-        prevSibling: startBlock.getPrevSiblingKey(),
+        // prevSibling: startBlock.getPrevSiblingKey(),
+        prevSibling: getPrevValidSibling(block, blocks, originalBlockMap),
       });
     }); // update start block prev
 
@@ -189,7 +190,8 @@ var updateBlockMapLinks = function updateBlockMapLinks(
 
     transformBlock(endBlock.getPrevSiblingKey(), blocks, function(block) {
       return block.merge({
-        nextSibling: endBlock.getNextSiblingKey(),
+        // nextSibling: endBlock.getNextSiblingKey(),
+        nextSibling: getNextValidSibling(block, blocks, originalBlockMap),
       });
     }); // update end block parent ancestors
 
