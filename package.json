@@ -17,7 +17,7 @@
     "test": "tsdx test --passWithNoTests",
     "lint": "tsdx lint --fix",
     "prepare": "tsdx build",
-    "storybook": "start-storybook -p 6006 --debug-webpack",
+    "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "examples:basic": "DIR=basic EXT=js webpack-dev-server"
   },

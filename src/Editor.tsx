@@ -5,13 +5,13 @@ import Title from './components/title';
 // `ImageToolbar`, `InlineToolbar` and `Sidebar` only has one instance.
 import ImageToolbar from './components/image-toolbar';
 import InlineToolbar from './components/inline-toolbar';
-import Sidebar from './components/sidebar';
+// import Sidebar from './components/sidebar';
 
 import compareArray from './utils/compareArray';
 
 import './style.css';
 // // https://draftjs.org/docs/advanced-topics-issues-and-pitfalls.html#missing-draftcss
-import 'draft-js/dist/Draft.css';
+// import 'draft-js/dist/Draft.css';
 
 import withEditor from './withEditor';
 
@@ -24,7 +24,7 @@ const NewEditor: FC<EditorProps> = props => {
     placeholder,
     imageRef,
     inlineRef,
-    sidebarRef,
+    // sidebarRef,
     blockRenderMap,
     customStyleMap,
   } = props;
@@ -103,6 +103,11 @@ const NewEditor: FC<EditorProps> = props => {
   const handleBlockRender = useCallback(
     contentBlock => {
       const { editorState } = getEditor();
+
+      if (contentBlock)
+        return hooks.blockRendererFn.call(contentBlock, editorState);
+      return null;
+
       return hooks.blockRendererFn.call(contentBlock, editorState);
     },
     [getEditor, hooks.blockRendererFn]
@@ -138,7 +143,7 @@ const NewEditor: FC<EditorProps> = props => {
 
       <ImageToolbar forwardRef={imageRef} />
       <InlineToolbar forwardRef={inlineRef} />
-      <Sidebar forwardRef={sidebarRef} />
+      {/* <Sidebar forwardRef={sidebarRef} /> */}
     </div>
   );
 };

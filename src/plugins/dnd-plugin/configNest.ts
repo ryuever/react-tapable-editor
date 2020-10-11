@@ -183,11 +183,12 @@ function DNDPlugin() {
             orientation: Orientation.Vertical,
             containerSelector: '.data-wrapper-column >div',
             draggerSelector: '.miuffy-paragraph',
-            shouldAcceptDragger: el => {
-              return (
-                el.matches('.miuffy-paragraph') ||
-                el.matches('.miuffy-paragraph >div:first-child')
-              );
+            shouldAcceptDragger: () => {
+              return true;
+              // return (
+              //   el.matches('.miuffy-paragraph') ||
+              //   el.matches('.miuffy-paragraph >div:first-child')
+              // );
             },
             impactDraggerEffect: options => {
               const { dimension, placedPosition } = options;

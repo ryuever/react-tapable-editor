@@ -103,9 +103,12 @@ export const containerElementFromPoint = (point: Point) => {
   const elements = document.elementsFromPoint(x, y);
   if (!elements) return null;
 
+  console.log('elements ', elements);
+
   const len = elements.length;
   let candidate = null;
 
+  // 0 -> n <=> inner -> outer
   for (let i = 0; i < len; i++) {
     const node = elements[i] as HTMLElement;
     if (!isCloneElement(node)) {
@@ -113,6 +116,8 @@ export const containerElementFromPoint = (point: Point) => {
       break;
     }
   }
+
+  console.log('candidate ', candidate, closest(candidate, containerSelector));
 
   // Maybe closest is not needed... loop `elements` util find the first
   // element matches dragger selector.

@@ -29,7 +29,7 @@ module.exports = {
       // include: path.resolve(__dirname, '../src'),
     });
 
-    config.resolve.extensions.push('.ts', '.tsx', '.css');
+    config.resolve.extensions.push('.ts', '.tsx', '.css', 'js');
 
     return config;
   },
