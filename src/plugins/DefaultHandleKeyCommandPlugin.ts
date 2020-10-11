@@ -19,7 +19,6 @@ function DefaultHandleKeyCommandPlugin() {
       (command: DraftEditorCommand, editorState: EditorState) => {
         // https://github.com/facebook/draft-js/blob/master/examples/draft-0-10-0/playground/src/DraftJsRichEditorExample.js#L26
         const newState = decorateKeyCommandHandler(editorState, command);
-        console.log('next trigger ------');
         if (newState) {
           hooks.setState.call(newState);
           return 'handled';

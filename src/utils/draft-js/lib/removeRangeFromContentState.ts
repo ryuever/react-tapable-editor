@@ -344,6 +344,20 @@ var removeRangeFromContentState = function removeRangeFromContentState(
     endOffset === 0 &&
     endBlock.getParentKey() === startKey &&
     endBlock.getPrevSiblingKey() == null;
+
+  let shouldPreserveBlocks = false;
+
+  if (!shouldDeleteParent) {
+    const blocksAfterStartKey = blockMap
+      .toSeq()
+      .skipUntil((_, k) => k === startKey);
+    const blocksAfterEndKey = blockMap
+      .toSeq()
+      .skipUntil((_, k) => k === endKey);
+    shouldPreserveBlocks =
+      blocksAfterEndKey.count() > blocksAfterStartKey.count();
+  }
+
   var newBlocks = shouldDeleteParent
     ? Map([[startKey, null]])
     : blockMap
@@ -352,7 +366,7 @@ var removeRangeFromContentState = function removeRangeFromContentState(
           return k === startKey;
         })
         .takeUntil(function(_, k) {
-          return k === endKey;
+          return k === endKey || shouldPreserveBlocks;
         })
         .filter(function(_, k) {
           return parentAncestors.indexOf(k) === -1;
