@@ -248,7 +248,9 @@ var updateBlockMapLinks = function updateBlockMapLinks(
       });
 
       if (newParentKey != null) {
-        var newParent = blockMap.get(newParentKey);
+        // https://github.com/ryuever/react-tapable-editor/issues/28
+        // var newParent = blockMap.get(newParentKey);
+        var newParent = blocks.get(newParentKey);
         transformBlock(newParentKey, blocks, function(block) {
           return block.merge({
             children: newParent
