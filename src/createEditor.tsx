@@ -180,7 +180,6 @@ const createEditor: any = (defaultPlugins: any[]) =>
       this.hooks.setState.tap(
         'setState',
         (editorState: EditorState, callback: Function) => {
-          console.log('set state ', editorState.getCurrentContent().getBlockMap().toJS())
           this.setFinalState(editorState, callback);
         }
       );

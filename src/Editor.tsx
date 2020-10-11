@@ -79,15 +79,12 @@ const NewEditor: FC<EditorProps> = props => {
   const onChange = useCallback(
     newEditorState => {
       const { editorState } = getEditor();
-      console.log('on change ', editorState.getCurrentContent().getBlockMap().toJS())
 
       let nextState = hooks.stateFilter.call(
         editorState,
         newEditorState,
         pasteText.current
       );
-
-      console.log('next on change ', nextState.getCurrentContent().getBlockMap().toJS())
 
       hooks.onChange.call(nextState);
     },
@@ -106,11 +103,10 @@ const NewEditor: FC<EditorProps> = props => {
   const handleBlockRender = useCallback(
     contentBlock => {
       const { editorState } = getEditor();
-      console.log('content block ', contentBlock)
 
-      if (contentBlock) return hooks.blockRendererFn.call(contentBlock, editorState);
-      return null
-
+      if (contentBlock)
+        return hooks.blockRendererFn.call(contentBlock, editorState);
+      return null;
 
       return hooks.blockRendererFn.call(contentBlock, editorState);
     },

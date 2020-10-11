@@ -5,11 +5,11 @@
 
 // https://github.com/facebook/draft-js/blob/master/examples/draft-0-9-1/rich/rich.html#L52
 // https://github.com/facebook/draft-js/blob/master/src/model/modifier/RichTextEditorUtil.js#L54
-import { RichUtils, EditorState, DraftEditorCommand } from 'draft-js';
+import { EditorState, DraftEditorCommand } from 'draft-js';
 import { GetEditor } from '../types';
 
 // @ts-ignore
-import NestedRichTextEditorUtil from 'draft-js/lib/NestedRichTextEditorUtil'
+import decorateKeyCommandHandler from '../utils/draft-js/decorateKeyCommandHandler';
 
 function DefaultHandleKeyCommandPlugin() {
   this.apply = (getEditor: GetEditor) => {
@@ -17,16 +17,14 @@ function DefaultHandleKeyCommandPlugin() {
     hooks.handleKeyCommand.tap(
       'HandleBackspaceOnStartOfBlockPlugin',
       (command: DraftEditorCommand, editorState: EditorState) => {
-        console.log('handle ', editorState.getCurrentContent().getBlockMap().toJS(), command)
-
         // https://github.com/facebook/draft-js/blob/master/examples/draft-0-10-0/playground/src/DraftJsRichEditorExample.js#L26
-        const newState = NestedRichTextEditorUtil.handleKeyCommand(editorState, command);
+        const newState = decorateKeyCommandHandler(editorState, command);
+        console.log('next trigger ------');
         if (newState) {
-          console.log('state -----', editorState.getSelection().toJS())
           hooks.setState.call(newState);
           return 'handled';
         }
-        return ;
+        return;
       }
     );
   };

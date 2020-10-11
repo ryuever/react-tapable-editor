@@ -16,6 +16,8 @@ const handleEnterContainer = (args: any, ctx: object, actions: Action) => {
   const prevImpactVContainer = prevImpact.impactVContainer;
   const currentImpactVContainer = impactRawInfo.impactVContainer;
 
+  console.log('prev ', prevImpactVContainer, currentImpactVContainer);
+
   if (
     (!prevImpactVContainer && currentImpactVContainer) ||
     (prevImpactVContainer &&
