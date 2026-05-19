@@ -28,11 +28,24 @@ references:
 - attachment chip。
 - tool chip。
 - slash menu。
-- @ context picker。
+- @ mention suggestions：People、Files、Folders、Context、Actions。
 - attachment upload adapter。
 - prompt history。
 - tool mode selector。
 - model selector。
+- shadcn 风格 `AIElementsComposer` preset。
+- `AIElementsCatalog` 组件市场入口。
+- `AIElementsSystemMap` 展示 surface、primitive、block、runtime bridge 分层。
+- `MentionPicker`、`AttachmentTray`、`ModelSelector`、`ToolModeTabs`、`PromptHistoryMenu` 可单独导出使用。
+
+## AI Elements 组件市场
+
+- Sources 与 citations：`SourcesBlock`、`CitationChip`。
+- Reasoning 展示：`ReasoningBlock`。
+- Agent plan：`TaskPlanBlock`。
+- Workspace context：`FileTreeBlock`。
+- Runtime output：`TerminalBlock`、`TestResultsBlock`。
+- Debug：`PayloadInspector`。
 
 ## AI Blocks
 

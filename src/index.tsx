@@ -10,8 +10,54 @@ export type {
   PromptInputPart,
   PromptInputPayload,
   EmptySubmitPolicy,
+  MentionSuggestion,
+  MentionSuggestionKind,
+  ModelOption,
   ToolMode,
+  ToolModeOption,
 } from './lexical/types';
+export {
+  AIElementsCatalog,
+  AIElementsComposer,
+  AIElementsSystemMap,
+  default as AIElementsComposerDefault,
+} from './elements/AIElementsComposer';
+export type {
+  AIElementCatalogItem,
+  AIElementPrinciple,
+  AIElementSystemLayer,
+  AIElementsComposerProps,
+} from './elements/AIElementsComposer';
+export {
+  aiElementsMentionSuggestions,
+  aiElementsModels,
+  aiElementsPromptHistory,
+  aiElementsToolModes,
+} from './elements/presets';
+export {
+  AttachmentTray,
+  CitationChip,
+  FileDropzone,
+  FileTreeBlock,
+  FileUploadButton,
+  ImageInsertPanel,
+  MentionPicker,
+  ModelSelector,
+  PayloadInspector,
+  PromptHistoryMenu,
+  ReasoningBlock,
+  SourcesBlock,
+  TaskPlanBlock,
+  TerminalBlock,
+  TestResultsBlock,
+  ToolModeTabs,
+} from './elements/primitives';
+export type {
+  FileTreeItem,
+  SourceItem,
+  TaskPlanItem,
+  TestResultItem,
+} from './elements/primitives';
 export type {
   AIBlockActionEvent,
   AIBlockActionHandler,

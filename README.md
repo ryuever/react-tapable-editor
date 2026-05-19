@@ -14,7 +14,12 @@ intent, and serializable AI parts.
   quote, code block, ordered list, unordered list, and links
 - Markdown shortcuts and undo/redo history
 - Product-configurable AI tool modes and model selector
-- Slash menu, context picker, attachment upload adapter, and prompt history
+- Slash menu, @ mention suggestions, attachment upload adapter, and prompt history
+- shadcn-inspired AI Elements preset with people/files/folders/actions defaults
+- AI Elements primitives for mention picker, attachments, models, tool modes,
+  file upload, file dropzone, image insert, prompt history, sources, citations,
+  reasoning, task plans, file trees, terminal output, test results, and payload
+  inspection
 - Structured AI chips inside the Lexical document tree:
   - context
   - attachment
@@ -83,6 +88,63 @@ export function Composer() {
 }
 ```
 
+## AI Elements preset
+
+Use `AIElementsComposer` when you want a designed composer surface instead of a
+bare editor core. It ships with a shadcn-inspired container, default mention
+suggestions for people/files/folders/actions, model options, tool modes, and
+prompt history.
+
+```tsx
+import {
+  AIElementsCatalog,
+  AIElementsComposer,
+  AIElementsSystemMap,
+  MentionPicker,
+  PayloadInspector,
+  SourcesBlock,
+  TaskPlanBlock,
+  aiElementsMentionSuggestions,
+} from 'react-tapable-editor';
+import 'react-tapable-editor/style.css';
+
+export function WorkspaceComposer() {
+  return (
+    <>
+      <AIElementsSystemMap />
+      <AIElementsCatalog />
+      <MentionPicker items={aiElementsMentionSuggestions} />
+      <SourcesBlock
+        sources={[
+          { id: 'docs', title: 'Design notes', url: '/docs/ai-elements' },
+        ]}
+      />
+      <TaskPlanBlock
+        tasks={[
+          { id: '1', title: 'Review context', status: 'done' },
+          { id: '2', title: 'Run implementation agent', status: 'doing' },
+        ]}
+      />
+      <AIElementsComposer
+        title="Agent workspace"
+        context={[{ id: 'repo', label: 'react-tapable-editor', type: 'repo' }]}
+        onSubmit={payload => runAgent(payload)}
+      />
+      <PayloadInspector payload={null} />
+    </>
+  );
+}
+```
+
+The preset is intentionally opinionated but not closed: pass
+`mentionSuggestions`, `models`, `toolModes`, `promptHistory`, and the normal
+editor callbacks to replace any default.
+
+The primitives can also be used without the composer. They are ordinary React
+components that share the same TypeScript types as the editor payload, so a
+product can place them in sidebars, popovers, agent consoles, or artifact
+workspaces while keeping one schema contract.
+
 ## Commands
 
 ```tsx
@@ -144,6 +206,16 @@ Planning and architecture notes live in `codebase-wiki/`.
 
 ```bash
 npm run docs:wiki:dev
+```
+
+## Docs site
+
+The public documentation site lives in `docs/`. It is separate from the
+internal codebase wiki and is organized around Philosophy, Components, Blocks,
+Runtime, Recipes, and API.
+
+```bash
+npm run docs:dev
 ```
 
 ## Release check

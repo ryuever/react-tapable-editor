@@ -13,12 +13,27 @@ import { ImagePayload, UpdateImagePayload } from './nodes/ImageNode';
 
 export type ToolMode = 'chat' | 'agent' | 'search' | 'code';
 export type EmptySubmitPolicy = 'allow' | 'allow-structured' | 'block';
+export type MentionSuggestionKind =
+  | 'person'
+  | 'file'
+  | 'folder'
+  | 'context'
+  | 'action';
 
 export interface ContextItem {
   id: string;
   label: string;
   type?: string;
   value?: unknown;
+}
+
+export interface MentionSuggestion {
+  id: string;
+  label: string;
+  kind: MentionSuggestionKind;
+  description?: string;
+  value?: unknown;
+  meta?: Record<string, unknown>;
 }
 
 export interface AttachmentItem {
@@ -77,6 +92,7 @@ export interface LexicalTapableEditorProps {
   autoFocus?: boolean;
   className?: string;
   context?: ContextItem[];
+  mentionSuggestions?: MentionSuggestion[];
   attachments?: AttachmentItem[];
   defaultToolMode?: ToolMode;
   toolModes?: ToolModeOption[];

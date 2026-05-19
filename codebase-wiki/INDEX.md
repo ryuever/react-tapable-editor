@@ -29,6 +29,9 @@ features:
   - title: API Reference
     details: Props、payload、imperative handle 与 portable helpers 的使用入口。
     link: /reference/20260519-api-reference
+  - title: AI Elements
+    details: shadcn 风格 composer preset 与 UI 市场化组件入口。
+    link: /reference/20260519-ai-elements
 ---
 
 这个站点是 React Tapable Editor 的产品化文档入口：它不仅记录迁移过程，也解释当前 playground 展示什么、组件怎么接入、为什么把编辑器设计成 AI chat / agent / artifact 的统一输入层。
@@ -62,6 +65,7 @@ features:
 | R-002 | [20260519-usage-examples.md](./reference/20260519-usage-examples.md) | Lexical AI Editor Usage Examples | Chat composer、agent console、artifact editor 三类集成示例。 |
 | R-003 | [20260519-playground-guide.md](./reference/20260519-playground-guide.md) | Playground 用例指南 | 说明 demo 中每个场景按钮展示什么、如何观察 payload，以及这些用例对应的真实产品集成方式。 |
 | R-004 | [20260519-capabilities.md](./reference/20260519-capabilities.md) | 当前能力矩阵 | 汇总编辑器当前支持的富文本、AI block、agent lifecycle、image、schema、测试与发布能力。 |
+| R-005 | [20260519-ai-elements.md](./reference/20260519-ai-elements.md) | AI Elements 与 shadcn 风格设计系统 | 说明 AI Elements preset 的设计理念、默认 @ 联想能力、组件导出和 UI 市场化方向。 |
 
 ### reference/ — 参考手册
 

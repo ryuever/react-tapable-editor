@@ -59,6 +59,10 @@ export const wikiSidebar = {
         {
           "text": "R-004 当前能力矩阵",
           "link": "/reference/20260519-capabilities"
+        },
+        {
+          "text": "R-005 AI Elements 与 shadcn 风格设计系统",
+          "link": "/reference/20260519-ai-elements"
         }
       ]
     }

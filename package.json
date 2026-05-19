@@ -26,9 +26,12 @@
     "build": "rm -rf dist && vite build && tsc -p tsconfig.build.json --emitDeclarationOnly",
     "test": "npm run build && npm run test:e2e",
     "test:e2e": "NO_PROXY=localhost,127.0.0.1,::1 HTTP_PROXY= HTTPS_PROXY= ALL_PROXY= http_proxy= https_proxy= all_proxy= playwright test",
-    "release:check": "npm test && npm run docs:wiki:build",
+    "release:check": "npm test && npm run docs:build && npm run docs:wiki:build",
     "prepublishOnly": "npm run release:check",
     "prepare": "npm run build",
+    "docs:dev": "vitepress dev docs --port 5174",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs --port 4174",
     "docs:wiki:dev": "vitepress dev",
     "docs:wiki:build": "vitepress build",
     "docs:wiki:preview": "vitepress preview"

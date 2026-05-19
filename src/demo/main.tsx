@@ -1,18 +1,61 @@
 import React, { useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { $createParagraphNode, $createTextNode, $getRoot } from 'lexical';
-import LexicalTapableEditor, {
+import {
   AIBlockActionEvent,
+  AIElementsCatalog,
+  AIElementsComposer,
+  AIElementsSystemMap,
+  AttachmentTray,
+  CitationChip,
+  FileDropzone,
+  FileTreeBlock,
+  FileUploadButton,
+  ImageInsertPanel,
   LexicalTapableEditorHandle,
+  MentionPicker,
+  ModelSelector,
+  PayloadInspector,
   PromptInputPayload,
+  PromptHistoryMenu,
+  ReasoningBlock,
+  SourcesBlock,
+  TaskPlanBlock,
+  TerminalBlock,
+  TestResultsBlock,
+  ToolMode,
+  ToolModeTabs,
+  aiElementsMentionSuggestions,
+  aiElementsModels,
+  aiElementsPromptHistory,
+  aiElementsToolModes,
 } from '../index';
 import './styles.css';
+
+const demoMentionSuggestions = [
+  ...aiElementsMentionSuggestions,
+  {
+    id: 'context-selection',
+    kind: 'context' as const,
+    label: 'Current selection',
+    description: 'Selected text or active workspace region',
+  },
+].filter(
+  (item, index, suggestions) =>
+    suggestions.findIndex(candidate => candidate.kind === item.kind) === index
+);
 
 function DemoApp() {
   const editorRef = useRef<LexicalTapableEditorHandle | null>(null);
   const [payload, setPayload] = useState<PromptInputPayload | null>(null);
   const [lastAction, setLastAction] = useState<AIBlockActionEvent | null>(null);
   const [lastToolId, setLastToolId] = useState<string | null>(null);
+  const [mediaFiles, setMediaFiles] = useState([
+    { id: 'diagram', name: 'architecture-map.png', type: 'image/png' },
+    { id: 'notes', name: 'meeting-notes.md', type: 'text/markdown' },
+  ]);
+  const [primitiveModel, setPrimitiveModel] = useState(aiElementsModels[0]?.id);
+  const [primitiveMode, setPrimitiveMode] = useState<ToolMode>('chat');
 
   const setEditorText = (text: string) => {
     editorRef.current?.getEditor()?.update(() => {
@@ -145,6 +188,25 @@ function DemoApp() {
     if (currentPayload) setPayload(currentPayload);
   };
 
+  const attachPrimitiveFiles = (files: File[]) => {
+    const nextFiles = files.map(file => ({
+      id: `primitive-${file.name}-${file.lastModified}`,
+      name: file.name,
+      type: file.type || 'application/octet-stream',
+      url: URL.createObjectURL(file),
+      value: { size: file.size },
+    }));
+    setMediaFiles(current => current.concat(nextFiles));
+    nextFiles.forEach(file => {
+      editorRef.current?.insertAIChip({
+        id: file.id,
+        kind: 'attachment',
+        label: file.name,
+        meta: { type: file.type, url: file.url },
+      });
+    });
+  };
+
   return (
     <main className="demo-shell">
       <section className="demo-header">
@@ -183,9 +245,142 @@ function DemoApp() {
         </article>
       </section>
 
-      <LexicalTapableEditor
+      <AIElementsSystemMap />
+
+      <AIElementsCatalog />
+
+      <section className="demo-section-heading">
+        <span>Component Market</span>
+        <h2>Composable AI Elements</h2>
+        <p>
+          Each block below is exported from the package, styled with the same
+          shadcn-minded system, and can be placed around or inside a Lexical AI
+          workflow.
+        </p>
+      </section>
+
+      <section className="rte-elements-gallery" aria-label="AI Elements primitives">
+        <MentionPicker
+          items={demoMentionSuggestions}
+          onSelect={item => {
+            editorRef.current?.insertAIChip({
+              id: item.id,
+              kind: 'context',
+              label: item.label,
+              meta: { mentionKind: item.kind },
+            });
+          }}
+        />
+        <AttachmentTray
+          attachments={mediaFiles}
+          onRemove={id => setMediaFiles(current => current.filter(file => file.id !== id))}
+        />
+        <section className="rte-element-panel" aria-label="File insert">
+          <header>
+            <span>Primitive</span>
+            <h3>File Insert</h3>
+          </header>
+          <FileUploadButton onFiles={attachPrimitiveFiles} />
+          <FileDropzone onFiles={attachPrimitiveFiles} />
+        </section>
+        <ImageInsertPanel
+          onInsert={image => {
+            editorRef.current?.insertImage(image);
+            refreshPayload();
+          }}
+        />
+        <section className="rte-element-panel" aria-label="Composer controls">
+          <header>
+            <span>Primitive</span>
+            <h3>Composer Controls</h3>
+          </header>
+          <ModelSelector
+            models={aiElementsModels}
+            onChange={model => setPrimitiveModel(model?.id)}
+            value={primitiveModel}
+          />
+          <ToolModeTabs
+            modes={aiElementsToolModes}
+            onChange={setPrimitiveMode}
+            value={primitiveMode}
+          />
+        </section>
+        <PromptHistoryMenu
+          items={aiElementsPromptHistory}
+          onSelect={setEditorText}
+        />
+        <SourcesBlock
+          sources={[
+            {
+              id: 'lexical',
+              title: 'Lexical editor state',
+              description: 'Editor tree is the durable source for rich AI parts.',
+              url: 'lexical.dev',
+            },
+            {
+              id: 'portable',
+              title: 'Portable schema v2',
+              description: 'Stable interchange for chats, agents and docs.',
+              url: 'codebase-wiki/reference/20260519-api-reference',
+            },
+          ]}
+        />
+        <section className="rte-element-panel" aria-label="Citation chips">
+          <header>
+            <span>Primitive</span>
+            <h3>Citation Chips</h3>
+          </header>
+          <p className="rte-element-copy">
+            Retrieval output can stay compact while preserving stable source ids.
+          </p>
+          <div className="rte-inline-chips">
+            <CitationChip label="[1] Lexical state" sourceId="lexical" />
+            <CitationChip label="[2] Portable schema" sourceId="portable" />
+            <CitationChip label="[3] AI Elements" sourceId="ai-elements" />
+          </div>
+        </section>
+        <ReasoningBlock
+          steps={[
+            'Read prompt and referenced context.',
+            'Choose whether the answer is chat, artifact or agent work.',
+            'Emit structured blocks and keep payload inspectable.',
+          ]}
+        />
+        <TaskPlanBlock
+          tasks={[
+            { id: 'p1', status: 'done', title: 'Migrate core editor to Lexical' },
+            { id: 'p2', status: 'doing', title: 'Ship AI Elements primitives' },
+            { id: 'p3', status: 'todo', title: 'Bind blocks to runtime streams' },
+          ]}
+        />
+        <FileTreeBlock
+          items={[
+            { id: 'src', kind: 'folder', name: 'src' },
+            { id: 'elements', kind: 'folder', name: 'elements', depth: 1 },
+            { id: 'primitives', kind: 'file', name: 'primitives.tsx', depth: 2 },
+            { id: 'wiki', kind: 'folder', name: 'codebase-wiki', depth: 0 },
+          ]}
+        />
+        <TerminalBlock
+          command="npm run release:check"
+          output={'build ok\ne2e ok\ndocs ok'}
+          status="success"
+        />
+        <TestResultsBlock
+          results={[
+            { id: 'structured', name: 'structured payload', status: 'passed', duration: '1.2s' },
+            { id: 'mentions', name: 'mention suggestions', status: 'passed', duration: '0.8s' },
+            { id: 'docs', name: 'wiki build', status: 'passed', duration: '4.1s' },
+          ]}
+        />
+        <PayloadInspector payload={payload} />
+      </section>
+
+      <AIElementsComposer
         ref={editorRef}
         autoFocus
+        title="shadcn-style AI Composer"
+        description="A reusable AI Elements preset with @ people/files/folders/actions, tools, models, prompt history and structured output."
         context={[
           { id: 'repo', label: 'react-tapable-editor', type: 'repo' },
           { id: 'roadmap', label: 'migration-roadmap', type: 'doc' },
@@ -193,10 +388,6 @@ function DemoApp() {
         attachments={[
           { id: 'brief', name: 'editor-brief.md', type: 'text/markdown' },
           { id: 'screenshot', name: 'layout.png', type: 'image/png' },
-        ]}
-        models={[
-          { id: 'fast', label: 'Fast agent', provider: 'demo' },
-          { id: 'reasoning', label: 'Reasoning agent', provider: 'demo' },
         ]}
         onAIBlockAction={handleAIBlockAction}
         onChange={setPayload}
@@ -206,10 +397,6 @@ function DemoApp() {
         }}
         onSubmit={setPayload}
         placeholder="Compose a plan, ask an agent, or write a structured prompt..."
-        promptHistory={[
-          'Summarize this editor migration.',
-          'Plan the next agent workflow.',
-        ]}
       />
 
       <section className="demo-actions">

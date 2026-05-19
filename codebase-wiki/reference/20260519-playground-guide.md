@@ -28,6 +28,7 @@ references:
 
 - 一段普通 prompt text。
 - 一个 repo context chip。
+- `@` 面板默认暴露 People、Files、Folders、Context、Actions。
 - model selector 与 tool mode selector。
 - submit 后 payload 中的 `text`、`parts`、`model`、`toolMode`。
 
@@ -35,6 +36,45 @@ references:
 
 - ChatGPT / Claude / Cursor 类输入框。
 - 项目上下文、当前文件、当前 issue 作为结构化 chip，而不是被拼成一段不透明 prompt。
+
+### AI Elements catalog
+
+页面中的 system map 和 catalog cards 展示了可市场化的 AI Elements：
+
+- Surfaces：Composer、Agent Console、Artifact Workspace。
+- Primitives：Mention Picker、Model Select、Tool Mode、History、Attachments。
+- Blocks：Tool Call、Artifact、Sources、Reasoning、Task Plan。
+- Runtime Bridge：Payload Inspector、Terminal、Test Results、Action Events。
+
+- AI Composer。
+- Agent Console。
+- Artifact Block。
+- Visual Context。
+- Mention Picker。
+- Payload Inspector。
+- Reasoning Block。
+- Task Plan。
+- Sources and Citations。
+- Terminal and Test Results。
+
+这些卡片对应 `AIElementsCatalog`，用于表达组件库不是单一 editor，而是一组可以围绕同一 schema 组合的 AI UI primitives。
+
+### Component market
+
+`Composable AI Elements` 区域展示当前已导出的可复用组件：
+
+- `MentionPicker`：people/files/folders/context/actions 五类联想，点击后可插入 context chip。
+- `AttachmentTray`：附件列表。
+- `ModelSelector` 与 `ToolModeTabs`：模型和运行意图控制。
+- `PromptHistoryMenu`：prompt 模板与历史。
+- `SourcesBlock` 与 `CitationChip`：RAG/检索来源展示。
+- `ReasoningBlock`：推理步骤或执行摘要。
+- `TaskPlanBlock`：agent plan 的 todo/doing/done/blocked 状态。
+- `FileTreeBlock`：repo context 或 workspace context。
+- `TerminalBlock` 与 `TestResultsBlock`：工具运行、命令输出、测试结果。
+- `PayloadInspector`：调试当前 `PromptInputPayload`。
+
+这个区域是后续组件市场的雏形：每个组件都可以独立复制到业务页面，也可以逐步升级为 Lexical 内嵌 block。
 
 ### Agent console
 

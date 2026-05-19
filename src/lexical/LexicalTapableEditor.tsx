@@ -53,6 +53,8 @@ import {
   EmptySubmitPolicy,
   LexicalTapableEditorHandle,
   LexicalTapableEditorProps,
+  MentionSuggestion,
+  MentionSuggestionKind,
   PromptInputPayload,
   ToolMode,
   ToolModeOption,
@@ -66,9 +68,78 @@ const defaultToolModes: ToolModeOption[] = [
   { label: 'Code', value: 'code' },
 ];
 
+const defaultMentionSuggestions: MentionSuggestion[] = [
+  {
+    id: 'person-product-lead',
+    kind: 'person',
+    label: 'Ada Product',
+    description: 'Product owner for AI editor roadmap',
+    meta: { role: 'product' },
+  },
+  {
+    id: 'person-design-lead',
+    kind: 'person',
+    label: 'Lin Design',
+    description: 'Design system and interaction review',
+    meta: { role: 'design' },
+  },
+  {
+    id: 'file-main',
+    kind: 'file',
+    label: 'src/demo/main.tsx',
+    description: 'Playground entry and AI element demos',
+  },
+  {
+    id: 'file-editor',
+    kind: 'file',
+    label: 'src/lexical/LexicalTapableEditor.tsx',
+    description: 'Core Lexical AI editor implementation',
+  },
+  {
+    id: 'folder-lexical',
+    kind: 'folder',
+    label: 'src/lexical',
+    description: 'Lexical nodes, plugins, payload and styles',
+  },
+  {
+    id: 'folder-docs',
+    kind: 'folder',
+    label: 'codebase-wiki',
+    description: 'Architecture, reference and roadmap documentation',
+  },
+  {
+    id: 'action-review',
+    kind: 'action',
+    label: 'Review selection',
+    description: 'Ask the agent to inspect the selected context',
+  },
+  {
+    id: 'action-implement',
+    kind: 'action',
+    label: 'Implement next step',
+    description: 'Start an implementation-oriented agent run',
+  },
+];
+
 const EmptyPlaceholder = ({ text }: { text: string }) => (
   <div className="rte-placeholder">{text}</div>
 );
+
+const mentionKindLabels: Record<MentionSuggestionKind, string> = {
+  action: 'Actions',
+  context: 'Context',
+  file: 'Files',
+  folder: 'Folders',
+  person: 'People',
+};
+
+function mentionIcon(kind: MentionSuggestionKind) {
+  if (kind === 'person') return 'P';
+  if (kind === 'file') return 'F';
+  if (kind === 'folder') return 'D';
+  if (kind === 'action') return 'A';
+  return 'C';
+}
 
 function onError(error: Error) {
   throw error;
@@ -94,6 +165,7 @@ export const LexicalTapableEditor = forwardRef<
     autoFocus = false,
     className,
     context = [],
+    mentionSuggestions,
     attachments = [],
     defaultToolMode = 'chat',
     toolModes = defaultToolModes,
@@ -120,6 +192,7 @@ export const LexicalTapableEditor = forwardRef<
     useState<PromptInputPayload | null>(null);
   const [commandMenuOpen, setCommandMenuOpen] = useState(false);
   const [contextPickerOpen, setContextPickerOpen] = useState(false);
+  const [mentionQuery, setMentionQuery] = useState('');
   const [historyIndex, setHistoryIndex] = useState(-1);
   const [uploadedAttachments, setUploadedAttachments] = useState<
     typeof attachments
@@ -199,16 +272,75 @@ export const LexicalTapableEditor = forwardRef<
     [onToolModeChange]
   );
 
-  const insertContext = useCallback((item: (typeof context)[number]) => {
+  const defaultContextSuggestions = useMemo<MentionSuggestion[]>(
+    () =>
+      context.map(item => ({
+        id: item.id,
+        kind: 'context',
+        label: item.label,
+        description: item.type,
+        value: item.value,
+        meta: {
+          type: item.type,
+          value: item.value,
+        },
+      })),
+    [context]
+  );
+
+  const availableMentionSuggestions = useMemo(
+    () =>
+      (mentionSuggestions && mentionSuggestions.length > 0
+        ? mentionSuggestions
+        : defaultMentionSuggestions
+      ).concat(defaultContextSuggestions),
+    [defaultContextSuggestions, mentionSuggestions]
+  );
+
+  const filteredMentionSuggestions = useMemo(() => {
+    const query = mentionQuery.trim().toLowerCase();
+    if (!query) return availableMentionSuggestions;
+
+    return availableMentionSuggestions.filter(item =>
+      [item.label, item.description, item.kind]
+        .filter(Boolean)
+        .some(value => String(value).toLowerCase().includes(query))
+    );
+  }, [availableMentionSuggestions, mentionQuery]);
+
+  const groupedMentionSuggestions = useMemo(
+    () =>
+      filteredMentionSuggestions.reduce<
+        Record<MentionSuggestionKind, MentionSuggestion[]>
+      >(
+        (groups, item) => {
+          groups[item.kind].push(item);
+          return groups;
+        },
+        {
+          action: [],
+          context: [],
+          file: [],
+          folder: [],
+          person: [],
+        }
+      ),
+    [filteredMentionSuggestions]
+  );
+
+  const insertMentionSuggestion = useCallback((item: MentionSuggestion) => {
     editorRef.current?.dispatchCommand(INSERT_AI_CHIP_COMMAND, {
       id: item.id,
       kind: 'context',
       label: item.label,
       meta: {
-        type: item.type,
+        ...(item.meta || {}),
+        mentionKind: item.kind,
         value: item.value,
       },
     });
+    setContextPickerOpen(false);
+    setMentionQuery('');
   }, []);
 
   const availableAttachments = attachments.concat(uploadedAttachments);
@@ -490,18 +622,50 @@ export const LexicalTapableEditor = forwardRef<
             </div>
           )}
 
-          {contextPickerOpen && context.length > 0 && (
-            <div className="rte-chip-row" aria-label="Context">
-              {context.map(item => (
-                <button
-                  className="rte-chip"
-                  key={item.id}
-                  type="button"
-                  onClick={() => insertContext(item)}
-                >
-                  @{item.label}
-                </button>
-              ))}
+          {contextPickerOpen && (
+            <div className="rte-mention-panel" aria-label="Mention suggestions">
+              <div className="rte-mention-search">
+                <span>@</span>
+                <input
+                  aria-label="Search mentions"
+                  placeholder="Search people, files, folders, actions..."
+                  value={mentionQuery}
+                  onChange={event => setMentionQuery(event.target.value)}
+                />
+              </div>
+              {(
+                [
+                  'person',
+                  'file',
+                  'folder',
+                  'context',
+                  'action',
+                ] as MentionSuggestionKind[]
+              ).map(kind =>
+                groupedMentionSuggestions[kind].length > 0 ? (
+                  <section className="rte-mention-group" key={kind}>
+                    <h3>{mentionKindLabels[kind]}</h3>
+                    <div className="rte-mention-list">
+                      {groupedMentionSuggestions[kind].map(item => (
+                        <button
+                          className="rte-mention-item"
+                          key={item.id}
+                          type="button"
+                          onClick={() => insertMentionSuggestion(item)}
+                        >
+                          <span className={`rte-mention-icon rte-mention-icon-${kind}`}>
+                            {mentionIcon(kind)}
+                          </span>
+                          <span>
+                            <strong>{item.label}</strong>
+                            {item.description && <small>{item.description}</small>}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </section>
+                ) : null
+              )}
             </div>
           )}
 

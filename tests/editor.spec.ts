@@ -13,7 +13,7 @@ test('submits structured text, chips, blocks, and portable payload', async ({
   await editor.click();
   await page.keyboard.type('Plan the migration');
   await page.getByRole('button', { name: '@', exact: true }).click();
-  await page.getByRole('button', { name: '@react-tapable-editor' }).click();
+  await page.getByRole('button', { name: /react-tapable-editor/ }).click();
   await page.getByRole('button', { name: '/', exact: true }).click();
   await page.getByRole('button', { name: 'Insert artifact block' }).click();
   await page.getByRole('button', { name: 'Insert agent run' }).click();
@@ -39,13 +39,30 @@ test('allows structured-only submits while blocking fully empty submits', async 
   await expect(submit).toBeDisabled();
 
   await page.getByRole('button', { name: '@', exact: true }).click();
-  await page.getByRole('button', { name: '@react-tapable-editor' }).click();
+  await page.getByRole('button', { name: /react-tapable-editor/ }).click();
   await expect(submit).toBeEnabled();
   await submit.click();
 
   const payloadPreview = page.getByTestId('payload-json');
   await expect(payloadPreview).toContainText('"text": ""');
   await expect(payloadPreview).toContainText('"kind": "context"');
+});
+
+test('shows default mention suggestions for people, files, folders, and actions', async ({
+  page,
+}) => {
+  await page.goto('/');
+
+  await page.getByRole('button', { name: '@', exact: true }).click();
+
+  const mentionPanel = page.getByLabel('Mention suggestions');
+  await expect(mentionPanel).toContainText('People');
+  await expect(mentionPanel).toContainText('Files');
+  await expect(mentionPanel).toContainText('Folders');
+  await expect(mentionPanel).toContainText('Actions');
+
+  await page.getByLabel('Search mentions').fill('portable');
+  await expect(mentionPanel).toContainText('src/schema/portable.ts');
 });
 
 test('formats text with toolbar controls', async ({ page }) => {
@@ -82,6 +99,23 @@ test('updates image block through imperative handle', async ({ page }) => {
   await expect(payloadPreview).toContainText('Updated demo image');
 });
 
+test('inserts image blocks from the media insert component', async ({ page }) => {
+  await page.goto('/');
+
+  const imageInsert = page.getByLabel('Image insert');
+  await imageInsert.getByPlaceholder('https://...').fill('https://placehold.co/320x180/png');
+  await imageInsert.getByPlaceholder('Describe the image').fill('Generated UI preview');
+  await imageInsert.getByPlaceholder('Optional caption').fill('Inserted from media primitive');
+  await imageInsert.getByRole('button', { name: 'Insert image' }).click();
+  await page.getByRole('button', { name: 'Send' }).click();
+
+  const payloadPreview = page.getByTestId('payload-json');
+  await expect(payloadPreview).toContainText('"kind": "image"');
+  await expect(payloadPreview).toContainText('https://placehold.co/320x180/png');
+  await expect(payloadPreview).toContainText('Generated UI preview');
+  await expect(payloadPreview).toContainText('Inserted from media primitive');
+});
+
 test('edits image blocks with the selected block toolbar', async ({ page }) => {
   await page.goto('/');
 
@@ -108,9 +142,9 @@ test('loads prompt history and selected model into the payload', async ({
   await page.getByRole('button', { name: 'Send' }).click();
 
   const payloadPreview = page.getByTestId('payload-json');
-  await expect(payloadPreview).toContainText('Plan the next agent workflow.');
+  await expect(payloadPreview).toContainText('Review the selected files and identify risks.');
   await expect(payloadPreview).toContainText('"id": "reasoning"');
-  await expect(payloadPreview).toContainText('"label": "Reasoning agent"');
+  await expect(payloadPreview).toContainText('"label": "Reasoning"');
 });
 
 test('updates agent run through imperative handle', async ({ page }) => {

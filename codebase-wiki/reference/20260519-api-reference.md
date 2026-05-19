@@ -11,6 +11,9 @@ references:
   - id: P-003
     rel: implements
     file: ../roadmap/20260519-next-iteration-backlog.md
+  - id: R-005
+    rel: extended-by
+    file: ./20260519-ai-elements.md
 ---
 
 # Lexical AI Editor API Reference
@@ -25,6 +28,7 @@ import 'react-tapable-editor/style.css';
 ## 核心 Props
 
 - `context`: 可插入为 `@context` chip 的上下文对象。
+- `mentionSuggestions`: `@` 面板中的 People、Files、Folders、Actions、Context 等联想项。
 - `attachments`: 可插入为 attachment chip 的外部附件。
 - `onAttachmentUpload(file)`: 上传适配器，返回 `AttachmentItem`。
 - `toolModes`: 产品层定义的 mode 列表，默认 `chat / agent / search / code`。
@@ -69,3 +73,54 @@ interface LexicalTapableEditorHandle {
 - `createLexicalJSONFromPortableDocument(document)`
 - `exportPortableDocumentToMarkdown(document)`
 - `exportPortableDocumentToPlainText(document)`
+
+## AI Elements Preset
+
+```tsx
+import {
+  AIElementsCatalog,
+  AIElementsComposer,
+  AIElementsSystemMap,
+  AttachmentTray,
+  CitationChip,
+  FileTreeBlock,
+  MentionPicker,
+  ModelSelector,
+  PayloadInspector,
+  PromptHistoryMenu,
+  ReasoningBlock,
+  SourcesBlock,
+  TaskPlanBlock,
+  TerminalBlock,
+  TestResultsBlock,
+  ToolModeTabs,
+  aiElementsMentionSuggestions,
+  aiElementsModels,
+  aiElementsPromptHistory,
+  aiElementsToolModes,
+} from 'react-tapable-editor';
+```
+
+`AIElementsComposer` 是基于 `LexicalTapableEditor` 的 shadcn 风格 preset。它默认提供：
+
+- People / Files / Folders / Actions 的 `@` 联想。
+- model selector。
+- tool mode selector。
+- prompt history。
+- shadcn 风格容器、header、surface、catalog card。
+
+## AI Elements Primitives
+
+- `MentionPicker`: people、files、folders、context、actions 分组联想。
+- `AttachmentTray`: 附件列表展示。
+- `ModelSelector`: 模型选择控件。
+- `ToolModeTabs`: chat、agent、search、code 等 mode 切换。
+- `PromptHistoryMenu`: prompt 历史或模板列表。
+- `SourcesBlock`: sources / retrieval result 展示。
+- `CitationChip`: inline citation chip。
+- `ReasoningBlock`: reasoning summary 或 step trace。
+- `TaskPlanBlock`: agent plan 状态列表。
+- `FileTreeBlock`: 文件/目录上下文树。
+- `TerminalBlock`: command 与 output 展示。
+- `TestResultsBlock`: verification results 展示。
+- `PayloadInspector`: `PromptInputPayload` 调试面板。
