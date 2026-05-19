@@ -106,6 +106,31 @@ export {
   $createImageNode,
   $isImageNode,
 } from './lexical/nodes/ImageNode';
+export {
+  PromptInputProvider,
+  createPromptInputMessage,
+  toAISDKSendMessageInput,
+  toOpenAIResponsesInput,
+  usePromptInput,
+  usePromptInputController,
+  usePromptInputState,
+} from './prompt-input';
+export type {
+  AISDKFileLike,
+  AISDKSendMessageInput,
+  OpenAIResponsesInput,
+  OpenAIResponsesInputContent,
+  OpenAIResponsesInputMessage,
+  PromptInputAttachment,
+  PromptInputAttachmentStatus,
+  PromptInputController,
+  PromptInputControllerState,
+  PromptInputMessage,
+  PromptInputMessageOptions,
+  PromptInputProviderProps,
+  PromptInputStatus,
+  ReferencedSourceItem,
+} from './prompt-input';
 export type {
   AIBlockKind,
   AIBlockAction,

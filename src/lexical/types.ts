@@ -10,6 +10,7 @@ import {
 import { AIBlockActionEvent } from './AIBlockActionContext';
 import { AIChipPayload } from './nodes/AIChipNode';
 import { ImagePayload, UpdateImagePayload } from './nodes/ImageNode';
+import type { PromptInputMessage, PromptInputStatus } from '../prompt-input/types';
 
 export type ToolMode = 'chat' | 'agent' | 'search' | 'code';
 export type EmptySubmitPolicy = 'allow' | 'allow-structured' | 'block';
@@ -101,6 +102,7 @@ export interface LexicalTapableEditorProps {
   placeholder?: string;
   models?: ModelOption[];
   promptHistory?: string[];
+  status?: PromptInputStatus;
   submitLabel?: string;
   emptySubmitPolicy?: EmptySubmitPolicy;
   onAttachmentUpload?: (file: File) => AttachmentItem | Promise<AttachmentItem>;
@@ -108,7 +110,9 @@ export interface LexicalTapableEditorProps {
   onAIBlockAction?: (event: AIBlockActionEvent) => void;
   onEmptySubmitBlocked?: (payload: PromptInputPayload) => void;
   onModelChange?: (model: ModelOption | undefined) => void;
+  onPromptInputSubmit?: (message: PromptInputMessage) => void;
   onSubmit?: (payload: PromptInputPayload) => void;
+  onStop?: () => void;
   onToolModeChange?: (mode: ToolMode) => void;
 }
 

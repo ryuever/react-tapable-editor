@@ -16,6 +16,7 @@ import {
   MentionPicker,
   ModelSelector,
   PayloadInspector,
+  PromptInputMessage,
   PromptInputPayload,
   PromptHistoryMenu,
   ReasoningBlock,
@@ -29,6 +30,8 @@ import {
   aiElementsModels,
   aiElementsPromptHistory,
   aiElementsToolModes,
+  toAISDKSendMessageInput,
+  toOpenAIResponsesInput,
 } from '../index';
 import './styles.css';
 
@@ -48,6 +51,8 @@ const demoMentionSuggestions = [
 function DemoApp() {
   const editorRef = useRef<LexicalTapableEditorHandle | null>(null);
   const [payload, setPayload] = useState<PromptInputPayload | null>(null);
+  const [promptMessage, setPromptMessage] =
+    useState<PromptInputMessage | null>(null);
   const [lastAction, setLastAction] = useState<AIBlockActionEvent | null>(null);
   const [lastToolId, setLastToolId] = useState<string | null>(null);
   const [mediaFiles, setMediaFiles] = useState([
@@ -395,6 +400,7 @@ function DemoApp() {
           const currentPayload = editorRef.current?.getPayload();
           if (currentPayload) setPayload(currentPayload);
         }}
+        onPromptInputSubmit={setPromptMessage}
         onSubmit={setPayload}
         placeholder="Compose a plan, ask an agent, or write a structured prompt..."
       />
@@ -426,6 +432,29 @@ function DemoApp() {
       <section className="demo-payload" data-testid="payload-preview">
         <h2>Payload Preview</h2>
         <pre data-testid="payload-json">{JSON.stringify(payload, null, 2)}</pre>
+      </section>
+
+      <section className="demo-payload" data-testid="prompt-message-preview">
+        <h2>Prompt Input Message</h2>
+        <pre data-testid="prompt-message-json">
+          {JSON.stringify(promptMessage, null, 2)}
+        </pre>
+      </section>
+
+      <section className="demo-payload" data-testid="runtime-adapters-preview">
+        <h2>Runtime Adapters</h2>
+        <pre data-testid="runtime-adapters-json">
+          {JSON.stringify(
+            promptMessage
+              ? {
+                  aiSDK: toAISDKSendMessageInput(promptMessage),
+                  openAIResponses: toOpenAIResponsesInput(promptMessage),
+                }
+              : null,
+            null,
+            2
+          )}
+        </pre>
       </section>
 
       <section className="demo-payload" data-testid="last-action-preview">

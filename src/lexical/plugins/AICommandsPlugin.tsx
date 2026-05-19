@@ -52,18 +52,15 @@ export default function AICommandsPlugin() {
     const unregisterChipCommand = editor.registerCommand<AIChipPayload>(
       INSERT_AI_CHIP_COMMAND,
       payload => {
-        editor.update(() => {
-          const selection = $getSelection();
-          const nodes = [$createAIChipNode(payload), $createTextNode(' ')];
+        const selection = $getSelection();
+        const nodes = [$createAIChipNode(payload), $createTextNode(' ')];
 
-          if ($isRangeSelection(selection)) {
-            selection.insertNodes(nodes);
-            return;
-          }
+        if ($isRangeSelection(selection)) {
+          selection.insertNodes(nodes);
+          return true;
+        }
 
-          $insertNodes(nodes);
-        });
-
+        $insertNodes(nodes);
         return true;
       },
       COMMAND_PRIORITY_EDITOR
@@ -72,10 +69,7 @@ export default function AICommandsPlugin() {
     const unregisterBlockCommand = editor.registerCommand<AIBlockPayload>(
       INSERT_AI_BLOCK_COMMAND,
       payload => {
-        editor.update(() => {
-          $insertNodes([$createAIBlockNode(payload)]);
-        });
-
+        $insertNodes([$createAIBlockNode(payload)]);
         return true;
       },
       COMMAND_PRIORITY_EDITOR
@@ -84,10 +78,7 @@ export default function AICommandsPlugin() {
     const unregisterImageCommand = editor.registerCommand<ImagePayload>(
       INSERT_IMAGE_COMMAND,
       payload => {
-        editor.update(() => {
-          $insertNodes([$createImageNode(payload)]);
-        });
-
+        $insertNodes([$createImageNode(payload)]);
         return true;
       },
       COMMAND_PRIORITY_EDITOR
@@ -97,15 +88,13 @@ export default function AICommandsPlugin() {
       editor.registerCommand<UpdateAIBlockPayload>(
         UPDATE_AI_BLOCK_COMMAND,
         payload => {
-          editor.update(() => {
-            const traversal = updateNodeById(payload.id, node => {
-              if (!$isAIBlockNode(node)) return false;
-              if (node.__id !== payload.id) return false;
-              node.update(payload);
-              return true;
-            });
-            traversal.visit($getRoot() as LexicalNode & { getChildren: () => LexicalNode[] });
+          const traversal = updateNodeById(payload.id, node => {
+            if (!$isAIBlockNode(node)) return false;
+            if (node.__id !== payload.id) return false;
+            node.update(payload);
+            return true;
           });
+          traversal.visit($getRoot() as LexicalNode & { getChildren: () => LexicalNode[] });
 
           return true;
         },
@@ -116,15 +105,13 @@ export default function AICommandsPlugin() {
       editor.registerCommand<UpdateImagePayload>(
         UPDATE_IMAGE_COMMAND,
         payload => {
-          editor.update(() => {
-            const traversal = updateNodeById(payload.id, node => {
-              if (!$isImageNode(node)) return false;
-              if (node.__id !== payload.id) return false;
-              node.update(payload);
-              return true;
-            });
-            traversal.visit($getRoot() as LexicalNode & { getChildren: () => LexicalNode[] });
+          const traversal = updateNodeById(payload.id, node => {
+            if (!$isImageNode(node)) return false;
+            if (node.__id !== payload.id) return false;
+            node.update(payload);
+            return true;
           });
+          traversal.visit($getRoot() as LexicalNode & { getChildren: () => LexicalNode[] });
 
           return true;
         },

@@ -24,6 +24,10 @@ export {
   TerminalBlock,
   TestResultsBlock,
   PayloadInspector,
+  PromptInputProvider,
+  createPromptInputMessage,
+  toAISDKSendMessageInput,
+  toOpenAIResponsesInput,
 };
 ```
 
@@ -52,6 +56,38 @@ interface LexicalTapableEditorHandle {
   updateImage(payload: UpdateImagePayload): void;
 }
 ```
+
+## Prompt input runtime
+
+```ts
+interface PromptInputMessage {
+  text: string;
+  parts: PromptInputPart[];
+  attachments: PromptInputAttachment[];
+  context: ContextItem[];
+  referencedSources: ReferencedSourceItem[];
+  toolMode: ToolMode;
+  model?: ModelOption;
+  portable: PortableEditorDocument;
+  metadata?: Record<string, unknown>;
+}
+```
+
+`AIElementsComposer` and `LexicalTapableEditor` still emit the legacy
+`PromptInputPayload` through `onSubmit`. Use `onPromptInputSubmit` when you want
+the normalized chat input contract.
+
+```tsx
+<AIElementsComposer
+  onPromptInputSubmit={message => {
+    sendMessage(toAISDKSendMessageInput(message));
+  }}
+/>
+```
+
+Use `PromptInputProvider`, `usePromptInputState` and
+`usePromptInputController` when the surrounding chat runtime needs to own
+submitting, streaming, stopping, retrying or clearing composer state.
 
 ## Portable schema helpers
 

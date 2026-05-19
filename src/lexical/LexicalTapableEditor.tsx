@@ -44,6 +44,7 @@ import { AIBlockNode } from './nodes/AIBlockNode';
 import { AIChipNode } from './nodes/AIChipNode';
 import { ImageNode } from './nodes/ImageNode';
 import { createPromptPayload } from './payload';
+import { createPromptInputMessage } from '../prompt-input/adapters';
 import AICommandsPlugin from './plugins/AICommandsPlugin';
 import RegisterEditorPlugin from './plugins/RegisterEditorPlugin';
 import SubmitOnModEnterPlugin from './plugins/SubmitOnModEnterPlugin';
@@ -175,13 +176,16 @@ export const LexicalTapableEditor = forwardRef<
     models = [],
     placeholder = 'Ask, draft, rewrite, or plan...',
     promptHistory = [],
+    status = 'idle',
     submitLabel = 'Send',
     onAttachmentUpload,
     onChange,
     onAIBlockAction,
     onEmptySubmitBlocked,
     onModelChange,
+    onPromptInputSubmit,
     onSubmit,
+    onStop,
     onToolModeChange,
   },
   ref
@@ -261,8 +265,15 @@ export const LexicalTapableEditor = forwardRef<
       onEmptySubmitBlocked?.(payload);
       return;
     }
+    onPromptInputSubmit?.(createPromptInputMessage(payload));
     onSubmit?.(payload);
-  }, [buildPayload, emptySubmitPolicy, onEmptySubmitBlocked, onSubmit]);
+  }, [
+    buildPayload,
+    emptySubmitPolicy,
+    onEmptySubmitBlocked,
+    onPromptInputSubmit,
+    onSubmit,
+  ]);
 
   const handleToolModeChange = useCallback(
     (nextMode: ToolMode) => {
@@ -517,8 +528,14 @@ export const LexicalTapableEditor = forwardRef<
     [buildPayload, ref]
   );
 
+  const isRuntimeBusy = status === 'submitted' || status === 'streaming';
   const isSubmitDisabled =
-    !currentPayload || !canSubmitPayload(emptySubmitPolicy, currentPayload);
+    !currentPayload ||
+    (!isRuntimeBusy && !canSubmitPayload(emptySubmitPolicy, currentPayload)) ||
+    (isRuntimeBusy && !onStop);
+  const primaryActionLabel =
+    isRuntimeBusy && onStop ? 'Stop' : status === 'error' ? 'Retry' : submitLabel;
+  const handlePrimaryAction = isRuntimeBusy && onStop ? onStop : handleSubmit;
 
   return (
     <AIBlockActionContext.Provider value={onAIBlockAction || null}>
@@ -719,11 +736,12 @@ export const LexicalTapableEditor = forwardRef<
           <span className="rte-footer-hint">Cmd/Ctrl + Enter</span>
           <button
             className="rte-submit"
+            data-status={status}
             type="button"
             disabled={isSubmitDisabled}
-            onClick={handleSubmit}
+            onClick={handlePrimaryAction}
           >
-            {submitLabel}
+            {primaryActionLabel}
           </button>
         </div>
         </section>

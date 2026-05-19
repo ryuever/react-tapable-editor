@@ -35,8 +35,33 @@ import { AIElementsComposer } from 'react-tapable-editor';
 | `models` | Model options shown in the composer. |
 | `toolModes` | Product modes such as chat, agent, search or code. |
 | `promptHistory` | Prompt history/template list. |
+| `status` | Runtime status: `idle`, `ready`, `submitted`, `streaming` or `error`. |
 | `onAIBlockAction` | Handles approval, reject, retry and inspect actions. |
+| `onPromptInputSubmit` | Receives the normalized `PromptInputMessage` contract. |
 | `onSubmit` | Receives the structured `PromptInputPayload`. |
+
+## Runtime adapters
+
+```tsx
+import {
+  AIElementsComposer,
+  toAISDKSendMessageInput,
+  toOpenAIResponsesInput,
+} from 'react-tapable-editor';
+
+<AIElementsComposer
+  status={chatStatus}
+  onPromptInputSubmit={message => {
+    sendMessage(toAISDKSendMessageInput(message));
+    createResponse(toOpenAIResponsesInput(message));
+  }}
+  onStop={stopStreaming}
+/>
+```
+
+`PromptInputPayload` remains useful for debugging and editor restoration.
+`PromptInputMessage` is the stable chat input handoff: text, structured parts,
+attachments, referenced sources, model, mode and portable document state.
 
 ## When to use
 

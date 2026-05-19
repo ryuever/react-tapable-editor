@@ -147,6 +147,29 @@ test('loads prompt history and selected model into the payload', async ({
   await expect(payloadPreview).toContainText('"label": "Reasoning"');
 });
 
+test('emits standard prompt input message and runtime adapter payloads', async ({
+  page,
+}) => {
+  await page.goto('/');
+
+  const editor = page.getByLabel('AI editor input');
+  await editor.click();
+  await page.keyboard.type('Explain the package API');
+  await page.getByRole('button', { name: '@', exact: true }).click();
+  await page.getByRole('button', { name: /react-tapable-editor/ }).click();
+  await page.getByRole('button', { name: 'Send' }).click();
+
+  const messagePreview = page.getByTestId('prompt-message-json');
+  await expect(messagePreview).toContainText('Explain the package API');
+  await expect(messagePreview).toContainText('"referencedSources"');
+  await expect(messagePreview).toContainText('"toolMode": "chat"');
+
+  const adaptersPreview = page.getByTestId('runtime-adapters-json');
+  await expect(adaptersPreview).toContainText('"aiSDK"');
+  await expect(adaptersPreview).toContainText('"openAIResponses"');
+  await expect(adaptersPreview).toContainText('"input_text"');
+});
+
 test('updates agent run through imperative handle', async ({ page }) => {
   await page.goto('/');
 
