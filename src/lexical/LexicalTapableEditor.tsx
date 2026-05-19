@@ -36,6 +36,7 @@ import {
   UPDATE_AI_BLOCK_COMMAND,
   UPDATE_IMAGE_COMMAND,
 } from './commands';
+import { defaultSlashCommands } from './defaults';
 import {
   AIBlockActionContext,
   setAIBlockActionHandler,
@@ -46,6 +47,7 @@ import { ImageNode } from './nodes/ImageNode';
 import { createPromptPayload } from './payload';
 import { createPromptInputMessage } from '../prompt-input/adapters';
 import AICommandsPlugin from './plugins/AICommandsPlugin';
+import AIPromptTriggersPlugin from './plugins/AIPromptTriggersPlugin';
 import RegisterEditorPlugin from './plugins/RegisterEditorPlugin';
 import SubmitOnModEnterPlugin from './plugins/SubmitOnModEnterPlugin';
 import ToolbarPlugin from './plugins/ToolbarPlugin';
@@ -134,6 +136,14 @@ const mentionKindLabels: Record<MentionSuggestionKind, string> = {
   person: 'People',
 };
 
+const mentionKindSearchAliases: Record<MentionSuggestionKind, string[]> = {
+  action: ['action', 'actions', 'command', 'commands'],
+  context: ['context', 'contexts', 'selection'],
+  file: ['file', 'files', 'doc', 'docs'],
+  folder: ['folder', 'folders', 'directory', 'directories'],
+  person: ['person', 'people', 'user', 'users', 'member', 'members'],
+};
+
 function mentionIcon(kind: MentionSuggestionKind) {
   if (kind === 'person') return 'P';
   if (kind === 'file') return 'F';
@@ -176,6 +186,7 @@ export const LexicalTapableEditor = forwardRef<
     models = [],
     placeholder = 'Ask, draft, rewrite, or plan...',
     promptHistory = [],
+    slashCommands,
     status = 'idle',
     submitLabel = 'Send',
     onAttachmentUpload,
@@ -308,12 +319,25 @@ export const LexicalTapableEditor = forwardRef<
     [defaultContextSuggestions, mentionSuggestions]
   );
 
+  const availableSlashCommands = useMemo(
+    () =>
+      slashCommands && slashCommands.length > 0
+        ? slashCommands
+        : defaultSlashCommands,
+    [slashCommands]
+  );
+
   const filteredMentionSuggestions = useMemo(() => {
     const query = mentionQuery.trim().toLowerCase();
     if (!query) return availableMentionSuggestions;
 
     return availableMentionSuggestions.filter(item =>
-      [item.label, item.description, item.kind]
+      [
+        item.label,
+        item.description,
+        item.kind,
+        ...mentionKindSearchAliases[item.kind],
+      ]
         .filter(Boolean)
         .some(value => String(value).toLowerCase().includes(query))
     );
@@ -719,6 +743,12 @@ export const LexicalTapableEditor = forwardRef<
           <LinkPlugin />
           <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
           <AICommandsPlugin />
+          <AIPromptTriggersPlugin
+            mentionSuggestions={availableMentionSuggestions}
+            onToolModeChange={handleToolModeChange}
+            slashCommands={availableSlashCommands}
+            toolMode={toolMode}
+          />
           <OnChangePlugin onChange={handleChange} />
           <RegisterEditorPlugin
             onReady={editor => {

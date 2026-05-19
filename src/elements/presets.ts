@@ -3,6 +3,7 @@ import {
   ModelOption,
   ToolModeOption,
 } from '../lexical/types';
+import { defaultSlashCommands } from '../lexical/defaults';
 
 export const aiElementsToolModes: ToolModeOption[] = [
   { label: 'Chat', value: 'chat' },
@@ -22,6 +23,8 @@ export const aiElementsPromptHistory = [
   'Draft an implementation plan from the selected context.',
   'Review the selected files and identify risks.',
 ];
+
+export const aiElementsSlashCommands = defaultSlashCommands;
 
 export const aiElementsMentionSuggestions: MentionSuggestion[] = [
   {

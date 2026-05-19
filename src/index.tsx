@@ -9,6 +9,8 @@ export type {
   LexicalTapableEditorProps,
   PromptInputPart,
   PromptInputPayload,
+  SlashCommand,
+  SlashCommandAction,
   EmptySubmitPolicy,
   MentionSuggestion,
   MentionSuggestionKind,
@@ -32,6 +34,7 @@ export {
   aiElementsMentionSuggestions,
   aiElementsModels,
   aiElementsPromptHistory,
+  aiElementsSlashCommands,
   aiElementsToolModes,
 } from './elements/presets';
 export {

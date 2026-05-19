@@ -8,6 +8,7 @@ import {
   aiElementsMentionSuggestions,
   aiElementsModels,
   aiElementsPromptHistory,
+  aiElementsSlashCommands,
   aiElementsToolModes,
 } from './presets';
 import './styles.css';
@@ -34,6 +35,7 @@ export const AIElementsComposer = forwardRef<
     mentionSuggestions = aiElementsMentionSuggestions,
     models = aiElementsModels,
     promptHistory = aiElementsPromptHistory,
+    slashCommands = aiElementsSlashCommands,
     toolModes = aiElementsToolModes,
     ...props
   },
@@ -56,6 +58,7 @@ export const AIElementsComposer = forwardRef<
         models={models}
         promptHistory={promptHistory}
         ref={ref}
+        slashCommands={slashCommands}
         toolModes={toolModes}
       />
       {footerSlot && <footer className="rte-ai-elements-footer">{footerSlot}</footer>}

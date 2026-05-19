@@ -50,6 +50,25 @@ export interface ToolModeOption {
   value: ToolMode;
 }
 
+export type SlashCommandAction =
+  | 'insert-artifact-block'
+  | 'insert-image-block'
+  | 'insert-text'
+  | 'insert-tool-call-block'
+  | 'insert-tool-chip'
+  | 'set-tool-mode';
+
+export interface SlashCommand {
+  id: string;
+  label: string;
+  action: SlashCommandAction;
+  description?: string;
+  keywords?: string[];
+  meta?: Record<string, unknown>;
+  toolMode?: ToolMode;
+  value?: string;
+}
+
 export interface ModelOption {
   id: string;
   label: string;
@@ -102,6 +121,7 @@ export interface LexicalTapableEditorProps {
   placeholder?: string;
   models?: ModelOption[];
   promptHistory?: string[];
+  slashCommands?: SlashCommand[];
   status?: PromptInputStatus;
   submitLabel?: string;
   emptySubmitPolicy?: EmptySubmitPolicy;

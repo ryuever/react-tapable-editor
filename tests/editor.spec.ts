@@ -65,6 +65,44 @@ test('shows default mention suggestions for people, files, folders, and actions'
   await expect(mentionPanel).toContainText('src/schema/portable.ts');
 });
 
+test('filters and inserts mentions from the inline @ trigger', async ({
+  page,
+}) => {
+  await page.goto('/');
+
+  const editor = page.getByLabel('AI editor input');
+  await editor.click();
+  await page.keyboard.type('@portable');
+
+  const mentionPanel = page.getByLabel('Mention suggestions');
+  await expect(mentionPanel).toContainText('src/schema/portable.ts');
+  await page.keyboard.press('Enter');
+  await page.getByRole('button', { name: 'Send' }).click();
+
+  const payloadPreview = page.getByTestId('payload-json');
+  await expect(payloadPreview).toContainText('"label": "src/schema/portable.ts"');
+  await expect(payloadPreview).toContainText('"mentionKind": "file"');
+});
+
+test('filters and runs quick commands from the inline slash trigger', async ({
+  page,
+}) => {
+  await page.goto('/');
+
+  const editor = page.getByLabel('AI editor input');
+  await editor.click();
+  await page.keyboard.type('/artifact');
+
+  const slashPanel = page.getByLabel('Slash commands');
+  await expect(slashPanel).toContainText('Artifact block');
+  await page.keyboard.press('Enter');
+  await page.getByRole('button', { name: 'Send' }).click();
+
+  const payloadPreview = page.getByTestId('payload-json');
+  await expect(payloadPreview).toContainText('"kind": "artifact"');
+  await expect(payloadPreview).toContainText('"title": "Artifact block"');
+});
+
 test('formats text with toolbar controls', async ({ page }) => {
   await page.goto('/');
 

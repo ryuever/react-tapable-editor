@@ -158,6 +158,81 @@
   border-color: #d8dee8;
 }
 
+.rte-typeahead-menu {
+  max-height: 320px;
+  overflow-y: auto;
+  width: min(420px, calc(100vw - 32px));
+}
+
+.rte-typeahead-floating {
+  left: 16px;
+  position: absolute;
+  right: 16px;
+  top: 44px;
+  z-index: 10;
+}
+
+.rte-typeahead-section {
+  display: grid;
+  gap: 5px;
+}
+
+.rte-typeahead-section h3 {
+  color: #64748b;
+  font-size: 11px;
+  letter-spacing: 0;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.rte-typeahead-empty {
+  color: #64748b;
+  font-size: 13px;
+  padding: 8px;
+}
+
+.rte-command-option {
+  align-items: center;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 28px 1fr;
+}
+
+.rte-command-option strong,
+.rte-command-option small {
+  display: block;
+}
+
+.rte-command-option strong {
+  font-size: 13px;
+}
+
+.rte-command-option small {
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.35;
+  margin-top: 2px;
+}
+
+.rte-command-token {
+  align-items: center;
+  background: #f1f5f9;
+  border-radius: 7px;
+  color: #475569;
+  display: inline-flex;
+  font-size: 14px;
+  font-weight: 800;
+  height: 28px;
+  justify-content: center;
+  width: 28px;
+}
+
+.rte-command-option[data-selected="true"],
+.rte-mention-item[data-selected="true"] {
+  background: #f8fafc;
+  border-color: #93c5fd;
+}
+
 .rte-mention-search {
   align-items: center;
   background: #f8fafc;

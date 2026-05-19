@@ -1,8 +1,8 @@
 # Composer
 
 `AIElementsComposer` is the designed AI input surface. It combines the Lexical
-editor core with mention suggestions, tool modes, model selection, prompt
-history, attachments and structured submit payloads.
+editor core with inline `@` mention suggestions, `/` quick commands, tool modes,
+model selection, prompt history, attachments and structured submit payloads.
 
 ## Preview
 
@@ -31,7 +31,8 @@ import { AIElementsComposer } from 'react-tapable-editor';
 
 | Prop | Description |
 | --- | --- |
-| `mentionSuggestions` | Default `@` suggestions. |
+| `mentionSuggestions` | Default `@` suggestions for users, files, folders, context and actions. |
+| `slashCommands` | Default `/` quick commands for modes, prompt templates, tool chips and blocks. |
 | `models` | Model options shown in the composer. |
 | `toolModes` | Product modes such as chat, agent, search or code. |
 | `promptHistory` | Prompt history/template list. |
