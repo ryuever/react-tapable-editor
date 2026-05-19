@@ -1,0 +1,154 @@
+body {
+  background: #f7f8fb;
+  margin: 0;
+}
+
+.demo-shell {
+  display: grid;
+  gap: 24px;
+  margin: 0 auto;
+  max-width: 980px;
+  padding: 40px 20px;
+}
+
+.demo-header h1 {
+  color: #111827;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  font-size: 32px;
+  line-height: 1.1;
+  margin: 0 0 8px;
+}
+
+.demo-header p {
+  color: #4b5563;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  margin: 0;
+}
+
+.demo-use-cases {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.demo-use-cases article {
+  background: #fff;
+  border: 1px solid #d8dee8;
+  border-radius: 8px;
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+}
+
+.demo-use-cases h2 {
+  color: #111827;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  font-size: 15px;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.demo-use-cases p {
+  color: #4b5563;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  font-size: 13px;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.demo-use-cases button {
+  align-self: end;
+  background: #fff;
+  border: 1px solid #111827;
+  border-radius: 6px;
+  color: #111827;
+  cursor: pointer;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  min-height: 30px;
+  padding: 0 10px;
+}
+
+.demo-use-cases button:hover {
+  background: #111827;
+  color: #fff;
+}
+
+.demo-payload {
+  background: #fff;
+  border: 1px solid #d8dee8;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+@media (max-width: 860px) {
+  .demo-use-cases {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .demo-shell {
+    padding: 28px 14px;
+  }
+
+  .demo-use-cases {
+    grid-template-columns: 1fr;
+  }
+}
+
+.demo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.demo-actions button {
+  background: #111827;
+  border: 1px solid #111827;
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  min-height: 32px;
+  padding: 0 12px;
+}
+
+.demo-actions button:hover {
+  background: #374151;
+}
+
+.demo-payload h2 {
+  color: #111827;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  font-size: 14px;
+  margin: 0 0 12px;
+}
+
+.demo-payload pre {
+  background: #111827;
+  border-radius: 6px;
+  color: #e5e7eb;
+  font-size: 12px;
+  margin: 0;
+  max-height: 340px;
+  overflow: auto;
+  padding: 12px;
+}

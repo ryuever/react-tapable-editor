@@ -1,5 +1,5 @@
 {
-  "include": ["src", "types"],
+  "include": ["src/index.tsx", "src/lexical/**/*", "src/vite-env.d.ts"],
   "compilerOptions": {
     "module": "esnext",
     "lib": ["dom", "esnext"],
@@ -14,12 +14,13 @@
     "noImplicitThis": false,
     "noFallthroughCasesInSwitch": true,
     "moduleResolution": "node",
+    "skipLibCheck": true,
     "baseUrl": "./",
     "paths": {
       "@": ["./"],
       "*": ["src/*", "node_modules/*"]
     },
-    "jsx": "react",
+    "jsx": "react-jsx",
     "esModuleInterop": true
   }
 }

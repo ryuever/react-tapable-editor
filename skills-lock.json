@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "codebase-wiki": {
+      "source": "ryuever/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/codebase-wiki/SKILL.md",
+      "computedHash": "a5d60cdc138417155208ac003db778feb09ee3136e2a667229f24263851e78a7"
+    }
+  }
+}

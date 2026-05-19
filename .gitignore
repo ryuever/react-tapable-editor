@@ -1,6 +1,8 @@
 node_modules
 *.log
 .DS_Store
-node_modules
 .cache
+.vitepress/cache
 dist
+playwright-report
+test-results

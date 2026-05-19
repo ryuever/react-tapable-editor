@@ -1,0 +1,45 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "__WIKI_TITLE__",
+  "colors": {
+    "primary": "__PRIMARY_COLOR__",
+    "light": "__PRIMARY_COLOR__",
+    "dark": "__PRIMARY_COLOR__"
+  },
+  "favicon": "/favicon.svg",
+  "navigation": {
+    "groups": [
+      {
+        "group": "首页",
+        "pages": [
+          "INDEX"
+        ]
+      },
+      {
+        "group": "架构分析",
+        "pages": []
+      },
+      {
+        "group": "技术讨论",
+        "pages": []
+      },
+      {
+        "group": "Issue 记录",
+        "pages": []
+      },
+      {
+        "group": "参考手册",
+        "pages": []
+      },
+      {
+        "group": "规划路线",
+        "pages": []
+      }
+    ]
+  },
+  "mermaid": {},
+  "footer": {
+    "socials": {}
+  }
+}
