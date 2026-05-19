@@ -7,6 +7,13 @@ React primitives that can become nodes later.
 
 <BlocksPreview />
 
+## Why blocks matter
+
+AI products need to show more than assistant text. A useful runtime can produce
+sources, plans, logs, test results, tool calls, generated artifacts and images.
+Those states should be represented as first-class UI blocks so they can be
+inspected, updated, serialized and moved through the product.
+
 ## Lexical-backed blocks
 
 | Block | Description |
@@ -30,3 +37,13 @@ React primitives that can become nodes later.
 
 High-value primitives should graduate into Lexical nodes when they need to be
 edited inline, serialized as document state or updated by agent commands.
+
+## Graduation rule
+
+A React block should become a Lexical-backed block when at least one of these is
+true:
+
+- It needs inline editing inside the document flow.
+- It needs durable document serialization.
+- It needs command-based updates from an agent runtime.
+- It affects copy, move, duplicate or payload export behavior.

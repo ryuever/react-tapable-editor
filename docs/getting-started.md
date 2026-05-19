@@ -33,6 +33,27 @@ export function AgentComposer() {
 }
 ```
 
+## Use the agent console preset
+
+`AIElementsAgentConsole` is the quickest way to ship a full agent workspace.
+It combines the composer with plan state, sources, file context, terminal
+output, test results and payload inspection.
+
+```tsx
+import { AIElementsAgentConsole } from 'react-tapable-editor';
+
+export function AgentWorkspace() {
+  return (
+    <AIElementsAgentConsole
+      context={[{ id: 'repo', label: 'react-tapable-editor', type: 'repo' }]}
+      onSubmit={payload => {
+        runAgent(payload);
+      }}
+    />
+  );
+}
+```
+
 ## Customize defaults
 
 ```tsx
@@ -53,10 +74,12 @@ The component set is not locked behind the composer.
 
 ```tsx
 import {
+  AIElementsAgentConsole,
   MentionPicker,
   SourcesBlock,
   TaskPlanBlock,
   PayloadInspector,
+  aiElementsRegistry,
   aiElementsMentionSuggestions,
 } from 'react-tapable-editor';
 
@@ -91,3 +114,16 @@ type PromptInputPayload = {
 
 Use `parts` for runtime intent, `portable` for storage/interchange and
 `lexical` only when you need exact editor reconstruction.
+
+## Browse the registry
+
+The element registry lets docs, product code and future agent tooling talk about
+the same components.
+
+```tsx
+import { aiElementsRegistry } from 'react-tapable-editor';
+
+const runtimeBlocks = aiElementsRegistry.filter(
+  item => item.category === 'Runtime' || item.category === 'Debug'
+);
+```

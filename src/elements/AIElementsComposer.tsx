@@ -11,6 +11,21 @@ import {
   aiElementsSlashCommands,
   aiElementsToolModes,
 } from './presets';
+import {
+  aiElementsDesignPrinciples,
+  aiElementsRegistry,
+  aiElementsSystemLayers,
+  aiElementsSystemStats,
+  aiElementsWorkflow,
+} from './registry';
+import type {
+  AIElementCategory,
+  AIElementCatalogItem,
+  AIElementPrinciple,
+  AIElementStat,
+  AIElementSystemLayer,
+  AIElementWorkflowStep,
+} from './registry';
 import './styles.css';
 
 export interface AIElementsComposerProps extends LexicalTapableEditorProps {
@@ -66,113 +81,29 @@ export const AIElementsComposer = forwardRef<
   );
 });
 
-export interface AIElementCatalogItem {
-  category?: string;
-  id: string;
-  title: string;
-  description: string;
-  tags?: string[];
-}
+export type {
+  AIElementCategory,
+  AIElementCatalogItem,
+  AIElementPrinciple,
+  AIElementStat,
+  AIElementSystemLayer,
+  AIElementWorkflowStep,
+} from './registry';
 
-export interface AIElementSystemLayer {
-  id: string;
-  title: string;
-  description: string;
-  items: string[];
-}
-
-export interface AIElementPrinciple {
-  id: string;
-  title: string;
-  description: string;
-}
+const galleryCategories: AIElementCategory[] = [
+  'Surface',
+  'Primitive',
+  'Block',
+  'Runtime',
+  'Debug',
+];
 
 export function AIElementsCatalog({
   items,
 }: {
   items?: AIElementCatalogItem[];
 }) {
-  const catalogItems =
-    items ||
-    [
-      {
-        id: 'composer',
-        category: 'Surface',
-        title: 'AI Composer',
-        description: 'Prompt input with mentions, model selector and payload preview.',
-        tags: ['input', 'mentions'],
-      },
-      {
-        id: 'agent-console',
-        category: 'Runtime',
-        title: 'Agent Console',
-        description: 'Tool-call lifecycle blocks with approvals, logs and outputs.',
-        tags: ['agent', 'tools'],
-      },
-      {
-        id: 'artifact',
-        category: 'Block',
-        title: 'Artifact Block',
-        description: 'Structured AI output that can be edited and serialized.',
-        tags: ['artifact', 'schema'],
-      },
-      {
-        id: 'visual-context',
-        category: 'Block',
-        title: 'Visual Context',
-        description: 'Image blocks with alignment, width, caption and alt controls.',
-        tags: ['image', 'context'],
-      },
-      {
-        id: 'media-insert',
-        category: 'Primitive',
-        title: 'Media Insert',
-        description: 'File upload, drag-and-drop files and URL image insertion.',
-        tags: ['files', 'images'],
-      },
-      {
-        id: 'mention-picker',
-        category: 'Primitive',
-        title: 'Mention Picker',
-        description: 'People, files, folders, context and actions as structured references.',
-        tags: ['@', 'references'],
-      },
-      {
-        id: 'payload-inspector',
-        category: 'Debug',
-        title: 'Payload Inspector',
-        description: 'Inspect text, parts, Lexical JSON and portable schema v2.',
-        tags: ['payload', 'schema'],
-      },
-      {
-        id: 'reasoning',
-        category: 'Block',
-        title: 'Reasoning Block',
-        description: 'Readable step traces for model thoughts, tool plans or summaries.',
-        tags: ['reasoning', 'trace'],
-      },
-      {
-        id: 'task-plan',
-        category: 'Block',
-        title: 'Task Plan',
-        description: 'Track todos, running work, blocked items and completed agent steps.',
-        tags: ['plan', 'agent'],
-      },
-      {
-        id: 'sources',
-        category: 'Block',
-        title: 'Sources and Citations',
-        description: 'Source lists and inline citation chips for retrieval-heavy answers.',
-        tags: ['sources', 'rag'],
-      },
-      {
-        id: 'runtime-output',
-        category: 'Runtime',
-        title: 'Terminal and Test Results',
-        description: 'Show commands, logs and verification output as first-class UI blocks.',
-        tags: ['terminal', 'tests'],
-      },
-    ];
+  const catalogItems = items || aiElementsRegistry;
 
   return (
     <section className="rte-ai-elements-catalog" aria-label="AI Elements catalog">
@@ -183,7 +114,15 @@ export function AIElementsCatalog({
           )}
           <h3>{item.title}</h3>
           <p>{item.description}</p>
-          {item.tags && (
+          {(item.importName || item.maturity) && (
+            <div className="rte-ai-elements-meta">
+              {item.importName && <code>{item.importName}</code>}
+              {item.maturity && (
+                <span data-maturity={item.maturity}>{item.maturity}</span>
+              )}
+            </div>
+          )}
+          {item.tags && item.tags.length > 0 && (
             <div className="rte-ai-elements-tags">
               {item.tags.map(tag => (
                 <span key={tag}>{tag}</span>
@@ -196,6 +135,70 @@ export function AIElementsCatalog({
   );
 }
 
+export function AIElementsGallery({
+  items,
+}: {
+  items?: AIElementCatalogItem[];
+}) {
+  const catalogItems = items || aiElementsRegistry;
+
+  return (
+    <section className="rte-ai-elements-gallery" aria-label="AI Elements gallery">
+      {galleryCategories.map(category => {
+        const categoryItems = catalogItems.filter(item => item.category === category);
+
+        if (categoryItems.length === 0) return null;
+
+        return (
+          <section className="rte-ai-elements-gallery-group" key={category}>
+            <header>
+              <span>{category}</span>
+              <h2>{category} elements</h2>
+            </header>
+            <div className="rte-ai-elements-gallery-grid">
+              {categoryItems.map(item => (
+                <article className="rte-ai-elements-gallery-card" key={item.id}>
+                  <div>
+                    <h3>{item.title}</h3>
+                    <p>{item.description}</p>
+                  </div>
+                  <dl>
+                    {item.importName && (
+                      <>
+                        <dt>Import</dt>
+                        <dd>
+                          <code>{item.importName}</code>
+                        </dd>
+                      </>
+                    )}
+                    {item.docsPath && (
+                      <>
+                        <dt>Docs</dt>
+                        <dd>{item.docsPath}</dd>
+                      </>
+                    )}
+                    {item.sourcePath && (
+                      <>
+                        <dt>Source</dt>
+                        <dd>{item.sourcePath}</dd>
+                      </>
+                    )}
+                  </dl>
+                  <div className="rte-ai-elements-tags">
+                    {(item.tags || []).map(tag => (
+                      <span key={tag}>{tag}</span>
+                    ))}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+        );
+      })}
+    </section>
+  );
+}
+
 export function AIElementsSystemMap({
   layers,
   principles,
@@ -203,82 +206,8 @@ export function AIElementsSystemMap({
   layers?: AIElementSystemLayer[];
   principles?: AIElementPrinciple[];
 }) {
-  const systemLayers =
-    layers ||
-    [
-      {
-        id: 'surfaces',
-        title: 'Surfaces',
-        description: 'Composable entry points for product screens.',
-        items: ['Composer', 'Agent Console', 'Artifact Workspace'],
-      },
-      {
-        id: 'primitives',
-        title: 'Primitives',
-        description: 'Small pieces that can be copied, replaced or rearranged.',
-        items: [
-          'Mention Picker',
-          'Model Select',
-          'Tool Mode',
-          'History',
-          'Attachments',
-          'Media Insert',
-        ],
-      },
-      {
-        id: 'blocks',
-        title: 'Blocks',
-        description: 'Structured AI UI units embedded in the document tree.',
-        items: [
-          'Tool Call',
-          'Artifact',
-          'Sources',
-          'Reasoning',
-          'Task Plan',
-        ],
-      },
-      {
-        id: 'runtime',
-        title: 'Runtime Bridge',
-        description: 'Events and schema that connect UI to agents and tools.',
-        items: ['Payload Inspector', 'Terminal', 'Test Results', 'Action Events'],
-      },
-    ];
-
-  const designPrinciples =
-    principles ||
-    [
-      {
-        id: 'composable',
-        title: 'Composable',
-        description: 'Use focused building blocks, not a closed editor box.',
-      },
-      {
-        id: 'simple',
-        title: 'Simple',
-        description: 'Defaults work immediately; customization stays explicit.',
-      },
-      {
-        id: 'accessible',
-        title: 'Accessible',
-        description: 'Semantic controls, labels and keyboard-friendly surfaces.',
-      },
-      {
-        id: 'performant',
-        title: 'Performant',
-        description: 'Static CSS, tree-shakeable exports and runtime boundaries.',
-      },
-      {
-        id: 'typed',
-        title: 'Type-first',
-        description: 'Payloads, blocks and suggestions carry typed metadata.',
-      },
-      {
-        id: 'shadcn',
-        title: 'shadcn-minded',
-        description: 'Opinionated defaults that can live inside the app codebase.',
-      },
-    ];
+  const systemLayers = layers || aiElementsSystemLayers;
+  const designPrinciples = principles || aiElementsDesignPrinciples;
 
   return (
     <section className="rte-ai-elements-system" aria-label="AI Elements system map">
@@ -312,6 +241,43 @@ export function AIElementsSystemMap({
           </article>
         ))}
       </div>
+    </section>
+  );
+}
+
+export function AIElementsStats({ stats }: { stats?: AIElementStat[] }) {
+  const items = stats || aiElementsSystemStats;
+
+  return (
+    <section className="rte-ai-elements-stats" aria-label="AI Elements stats">
+      {items.map(item => (
+        <article key={item.label}>
+          <strong>{item.value}</strong>
+          <span>{item.label}</span>
+          <p>{item.detail}</p>
+        </article>
+      ))}
+    </section>
+  );
+}
+
+export function AIElementsWorkflow({
+  steps,
+}: {
+  steps?: AIElementWorkflowStep[];
+}) {
+  const items = steps || aiElementsWorkflow;
+
+  return (
+    <section className="rte-ai-elements-workflow" aria-label="AI Elements workflow">
+      {items.map((item, index) => (
+        <article key={item.id}>
+          <span>{String(index + 1).padStart(2, '0')}</span>
+          <h3>{item.title}</h3>
+          <p>{item.description}</p>
+          {item.code && <code>{item.code}</code>}
+        </article>
+      ))}
     </section>
   );
 }

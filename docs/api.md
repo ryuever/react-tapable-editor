@@ -5,9 +5,14 @@
 ```tsx
 export {
   LexicalTapableEditor,
+  AIElementsAgentConsole,
   AIElementsComposer,
+  AIElementsGallery,
+  AIElementsStats,
+  AIElementsWorkflow,
   AIElementsSystemMap,
   AIElementsCatalog,
+  aiElementsRegistry,
   MentionPicker,
   AttachmentTray,
   FileDropzone,
@@ -39,7 +44,55 @@ export {
   aiElementsModels,
   aiElementsPromptHistory,
   aiElementsToolModes,
+  aiElementsDesignPrinciples,
+  aiElementsSystemLayers,
+  aiElementsSystemStats,
+  aiElementsWorkflow,
 };
+```
+
+## Registry types
+
+```ts
+type AIElementCategory =
+  | 'Surface'
+  | 'Primitive'
+  | 'Block'
+  | 'Runtime'
+  | 'Debug';
+
+type AIElementMaturity = 'ready' | 'preview' | 'planned';
+
+interface AIElementCatalogItem {
+  category?: AIElementCategory;
+  id: string;
+  title: string;
+  description: string;
+  tags?: string[];
+  importName?: string;
+  docsPath?: string;
+  sourcePath?: string;
+  maturity?: AIElementMaturity;
+}
+```
+
+## Agent console
+
+```ts
+interface AIElementsAgentConsoleProps extends AIElementsComposerProps {
+  fileTree?: FileTreeItem[];
+  inspector?: boolean;
+  runtimeSlot?: ReactNode;
+  sidebarSlot?: ReactNode;
+  sources?: SourceItem[];
+  tasks?: TaskPlanItem[];
+  terminal?: {
+    command: string;
+    output?: string;
+    status?: 'idle' | 'running' | 'success' | 'error';
+  };
+  testResults?: TestResultItem[];
+}
 ```
 
 ## Editor handle

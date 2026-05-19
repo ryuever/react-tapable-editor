@@ -3,6 +3,7 @@ import { defineConfig } from 'vitepress';
 const componentSidebar = [
   { text: 'Overview', link: '/components/' },
   { text: 'Composer', link: '/components/composer' },
+  { text: 'Agent Console', link: '/components/agent-console' },
   { text: 'Mention Picker', link: '/components/mention-picker' },
   { text: 'Attachment Tray', link: '/components/attachment-tray' },
   { text: 'Media Insert', link: '/components/media-insert' },
@@ -22,6 +23,7 @@ export default defineConfig({
     logo: { src: '/logo.svg', width: 24, height: 24 },
     nav: [
       { text: 'Philosophy', link: '/philosophy' },
+      { text: 'Gallery', link: '/gallery' },
       { text: 'Components', link: '/components/' },
       { text: 'Blocks', link: '/blocks' },
       { text: 'Runtime', link: '/runtime' },
@@ -42,6 +44,7 @@ export default defineConfig({
             { text: 'Introduction', link: '/' },
             { text: 'Getting Started', link: '/getting-started' },
             { text: 'Philosophy', link: '/philosophy' },
+            { text: 'Gallery', link: '/gallery' },
           ],
         },
         {

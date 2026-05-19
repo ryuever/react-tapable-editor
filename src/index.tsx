@@ -21,15 +21,38 @@ export type {
 export {
   AIElementsCatalog,
   AIElementsComposer,
+  AIElementsGallery,
+  AIElementsStats,
   AIElementsSystemMap,
+  AIElementsWorkflow,
   default as AIElementsComposerDefault,
 } from './elements/AIElementsComposer';
+export {
+  AIElementsAgentConsole,
+  default as AIElementsAgentConsoleDefault,
+} from './elements/AIElementsAgentConsole';
 export type {
   AIElementCatalogItem,
   AIElementPrinciple,
+  AIElementStat,
   AIElementSystemLayer,
+  AIElementWorkflowStep,
   AIElementsComposerProps,
 } from './elements/AIElementsComposer';
+export type {
+  AIElementsAgentConsoleProps,
+} from './elements/AIElementsAgentConsole';
+export {
+  aiElementsDesignPrinciples,
+  aiElementsRegistry,
+  aiElementsSystemLayers,
+  aiElementsSystemStats,
+  aiElementsWorkflow,
+} from './elements/registry';
+export type {
+  AIElementCategory,
+  AIElementMaturity,
+} from './elements/registry';
 export {
   aiElementsMentionSuggestions,
   aiElementsModels,

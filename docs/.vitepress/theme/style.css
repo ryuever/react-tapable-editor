@@ -48,8 +48,64 @@
   border: 1px solid #e4e4e7;
   border-radius: 8px;
   margin: 20px 0 28px;
+  overflow: hidden;
+}
+
+.docs-preview-tabs {
+  align-items: center;
+  background: #fff;
+  border-bottom: 1px solid #e4e4e7;
+  display: flex;
+  gap: 4px;
+  padding: 8px;
+}
+
+.docs-preview-tabs button {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: #52525b;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1;
+  padding: 8px 10px;
+}
+
+.docs-preview-tabs button:hover {
+  background: #f4f4f5;
+  color: #18181b;
+}
+
+.docs-preview-tabs button.is-active {
+  background: #18181b;
+  border-color: #18181b;
+  color: #fff;
+}
+
+.docs-preview-panel {
   overflow-x: auto;
   padding: 16px;
+}
+
+.docs-preview-code {
+  background: #09090b;
+}
+
+.docs-preview-code pre {
+  background: transparent;
+  margin: 0;
+  overflow: visible;
+  padding: 0;
+}
+
+.docs-preview-code code {
+  color: #f4f4f5;
+  display: block;
+  font-size: 13px;
+  line-height: 1.65;
+  min-width: max-content;
+  white-space: pre;
 }
 
 .docs-react-preview-host {
@@ -95,6 +151,31 @@
 .docs-react-preview .rte-ai-elements-catalog,
 .docs-react-preview .rte-ai-elements-system {
   max-width: none;
+}
+
+.dark .docs-react-preview {
+  background: #18181b;
+  border-color: #3f3f46;
+}
+
+.dark .docs-preview-tabs {
+  background: #09090b;
+  border-color: #3f3f46;
+}
+
+.dark .docs-preview-tabs button {
+  color: #d4d4d8;
+}
+
+.dark .docs-preview-tabs button:hover {
+  background: #27272a;
+  color: #fafafa;
+}
+
+.dark .docs-preview-tabs button.is-active {
+  background: #fafafa;
+  border-color: #fafafa;
+  color: #18181b;
 }
 
 @media (max-width: 860px) {

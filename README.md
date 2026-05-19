@@ -16,6 +16,9 @@ intent, and serializable AI parts.
 - Product-configurable AI tool modes and model selector
 - Slash menu, @ mention suggestions, attachment upload adapter, and prompt history
 - shadcn-inspired AI Elements preset with people/files/folders/actions defaults
+- Registry-driven AI Elements gallery, system stats and implementation workflow
+- Product-level agent console surface with composer, task plan, sources, file
+  context, terminal output, test results and payload inspection
 - AI Elements primitives for mention picker, attachments, models, tool modes,
   file upload, file dropzone, image insert, prompt history, sources, citations,
   reasoning, task plans, file trees, terminal output, test results, and payload
@@ -97,9 +100,13 @@ prompt history.
 
 ```tsx
 import {
+  AIElementsAgentConsole,
   AIElementsCatalog,
   AIElementsComposer,
+  AIElementsGallery,
+  AIElementsStats,
   AIElementsSystemMap,
+  AIElementsWorkflow,
   MentionPicker,
   PayloadInspector,
   SourcesBlock,
@@ -111,8 +118,11 @@ import 'react-tapable-editor/style.css';
 export function WorkspaceComposer() {
   return (
     <>
+      <AIElementsStats />
+      <AIElementsGallery />
       <AIElementsSystemMap />
       <AIElementsCatalog />
+      <AIElementsWorkflow />
       <MentionPicker items={aiElementsMentionSuggestions} />
       <SourcesBlock
         sources={[
@@ -129,6 +139,10 @@ export function WorkspaceComposer() {
         title="Agent workspace"
         context={[{ id: 'repo', label: 'react-tapable-editor', type: 'repo' }]}
         onSubmit={payload => runAgent(payload)}
+      />
+      <AIElementsAgentConsole
+        context={[{ id: 'repo', label: 'react-tapable-editor', type: 'repo' }]}
+        onSubmit={payload => runCodingAgent(payload)}
       />
       <PayloadInspector payload={null} />
     </>
