@@ -2,6 +2,10 @@
 
 `TaskPlanBlock` displays an agent plan with lightweight status.
 
+## Preview
+
+<TaskPlanPreview />
+
 ## Import
 
 ```tsx

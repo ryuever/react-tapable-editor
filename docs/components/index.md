@@ -2,6 +2,10 @@
 
 The component set is organized around how AI products are built.
 
+## Preview
+
+<ComponentCatalogPreview />
+
 ## Surfaces
 
 | Component | Purpose |

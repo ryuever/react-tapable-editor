@@ -3,6 +3,10 @@
 Blocks are structured AI UI units. Some are Lexical nodes today; others are
 React primitives that can become nodes later.
 
+## Preview
+
+<BlocksPreview />
+
 ## Lexical-backed blocks
 
 | Block | Description |

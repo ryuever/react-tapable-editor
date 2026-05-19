@@ -3,6 +3,10 @@
 `PayloadInspector` is a debug component for inspecting the exact payload that
 will be sent to an AI runtime.
 
+## Preview
+
+<PayloadInspectorPreview />
+
 ## Import
 
 ```tsx

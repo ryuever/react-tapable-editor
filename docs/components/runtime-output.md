@@ -3,6 +3,10 @@
 Runtime output components make tool execution visible without forcing logs into
 plain text.
 
+## Preview
+
+<RuntimeOutputPreview />
+
 ## Terminal
 
 ```tsx

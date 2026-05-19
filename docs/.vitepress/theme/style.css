@@ -42,3 +42,63 @@
 .vp-doc td {
   font-size: 14px;
 }
+
+.docs-react-preview {
+  background: #f7f8fb;
+  border: 1px solid #e4e4e7;
+  border-radius: 8px;
+  margin: 20px 0 28px;
+  overflow-x: auto;
+  padding: 16px;
+}
+
+.docs-react-preview-host {
+  min-width: 0;
+}
+
+.docs-preview-stack {
+  display: grid;
+  gap: 14px;
+}
+
+.docs-preview-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.8fr);
+}
+
+.docs-preview-error {
+  background: #fff;
+  border: 1px solid #ef4444;
+  border-radius: 8px;
+  color: #7f1d1d;
+  padding: 12px;
+}
+
+.docs-preview-error pre {
+  margin: 8px 0 0;
+  white-space: pre-wrap;
+}
+
+.docs-preview-sentence {
+  background: #fff;
+  border: 1px solid #e4e4e7;
+  border-radius: 8px;
+  color: #3f3f46;
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0;
+  padding: 14px;
+}
+
+.docs-react-preview .rte-ai-elements,
+.docs-react-preview .rte-ai-elements-catalog,
+.docs-react-preview .rte-ai-elements-system {
+  max-width: none;
+}
+
+@media (max-width: 860px) {
+  .docs-preview-grid {
+    grid-template-columns: 1fr;
+  }
+}

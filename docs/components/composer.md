@@ -4,6 +4,10 @@
 editor core with mention suggestions, tool modes, model selection, prompt
 history, attachments and structured submit payloads.
 
+## Preview
+
+<ComposerPreview />
+
 ## Import
 
 ```tsx

@@ -3,6 +3,10 @@
 `MentionPicker` represents references that should stay structured in an AI
 payload: people, files, folders, context and actions.
 
+## Preview
+
+<MentionPickerPreview />
+
 ## Import
 
 ```tsx

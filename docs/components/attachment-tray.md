@@ -2,6 +2,10 @@
 
 `AttachmentTray` displays selected files, images or external resources.
 
+## Preview
+
+<AttachmentTrayPreview />
+
 ## Import
 
 ```tsx

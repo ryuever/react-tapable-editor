@@ -3,6 +3,10 @@
 Media insertion is split into small primitives so product teams can place them
 inside a composer toolbar, a side panel or an artifact workspace.
 
+## Preview
+
+<MediaInsertPreview />
+
 ## File upload
 
 ```tsx

@@ -2,6 +2,10 @@
 
 `ReasoningBlock` shows a readable reasoning summary or step trace.
 
+## Preview
+
+<ReasoningPreview />
+
 ## Import
 
 ```tsx

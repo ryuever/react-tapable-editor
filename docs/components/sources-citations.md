@@ -3,6 +3,10 @@
 Use `SourcesBlock` and `CitationChip` for retrieval-heavy answers, research
 agents and document-grounded chat.
 
+## Preview
+
+<SourcesCitationsPreview />
+
 ## Import
 
 ```tsx
